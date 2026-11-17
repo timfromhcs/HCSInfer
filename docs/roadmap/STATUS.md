@@ -1,8 +1,8 @@
 # HCSInfer status
 
-Last updated: 2026-11-17 (after the image-routes / embedded-UI / benchmark-command milestone and a full 400-test
-Release run). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
-inspected source file; items with no evidence are NOT RUN or BLOCKED.
+Last updated: 2026-11-17 (after V1.1 wave 1 and the wave-2 browser demo `web/`). Statuses: PASS / FAIL / BLOCKED /
+NOT RUN. Nothing below is claimed without an evidence file or an inspected source file; items with no evidence are
+NOT RUN or BLOCKED.
 
 ## Repository state
 
@@ -11,12 +11,15 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
   diff. The history starts at `d5baf76` "Initial commit: HCSInfer core, engines, API, MCP, vault, vision, docs"
   (2026-11-17 13:57 +0100) and the work described below was committed on top of it in four further commits.
 - Submodule pins: `external/llama.cpp` d3c3e242c16b8cbf51400fad410cd69b22d64f35, `external/stable-diffusion.cpp`
-  532d2c15c430a785a712b2d94281f04e733008a4 (see `external/dependency-lock.json`).
+  532d2c15c430a785a712b2d94281f04e733008a4, `external/prime-agent` 8980e66f2f07762d62a6c1d73b347a4cac5275cc
+  (see `external/dependency-lock.json`).
 - Toolchain on the target machine: MSVC 19.44.35228 (toolset 14.44.35207) x64, CMake 4.4.0, Ninja 1.13.2,
   Vulkan SDK 1.4.357.0 (build time only), Windows 11 build 10.0.26200.9974, Ryzen 7 7735HS, Radeon 680M
   (device id 0x1681), ~21.2 GB RAM, AMD driver 32.0.21043.12001.
-- Modules present in `src/`: `core`, `hardware`, `storage`, `engines/llama`, `engines/diffusion`, `gui`, `api`,
-  `mcp`, `cli`, `app`. **Still absent:** `memory`, `scheduler`, `telemetry`, `kernels`, `shaders`.
+- Modules present in `src/`: `core`, `hardware`, `storage`, `agent`, `train`, `engines/llama`,
+  `engines/diffusion`, `gui`, `api`, `mcp`, `cli`, `app`. **Still absent:** `memory`, `scheduler`, `telemetry`,
+  `kernels`, `shaders`. A separate browser deliverable `web/` (HCS Studio Web, ADR-013) exists outside `src/` and
+  outside the CMake graph.
 - The two smoke-test PNGs at the repository root (`cpu-256x256-2step.png`, `cpu-edit-256x256-2step.png`) are
   ignored by `.gitignore` (`/*.png`) and are not part of the product.
 
@@ -48,6 +51,8 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 | MCP Streamable HTTP | NOT RUN (intentionally not implemented) | `docs/mcp.md` |
 | M4 GUI (embedded local web UI, ADR-009 accepted) | **PASS (experimental)** for the HTTP/browser-boot phases, on both builds | `M4-gui/`: 23 checks 0 failed over a real socket (CSP, traversal, Host/Origin, 405, token not embedded) **plus a real headless-Chrome boot** that connects with the fragment token and lists the models; the same script against the **Vulkan build** is `vulkan-e2e-gui.json` (22 checks, 0 failed - one check needs a registered model). Python-`playwright` interaction phase NOT RUN (playwright not installed) |
 | M4 normal-user workflow without a terminal | PARTIAL | manual run recorded in `M4-gui/README.md` (load, streamed chat, Stop/cancel, vision, Performance); not automated |
+| V1.1 wave 1: LFM3-Omni tool calls + agentic eval, FLUX.3 Klein plumbing + presets, HCS Studio UI, agent/train foundations | PASS (experimental) | `docs/test-evidence/lfm3`, `flux3`, `agent`, `studio`; the FLUX.3 render stays BLOCKED (gated encoder/VAE). Commit `6a390b8` (V1.1 wave 1) |
+| V1.1 wave 2: HCS Studio Web (`web/`, browser WebGPU/WASM, ADR-013) | PASS for the shell + logic / real WebGPU inference NOT RUN | `web/`: 45 unit + static security tests (`npm test`, 45/45) and `tests/e2e/boot.mjs` on a real static server + real headless Chrome (14/14, `docs/test-evidence/web/web-boot.{json,txt}` + `web-chat.png`); the headless browser has no WebGPU adapter so it fell back to the WASM path. Image Studio/Train/Agent are "Local only"; Vercel deploy NOT RUN (needs owner credentials) |
 | M5 Model Vault v1 | PARTIAL | Stage A (upstream load modes) **measured**: all six llama.cpp modes work; `direct_io` costs ~14x load time on the USB HDD because it bypasses the file cache, mmap-backed modes commit ~250 MB less than read-into-RAM, no throughput difference while the model fits in RAM - `M5-loadmodes/`. Stage B (bounded async pipeline feeding the engine) **BLOCKED**: no model larger than the 21 GB RAM is available locally and the OS file cache cannot be flushed without administrator rights, so a controlled storage-bound comparison cannot be produced on this machine; `src/storage` reads are tested read-only on a real GGUF, engines do not load through the vault. USB-unplug test NOT RUN |
 | M6 HCSMODEL container (header, chunk table, Raw/LZ4/Zstd, hashes, random access) | PASS (experimental) / PARTIAL for fuzz | 59 unit + 3 parser + 2 integration tests; libFuzzer smoke only 60 s with UBSan, no ASan (`M6-storage/`). Throughput benefit on a real HDD NOT proven |
 | M7 shared GGML ABI (llama.cpp GGML + sd.cpp via `SD_USE_UPSTREAM_GGML=ON` in one binary) | PASS for build + SD1.5 + llama text in one binary | `HCSInfer.exe` links both; coverage for Flux/DiT/Qwen-Image, FP8/INT8 NOT RUN |
@@ -86,11 +91,14 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 
 ## Exact next action
 
-1. Watch the new `clang-tidy (static analysis)` CI job on the runner; flip it to blocking once it has been seen
-   green there (the format gate is already blocking).
-2. M1/M2 leftovers: standalone upstream `llama-mtmd-cli` baseline run; more VLM families (Qwen-VL M-RoPE, Gemma3);
-   sdcpp `--params-backend disk` vs CPU comparison (B7).
-3. M5: route engine model reads through the Model Vault, then cold/warm benchmarks and the USB-unplug test. This is
-   the critical path to the remaining storage gates (B4/B5/B6/B8).
-4. Run `static-analysis.ps1 -Scope all` over `tests/` and `tools/`, then the M10 soak tests (100 load/unload,
-   30-minute generation, OOM/device-lost/HDD-unplug) and one profiled Vulkan kernel behind a flag (M8).
+1. **V1.1 wave 2 leftovers**: the HCS Agent adapter (supervise `prime-agent` as a sidecar over the loopback API
+   with the `hcs::agent` sandbox policy, ADR-011) and the HCS Train LoRA pipeline + eval gate (ADR-012). Wave 1 is
+   committed (`6a390b8`); wave 2's first item, the browser demo `web/`, is done (ADR-013).
+2. **`web/` follow-ups**: run the demo in a real WebGPU browser (real inference is NOT RUN here - headless has no
+   adapter) and deploy to Vercel (NOT RUN, needs the owner's credentials).
+3. **M5**: route engine model reads through the Model Vault, then cold/warm and the USB-unplug test - the critical
+   path to B4/B5/B6/B8. Blocked on this machine (no model larger than RAM, no admin rights to flush the file cache).
+4. **M8 / M10**: profile the upstream Vulkan backend and land one kernel behind a feature flag (quantised GEMV
+   first); then soak (100 load/unload, 30-min generation), OOM/device-lost/HDD-unplug injection, and the single-EXE
+   static-CRT build (ADR-008).
+5. **Small V1 gaps**: `POST /hcs/v1/benchmarks` (returns `501` today) and the `tune`/`cache` CLI commands.

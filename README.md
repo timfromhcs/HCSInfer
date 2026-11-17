@@ -6,10 +6,11 @@ HCSInfer is a local-first runtime for text chat, image understanding and image g
 memory budget, HTTP API, MCP).
 
 **Status: alpha (pre-V1).** Real text generation (CPU and Vulkan), real image generation/editing (CLI, HTTP, MCP,
-GUI; CPU and Vulkan), image understanding, a loopback HTTP API, an MCP stdio server, an embedded local web UI and a
-real text benchmark command run on the target machine. **Custom Vulkan kernels, the Model Vault in the engine load
-path, the single-file EXE, `tune`/`cache` and Streamable HTTP are not implemented.** V1 is not released. See
-`docs/roadmap/STATUS.md` for the evidence behind every row below.
+GUI; CPU and Vulkan), image understanding, a loopback HTTP API, an MCP stdio server, an embedded local web UI, a
+browser-only WebGPU/WASM demo (`web/`, ADR-013) and a real text benchmark command run on the target machine.
+**Custom Vulkan kernels, the Model Vault in the engine load path, the single-file EXE, `tune`/`cache` and
+Streamable HTTP are not implemented.** V1 is not released. See `docs/roadmap/STATUS.md` for the evidence behind
+every row below.
 
 ## Feature matrix
 
@@ -30,6 +31,7 @@ path, the single-file EXE, `tune`/`cache` and Streamable HTTP are not implemente
 | MCP: `hcs.image.generate`, `hcs.image.edit` | Experimental | real render, image returned as an MCP image content block; `docs/mcp.md` |
 | MCP Streamable HTTP | Planned | intentionally not implemented |
 | GUI: embedded local web UI (`GET /`, `/ui/*` on the same loopback listener) | Experimental | Chat/Vision/Image Studio/Models/Performance/Settings, Simple+Advanced; no framework, no CDN; `docs/gui.md`, ADR-009 |
+| HCS Studio Web (`web/`): browser-only WebGPU/WASM demo, no server | Experimental | static site, no server inference and no analytics; Chat/Vision/Models/Performance/Settings run in the tab, Image Studio/Train/Agent are "Local only"; the shell + capability probe are proven in a real headless Chrome, **real WebGPU inference is NOT RUN here** (headless has no adapter); `web/README.md`, ADR-013 |
 | Model Vault: bounded async sequential reads, SHA-256 (`src/storage`) | Experimental | tested read-only on a real GGUF; the engines do not load through it yet |
 | HCSMODEL chunk container (Raw/LZ4/Zstd, per-chunk hashes) | Experimental | a measured loading benefit on the HDD is not proven |
 | Shared GGML (one GGML for both engines, `SD_USE_UPSTREAM_GGML=ON`) | Experimental | SD1.5 output matched the patched build once; other models untested |
@@ -86,6 +88,25 @@ Windows may still page memory to the system page file; HCSInfer does not change 
 not RAM: a cold first load of a multi-GB model is slow (a cold SD1.5 first step took about 218 s in our run; warm
 runs took seconds), and cold/warm numbers must never be compared. See `docs/model-vault.md`.
 
+## HCS Studio Web (browser demo)
+
+`web/` is a separate deliverable (not part of the native EXE): a static site whose inference runs entirely in the
+browser through WebGPU, with a WebAssembly fallback. No prompt, image or model file leaves the tab; there is no
+server inference and no analytics. Chat, Vision, Models, Performance and Settings run in the browser; Image Studio,
+Train, the shell-based Agent and the Model Vault are shown as "Local only". The one third-party runtime
+(`@huggingface/transformers` 4.3.2, Apache-2.0) is version-pinned and loaded from a CDN.
+
+```powershell
+cd web
+npm test                            # 45 unit + static security tests (no dependencies)
+node tests/e2e/boot.mjs             # real static server + real headless Chrome (14 checks)
+node tools/serve.mjs 8080           # then open http://127.0.0.1:8080/
+```
+
+The shell and the capability probe are verified in a real headless Chrome; **real WebGPU inference is NOT RUN in
+this environment** (headless has no WebGPU adapter) and must be tested in a real WebGPU browser. Details, security
+model and the Vercel deploy (`NOT RUN`, needs owner credentials): `web/README.md`, ADR-013.
+
 ## Security and privacy (current behaviour)
 
 - The API binds to `127.0.0.1` by default, requires a bearer token, validates `Host`/`Origin`, and caps body size and
@@ -135,7 +156,8 @@ No performance claim is made beyond those files.
 ## Documentation
 
 `docs/architecture.md`, `docs/build.md`, `docs/api.md`, `docs/mcp.md`, `docs/model-vault.md`,
-`docs/hardware-support.md`, `docs/roadmap/IMPLEMENTATION_PLAN.md`, `docs/roadmap/STATUS.md`, `docs/decisions/` (ADRs),
+`docs/hardware-support.md`, `docs/gui.md`, `docs/supported-models.md`, `web/README.md`,
+`docs/roadmap/IMPLEMENTATION_PLAN.md`, `docs/roadmap/STATUS.md`, `docs/decisions/` (ADRs),
 `AGENTS.md` (binding engineering specification).
 
 ## Licence

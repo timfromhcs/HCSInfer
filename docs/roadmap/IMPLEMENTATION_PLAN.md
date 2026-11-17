@@ -30,9 +30,10 @@ graph TD
 
 Critical path to V1: vision adapter -> image routes in API/MCP -> GUI (ADR-009) -> Model Vault in the load path ->
 hardening/soak -> release package. M7 single-EXE and M8 kernels gate only the single-file and custom-kernel claims.
-Last completed milestone: M3 image routes + M4 embedded UI + `benchmark` command + M10 audit fixes
-(`docs/test-evidence/M3-image`, `M4-gui`, `benchmark`, `M10-fixes`; full suite 400 tests, 0 failed).
-Next: push to a remote (CI has never run), then M5 Model Vault in the engine load path.
+Last completed milestone: V1.1 wave 1 (commit `6a390b8`) plus the wave-2 browser demo `web/` (ADR-013; shell + logic
+green, real WebGPU inference NOT RUN). Earlier: M3 image routes + M4 embedded UI + `benchmark` command + M10 audit
+fixes (`docs/test-evidence/M3-image`, `M4-gui`, `benchmark`, `M10-fixes`).
+Next: the rest of V1.1 wave 2 (HCS Agent adapter, HCS Train pipeline), then M5 Model Vault in the engine load path.
 
 ## M0 Repository and hardware baseline
 - [x] Repo inspected, scaffold + build/test scripts
@@ -126,7 +127,7 @@ Next: push to a remote (CI has never run), then M5 Model Vault in the engine loa
 - [ ] First green hosted run; first hardware run on the self-hosted runner
 
 ## M11 V1.1 (2026-11-17 addendum, see AGENTS.md section 26)
-- [ ] Wave 1 (running): FLUX.3 Klein engine + step presets, LFM3-Omni Q8 default LLM + tool calls + agentic eval, HCS Studio UI, prime-agent/train foundations
-- [ ] Wave 2: `web/` WebGPU/WASM demo on Vercel with HF model selection and local-parity features (ADR-013); HCS Agent adapter; HCS Train LoRA pipeline + eval gate
+- [x] Wave 1: FLUX.3 Klein engine + step presets, LFM3-Omni Q8 default LLM + tool calls + agentic eval, HCS Studio UI, prime-agent/train foundations (commit `6a390b8`)
+- [~] Wave 2: `web/` browser WebGPU/WASM demo (ADR-013) **done** - shell + logic green (45 tests, 14 e2e checks on a real headless Chrome), real WebGPU inference NOT RUN, Vercel deploy NOT RUN; HCS Agent adapter `[ ]`; HCS Train LoRA pipeline + eval gate `[ ]`
 - [ ] Wave 3: RSI loop, single-EXE/packaging, soak + hardening, V1 stable release candidate
 - Merge to `main` after each green wave.

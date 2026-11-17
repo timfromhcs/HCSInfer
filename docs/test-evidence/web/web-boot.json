@@ -1,0 +1,78 @@
+{
+  "when": "2026-11-17T19:22:12.840Z",
+  "status": "PASS",
+  "browser": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "webgpu_inference": "NOT RUN (headless has no WebGPU adapter)",
+  "results": [
+    {
+      "name": "server responds on 127.0.0.1",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "Content-Security-Policy header present",
+      "ok": true,
+      "detail": "default-src 'none'; script-src 'self' 'w..."
+    },
+    {
+      "name": "X-Content-Type-Options header present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "frame-ancestors denied",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "index.html has the app shell",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "app.css served as text/css",
+      "ok": true,
+      "detail": "text/css; charset=utf-8"
+    },
+    {
+      "name": "js/app.js served as javascript",
+      "ok": true,
+      "detail": "text/javascript; charset=utf-8"
+    },
+    {
+      "name": "path traversal is contained (cannot read outside the web root)",
+      "ok": true,
+      "detail": "HTTP 404"
+    },
+    {
+      "name": "headless browser loaded a DOM",
+      "ok": true,
+      "detail": "browser C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+    },
+    {
+      "name": "app shell rendered (tabs present)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "capability probe ran (device pill updated)",
+      "ok": true,
+      "detail": "detected: WebAssembly (CPU)"
+    },
+    {
+      "name": "chat model options populated",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no server-side template markers leaked",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "screenshot captured",
+      "ok": true,
+      "detail": "D:/HCSInfer/docs/test-evidence/web/web-chat.png"
+    }
+  ]
+}

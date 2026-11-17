@@ -21,6 +21,8 @@ Dependencies linked into or fetched by the current build. Exact pins and CMake o
 | Zstandard | v1.5.7 (commit `f8745da6ff1ad1e7bab384bd1f9d742439278e99`), FetchContent, static | BSD-3-Clause (offered under BSD-3-Clause or GPL-2.0; HCSInfer uses the BSD-3-Clause option) | HCSMODEL chunk codec (`src/storage`) |
 | Vulkan-Headers | tag v1.4.357 (commit `e3b1eec08173d6b825cd3ac88c885a63b621504a`), FetchContent in `src/hardware/CMakeLists.txt`, header-only | Apache-2.0 OR MIT (`LICENSE.md`: Copyright 2015-2026 The Khronos Group Inc.) | Vulkan declarations for `hcs_hardware`; `vulkan-1.dll` from the system driver is loaded dynamically. Not yet listed in `external/dependency-lock.json` (carried as a supplemental component by `scripts/sbom.ps1`) |
 | prime-agent (Copyright (c) 2025-2026 Prime Intellect Ltd.; `external/prime-agent/LICENSE`) | v0.10.4, commit `8980e66f2f07762d62a6c1d73b347a4cac5275cc` (submodule `external/prime-agent`) | MIT | coding-agent candidate (ADR-011), built separately with cargo as a sidecar (`prime-agent.exe`, `pa-daemon.exe`); NOT linked into `HCSInfer.exe`. Its transitive Rust crates and the vendored `crossterm` are not audited yet; `cargo deny` / SBOM for them is NOT RUN. |
+| @huggingface/transformers (transformers.js; Copyright Hugging Face; Apache-2.0) | **4.3.2**, loaded at run time by `web/` from the pinned jsDelivr URL in `web/js/config.js` | Apache-2.0 | HCS Studio Web browser-inference runtime (ADR-013). Fetched by the visitor's browser; NOT linked into or shipped with `HCSInfer.exe`/the portable package. |
+| onnxruntime-web (Copyright (c) Microsoft Corporation) | **1.31.0-dev** (transitive dependency of transformers.js 4.3.2, loaded from the same CDN) | MIT | WebGPU/WASM operator runtime used by the web demo only (transitive). Not present in the native build. |
 
 Not linked: stable-diffusion.cpp's nested patched GGML (`eeda9ec48fc84a3df0bb9dcc19ae9053075a2539`). HCSInfer
 builds one GGML in the process (llama.cpp's) and asks stable-diffusion.cpp to use it, so upstream's INT8/FP8
@@ -32,6 +34,12 @@ against FIPS 180-4 (the SHA-NI round structure follows the publicly documented I
 
 Model weights are not distributed with HCSInfer; each model has its own licence. The SD1.5 Q8_0 GGUF used in
 local tests has no verified provenance and is never redistributed.
+
+The separate browser deliverable `web/` (HCS Studio Web, ADR-013) loads `@huggingface/transformers` and its
+transitive `onnxruntime-web` at run time from a version-pinned CDN URL, inside the visitor's browser. Those bytes
+are not part of `HCSInfer.exe`, the portable package or any release artefact, and no model weights they load are
+distributed either. Their licences (Apache-2.0 / MIT) are recorded above; the `web/` package itself has no npm
+dependencies.
 
 ## Licence texts and packaging
 

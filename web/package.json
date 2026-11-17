@@ -1,0 +1,15 @@
+{
+  "name": "hcs-studio-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "HCS Studio Web - a browser-only WebGPU/WASM demo of the HCSInfer control plane (AGENTS.md 26.7). No build step, no third-party dependency; the inference runtime is loaded from a pinned CDN.",
+  "license": "SEE LICENSE IN ../LICENSE",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test \"tests/*.test.mjs\"",
+    "serve": "node tools/serve.mjs"
+  }
+}

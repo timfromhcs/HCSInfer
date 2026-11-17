@@ -14,3 +14,4 @@ artifacts/
 .claude/
 /*.png
 __pycache__/
+web/node_modules/

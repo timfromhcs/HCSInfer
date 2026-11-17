@@ -102,6 +102,31 @@ jobs:
       - name: Check formatting
         run: .\scripts\format.ps1
 
+  web:
+    name: web (HCS Studio Web tests)
+    runs-on: windows-latest
+    timeout-minutes: 15
+    # Gates the browser deliverable `web/` (AGENTS.md 26.7, ADR-013). It needs only Node - no compiler,
+    # no submodules, no models. `npm test` is the same command `vercel.json` runs as the deploy buildCommand.
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Unit + static security tests
+        run: npm test 2>&1 | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+      # Non-blocking for now: needs headless Chrome and network access to the CDN. Flip to blocking once it has
+      # been seen green on this runner (the same policy used for the clang-tidy gate).
+      - name: Headless boot check (page + capability probe)
+        continue-on-error: true
+        run: node tests/e2e/boot.mjs 2>&1 | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+
   static-analysis:
     name: clang-tidy (static analysis)
     runs-on: windows-latest
