@@ -22,21 +22,81 @@ function Get-BuildDir([string]$Preset) {
 }
 
 # Loads the MSVC x64 environment into this process if cl.exe is not already on PATH.
+#
+# Detection order (a CI runner is not necessarily laid out like a workstation):
+#   1. vswhere.exe - the canonical Microsoft way to locate Visual Studio - preferring an install whose version is
+#      17.x, i.e. Visual Studio 2022. That is the toolchain every result in docs/test-evidence/ was produced with and
+#      the one on the GitHub windows-latest image, so a newer VS that happens to be installed here (a VS 18 BuildTools
+#      with a different cl.exe) must not silently take over. AGENTS.md 0.2: no arbitrary upgrade;
+#   2. any vswhere install (newest first) when no VS 2022 is present;
+#   3. the well-known per-edition vcvars64.bat paths;
+#   4. a bounded recursive search under "Microsoft Visual Studio\2022".
+# The environment-variable lookups use [Environment]::GetEnvironmentVariable because "ProgramFiles(x86)" cannot be
+# written with the $env: syntax and some CI shells leave the variable unset. The chosen vcvars64.bat and the compiler
+# banner are printed so every log records which toolchain was used.
 function Initialize-MsvcEnvironment {
     if (Get-Command cl.exe -ErrorAction SilentlyContinue) { return }
-    $candidates = @(
-        "${env:ProgramFiles}\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat",
-        "${env:ProgramFiles}\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build\vcvars64.bat",
-        "${env:ProgramFiles}\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat",
-        "${env:ProgramFiles}\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat",
-        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat")
-    $vcvars = $candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
-    if (-not $vcvars) { throw 'cl.exe not found and no Visual Studio 2022 vcvars64.bat located. Install the "Desktop development with C++" workload.' }
+    $pf = [Environment]::GetEnvironmentVariable('ProgramFiles')
+    $pf86 = [Environment]::GetEnvironmentVariable('ProgramFiles(x86)')
+    $tried = [System.Collections.Generic.List[string]]::new()
+
+    $vcvars = $null
+    $vswhere = if ($pf86) { Join-Path $pf86 'Microsoft Visual Studio\Installer\vswhere.exe' } else { $null }
+    $require = 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64'
+    if ($vswhere -and (Test-Path -LiteralPath $vswhere)) {
+        foreach ($selector in @(@('-version', '[17.0,18.0)'), @('-latest'))) {
+            $vsArgs = @('-products', '*', '-requires', $require, '-property', 'installationPath') + $selector
+            $installs = & $vswhere @vsArgs 2>$null
+            foreach ($install in @($installs)) {
+                if (-not $install) { continue }
+                $cand = Join-Path $install.Trim() 'VC\Auxiliary\Build\vcvars64.bat'
+                $tried.Add("vswhere $($selector -join ' '): $cand")
+                if (Test-Path -LiteralPath $cand) { $vcvars = $cand; break }
+            }
+            if ($vcvars) { break }
+        }
+    } else {
+        $tried.Add("vswhere: not present at '$vswhere'")
+    }
+
+    if (-not $vcvars) {
+        $candidates = @()
+        foreach ($base in @($pf, $pf86)) {
+            if (-not $base) { continue }
+            foreach ($edition in 'Community', 'Professional', 'Enterprise', 'BuildTools') {
+                $candidates += (Join-Path $base "Microsoft Visual Studio\2022\$edition\VC\Auxiliary\Build\vcvars64.bat")
+            }
+        }
+        foreach ($c in $candidates) {
+            $tried.Add("candidate: $c")
+            if (Test-Path -LiteralPath $c) { $vcvars = $c; break }
+        }
+    }
+
+    if (-not $vcvars) {
+        foreach ($base in @($pf, $pf86)) {
+            if (-not $base) { continue }
+            $root = Join-Path $base 'Microsoft Visual Studio'
+            if (-not (Test-Path -LiteralPath $root)) { continue }
+            $hit = Get-ChildItem -LiteralPath $root -Filter 'vcvars64.bat' -Recurse -File -ErrorAction SilentlyContinue |
+                Select-Object -First 1 -ExpandProperty FullName
+            if ($hit) { $vcvars = $hit; break }
+        }
+    }
+
+    if (-not $vcvars) {
+        throw ("cl.exe not found and no Visual Studio vcvars64.bat located. Install the 'Desktop development with C++' " +
+               "workload. ProgramFiles='$pf' ProgramFiles(x86)='$pf86'. Looked at: " + ($tried -join '; '))
+    }
+    Write-Host "MSVC environment: $vcvars"
     $lines = & cmd.exe /c "`"$vcvars`" >nul 2>nul && set"
     foreach ($l in $lines) {
         if ($l -match '^([^=]+)=(.*)$') { Set-Item -Path "Env:$($Matches[1])" -Value $Matches[2] }
     }
-    if (-not (Get-Command cl.exe -ErrorAction SilentlyContinue)) { throw 'MSVC environment initialisation failed.' }
+    if (-not (Get-Command cl.exe -ErrorAction SilentlyContinue)) {
+        throw "MSVC environment initialisation failed: '$vcvars' ran but cl.exe is still not on PATH."
+    }
+    Write-Host "compiler: $((cl 2>&1 | Select-Object -First 1))"
 }
 
 function Invoke-Native {
