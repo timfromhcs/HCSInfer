@@ -20,7 +20,9 @@ Run run(std::vector<std::string> args) {
     int c = cli::run(args, o, e);
     return {c, o.str(), e.str()};
 }
-bool contains(const std::string& s, const std::string& what) { return s.find(what) != std::string::npos; }
+bool contains(const std::string& s, const std::string& what) {
+    return s.find(what) != std::string::npos;
+}
 }  // namespace
 
 TEST(Cli, HelpWorksAtEveryLevel) {
@@ -76,16 +78,16 @@ TEST(Cli, PlannedCommandsReturnUnsupported) {
 TEST(Cli, BenchmarkHelpAndArgumentValidationBeforeLoadingAnything) {
     EXPECT_EQ(run({"benchmark", "--help"}).code, 0);
     EXPECT_TRUE(contains(run({"benchmark", "--help"}).out, "schema_version 1"));
-    EXPECT_EQ(run({"benchmark"}).code, 2);                                          // --suite required
+    EXPECT_EQ(run({"benchmark"}).code, 2);  // --suite required
     EXPECT_EQ(run({"benchmark", "--suite", "bogus", "--model", "x"}).code, 2);
-    EXPECT_EQ(run({"benchmark", "--suite", "quick"}).code, 2);                      // --model required
-    EXPECT_EQ(run({"benchmark", "--suite", "full", "--model", "x"}).code, 10);      // planned, not faked
+    EXPECT_EQ(run({"benchmark", "--suite", "quick"}).code, 2);                  // --model required
+    EXPECT_EQ(run({"benchmark", "--suite", "full", "--model", "x"}).code, 10);  // planned, not faked
     EXPECT_TRUE(contains(run({"benchmark", "--suite", "full", "--model", "x"}).err, "planned"));
     EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", "x", "--iterations", "0"}).code, 2);
     EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", "x", "--backend", "gpu"}).code, 2);
     EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model"}).code, 2);
     const auto missing = run({"benchmark", "--suite", "quick", "--model", "does-not-exist"});
-    EXPECT_TRUE(missing.code == 7 || missing.code == 10) << missing.code;           // not_found / no engine
+    EXPECT_TRUE(missing.code == 7 || missing.code == 10) << missing.code;  // not_found / no engine
 }
 
 TEST(Cli, ImplementedTransportsHaveHelpAndValidateArguments) {
@@ -97,14 +99,14 @@ TEST(Cli, ImplementedTransportsHaveHelpAndValidateArguments) {
     EXPECT_EQ(run({"image", "frob"}).code, 2);
     EXPECT_EQ(run({"image", "generate"}).code, 2);  // --model required
     EXPECT_EQ(run({"image", "generate", "--model", "m", "--prompt", "p", "--width", "abc"}).code, 2);
-    EXPECT_EQ(run({"image", "generate", "--model", "m"}).code, 2);            // --prompt required
+    EXPECT_EQ(run({"image", "generate", "--model", "m"}).code, 2);               // --prompt required
     EXPECT_EQ(run({"image", "edit", "--model", "m", "--prompt", "p"}).code, 2);  // --input required
     const auto missing = run({"image", "generate", "--model", "does-not-exist", "--prompt", "p"});
     EXPECT_TRUE(missing.code == 7 || missing.code == 10) << missing.code;
 }
 
 TEST(Cli, ChatValidatesArgumentsBeforeLoadingAnything) {
-    EXPECT_EQ(run({"chat"}).code, 2);                                  // --model required
+    EXPECT_EQ(run({"chat"}).code, 2);  // --model required
     EXPECT_EQ(run({"chat", "--model", "x", "--backend", "gpu"}).code, 2);
     EXPECT_EQ(run({"chat", "--model", "x", "--ctx", "abc"}).code, 2);
     EXPECT_EQ(run({"chat", "--model"}).code, 2);
@@ -124,12 +126,15 @@ TEST(Cli, VisionHelpAndArgumentValidationBeforeLoadingAnything) {
     TempDir d;
     test::write_file(d / "pic.png", "not really a png");
     // missing/invalid pieces are reported as errors, never "planned"
-    const auto missing_image = run({"vision", "--model", "x", "--image", (d / "nope.png").string(), "--prompt", "p"});
+    const auto missing_image =
+        run({"vision", "--model", "x", "--image", (d / "nope.png").string(), "--prompt", "p"});
     EXPECT_TRUE(missing_image.code == 7 || missing_image.code == 10) << missing_image.code;
     EXPECT_FALSE(contains(missing_image.err, "planned"));
-    const auto traversal = run({"vision", "--model", "x", "--image", (d / ".." / "pic.png").string(), "--prompt", "p"});
+    const auto traversal =
+        run({"vision", "--model", "x", "--image", (d / ".." / "pic.png").string(), "--prompt", "p"});
     EXPECT_TRUE(traversal.code == 9 || traversal.code == 10) << traversal.code;
-    const auto no_model = run({"vision", "--model", "does-not-exist", "--image", (d / "pic.png").string(), "--prompt", "p"});
+    const auto no_model =
+        run({"vision", "--model", "does-not-exist", "--image", (d / "pic.png").string(), "--prompt", "p"});
     EXPECT_TRUE(no_model.code == 7 || no_model.code == 10) << no_model.code;
 }
 

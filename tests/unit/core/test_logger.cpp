@@ -36,7 +36,9 @@ TEST(Logger, LevelFiltering) {
 }
 
 TEST(Logger, EscapesControlCharacters) {
-    EXPECT_EQ(json_escape(std::string("a\x01" "b")), "a\\u0001b");
+    EXPECT_EQ(json_escape(std::string("a\x01"
+                                      "b")),
+              "a\\u0001b");
     EXPECT_EQ(json_escape("tab\t"), "tab\\t");
 }
 
@@ -45,4 +47,6 @@ TEST(Logger, ParseLevel) {
     EXPECT_FALSE(parse_log_level("loud").has_value());
 }
 
-TEST(Logger, DefaultGlobalLoggerExists) { EXPECT_EQ(global_logger().level(), LogLevel::Info); }
+TEST(Logger, DefaultGlobalLoggerExists) {
+    EXPECT_EQ(global_logger().level(), LogLevel::Info);
+}

@@ -15,7 +15,7 @@ namespace hcs::test {
 class FakeTextEngine final : public api::ITextStreamEngine {
 public:
     std::vector<std::string> pieces{"Hello", " from", " the", " fake", " engine"};
-    int delay_ms = 0;          // per piece
+    int delay_ms = 0;               // per piece
     bool run_until_cancel = false;  // endless "tok" stream, only stops on cancel/sink==false
     bool fail_load = false;
     std::atomic<int> loads{0}, unloads{0};
@@ -25,7 +25,8 @@ public:
     bool last_apply_template = true;
 
     Result<void> load(const LoadRequest& r) override {
-        if (fail_load) return make_error(ErrorCode::ModelError, "fake load failure");
+        if (fail_load)
+            return make_error(ErrorCode::ModelError, "fake load failure");
         std::lock_guard lk(mu);
         last_path = r.model_path;
         ++loads;
@@ -37,8 +38,12 @@ public:
         loaded_ = false;
         return {};
     }
-    Result<JobId> generate(const TextRequest&) override { return make_error(ErrorCode::Unsupported, "fake: use generate_stream"); }
-    Result<JobId> analyze_image(const VisionRequest&) override { return make_error(ErrorCode::Unsupported, "fake: no vision"); }
+    Result<JobId> generate(const TextRequest&) override {
+        return make_error(ErrorCode::Unsupported, "fake: use generate_stream");
+    }
+    Result<JobId> analyze_image(const VisionRequest&) override {
+        return make_error(ErrorCode::Unsupported, "fake: no vision");
+    }
     EngineMetrics metrics() const override {
         EngineMetrics m;
         m.backend = "fake";
@@ -57,19 +62,26 @@ public:
         generating = true;
         api::TextResult r;
         auto step = [&](const std::string& p) {
-            if (delay_ms > 0) std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
-            if (token.cancelled()) return false;
-            if (!sink(p)) return false;
+            if (delay_ms > 0)
+                std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+            if (token.cancelled())
+                return false;
+            if (!sink(p))
+                return false;
             ++r.completion_tokens;
             return true;
         };
         bool completed = true;
         if (run_until_cancel) {
-            while (step("tok ")) {}
+            while (step("tok ")) {
+            }
             completed = false;
         } else {
             for (const auto& p : pieces) {
-                if (!step(p)) { completed = false; break; }
+                if (!step(p)) {
+                    completed = false;
+                    break;
+                }
             }
         }
         generating = false;

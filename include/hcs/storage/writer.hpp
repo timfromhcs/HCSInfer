@@ -13,12 +13,12 @@
 namespace hcs::storage {
 
 struct WriteOptions {
-    Codec codec = Codec::Raw;               // preferred codec
-    int level = 0;                          // 0 = codec default (Zstd 3, LZ4 fast)
-    std::uint32_t chunk_size = 16u << 20;   // raw bytes per chunk, [kMinWriterChunkSize, kMaxChunkRawSize]
+    Codec codec = Codec::Raw;              // preferred codec
+    int level = 0;                         // 0 = codec default (Zstd 3, LZ4 fast)
+    std::uint32_t chunk_size = 16u << 20;  // raw bytes per chunk, [kMinWriterChunkSize, kMaxChunkRawSize]
     // A chunk is stored compressed only if comp_size <= raw_size * (1 - min_savings), else as Raw.
     double min_savings = 0.05;
-    std::size_t threads = 0;                // compression threads; 0 = min(hardware, 4)
+    std::size_t threads = 0;                           // compression threads; 0 = min(hardware, 4)
     std::string model_id, architecture, quantization;  // empty => derived / "unknown"
     hcs::CancellationToken cancel;
 };
@@ -31,7 +31,9 @@ struct WriteStats {
     double seconds = 0;
     double compress_cpu_seconds = 0;
     double source_read_seconds = 0;
-    double ratio() const { return raw_bytes ? static_cast<double>(container_bytes) / static_cast<double>(raw_bytes) : 1.0; }
+    double ratio() const {
+        return raw_bytes ? static_cast<double>(container_bytes) / static_cast<double>(raw_bytes) : 1.0;
+    }
     std::string source_sha256_hex;
 };
 

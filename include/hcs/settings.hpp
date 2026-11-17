@@ -35,8 +35,8 @@ std::string_view to_string(MemoryProfile p) noexcept;
 
 Result<void> validate(const Settings& s);
 std::string settings_to_json(const Settings& s);
-Result<Settings> parse_settings(std::string_view json_text);  // migrates + validates
-Result<Settings> load_settings(const std::filesystem::path& path);  // missing file => defaults
+Result<Settings> parse_settings(std::string_view json_text);                       // migrates + validates
+Result<Settings> load_settings(const std::filesystem::path& path);                 // missing file => defaults
 Result<void> save_settings(const std::filesystem::path& path, const Settings& s);  // validate + atomic
 
 }  // namespace hcs

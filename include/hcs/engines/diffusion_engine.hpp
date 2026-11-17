@@ -61,7 +61,8 @@ public:
     static std::string upstream_version();
 
 private:
-    Result<api::ImageResult> run(const ImageRequest&, const CancellationToken&, const ProgressSink&, bool require_init);
+    Result<api::ImageResult> run(const ImageRequest&, const CancellationToken&, const ProgressSink&,
+                                 bool require_init);
     Result<JobId> submit(const std::string& name, const ImageRequest&, bool require_init);
     struct Impl;
     std::unique_ptr<Impl> impl_;

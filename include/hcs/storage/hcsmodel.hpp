@@ -37,9 +37,9 @@ struct HcsHeader {
     std::uint64_t chunk_table_offset = 0;
     std::uint64_t chunk_count = 0;
     std::uint64_t total_raw_size = 0;
-    std::string model_id;      // <= 63 bytes
-    std::string architecture;  // <= 31 bytes
-    std::string quantization;  // <= 31 bytes
+    std::string model_id;           // <= 63 bytes
+    std::string architecture;       // <= 31 bytes
+    std::string quantization;       // <= 31 bytes
     Digest source_manifest_hash{};  // SHA-256 of the complete logical stream
     Digest chunk_table_hash{};      // SHA-256 of the serialized chunk table
 };
@@ -48,11 +48,11 @@ struct ChunkEntry {
     std::uint64_t region_id = 0;   // opaque (e.g. tensor index); writer sets the chunk index
     std::uint64_t raw_offset = 0;  // position in the logical stream (must be contiguous)
     std::uint64_t raw_size = 0;
-    std::uint64_t offset = 0;      // file offset of the stored payload
-    std::uint64_t comp_size = 0;   // stored size (== raw_size for Raw)
+    std::uint64_t offset = 0;     // file offset of the stored payload
+    std::uint64_t comp_size = 0;  // stored size (== raw_size for Raw)
     Codec codec = Codec::Raw;
-    std::uint32_t flags = 0;       // must be 0 in v1
-    Digest hash{};                 // SHA-256 of the DECODED chunk
+    std::uint32_t flags = 0;  // must be 0 in v1
+    Digest hash{};            // SHA-256 of the DECODED chunk
 };
 
 struct ParseOptions {
@@ -63,15 +63,17 @@ struct ParseOptions {
 // --- Pure parsers (no I/O). Validate everything before any allocation sized by file data. ---
 Result<HcsHeader> parse_header(std::span<const std::uint8_t> bytes, std::uint64_t file_size,
                                const ParseOptions& opt = {});
-Result<std::vector<ChunkEntry>> parse_chunk_table(std::span<const std::uint8_t> table, const HcsHeader& header,
-                                                  std::uint64_t file_size, const ParseOptions& opt = {});
+Result<std::vector<ChunkEntry>> parse_chunk_table(std::span<const std::uint8_t> table,
+                                                  const HcsHeader& header, std::uint64_t file_size,
+                                                  const ParseOptions& opt = {});
 
 struct ParsedContainer {
     HcsHeader header;
     std::vector<ChunkEntry> chunks;
 };
 // Parses header + table from a complete in-memory image (file_size = image.size()).
-Result<ParsedContainer> parse_container_image(std::span<const std::uint8_t> image, const ParseOptions& opt = {});
+Result<ParsedContainer> parse_container_image(std::span<const std::uint8_t> image,
+                                              const ParseOptions& opt = {});
 
 // --- Serialization (writer + tests). serialize_header fills the trailing header hash. ---
 std::vector<std::uint8_t> serialize_header(const HcsHeader& h);

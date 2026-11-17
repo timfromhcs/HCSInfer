@@ -22,17 +22,25 @@ function Find-ClangFormat {
         if (-not (Test-Path -LiteralPath $ClangFormat)) { throw "clang-format not found at '$ClangFormat'." }
         return (Resolve-Path -LiteralPath $ClangFormat).Path
     }
-    $cmd = Get-Command clang-format -ErrorAction SilentlyContinue
-    if ($cmd) { return $cmd.Source }
+    # Deterministic version first: the Microsoft/Visual-Studio-bundled clang-format. The CI runner
+    # (windows-latest) has Visual Studio 2022 with the "C++ Clang tools" component and therefore the same
+    # formatter, so a formatting pass here matches the gate there. A clang-format that happens to be first on
+    # PATH (e.g. a ROCm or LLVM install) is a *different* version and can wrap differently, so it is only a
+    # fallback. The version actually used is printed below and must be recorded when the tree is reformatted.
     $candidates = @(
         "${env:ProgramFiles}\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-format.exe",
         "${env:ProgramFiles}\Microsoft Visual Studio\2022\Professional\VC\Tools\Llvm\x64\bin\clang-format.exe",
         "${env:ProgramFiles}\Microsoft Visual Studio\2022\Enterprise\VC\Tools\Llvm\x64\bin\clang-format.exe",
         "${env:ProgramFiles}\Microsoft Visual Studio\2022\BuildTools\VC\Tools\Llvm\x64\bin\clang-format.exe",
-        "${env:ProgramFiles}\LLVM\bin\clang-format.exe")
-    $hit = $candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+        "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools\VC\Tools\Llvm\x64\bin\clang-format.exe")
+    $hit = $candidates | Where-Object { $_ -and (Test-Path -LiteralPath $_) } | Select-Object -First 1
     if ($hit) { return $hit }
-    throw 'clang-format not found (install LLVM or the VS "C++ Clang tools" component, or pass -ClangFormat). Not treating a missing tool as success.'
+    $cmd = Get-Command clang-format -ErrorAction SilentlyContinue
+    if ($cmd) { return $cmd.Source }
+    $other = @("${env:ProgramFiles}\LLVM\bin\clang-format.exe")
+    $hit = $other | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+    if ($hit) { return $hit }
+    throw 'clang-format not found (install the VS "C++ Clang tools" component, LLVM, or pass -ClangFormat). Not treating a missing tool as success.'
 }
 
 $exe = Find-ClangFormat

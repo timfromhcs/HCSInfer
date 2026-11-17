@@ -52,7 +52,8 @@ TEST(DoctorLive, CpuFeaturesPresent) {
 TEST(DoctorLive, VulkanReportWhenAvailable) {
     const json r = report(DoctorOptions{});
     const std::string status = r["vulkan"]["status"];
-    if (status != "ok") GTEST_SKIP() << "BLOCKED: Vulkan not usable here (status=" << status << ")";
+    if (status != "ok")
+        GTEST_SKIP() << "BLOCKED: Vulkan not usable here (status=" << status << ")";
     ASSERT_FALSE(r["vulkan"]["devices"].empty());
     const json& d = r["vulkan"]["devices"][0];
     EXPECT_TRUE(d["name"].is_string());

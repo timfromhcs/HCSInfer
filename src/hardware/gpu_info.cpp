@@ -28,7 +28,8 @@ std::string version_quad(std::int64_t v) {
 
 json segment_budget(IDXGIAdapter3* a3, DXGI_MEMORY_SEGMENT_GROUP group) {
     DXGI_QUERY_VIDEO_MEMORY_INFO info{};
-    if (!a3 || FAILED(a3->QueryVideoMemoryInfo(0, group, &info))) return unknown();
+    if (!a3 || FAILED(a3->QueryVideoMemoryInfo(0, group, &info)))
+        return unknown();
     return {{"budget_bytes", static_cast<std::uint64_t>(info.Budget)},
             {"current_usage_bytes", static_cast<std::uint64_t>(info.CurrentUsage)},
             {"available_for_reservation_bytes", static_cast<std::uint64_t>(info.AvailableForReservation)}};
@@ -37,8 +38,11 @@ json segment_budget(IDXGIAdapter3* a3, DXGI_MEMORY_SEGMENT_GROUP group) {
 json dxgi_adapters() {
     using CreateFn = HRESULT(WINAPI*)(REFIID, void**);
     HMODULE lib = LoadLibraryExW(L"dxgi.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-    if (!lib) return {{"available", false}, {"reason", "dxgi.dll could not be loaded"}, {"adapters", json::array()}};
-    auto create = reinterpret_cast<CreateFn>(reinterpret_cast<void*>(GetProcAddress(lib, "CreateDXGIFactory1")));
+    if (!lib)
+        return {
+            {"available", false}, {"reason", "dxgi.dll could not be loaded"}, {"adapters", json::array()}};
+    auto create =
+        reinterpret_cast<CreateFn>(reinterpret_cast<void*>(GetProcAddress(lib, "CreateDXGIFactory1")));
     IDXGIFactory1* factory = nullptr;
     if (!create || FAILED(create(__uuidof(IDXGIFactory1), reinterpret_cast<void**>(&factory))) || !factory) {
         FreeLibrary(lib);
@@ -87,18 +91,23 @@ json dxgi_adapters() {
 
 json registry_display_drivers() {
     json out = json::array();
-    const wchar_t* base = L"SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}";
+    const wchar_t* base =
+        L"SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}";
     HKEY h = nullptr;
-    if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, base, 0, KEY_READ, &h) != ERROR_SUCCESS) return out;
+    if (RegOpenKeyExW(HKEY_LOCAL_MACHINE, base, 0, KEY_READ, &h) != ERROR_SUCCESS)
+        return out;
     for (DWORD i = 0;; ++i) {
         wchar_t name[256];
         DWORD n = 256;
         const LONG rc = RegEnumKeyExW(h, i, name, &n, nullptr, nullptr, nullptr, nullptr);
-        if (rc == ERROR_NO_MORE_ITEMS) break;
-        if (rc != ERROR_SUCCESS) continue;
+        if (rc == ERROR_NO_MORE_ITEMS)
+            break;
+        if (rc != ERROR_SUCCESS)
+            continue;
         const std::wstring sub = std::wstring(base) + L"\\" + std::wstring(name, n);
         json desc = win::reg_string(HKEY_LOCAL_MACHINE, sub.c_str(), L"DriverDesc");
-        if (desc.is_string() && desc.get<std::string>() == "unknown") continue;  // not a display adapter entry
+        if (desc.is_string() && desc.get<std::string>() == "unknown")
+            continue;  // not a display adapter entry
         json e;
         e["description"] = desc;
         e["provider"] = win::reg_string(HKEY_LOCAL_MACHINE, sub.c_str(), L"ProviderName");
@@ -119,7 +128,8 @@ json gpu_report() {
 #ifdef _WIN32
     json dx = dxgi_adapters();
     j["dxgi_available"] = dx["available"];
-    if (dx.contains("reason")) j["dxgi_reason"] = dx["reason"];
+    if (dx.contains("reason"))
+        j["dxgi_reason"] = dx["reason"];
     j["adapters"] = dx["adapters"];
     j["display_driver_registry"] = registry_display_drivers();
 #else

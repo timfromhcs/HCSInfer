@@ -58,8 +58,12 @@ TEST_P(RoundTrip, BitExactViaReadRangeStreamAndEveryChunk) {
     EXPECT_EQ(all, src);
 
     // arbitrary unaligned ranges spanning chunk boundaries
-    for (auto [off, n] : {std::pair<std::uint64_t, std::size_t>{0, 1}, {65535, 2}, {65536, 65536}, {100000, 300000},
-                          {src.size() - 1, 1}, {src.size() - 70000, 70000}}) {
+    for (auto [off, n] : {std::pair<std::uint64_t, std::size_t>{0, 1},
+                          {65535, 2},
+                          {65536, 65536},
+                          {100000, 300000},
+                          {src.size() - 1, 1},
+                          {src.size() - 70000, 70000}}) {
         std::vector<std::uint8_t> got(n);
         ASSERT_TRUE(rd.read_range(off, n, got.data()).ok()) << off;
         EXPECT_EQ(0, std::memcmp(got.data(), src.data() + off, n)) << "off=" << off << " n=" << n;

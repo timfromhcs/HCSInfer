@@ -1,0 +1,27 @@
+Test project D:/HCSInfer/build/img-api
+    Start 362: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng
+1/9 Test #362: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng ....   Passed    8.78 sec
+    Start 363: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize
+2/9 Test #363: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize ...   Passed   20.51 sec
+    Start 364: DiffusionBlocking.ProgressSinkStillReceivesProgress
+3/9 Test #364: DiffusionBlocking.ProgressSinkStillReceivesProgress ...........   Passed    9.71 sec
+    Start 365: DiffusionBlocking.CancellationStopsTheRender
+4/9 Test #365: DiffusionBlocking.CancellationStopsTheRender ..................   Passed    9.42 sec
+    Start 366: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering
+5/9 Test #366: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering ...   Passed    0.22 sec
+    Start 367: DiffusionBlocking.NotLoadedIsAnErrorNotACrash
+6/9 Test #367: DiffusionBlocking.NotLoadedIsAnErrorNotACrash .................   Passed    0.04 sec
+    Start 397: e2e_api_mcp_real
+7/9 Test #397: e2e_api_mcp_real ..............................................   Passed    8.39 sec
+    Start 398: e2e_gui_real
+8/9 Test #398: e2e_gui_real ..................................................   Passed    1.75 sec
+    Start 399: e2e_image_real
+9/9 Test #399: e2e_image_real ................................................   Passed   85.36 sec
+
+100% tests passed out of 9
+
+Label Time Summary:
+e2e            =  95.50 sec*proc (3 tests)
+integration    =  48.68 sec*proc (6 tests)
+
+Total Test time (real) = 145.45 sec

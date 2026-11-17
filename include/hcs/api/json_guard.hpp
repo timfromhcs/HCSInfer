@@ -1,7 +1,7 @@
 #pragma once
 // Cheap pre-parse guard against pathologically nested JSON (AGENTS.md 19.1/19.3). nlohmann::json copies,
-// compares and destroys values recursively, so a few thousand nested brackets can exhaust the stack even when the
-// parse itself succeeds (M10 audit D1). Callers reject deep input BEFORE parsing it.
+// compares and destroys values recursively, so a few thousand nested brackets can exhaust the stack even when
+// the parse itself succeeds (M10 audit D1). Callers reject deep input BEFORE parsing it.
 #include <string_view>
 
 namespace hcs::api {
@@ -12,14 +12,19 @@ inline bool json_depth_ok(std::string_view s, int max_depth) {
     bool in_str = false, esc = false;
     for (char c : s) {
         if (in_str) {
-            if (esc) esc = false;
-            else if (c == '\\') esc = true;
-            else if (c == '"') in_str = false;
+            if (esc)
+                esc = false;
+            else if (c == '\\')
+                esc = true;
+            else if (c == '"')
+                in_str = false;
             continue;
         }
-        if (c == '"') in_str = true;
+        if (c == '"')
+            in_str = true;
         else if (c == '{' || c == '[') {
-            if (++depth > max_depth) return false;
+            if (++depth > max_depth)
+                return false;
         } else if (c == '}' || c == ']') {
             --depth;
         }

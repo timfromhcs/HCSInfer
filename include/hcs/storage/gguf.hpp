@@ -24,8 +24,8 @@ struct GgufTensorInfo {
     std::uint32_t type = 0;
     std::uint32_t n_dims = 0;
     std::uint64_t dims[4] = {1, 1, 1, 1};
-    std::uint64_t offset = 0;      // relative to data_offset
-    std::uint64_t byte_size = 0;   // 0 when the type is not in the known-size table
+    std::uint64_t offset = 0;     // relative to data_offset
+    std::uint64_t byte_size = 0;  // 0 when the type is not in the known-size table
     bool size_known = false;
 };
 
@@ -36,8 +36,8 @@ struct GgufInfo {
     std::uint64_t alignment = 32;
     std::uint64_t data_offset = 0;
     std::uint64_t file_size = 0;
-    std::string architecture;  // general.architecture ("" if absent)
-    std::string name;          // general.name ("" if absent)
+    std::string architecture;                // general.architecture ("" if absent)
+    std::string name;                        // general.name ("" if absent)
     std::optional<std::uint32_t> file_type;  // general.file_type
     std::vector<GgufTensorInfo> tensors;
 };

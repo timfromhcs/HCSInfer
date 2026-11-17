@@ -32,7 +32,8 @@ TEST(MemoryProbe, BudgetNeverUnderflowsWhenTheMachineIsAlmostFull) {
 
 TEST(MemoryProbe, LiveMeasurementIsPlausible) {
     auto m = measure_memory();
-    if (!m) GTEST_SKIP() << "NOT RUN: OS memory query unavailable here";
+    if (!m)
+        GTEST_SKIP() << "NOT RUN: OS memory query unavailable here";
     EXPECT_GT(m->available_physical_bytes, 0u);
     EXPECT_GE(m->os_reserve_bytes, kGiB);
     EXPECT_GT(compute_application_budget(*m), 0u) << "this machine has no usable headroom at all";

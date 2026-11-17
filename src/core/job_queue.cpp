@@ -12,11 +12,16 @@ namespace hcs {
 
 std::string_view to_string(JobState s) noexcept {
     switch (s) {
-        case JobState::Queued: return "queued";
-        case JobState::Running: return "running";
-        case JobState::Succeeded: return "succeeded";
-        case JobState::Failed: return "failed";
-        case JobState::Cancelled: return "cancelled";
+        case JobState::Queued:
+            return "queued";
+        case JobState::Running:
+            return "running";
+        case JobState::Succeeded:
+            return "succeeded";
+        case JobState::Failed:
+            return "failed";
+        case JobState::Cancelled:
+            return "cancelled";
     }
     return "unknown";
 }
@@ -50,7 +55,8 @@ struct JobQueue::Impl {
     void emit_locked(std::unique_lock<std::mutex>& lock, Job& job, JobEventKind kind, double progress,
                      std::string text) {
         const bool droppable = kind == JobEventKind::Progress || kind == JobEventKind::Log;
-        if (droppable && job.events.size() >= options.max_events_per_job) return;
+        if (droppable && job.events.size() >= options.max_events_per_job)
+            return;
         JobEvent ev;
         ev.job = job.id;
         ev.seq = job.next_seq++;
@@ -73,8 +79,10 @@ struct JobQueue::Impl {
 
     void evict_finished_locked() {
         while (jobs.size() > options.max_retained_jobs) {
-            auto it = std::find_if(jobs.begin(), jobs.end(), [](const auto& kv) { return is_terminal(kv.second->state); });
-            if (it == jobs.end()) break;
+            auto it = std::find_if(jobs.begin(), jobs.end(),
+                                   [](const auto& kv) { return is_terminal(kv.second->state); });
+            if (it == jobs.end())
+                break;
             jobs.erase(it);  // std::map ordered by id => oldest first
         }
     }
@@ -83,13 +91,16 @@ struct JobQueue::Impl {
         std::unique_lock lock(mutex);
         for (;;) {
             work_cv.wait(lock, [&] { return stopping || !pending.empty(); });
-            if (stopping && pending.empty()) return;
+            if (stopping && pending.empty())
+                return;
             const std::uint64_t id = pending.front();
             pending.pop_front();
             auto it = jobs.find(id);
-            if (it == jobs.end()) continue;
+            if (it == jobs.end())
+                continue;
             std::shared_ptr<Job> job = it->second;
-            if (job->state != JobState::Queued) continue;  // cancelled while queued
+            if (job->state != JobState::Queued)
+                continue;  // cancelled while queued
             job->state = JobState::Running;
             emit_locked(lock, *job, JobEventKind::StateChanged, 0.0, {});
 
@@ -117,7 +128,8 @@ struct JobQueue::Impl {
                 job->state = JobState::Failed;
                 job->error = result.error();
             }
-            emit_locked(lock, *job, JobEventKind::StateChanged, 1.0, job->error ? job->error->message : std::string());
+            emit_locked(lock, *job, JobEventKind::StateChanged, 1.0,
+                        job->error ? job->error->message : std::string());
             job->fn = nullptr;  // release captured resources promptly
             done_cv.notify_all();
             evict_finished_locked();
@@ -127,19 +139,23 @@ struct JobQueue::Impl {
 
 JobQueue::JobQueue(JobQueueOptions options) : impl_(std::make_unique<Impl>()) {
     impl_->options = options;
-    if (impl_->options.workers == 0) impl_->options.workers = 1;
+    if (impl_->options.workers == 0)
+        impl_->options.workers = 1;
     for (std::size_t i = 0; i < impl_->options.workers; ++i) {
         impl_->workers.emplace_back([this] { impl_->worker_loop(); });
     }
 }
 
-JobQueue::~JobQueue() { shutdown(); }
+JobQueue::~JobQueue() {
+    shutdown();
+}
 
 void JobQueue::shutdown() {
     std::vector<std::thread> to_join;
     {
         std::unique_lock lock(impl_->mutex);
-        if (impl_->stopping && impl_->workers.empty()) return;
+        if (impl_->stopping && impl_->workers.empty())
+            return;
         impl_->stopping = true;
         // cancel everything queued and running
         while (!impl_->pending.empty()) {
@@ -154,21 +170,25 @@ void JobQueue::shutdown() {
             }
         }
         for (auto& kv : impl_->jobs) {
-            if (kv.second->state == JobState::Running) kv.second->cancel.request_cancel();
+            if (kv.second->state == JobState::Running)
+                kv.second->cancel.request_cancel();
         }
         to_join.swap(impl_->workers);
     }
     impl_->work_cv.notify_all();
     for (auto& t : to_join) {
-        if (t.joinable()) t.join();
+        if (t.joinable())
+            t.join();
     }
     impl_->done_cv.notify_all();
 }
 
 Result<JobId> JobQueue::submit(std::string name, JobFn fn, EventCallback on_event) {
-    if (!fn) return make_error(ErrorCode::InvalidArgument, "empty job function");
+    if (!fn)
+        return make_error(ErrorCode::InvalidArgument, "empty job function");
     std::unique_lock lock(impl_->mutex);
-    if (impl_->stopping) return make_error(ErrorCode::InvalidState, "job queue is shut down");
+    if (impl_->stopping)
+        return make_error(ErrorCode::InvalidState, "job queue is shut down");
     if (impl_->pending.size() >= impl_->options.max_pending) {
         return make_error(ErrorCode::Busy, "job queue is full");
     }
@@ -187,7 +207,8 @@ Result<JobId> JobQueue::submit(std::string name, JobFn fn, EventCallback on_even
 Result<JobStatus> JobQueue::status(JobId id) const {
     std::lock_guard lock(impl_->mutex);
     auto it = impl_->jobs.find(id.value);
-    if (it == impl_->jobs.end()) return make_error(ErrorCode::NotFound, "unknown job " + to_string(id));
+    if (it == impl_->jobs.end())
+        return make_error(ErrorCode::NotFound, "unknown job " + to_string(id));
     const Job& j = *it->second;
     JobStatus st;
     st.id = j.id;
@@ -201,9 +222,11 @@ Result<JobStatus> JobQueue::status(JobId id) const {
 Result<void> JobQueue::cancel(JobId id) {
     std::unique_lock lock(impl_->mutex);
     auto it = impl_->jobs.find(id.value);
-    if (it == impl_->jobs.end()) return make_error(ErrorCode::NotFound, "unknown job " + to_string(id));
+    if (it == impl_->jobs.end())
+        return make_error(ErrorCode::NotFound, "unknown job " + to_string(id));
     std::shared_ptr<Job> job = it->second;
-    if (is_terminal(job->state)) return {};
+    if (is_terminal(job->state))
+        return {};
     if (job->state == JobState::Queued) {
         std::erase(impl_->pending, id.value);
         job->state = JobState::Cancelled;
@@ -220,7 +243,8 @@ Result<void> JobQueue::cancel(JobId id) {
 bool JobQueue::wait(JobId id, std::chrono::milliseconds timeout) const {
     std::unique_lock lock(impl_->mutex);
     auto it = impl_->jobs.find(id.value);
-    if (it == impl_->jobs.end()) return false;
+    if (it == impl_->jobs.end())
+        return false;
     std::shared_ptr<Job> job = it->second;
     return impl_->done_cv.wait_for(lock, timeout, [&] { return is_terminal(job->state); });
 }
@@ -229,9 +253,11 @@ std::vector<JobEvent> JobQueue::events(JobId id, std::size_t from_seq) const {
     std::lock_guard lock(impl_->mutex);
     auto it = impl_->jobs.find(id.value);
     std::vector<JobEvent> out;
-    if (it == impl_->jobs.end()) return out;
+    if (it == impl_->jobs.end())
+        return out;
     for (const auto& ev : it->second->events) {
-        if (ev.seq >= from_seq) out.push_back(ev);
+        if (ev.seq >= from_seq)
+            out.push_back(ev);
     }
     return out;
 }

@@ -12,7 +12,8 @@ inline std::string base64_encode(const std::uint8_t* data, std::size_t size) {
     out.reserve((size + 2) / 3 * 4);
     std::size_t i = 0;
     for (; i + 3 <= size; i += 3) {
-        const std::uint32_t v = (static_cast<std::uint32_t>(data[i]) << 16) | (static_cast<std::uint32_t>(data[i + 1]) << 8) |
+        const std::uint32_t v = (static_cast<std::uint32_t>(data[i]) << 16) |
+                                (static_cast<std::uint32_t>(data[i + 1]) << 8) |
                                 static_cast<std::uint32_t>(data[i + 2]);
         out.push_back(kAlphabet[(v >> 18) & 0x3F]);
         out.push_back(kAlphabet[(v >> 12) & 0x3F]);
@@ -25,7 +26,8 @@ inline std::string base64_encode(const std::uint8_t* data, std::size_t size) {
         out.push_back(kAlphabet[(v >> 12) & 0x3F]);
         out += "==";
     } else if (rest == 2) {
-        const std::uint32_t v = (static_cast<std::uint32_t>(data[i]) << 16) | (static_cast<std::uint32_t>(data[i + 1]) << 8);
+        const std::uint32_t v =
+            (static_cast<std::uint32_t>(data[i]) << 16) | (static_cast<std::uint32_t>(data[i + 1]) << 8);
         out.push_back(kAlphabet[(v >> 18) & 0x3F]);
         out.push_back(kAlphabet[(v >> 12) & 0x3F]);
         out.push_back(kAlphabet[(v >> 6) & 0x3F]);

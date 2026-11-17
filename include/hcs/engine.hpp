@@ -27,11 +27,11 @@ struct LoadRequest {
     std::string model_id;
     std::string model_path;  // already resolved through PathGuard by the caller
     Backend backend = Backend::Auto;
-    std::string device;                  // empty => engine default
-    std::int32_t gpu_layers = -1;        // -1 => engine default
+    std::string device;            // empty => engine default
+    std::int32_t gpu_layers = -1;  // -1 => engine default
     std::uint32_t context_tokens = 4096;
-    std::int32_t threads = 0;            // 0 => auto
-    std::string projector_path;          // optional mmproj for vision
+    std::int32_t threads = 0;    // 0 => auto
+    std::string projector_path;  // optional mmproj for vision
     // Weight loading mode, engine-interpreted: "" / "auto" (engine default), "mmap", "none" (read into
     // RAM, no mmap), "mlock", "mmap+mlock", "direct_io". Unknown values => InvalidArgument.
     std::string load_mode;
@@ -42,8 +42,8 @@ struct TextRequest {
     std::uint32_t max_tokens = 256;
     float temperature = 0.8f;
     std::optional<std::uint64_t> seed;
-    std::string system_prompt;          // optional, never logged
-    bool apply_chat_template = true;    // false => `prompt` is tokenized verbatim
+    std::string system_prompt;        // optional, never logged
+    bool apply_chat_template = true;  // false => `prompt` is tokenized verbatim
 };
 
 struct ImageInput {

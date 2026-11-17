@@ -41,18 +41,24 @@ int fixed_size(std::uint32_t t) {
     switch (t) {
         case kU8:
         case kI8:
-        case kBool: return 1;
+        case kBool:
+            return 1;
         case kU16:
-        case kI16: return 2;
+        case kI16:
+            return 2;
         case kU32:
         case kI32:
-        case kF32: return 4;
+        case kF32:
+            return 4;
         case kU64:
         case kI64:
-        case kF64: return 8;
+        case kF64:
+            return 8;
         case kString:
-        case kArray: return 0;
-        default: return -1;
+        case kArray:
+            return 0;
+        default:
+            return -1;
     }
 }
 
@@ -87,17 +93,22 @@ public:
         return v;
     }
     bool skip(std::uint64_t n) {
-        if (!ok()) return false;
-        if (n > remaining()) return fail("truncated payload");
+        if (!ok())
+            return false;
+        if (n > remaining())
+            return fail("truncated payload");
         off_ += static_cast<std::size_t>(n);
         return true;
     }
     // Length-prefixed string with a caller-supplied cap on the declared length.
     bool str(std::uint64_t cap, std::string& out) {
         const std::uint64_t len = le(8);
-        if (!ok()) return false;
-        if (len > cap) return fail("string length exceeds the accepted maximum");
-        if (len > remaining()) return fail("truncated string");
+        if (!ok())
+            return false;
+        if (len > cap)
+            return fail("string length exceeds the accepted maximum");
+        if (len > remaining())
+            return fail("truncated string");
         out.assign(reinterpret_cast<const char*>(b_.data() + off_), static_cast<std::size_t>(len));
         off_ += static_cast<std::size_t>(len);
         return true;
@@ -115,32 +126,40 @@ bool skip_value(Reader& r, std::uint32_t type, std::uint32_t depth);
 bool skip_array(Reader& r, std::uint32_t depth) {
     const std::uint64_t elem = r.le(4);
     const std::uint64_t count = r.le(8);
-    if (!r.ok()) return false;
-    if (depth >= kMaxArrayDepth) return r.fail("array nesting is too deep");
+    if (!r.ok())
+        return false;
+    if (depth >= kMaxArrayDepth)
+        return r.fail("array nesting is too deep");
     const int fs = fixed_size(static_cast<std::uint32_t>(elem));
     if (fs > 0) {
         const std::uint64_t bytes = count * static_cast<std::uint64_t>(fs);
         if (count != 0 && bytes / static_cast<std::uint64_t>(fs) != count)
             return r.fail("array size overflows");
-        if (bytes > r.remaining()) return r.fail("array exceeds the buffer");
+        if (bytes > r.remaining())
+            return r.fail("array exceeds the buffer");
         return r.skip(bytes);
     }
-    if (fs < 0) return r.fail("unknown array element type");
-    if (count > kMaxArrayElements) return r.fail("array has too many elements");
+    if (fs < 0)
+        return r.fail("unknown array element type");
+    if (count > kMaxArrayElements)
+        return r.fail("array has too many elements");
     for (std::uint64_t i = 0; i < count; ++i) {
-        if (!skip_value(r, static_cast<std::uint32_t>(elem), depth + 1)) return false;
+        if (!skip_value(r, static_cast<std::uint32_t>(elem), depth + 1))
+            return false;
     }
     return true;
 }
 
 bool skip_value(Reader& r, std::uint32_t type, std::uint32_t depth) {
     const int fs = fixed_size(type);
-    if (fs > 0) return r.skip(static_cast<std::uint64_t>(fs));
+    if (fs > 0)
+        return r.skip(static_cast<std::uint64_t>(fs));
     if (type == kString) {
         std::string ignored;
         return r.str(kMaxElementName * 64, ignored);  // bound a single metadata string to 256 KiB
     }
-    if (type == kArray) return skip_array(r, depth);
+    if (type == kArray)
+        return skip_array(r, depth);
     return r.fail("unknown metadata value type");
 }
 
@@ -148,20 +167,24 @@ bool looks_like_diffusion_tensor(std::string_view n) {
     static constexpr std::array<std::string_view, 5> kPrefixes{"model.diffusion_model", "cond_stage_model",
                                                                "first_stage_model", "alphas_cumprod", "vae."};
     for (const auto p : kPrefixes)
-        if (n.rfind(p, 0) == 0) return true;
+        if (n.rfind(p, 0) == 0)
+            return true;
     return false;
 }
 
 bool looks_like_text_tensor(std::string_view n) {
-    static constexpr std::array<std::string_view, 4> kPrefixes{"blk.", "token_embd", "output.", "model.embed"};
+    static constexpr std::array<std::string_view, 4> kPrefixes{"blk.", "token_embd", "output.",
+                                                               "model.embed"};
     for (const auto p : kPrefixes)
-        if (n.rfind(p, 0) == 0) return true;
+        if (n.rfind(p, 0) == 0)
+            return true;
     return false;
 }
 
 bool architecture_is_diffusion(std::string_view a) {
     std::string low(a);
-    std::transform(low.begin(), low.end(), low.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(low.begin(), low.end(), low.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     return low.find("diffusion") != std::string::npos || low.rfind("stable-diffusion", 0) == 0 ||
            low.rfind("sdxl", 0) == 0 || low.rfind("flux", 0) == 0;
 }
@@ -238,8 +261,10 @@ GgufProbeResult probe_gguf(std::span<const std::uint8_t> bytes, std::size_t max_
             return out;
         }
         ++out.tensor_names_read;
-        if (!saw_diffusion && looks_like_diffusion_tensor(name)) saw_diffusion = true;
-        if (!saw_text && looks_like_text_tensor(name)) saw_text = true;
+        if (!saw_diffusion && looks_like_diffusion_tensor(name))
+            saw_diffusion = true;
+        if (!saw_text && looks_like_text_tensor(name))
+            saw_text = true;
         const std::uint64_t ndims = r.le(4);
         if (!r.ok()) {
             out.reason = r.reason();
@@ -265,10 +290,12 @@ GgufProbeResult probe_gguf(std::span<const std::uint8_t> bytes, std::size_t max_
     }
 
     out.complete = out.kv_count <= kMaxKvPairs && out.tensor_names_read == out.tensor_count;
-    if (architecture_is_diffusion(out.architecture)) saw_diffusion = true;
+    if (architecture_is_diffusion(out.architecture))
+        saw_diffusion = true;
     if (saw_diffusion) {
         out.kind = ModelKind::Image;
-        if (out.architecture.empty()) out.architecture = "stable-diffusion";
+        if (out.architecture.empty())
+            out.architecture = "stable-diffusion";
     } else if (!out.architecture.empty() || saw_text) {
         out.kind = ModelKind::Text;
     }

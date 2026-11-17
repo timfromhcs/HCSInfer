@@ -12,6 +12,8 @@ struct JobId {
     auto operator<=>(const JobId&) const = default;
 };
 
-inline std::string to_string(JobId id) { return "job-" + std::to_string(id.value); }
+inline std::string to_string(JobId id) {
+    return "job-" + std::to_string(id.value);
+}
 
 }  // namespace hcs

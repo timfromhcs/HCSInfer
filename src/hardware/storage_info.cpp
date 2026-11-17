@@ -18,7 +18,8 @@ namespace {
 
 std::string trim_ascii(std::string s) {
     const auto b = s.find_first_not_of(" \t\r\n");
-    if (b == std::string::npos) return {};
+    if (b == std::string::npos)
+        return {};
     const auto e = s.find_last_not_of(" \t\r\n");
     return s.substr(b, e - b + 1);
 }
@@ -31,25 +32,28 @@ void query_device(const std::wstring& root, json& out) {
     out["rotational"] = unknown();
     out["device_vendor"] = unknown();
     out["device_product"] = unknown();
-    if (root.size() < 2 || root[1] != L':') return;  // only drive-letter volumes
+    if (root.size() < 2 || root[1] != L':')
+        return;  // only drive-letter volumes
     const std::wstring dev = std::wstring(L"\\\\.\\") + root.substr(0, 2);
     HANDLE h = CreateFileW(dev.c_str(), 0, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr,
                            OPEN_EXISTING, 0, nullptr);
-    if (h == INVALID_HANDLE_VALUE) return;
+    if (h == INVALID_HANDLE_VALUE)
+        return;
 
     STORAGE_PROPERTY_QUERY q{};
     q.PropertyId = StorageDeviceProperty;
     q.QueryType = PropertyStandardQuery;
     std::vector<char> buf(1024);
     DWORD got = 0;
-    if (DeviceIoControl(h, IOCTL_STORAGE_QUERY_PROPERTY, &q, sizeof(q), buf.data(), static_cast<DWORD>(buf.size()),
-                        &got, nullptr) &&
+    if (DeviceIoControl(h, IOCTL_STORAGE_QUERY_PROPERTY, &q, sizeof(q), buf.data(),
+                        static_cast<DWORD>(buf.size()), &got, nullptr) &&
         got >= sizeof(STORAGE_DEVICE_DESCRIPTOR)) {
         const auto* d = reinterpret_cast<const STORAGE_DEVICE_DESCRIPTOR*>(buf.data());
         out["bus_type"] = bus_type_name(static_cast<std::uint32_t>(d->BusType));
         out["removable_media"] = d->RemovableMedia != FALSE;
         auto str_at = [&](DWORD off) -> json {
-            if (off == 0 || off >= got) return unknown();
+            if (off == 0 || off >= got)
+                return unknown();
             const char* p = buf.data() + off;
             const size_t max = got - off;
             size_t n = 0;
@@ -131,7 +135,8 @@ json storage_report(const std::string& storage_root, bool list_volumes) {
     if (list_volumes) {
         const DWORD mask = GetLogicalDrives();
         for (int i = 0; i < 26; ++i) {
-            if (!(mask & (1u << i))) continue;
+            if (!(mask & (1u << i)))
+                continue;
             const std::wstring root = std::wstring(1, static_cast<wchar_t>(L'A' + i)) + L":\\";
             r["volumes"].push_back(describe_root(root));
         }
@@ -159,8 +164,8 @@ json read_benchmark(const std::string& file, const ReadBenchOptions& opt) {
     return r;
 #else
     const std::wstring w = win::widen(file);
-    HANDLE h = CreateFileW(w.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
-                           FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+    HANDLE h = CreateFileW(w.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                           OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
     if (h == INVALID_HANDLE_VALUE) {
         r["status"] = "error";
         r["error"] = "cannot open file for reading (win32 error " + std::to_string(GetLastError()) + ")";
@@ -184,7 +189,8 @@ json read_benchmark(const std::string& file, const ReadBenchOptions& opt) {
     QueryPerformanceFrequency(&freq);
     for (std::uint32_t s = 0; s < opt.repeats; ++s) {
         LARGE_INTEGER zero{};
-        if (!SetFilePointerEx(h, zero, nullptr, FILE_BEGIN)) break;
+        if (!SetFilePointerEx(h, zero, nullptr, FILE_BEGIN))
+            break;
         std::uint64_t total = 0;
         LARGE_INTEGER t0{}, t1{};
         QueryPerformanceCounter(&t0);
@@ -192,12 +198,17 @@ json read_benchmark(const std::string& file, const ReadBenchOptions& opt) {
         while (total < target) {
             const DWORD want = static_cast<DWORD>(std::min<std::uint64_t>(buf.size(), target - total));
             DWORD got = 0;
-            if (!ReadFile(h, buf.data(), want, &got, nullptr)) { failed = true; break; }
-            if (got == 0) break;
+            if (!ReadFile(h, buf.data(), want, &got, nullptr)) {
+                failed = true;
+                break;
+            }
+            if (got == 0)
+                break;
             total += got;
         }
         QueryPerformanceCounter(&t1);
-        const double secs = static_cast<double>(t1.QuadPart - t0.QuadPart) / static_cast<double>(freq.QuadPart);
+        const double secs =
+            static_cast<double>(t1.QuadPart - t0.QuadPart) / static_cast<double>(freq.QuadPart);
         json sample = {{"bytes_read", total}, {"elapsed_ms", secs * 1000.0}};
         if (failed) {
             sample["error"] = "read failed (win32 error " + std::to_string(GetLastError()) + ")";
@@ -207,7 +218,8 @@ json read_benchmark(const std::string& file, const ReadBenchOptions& opt) {
             rates.push_back(mibs);
         }
         r["samples"].push_back(std::move(sample));
-        if (failed) break;
+        if (failed)
+            break;
     }
     CloseHandle(h);
     if (rates.empty()) {
@@ -222,7 +234,8 @@ json read_benchmark(const std::string& file, const ReadBenchOptions& opt) {
     r["mib_s_min"] = sorted.front();
     r["mib_s_max"] = sorted.back();
     r["status"] = "ok";
-    r["note"] = "Windows file caching can inflate repeated samples; cold/warm state is not controlled (unknown).";
+    r["note"] =
+        "Windows file caching can inflate repeated samples; cold/warm state is not controlled (unknown).";
     return r;
 #endif
 }

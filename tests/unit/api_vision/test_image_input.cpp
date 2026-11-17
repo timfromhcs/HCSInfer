@@ -37,7 +37,7 @@ TEST(ImageProbe, GifBmpJpeg) {
     EXPECT_EQ(g->height, 32u);
 
     std::uint8_t bmp[30] = {'B', 'M'};
-    bmp[18] = 40;  // width 40
+    bmp[18] = 40;                                                    // width 40
     bmp[22] = 0xD8, bmp[23] = 0xFF, bmp[24] = 0xFF, bmp[25] = 0xFF;  // height -40 (top-down)
     auto b = probe_image(bmp, sizeof bmp);
     ASSERT_TRUE(b);
@@ -46,8 +46,8 @@ TEST(ImageProbe, GifBmpJpeg) {
     EXPECT_EQ(b->height, 40u);
 
     // SOI, APP0 (len 4), SOF0: height 48, width 64
-    const std::uint8_t jpg[] = {0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x04, 0x00, 0x00, 0xFF, 0xC0, 0x00, 0x0B,
-                                0x08, 0x00, 0x30, 0x00, 0x40, 0x01, 0x01, 0x11, 0x00};
+    const std::uint8_t jpg[] = {0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x04, 0x00, 0x00, 0xFF, 0xC0, 0x00,
+                                0x0B, 0x08, 0x00, 0x30, 0x00, 0x40, 0x01, 0x01, 0x11, 0x00};
     auto j = probe_image(jpg, sizeof jpg);
     ASSERT_TRUE(j);
     EXPECT_EQ(j->format, "jpeg");
@@ -57,7 +57,8 @@ TEST(ImageProbe, GifBmpJpeg) {
 
 TEST(ImageProbe, RejectsGarbageTruncatedAndZeroSized) {
     EXPECT_FALSE(probe_image(nullptr, 10));
-    const std::uint8_t junk[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+    const std::uint8_t junk[] = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12,
+                                 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
     EXPECT_FALSE(probe_image(junk, sizeof junk));
     auto png = test::make_png_header_only(10, 10);
     EXPECT_FALSE(probe_image(png.data(), 20));  // truncated IHDR
@@ -84,7 +85,8 @@ TEST(DataUri, RejectsEverythingThatIsNotAStrictImageDataUri) {
     auto bad = [&](const std::string& u) {
         auto r = decode_image_data_uri(u, cap);
         EXPECT_FALSE(r.ok()) << u;
-        if (!r.ok()) EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument) << u;
+        if (!r.ok())
+            EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument) << u;
     };
     bad("");
     bad("http://example.com/a.png");
@@ -93,13 +95,13 @@ TEST(DataUri, RejectsEverythingThatIsNotAStrictImageDataUri) {
     bad(R"(C:\Windows\win.ini)");
     bad("data:text/plain;base64,QUJD");
     bad("data:image/svg+xml;base64,QUJD");
-    bad("data:image/png,QUJD");                // not base64
-    bad("data:image/png;base64,");             // empty
-    bad("data:image/png;base64,QUJ");          // length % 4
-    bad("data:image/png;base64,QU Jx");        // whitespace
-    bad("data:image/png;base64,QUJ*");         // bad char
-    bad("data:image/png;base64,QU==QUJD");     // padding in the middle
-    bad("data:image/png;base64,Q===");         // too much padding
+    bad("data:image/png,QUJD");             // not base64
+    bad("data:image/png;base64,");          // empty
+    bad("data:image/png;base64,QUJ");       // length % 4
+    bad("data:image/png;base64,QU Jx");     // whitespace
+    bad("data:image/png;base64,QUJ*");      // bad char
+    bad("data:image/png;base64,QU==QUJD");  // padding in the middle
+    bad("data:image/png;base64,Q===");      // too much padding
     bad("data:image/png;charset=x;base64,QUJD");
 }
 

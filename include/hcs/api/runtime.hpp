@@ -14,13 +14,13 @@ namespace hcs::api {
 
 struct RuntimeOptions {
     std::filesystem::path state_dir;
-    std::vector<std::string> model_roots;  // approved roots in addition to settings.json
-    std::unique_ptr<ITextEngine> engine;   // null => make_default_text_engine() (may still be null)
+    std::vector<std::string> model_roots;        // approved roots in addition to settings.json
+    std::unique_ptr<ITextEngine> engine;         // null => make_default_text_engine() (may still be null)
     std::unique_ptr<IImageEngine> image_engine;  // null => make_default_image_engine() (may still be null)
     ControlPlaneOptions control;
     JobQueueOptions queue;
-    // Live memory measurement used for the budget. Empty => the hardware module's measurement when it is linked
-    // into this build (otherwise the budget stays unknown and /hcs/v1/memory says so).
+    // Live memory measurement used for the budget. Empty => the hardware module's measurement when it is
+    // linked into this build (otherwise the budget stays unknown and /hcs/v1/memory says so).
     std::function<std::optional<MemoryMeasurements>()> memory_probe;
 };
 

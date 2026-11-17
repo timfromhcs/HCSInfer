@@ -91,10 +91,11 @@ jobs:
     name: clang-format check
     runs-on: windows-latest
     timeout-minutes: 15
-    # The tree was not clang-formatted when this gate was added (scripts/format.ps1 reported 89 of 111 C++ files
-    # differing, measured locally with a ROCm clang-format). It is reported but does not block until a dedicated
-    # formatting change lands (scripts\format.ps1 -Fix) and this flag is removed. Not a silent downgrade: the
-    # result is visible in the job summary.
+    # The whole tree is now clang-formatted (2026-11-17, 139 files, clang-format 19.1.5 - the version Visual
+    # Studio 2022 bundles on this runner, which scripts/format.ps1 prefers so local and CI agree). The flag is
+    # kept for one release cycle only as protection against the runner image updating its bundled LLVM, which can
+    # wrap differently; the job summary shows any such drift. Flip to blocking once a CI run has confirmed it is
+    # green on the runner. Not a silent downgrade: a failure is visible in the job summary.
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4

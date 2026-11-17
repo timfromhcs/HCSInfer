@@ -37,10 +37,13 @@ Result<ImageInput> decode_image_data_uri(std::string_view uri, std::size_t max_b
     if (uri.substr(semi, comma - semi) != ";base64")
         return make_error(ErrorCode::InvalidArgument, "data URI must use ;base64 encoding");
     const std::string_view b64 = uri.substr(comma + 1);
-    if (b64.empty() || b64.size() % 4 != 0) return make_error(ErrorCode::InvalidArgument, "malformed base64 payload");
+    if (b64.empty() || b64.size() % 4 != 0)
+        return make_error(ErrorCode::InvalidArgument, "malformed base64 payload");
     std::size_t pad = 0;
-    if (b64[b64.size() - 1] == '=') ++pad;
-    if (b64.size() >= 2 && b64[b64.size() - 2] == '=') ++pad;
+    if (b64[b64.size() - 1] == '=')
+        ++pad;
+    if (b64.size() >= 2 && b64[b64.size() - 2] == '=')
+        ++pad;
     const std::size_t decoded = b64.size() / 4 * 3 - pad;
     if (decoded > max_bytes)
         return make_error(ErrorCode::InvalidArgument,
@@ -56,19 +59,24 @@ Result<ImageInput> decode_image_data_uri(std::string_view uri, std::size_t max_b
             const unsigned char c = static_cast<unsigned char>(b64[i + static_cast<std::size_t>(k)]);
             if (c == '=') {
                 // padding only in the last quantum, last one/two positions
-                if (i + 4 != b64.size() || k < 2) return make_error(ErrorCode::InvalidArgument, "malformed base64 padding");
+                if (i + 4 != b64.size() || k < 2)
+                    return make_error(ErrorCode::InvalidArgument, "malformed base64 padding");
                 --real;
                 v <<= 6;
                 continue;
             }
             const std::int8_t d = table[c];
-            if (d < 0) return make_error(ErrorCode::InvalidArgument, "malformed base64 payload (bad character)");
-            if (real < 4) return make_error(ErrorCode::InvalidArgument, "malformed base64 padding");
+            if (d < 0)
+                return make_error(ErrorCode::InvalidArgument, "malformed base64 payload (bad character)");
+            if (real < 4)
+                return make_error(ErrorCode::InvalidArgument, "malformed base64 padding");
             v = (v << 6) | static_cast<std::uint32_t>(d);
         }
         out.bytes.push_back(static_cast<std::uint8_t>(v >> 16));
-        if (real > 2) out.bytes.push_back(static_cast<std::uint8_t>(v >> 8));
-        if (real > 3) out.bytes.push_back(static_cast<std::uint8_t>(v));
+        if (real > 2)
+            out.bytes.push_back(static_cast<std::uint8_t>(v >> 8));
+        if (real > 3)
+            out.bytes.push_back(static_cast<std::uint8_t>(v));
     }
     return out;
 }

@@ -10,17 +10,16 @@
 #include <filesystem>
 #include <iostream>
 #include <map>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
-
-#include <nlohmann/json.hpp>
 
 #include "hcs/storage/model_reader.hpp"
 #include "hcs/storage/writer.hpp"
 
 #ifdef _WIN32
-#include <windows.h>
 #include <intrin.h>
+#include <windows.h>
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
 #endif
@@ -34,23 +33,31 @@ namespace {
 
 constexpr double kMiB = 1024.0 * 1024.0;
 
-double secs(Clock::time_point a, Clock::time_point b) { return std::chrono::duration<double>(b - a).count(); }
+double secs(Clock::time_point a, Clock::time_point b) {
+    return std::chrono::duration<double>(b - a).count();
+}
 
 double percentile(std::vector<double> v, double p) {
-    if (v.empty()) return 0;
+    if (v.empty())
+        return 0;
     std::sort(v.begin(), v.end());
     const double idx = p * static_cast<double>(v.size() - 1);
     const std::size_t lo = static_cast<std::size_t>(idx);
     const std::size_t hi = std::min(lo + 1, v.size() - 1);
     return v[lo] + (v[hi] - v[lo]) * (idx - static_cast<double>(lo));
 }
-double median(const std::vector<double>& v) { return percentile(v, 0.5); }
-double p90(const std::vector<double>& v) { return percentile(v, 0.9); }
+double median(const std::vector<double>& v) {
+    return percentile(v, 0.5);
+}
+double p90(const std::vector<double>& v) {
+    return percentile(v, 0.9);
+}
 
 std::uint64_t peak_working_set() {
 #ifdef _WIN32
     PROCESS_MEMORY_COUNTERS pmc{};
-    if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) return pmc.PeakWorkingSetSize;
+    if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc)))
+        return pmc.PeakWorkingSetSize;
 #endif
     return 0;
 }
@@ -60,7 +67,8 @@ std::string cpu_brand() {
     int r[4];
     char b[49] = {};
     __cpuid(r, 0x80000000);
-    if (static_cast<unsigned>(r[0]) < 0x80000004u) return "unknown";
+    if (static_cast<unsigned>(r[0]) < 0x80000004u)
+        return "unknown";
     for (int i = 0; i < 3; ++i) {
         __cpuid(r, 0x80000002 + i);
         std::memcpy(b + 16 * i, r, 16);
@@ -81,8 +89,8 @@ std::string os_build() {
             RTL_OSVERSIONINFOW vi{};
             vi.dwOSVersionInfoSize = sizeof(vi);
             if (fn(&vi) == 0)
-                return "Windows " + std::to_string(vi.dwMajorVersion) + "." + std::to_string(vi.dwMinorVersion) + "." +
-                       std::to_string(vi.dwBuildNumber);
+                return "Windows " + std::to_string(vi.dwMajorVersion) + "." +
+                       std::to_string(vi.dwMinorVersion) + "." + std::to_string(vi.dwBuildNumber);
         }
     }
 #endif
@@ -93,7 +101,8 @@ std::uint64_t total_ram() {
 #ifdef _WIN32
     MEMORYSTATUSEX ms{};
     ms.dwLength = sizeof(ms);
-    if (GlobalMemoryStatusEx(&ms)) return ms.ullTotalPhys;
+    if (GlobalMemoryStatusEx(&ms))
+        return ms.ullTotalPhys;
 #endif
     return 0;
 }
@@ -121,12 +130,42 @@ std::string utc_now() {
 
 const char* ftype_name(std::uint32_t t) {
     switch (t) {
-        case 0: return "F32"; case 1: return "F16"; case 2: return "Q4_0"; case 3: return "Q4_1";
-        case 7: return "Q8_0"; case 8: return "Q5_0"; case 9: return "Q5_1"; case 10: return "Q2_K";
-        case 11: return "Q3_K_S"; case 12: return "Q3_K_M"; case 13: return "Q3_K_L"; case 14: return "Q4_K_S";
-        case 15: return "Q4_K_M"; case 16: return "Q5_K_S"; case 17: return "Q5_K_M"; case 18: return "Q6_K";
-        case 32: return "BF16";
-        default: return "unknown";
+        case 0:
+            return "F32";
+        case 1:
+            return "F16";
+        case 2:
+            return "Q4_0";
+        case 3:
+            return "Q4_1";
+        case 7:
+            return "Q8_0";
+        case 8:
+            return "Q5_0";
+        case 9:
+            return "Q5_1";
+        case 10:
+            return "Q2_K";
+        case 11:
+            return "Q3_K_S";
+        case 12:
+            return "Q3_K_M";
+        case 13:
+            return "Q3_K_L";
+        case 14:
+            return "Q4_K_S";
+        case 15:
+            return "Q4_K_M";
+        case 16:
+            return "Q5_K_S";
+        case 17:
+            return "Q5_K_M";
+        case 18:
+            return "Q6_K";
+        case 32:
+            return "BF16";
+        default:
+            return "unknown";
     }
 }
 
@@ -150,16 +189,19 @@ double unbuffered_sequential_mib_s(const fs::path& p, std::uint64_t limit_bytes,
             err = "read failed (Win32 " + std::to_string(GetLastError()) + ")";
             break;
         }
-        if (got == 0) break;
+        if (got == 0)
+            break;
         total += got;
-        if (limit_bytes && total >= limit_bytes) break;
+        if (limit_bytes && total >= limit_bytes)
+            break;
     }
     const double s = secs(t0, Clock::now());
     VirtualFree(buf, 0, MEM_RELEASE);
     CloseHandle(h);
     return s > 0 ? (static_cast<double>(total) / kMiB) / s : 0;
 #else
-    (void)p; (void)limit_bytes;
+    (void)p;
+    (void)limit_bytes;
     err = "unsupported platform";
     return 0;
 #endif
@@ -179,19 +221,20 @@ struct Args {
 };
 
 void usage() {
-    std::cerr << "hcs_storage_bench --suite storage --source <model.gguf> --scratch <dir> [options]\n"
-                 "  --source <file>        model to benchmark (read-only)\n"
-                 "  --scratch <dir>        existing directory where NEW .hcsmodel files are created and deleted\n"
-                 "  --out <file.json>      write benchmark JSON (schema_version 1); also printed to stdout\n"
-                 "  --codecs raw,lz4,zstd  codecs to compare (default all)\n"
-                 "  --chunk-mib N          chunk size, default 16\n"
-                 "  --iterations N         measured iterations (default 3), --warmup N (default 1)\n"
-                 "  --buffers N --workers N  pipeline slots / decode threads\n"
-                 "  --zstd-level N         default 3\n"
-                 "  --no-unbuffered        skip the NO_BUFFERING device-speed probes\n"
-                 "  --discard-sink         do not copy decoded data into a RAM buffer\n"
-                 "  --keep                 keep the created containers\n"
-                 "  --git-commit S --source-label S --scratch-label S   metadata strings\n";
+    std::cerr
+        << "hcs_storage_bench --suite storage --source <model.gguf> --scratch <dir> [options]\n"
+           "  --source <file>        model to benchmark (read-only)\n"
+           "  --scratch <dir>        existing directory where NEW .hcsmodel files are created and deleted\n"
+           "  --out <file.json>      write benchmark JSON (schema_version 1); also printed to stdout\n"
+           "  --codecs raw,lz4,zstd  codecs to compare (default all)\n"
+           "  --chunk-mib N          chunk size, default 16\n"
+           "  --iterations N         measured iterations (default 3), --warmup N (default 1)\n"
+           "  --buffers N --workers N  pipeline slots / decode threads\n"
+           "  --zstd-level N         default 3\n"
+           "  --no-unbuffered        skip the NO_BUFFERING device-speed probes\n"
+           "  --discard-sink         do not copy decoded data into a RAM buffer\n"
+           "  --keep                 keep the created containers\n"
+           "  --git-commit S --source-label S --scratch-label S   metadata strings\n";
 }
 
 }  // namespace
@@ -207,37 +250,70 @@ int main(int argc, char** argv) {
             }
             return argv[++i];
         };
-        if (k == "--suite") a.suite = next();
-        else if (k == "--source") a.source = next();
-        else if (k == "--scratch") a.scratch = next();
-        else if (k == "--out") a.out = next();
-        else if (k == "--codecs") a.codecs = next();
-        else if (k == "--chunk-mib") a.chunk_mib = static_cast<std::uint32_t>(std::stoul(next()));
-        else if (k == "--iterations") a.iterations = std::stoi(next());
-        else if (k == "--warmup") a.warmup = std::stoi(next());
-        else if (k == "--buffers") a.buffers = std::stoul(next());
-        else if (k == "--workers") a.workers = std::stoul(next());
-        else if (k == "--zstd-level") a.zstd_level = std::stoi(next());
-        else if (k == "--git-commit") a.git_commit = next();
-        else if (k == "--source-label") a.source_label = next();
-        else if (k == "--scratch-label") a.scratch_label = next();
-        else if (k == "--keep") a.keep = true;
-        else if (k == "--no-unbuffered") a.unbuffered = false;
-        else if (k == "--discard-sink") a.ram_sink = false;
-        else if (k == "--help" || k == "-h") { usage(); return 0; }
-        else { std::cerr << "unknown argument " << k << "\n"; usage(); return 2; }
+        if (k == "--suite")
+            a.suite = next();
+        else if (k == "--source")
+            a.source = next();
+        else if (k == "--scratch")
+            a.scratch = next();
+        else if (k == "--out")
+            a.out = next();
+        else if (k == "--codecs")
+            a.codecs = next();
+        else if (k == "--chunk-mib")
+            a.chunk_mib = static_cast<std::uint32_t>(std::stoul(next()));
+        else if (k == "--iterations")
+            a.iterations = std::stoi(next());
+        else if (k == "--warmup")
+            a.warmup = std::stoi(next());
+        else if (k == "--buffers")
+            a.buffers = std::stoul(next());
+        else if (k == "--workers")
+            a.workers = std::stoul(next());
+        else if (k == "--zstd-level")
+            a.zstd_level = std::stoi(next());
+        else if (k == "--git-commit")
+            a.git_commit = next();
+        else if (k == "--source-label")
+            a.source_label = next();
+        else if (k == "--scratch-label")
+            a.scratch_label = next();
+        else if (k == "--keep")
+            a.keep = true;
+        else if (k == "--no-unbuffered")
+            a.unbuffered = false;
+        else if (k == "--discard-sink")
+            a.ram_sink = false;
+        else if (k == "--help" || k == "-h") {
+            usage();
+            return 0;
+        } else {
+            std::cerr << "unknown argument " << k << "\n";
+            usage();
+            return 2;
+        }
     }
-    if (a.suite != "storage" || a.source.empty() || a.scratch.empty() || a.iterations < 1 || a.warmup < 0 || a.chunk_mib < 1) {
+    if (a.suite != "storage" || a.source.empty() || a.scratch.empty() || a.iterations < 1 || a.warmup < 0 ||
+        a.chunk_mib < 1) {
         usage();
         return 2;
     }
     std::error_code ec;
-    if (!fs::is_regular_file(a.source, ec)) { std::cerr << "source is not a regular file\n"; return 7; }
-    if (!fs::is_directory(a.scratch, ec)) { std::cerr << "scratch directory does not exist (it is never created implicitly)\n"; return 7; }
+    if (!fs::is_regular_file(a.source, ec)) {
+        std::cerr << "source is not a regular file\n";
+        return 7;
+    }
+    if (!fs::is_directory(a.scratch, ec)) {
+        std::cerr << "scratch directory does not exist (it is never created implicitly)\n";
+        return 7;
+    }
     const std::uint32_t chunk_size = a.chunk_mib << 20;
 
     auto reader = PlainFileReader::open(a.source, chunk_size);
-    if (!reader) { std::cerr << "cannot open source: " << reader.error().message << "\n"; return reader.error().exit_code(); }
+    if (!reader) {
+        std::cerr << "cannot open source: " << reader.error().message << "\n";
+        return reader.error().exit_code();
+    }
     const std::uint64_t src_size = reader.value()->logical_size();
 
     json root;
@@ -280,7 +356,8 @@ int main(int argc, char** argv) {
     root["lz4_version"] = std::string(lz4_version());
     root["zstd_version"] = std::string(zstd_version());
     root["sink"] = a.ram_sink ? "ram-copy" : "discard";
-    root["cold_or_warm"] = "uncontrolled (Windows file cache not flushed; see unbuffered_* fields for device speed)";
+    root["cold_or_warm"] =
+        "uncontrolled (Windows file cache not flushed; see unbuffered_* fields for device speed)";
     root["ttft_ms_median"] = nullptr;
     root["prompt_tokens_per_second_median"] = nullptr;
     root["decode_tokens_per_second_median"] = nullptr;
@@ -299,12 +376,16 @@ int main(int argc, char** argv) {
                 return {};
             },
             so);
-        if (!st) { std::cerr << "source read failed: " << st.error().message << "\n"; return st.error().exit_code(); }
+        if (!st) {
+            std::cerr << "source read failed: " << st.error().message << "\n";
+            return st.error().exit_code();
+        }
         source_sha = to_hex(h.finalize());
         root["model_sha256"] = source_sha;
-        root["source_first_pass"] = {{"note", "first pass in this process; includes SHA-256; cache state uncontrolled"},
-                                     {"seconds", st.value().wall_seconds},
-                                     {"mib_s", (static_cast<double>(src_size) / kMiB) / st.value().wall_seconds}};
+        root["source_first_pass"] = {
+            {"note", "first pass in this process; includes SHA-256; cache state uncontrolled"},
+            {"seconds", st.value().wall_seconds},
+            {"mib_s", (static_cast<double>(src_size) / kMiB) / st.value().wall_seconds}};
     }
     // ---- source baseline 2: device speed with the file cache bypassed (cold-equivalent ceiling).
     if (a.unbuffered) {
@@ -317,8 +398,10 @@ int main(int argc, char** argv) {
     }
     // ---- source baseline 3: pipeline stream of the plain file (raw GGUF through the same machinery).
     std::vector<std::byte> dest;
-    if (a.ram_sink) dest.resize(static_cast<std::size_t>(src_size));  // the "model resident in RAM" target
-    auto run_stream = [&](const IModelReader& r, std::uint64_t& raw_out, StreamStats& stats_out) -> hcs::Result<double> {
+    if (a.ram_sink)
+        dest.resize(static_cast<std::size_t>(src_size));  // the "model resident in RAM" target
+    auto run_stream = [&](const IModelReader& r, std::uint64_t& raw_out,
+                          StreamStats& stats_out) -> hcs::Result<double> {
         StreamOptions so;
         so.buffers = a.buffers;
         so.workers = a.workers;
@@ -326,12 +409,14 @@ int main(int argc, char** argv) {
         auto t0 = Clock::now();
         auto st = r.stream(
             [&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t> d) -> hcs::Result<void> {
-                if (a.ram_sink) std::memcpy(dest.data() + cursor, d.data(), d.size());
+                if (a.ram_sink)
+                    std::memcpy(dest.data() + cursor, d.data(), d.size());
                 cursor += d.size();
                 return {};
             },
             so);
-        if (!st) return st.error();
+        if (!st)
+            return st.error();
         raw_out = cursor;
         stats_out = st.value();
         return secs(t0, Clock::now());
@@ -342,13 +427,20 @@ int main(int argc, char** argv) {
         for (int it = 0; it < a.warmup + a.iterations; ++it) {
             std::uint64_t raw = 0;
             auto s = run_stream(*reader.value(), raw, last);
-            if (!s) { std::cerr << "baseline stream failed: " << s.error().message << "\n"; return s.error().exit_code(); }
-            if (it >= a.warmup) t.push_back(s.value());
+            if (!s) {
+                std::cerr << "baseline stream failed: " << s.error().message << "\n";
+                return s.error().exit_code();
+            }
+            if (it >= a.warmup)
+                t.push_back(s.value());
         }
         std::vector<double> mibs;
         for (double s : t) mibs.push_back((static_cast<double>(src_size) / kMiB) / s);
-        root["source_plain_stream"] = {{"seconds_samples", t}, {"seconds_median", median(t)}, {"seconds_p90", p90(t)},
-                                       {"mib_s_median", median(mibs)}, {"buffer_bytes_allocated", last.buffer_bytes_allocated},
+        root["source_plain_stream"] = {{"seconds_samples", t},
+                                       {"seconds_median", median(t)},
+                                       {"seconds_p90", p90(t)},
+                                       {"mib_s_median", median(mibs)},
+                                       {"buffer_bytes_allocated", last.buffer_bytes_allocated},
                                        {"consumer_wait_seconds_last", last.consumer_wait_seconds}};
     }
     // SHA-256 throughput on a RAM-resident buffer (isolates hashing cost from I/O).
@@ -368,7 +460,8 @@ int main(int argc, char** argv) {
         const double hw = bench(false);
         const double sw = bench(true);
         sha256_force_portable(false);
-        root["sha256_mib_s"] = {{"selected", hw}, {"portable", sw}, {"selected_impl", sha256_implementation()}};
+        root["sha256_mib_s"] = {
+            {"selected", hw}, {"portable", sw}, {"selected_impl", sha256_implementation()}};
     }
 
     // ---- per-codec runs
@@ -376,7 +469,12 @@ int main(int argc, char** argv) {
     {
         std::string cur;
         for (char c : a.codecs + ",") {
-            if (c == ',') { if (!cur.empty()) codec_names.push_back(cur); cur.clear(); } else cur.push_back(c);
+            if (c == ',') {
+                if (!cur.empty())
+                    codec_names.push_back(cur);
+                cur.clear();
+            } else
+                cur.push_back(c);
         }
     }
     json runs = json::array();
@@ -390,7 +488,11 @@ int main(int argc, char** argv) {
 #endif
     for (const auto& cn : codec_names) {
         const auto codec = parse_codec(cn);
-        if (!codec) { std::cerr << "unknown codec " << cn << "\n"; rc = 2; break; }
+        if (!codec) {
+            std::cerr << "unknown codec " << cn << "\n";
+            rc = 2;
+            break;
+        }
         const fs::path dst = a.scratch / ("hcs_bench_" + std::to_string(pid) + "_" + cn + ".hcsmodel");
         WriteOptions wo;
         wo.codec = *codec;
@@ -410,15 +512,25 @@ int main(int argc, char** argv) {
         json run;
         run["codec"] = cn;
         run["codec_level"] = (*codec == Codec::Zstd) ? json(a.zstd_level) : json("default");
-        run["write"] = {{"seconds", ws.seconds}, {"compress_cpu_seconds", ws.compress_cpu_seconds},
-                        {"source_read_seconds", ws.source_read_seconds}, {"container_bytes", ws.container_bytes},
-                        {"payload_bytes", ws.payload_bytes}, {"ratio_container_over_raw", ws.ratio()},
-                        {"chunks", ws.chunks}, {"chunks_raw", ws.chunks_raw}, {"chunks_lz4", ws.chunks_lz4},
-                        {"chunks_zstd", ws.chunks_zstd}, {"min_savings_threshold", wo.min_savings}};
+        run["write"] = {{"seconds", ws.seconds},
+                        {"compress_cpu_seconds", ws.compress_cpu_seconds},
+                        {"source_read_seconds", ws.source_read_seconds},
+                        {"container_bytes", ws.container_bytes},
+                        {"payload_bytes", ws.payload_bytes},
+                        {"ratio_container_over_raw", ws.ratio()},
+                        {"chunks", ws.chunks},
+                        {"chunks_raw", ws.chunks_raw},
+                        {"chunks_lz4", ws.chunks_lz4},
+                        {"chunks_zstd", ws.chunks_zstd},
+                        {"min_savings_threshold", wo.min_savings}};
         run["manifest_matches_source"] = (ws.source_sha256_hex == source_sha);
 
         auto cr = HcsModelReader::open(dst);
-        if (!cr) { std::cerr << "reopen failed: " << cr.error().message << "\n"; rc = cr.error().exit_code(); break; }
+        if (!cr) {
+            std::cerr << "reopen failed: " << cr.error().message << "\n";
+            rc = cr.error().exit_code();
+            break;
+        }
 
         // bit-exactness: stream and hash the decoded data, compare with the source hash.
         {
@@ -432,7 +544,11 @@ int main(int argc, char** argv) {
                     return {};
                 },
                 so);
-            if (!st) { std::cerr << "verify stream failed: " << st.error().message << "\n"; rc = st.error().exit_code(); break; }
+            if (!st) {
+                std::cerr << "verify stream failed: " << st.error().message << "\n";
+                rc = st.error().exit_code();
+                break;
+            }
             run["bit_exact_vs_source"] = (to_hex(h.finalize()) == source_sha);
         }
 
@@ -448,18 +564,33 @@ int main(int argc, char** argv) {
         for (int it = 0; it < a.warmup + a.iterations; ++it) {
             std::uint64_t raw = 0;
             auto s = run_stream(*cr.value(), raw, last);
-            if (!s) { std::cerr << "stream failed: " << s.error().message << "\n"; rc = s.error().exit_code(); break; }
-            if (raw != src_size) { std::cerr << "size mismatch\n"; rc = 70; break; }
-            if (it >= a.warmup) { t.push_back(s.value()); wait.push_back(last.consumer_wait_seconds); }
+            if (!s) {
+                std::cerr << "stream failed: " << s.error().message << "\n";
+                rc = s.error().exit_code();
+                break;
+            }
+            if (raw != src_size) {
+                std::cerr << "size mismatch\n";
+                rc = 70;
+                break;
+            }
+            if (it >= a.warmup) {
+                t.push_back(s.value());
+                wait.push_back(last.consumer_wait_seconds);
+            }
         }
-        if (rc) break;
+        if (rc)
+            break;
         std::vector<double> logical_mibs, stored_mibs;
         for (double s : t) {
             logical_mibs.push_back((static_cast<double>(src_size) / kMiB) / s);
             stored_mibs.push_back((static_cast<double>(ws.payload_bytes) / kMiB) / s);
         }
-        run["pipeline_load"] = {{"seconds_samples", t}, {"seconds_median", median(t)}, {"seconds_p90", p90(t)},
-                                {"logical_mib_s_median", median(logical_mibs)}, {"stored_mib_s_median", median(stored_mibs)},
+        run["pipeline_load"] = {{"seconds_samples", t},
+                                {"seconds_median", median(t)},
+                                {"seconds_p90", p90(t)},
+                                {"logical_mib_s_median", median(logical_mibs)},
+                                {"stored_mib_s_median", median(stored_mibs)},
                                 {"consumer_wait_seconds_median", median(wait)},
                                 {"buffer_bytes_allocated", last.buffer_bytes_allocated},
                                 {"cache_state", "warm/uncontrolled (container was just written)"}};
@@ -471,16 +602,25 @@ int main(int argc, char** argv) {
             for (std::size_t i = 0; i < stored.size(); ++i) {
                 const auto& e = cr.value()->chunks()[i];
                 stored[i].resize(static_cast<std::size_t>(e.comp_size));
-                if (auto r = cr.value()->file().read_at(e.offset, stored[i].data(), stored[i].size()); !r) { rc = r.error().exit_code(); break; }
+                if (auto r = cr.value()->file().read_at(e.offset, stored[i].data(), stored[i].size()); !r) {
+                    rc = r.error().exit_code();
+                    break;
+                }
             }
-            if (rc) break;
+            if (rc)
+                break;
             std::vector<std::uint8_t> raw(chunk_size);
             auto decode_all = [&](bool verify) {
                 const auto t0 = Clock::now();
                 for (std::size_t i = 0; i < stored.size(); ++i) {
                     const auto& e = cr.value()->chunks()[i];
-                    auto r = decode_chunk(e, stored[i], std::span<std::uint8_t>(raw.data(), static_cast<std::size_t>(e.raw_size)), verify);
-                    if (!r) { std::cerr << "decode failed: " << r.error().message << "\n"; std::exit(70); }
+                    auto r = decode_chunk(
+                        e, stored[i],
+                        std::span<std::uint8_t>(raw.data(), static_cast<std::size_t>(e.raw_size)), verify);
+                    if (!r) {
+                        std::cerr << "decode failed: " << r.error().message << "\n";
+                        std::exit(70);
+                    }
                 }
                 return secs(t0, Clock::now());
             };
@@ -490,11 +630,14 @@ int main(int argc, char** argv) {
                 nv.push_back((static_cast<double>(src_size) / kMiB) / decode_all(false));
                 wv.push_back((static_cast<double>(src_size) / kMiB) / decode_all(true));
             }
-            run["decode_from_ram_single_thread"] = {{"codec_only_mib_s_median", median(nv)}, {"codec_plus_sha256_mib_s_median", median(wv)}};
+            run["decode_from_ram_single_thread"] = {{"codec_only_mib_s_median", median(nv)},
+                                                    {"codec_plus_sha256_mib_s_median", median(wv)}};
             run["decompression_mib_s_median"] = median(nv);
         }
         run["peak_ram_bytes"] = peak_working_set();
-        run["peak_ram_note"] = "process-lifetime peak working set after this codec; includes the benchmark's own RAM destination buffer";
+        run["peak_ram_note"] =
+            "process-lifetime peak working set after this codec; includes the benchmark's own RAM "
+            "destination buffer";
         run["result_status"] = "PASS";
         runs.push_back(run);
     }
@@ -520,8 +663,13 @@ int main(int argc, char** argv) {
 #else
         f = std::fopen(a.out.c_str(), "wb");
 #endif
-        if (f) { std::fwrite(text.data(), 1, text.size(), f); std::fclose(f); }
-        else { std::cerr << "cannot write --out file\n"; return 8; }
+        if (f) {
+            std::fwrite(text.data(), 1, text.size(), f);
+            std::fclose(f);
+        } else {
+            std::cerr << "cannot write --out file\n";
+            return 8;
+        }
     }
     return rc;
 }

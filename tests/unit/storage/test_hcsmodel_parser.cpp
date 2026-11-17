@@ -209,7 +209,8 @@ TEST(HcsModelParser, WrongChunkHashDetectedAtDecode) {
     auto r = decode_chunk(e, std::span<const std::uint8_t>(img.data() + e.offset, e.comp_size), out, true);
     ASSERT_FALSE(r.ok());
     EXPECT_EQ(r.error().code, ErrorCode::ModelError);
-    EXPECT_TRUE(decode_chunk(e, std::span<const std::uint8_t>(img.data() + e.offset, e.comp_size), out, false).ok());
+    EXPECT_TRUE(
+        decode_chunk(e, std::span<const std::uint8_t>(img.data() + e.offset, e.comp_size), out, false).ok());
 }
 
 TEST(HcsModelParser, CorruptCompressedBlockDetectedAtDecode) {
@@ -228,7 +229,8 @@ TEST(HcsModelParser, CorruptCompressedBlockDetectedAtDecode) {
         for (std::size_t pos = 0; pos < stored.size(); pos += stored.size() / 40 + 1) {
             auto bad = stored;
             bad[pos] ^= 0x55;
-            EXPECT_FALSE(decode_chunk(e, bad, out, true).ok()) << codec_name(c) << " pos=" << pos;  // hash always catches it
+            EXPECT_FALSE(decode_chunk(e, bad, out, true).ok())
+                << codec_name(c) << " pos=" << pos;  // hash always catches it
         }
     }
 }

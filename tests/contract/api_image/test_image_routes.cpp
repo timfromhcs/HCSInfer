@@ -1,6 +1,6 @@
-// Contract tests for /v1/images/{generations,edits} and the embedded UI hook. FakeImageEngine exercises the plumbing
-// only (validation, job, cancellation, PNG transport, lifecycle); it is NOT evidence of image generation (AGENTS.md
-// 16.2). Real stable-diffusion.cpp output is covered by tests/e2e/image_real.
+// Contract tests for /v1/images/{generations,edits} and the embedded UI hook. FakeImageEngine exercises the
+// plumbing only (validation, job, cancellation, PNG transport, lifecycle); it is NOT evidence of image
+// generation (AGENTS.md 16.2). Real stable-diffusion.cpp output is covered by tests/e2e/image_real.
 #include <gtest/gtest.h>
 
 #include <atomic>
@@ -24,36 +24,46 @@ struct Api {
         : fx(with_image, cpo), handler(*fx.cp, finish(std::move(o)), fx.logger) {}
 
     static ApiOptions finish(ApiOptions o) {
-        if (o.token.empty()) o.token = kToken;
-        if (o.port == 0) o.port = 8765;
+        if (o.token.empty())
+            o.token = kToken;
+        if (o.port == 0)
+            o.port = 8765;
         return o;
     }
-    HttpRequest req(const std::string& method, const std::string& path, const std::string& body = {}, bool auth = true) {
+    HttpRequest req(const std::string& method, const std::string& path, const std::string& body = {},
+                    bool auth = true) {
         HttpRequest r;
         r.method = method;
         r.path = path;
         r.body = body;
         r.headers["host"] = "127.0.0.1:8765";
-        if (auth) r.headers["authorization"] = std::string("Bearer ") + kToken;
-        if (!body.empty()) r.headers["content-type"] = "application/json";
+        if (auth)
+            r.headers["authorization"] = std::string("Bearer ") + kToken;
+        if (!body.empty())
+            r.headers["content-type"] = "application/json";
         return r;
     }
-    HttpResponse call(const std::string& method, const std::string& path, const json& body, bool auth = true) {
+    HttpResponse call(const std::string& method, const std::string& path, const json& body,
+                      bool auth = true) {
         return handler.handle(req(method, path, body.dump(), auth));
     }
     HttpResponse call(const std::string& method, const std::string& path, bool auth = true) {
         return handler.handle(req(method, path, {}, auth));
     }
     json gen_body() const {
-        return {{"model", "sdmodel"}, {"prompt", "a red apple"}, {"size", "256x256"}, {"steps", 2}, {"seed", 5}};
+        return {
+            {"model", "sdmodel"}, {"prompt", "a red apple"}, {"size", "256x256"}, {"steps", 2}, {"seed", 5}};
     }
 };
 
-json err_of(const HttpResponse& r) { return json::parse(r.body)["error"]; }
+json err_of(const HttpResponse& r) {
+    return json::parse(r.body)["error"];
+}
 
 bool wait_for(const std::function<bool()>& f, int ms = 3000) {
     for (int i = 0; i < ms / 5; ++i) {
-        if (f()) return true;
+        if (f())
+            return true;
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
     return f();
@@ -68,7 +78,8 @@ TEST(ApiImages, GenerationReturnsBase64PngAndRecordsTheJob) {
     ASSERT_EQ(r.status, 200) << r.body;
     const json j = json::parse(r.body);
     ASSERT_EQ(j["data"].size(), 1u);
-    EXPECT_EQ(j["data"][0]["b64_json"].get<std::string>().rfind("iVBORw0KGgo", 0), 0u) << "PNG signature in base64";
+    EXPECT_EQ(j["data"][0]["b64_json"].get<std::string>().rfind("iVBORw0KGgo", 0), 0u)
+        << "PNG signature in base64";
     EXPECT_EQ(j["hcs"]["width"], 256);
     EXPECT_EQ(j["hcs"]["steps"], 2);
     EXPECT_EQ(j["hcs"]["model"], "sdmodel");
@@ -111,7 +122,11 @@ TEST(ApiImages, WrongMethodAndMissingEngine) {
 
 TEST(ApiImages, RejectsInvalidRequestsBeforeTheEngineIsTouched) {
     Api a;
-    struct Case { json patch; int status; const char* what; };
+    struct Case {
+        json patch;
+        int status;
+        const char* what;
+    };
     const std::vector<Case> cases = {
         {{{"size", "250x256"}}, 400, "not a multiple of 8"},
         {{{"size", "32x32"}}, 400, "below 64"},
@@ -210,7 +225,8 @@ TEST(ApiImages, RequestTimeoutCancelsTheRenderAndReturns504) {
 TEST(ApiImages, JobCancelEndpointStopsAnImageJob) {
     Api a;
     a.fx.image.run_until_cancel = true;
-    // Submit through the control plane (the route returns no job id before completion) and cancel via the API.
+    // Submit through the control plane (the route returns no job id before completion) and cancel via the
+    // API.
     ImageParams p;
     p.model = "sdmodel";
     p.prompt = "x";
@@ -239,7 +255,11 @@ TEST(ApiImages, EngineFailureBecomesAStructuredError) {
 TEST(ApiImageEdits, AcceptsADataUriAndKeepsTheInputSizeByDefault) {
     Api a;
     const auto png = test::make_red_square_png(64);
-    json b = {{"model", "sdmodel"}, {"prompt", "make it blue"}, {"image", test::png_data_uri(png)}, {"steps", 2}, {"strength", 0.5}};
+    json b = {{"model", "sdmodel"},
+              {"prompt", "make it blue"},
+              {"image", test::png_data_uri(png)},
+              {"steps", 2},
+              {"strength", 0.5}};
     auto r = a.call("POST", "/v1/images/edits", b);
     ASSERT_EQ(r.status, 200) << r.body;
     EXPECT_EQ(a.fx.image.edits.load(), 1);
@@ -271,7 +291,8 @@ TEST(ApiImageEdits, RejectsBadInputImagesAndMultipart) {
     EXPECT_EQ(base({{"image", "data:image/png;base64,@@@@"}}).status, 400) << "bad base64";
     EXPECT_EQ(base({{"image", "http://example.com/a.png"}}).status, 400) << "remote URL";
     EXPECT_EQ(base({{"image", "file:///c:/windows/win.ini"}}).status, 400) << "file URL";
-    EXPECT_EQ(base({{"image", test::png_data_uri(test::make_png_header_only(20000, 20000))}}).status, 400) << "pixel limit";
+    EXPECT_EQ(base({{"image", test::png_data_uri(test::make_png_header_only(20000, 20000))}}).status, 400)
+        << "pixel limit";
     EXPECT_EQ(base({{"image", 5}}).status, 400) << "image must be a string";
     EXPECT_EQ(base({{"mask", "x"}}).status, 501);
     json missing = {{"model", "sdmodel"}, {"prompt", "x"}};
@@ -302,8 +323,10 @@ TEST(ApiUi, RootAndAssetsAreServedWithoutATokenButBehindHostAndOriginChecks) {
     EXPECT_FALSE(r.body.empty());
     bool csp = false, nosniff = false;
     for (auto& [k, v] : r.headers) {
-        if (k == "Content-Security-Policy") csp = v.find("default-src 'none'") != std::string::npos;
-        if (k == "X-Content-Type-Options") nosniff = v == "nosniff";
+        if (k == "Content-Security-Policy")
+            csp = v.find("default-src 'none'") != std::string::npos;
+        if (k == "X-Content-Type-Options")
+            nosniff = v == "nosniff";
     }
     EXPECT_TRUE(csp);
     EXPECT_TRUE(nosniff);

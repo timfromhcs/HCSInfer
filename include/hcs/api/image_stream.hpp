@@ -25,7 +25,8 @@ struct ImageResult {
 class IImageStreamEngine : public IImageEngine {
 public:
     // Called with the engine already loaded. `request.init_image` selects img2img/edit semantics.
-    virtual Result<ImageResult> generate_image(const ImageRequest& request, const CancellationToken& token) = 0;
+    virtual Result<ImageResult> generate_image(const ImageRequest& request,
+                                               const CancellationToken& token) = 0;
     virtual Result<ImageResult> edit_image(const ImageRequest& request, const CancellationToken& token) = 0;
 };
 

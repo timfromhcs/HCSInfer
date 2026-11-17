@@ -9,20 +9,27 @@ namespace hcs {
 
 std::string_view to_string(LogLevel level) noexcept {
     switch (level) {
-        case LogLevel::Trace: return "trace";
-        case LogLevel::Debug: return "debug";
-        case LogLevel::Info: return "info";
-        case LogLevel::Warn: return "warn";
-        case LogLevel::Error: return "error";
-        case LogLevel::Off: return "off";
+        case LogLevel::Trace:
+            return "trace";
+        case LogLevel::Debug:
+            return "debug";
+        case LogLevel::Info:
+            return "info";
+        case LogLevel::Warn:
+            return "warn";
+        case LogLevel::Error:
+            return "error";
+        case LogLevel::Off:
+            return "off";
     }
     return "info";
 }
 
 std::optional<LogLevel> parse_log_level(std::string_view t) noexcept {
-    for (LogLevel l : {LogLevel::Trace, LogLevel::Debug, LogLevel::Info, LogLevel::Warn, LogLevel::Error,
-                       LogLevel::Off}) {
-        if (to_string(l) == t) return l;
+    for (LogLevel l :
+         {LogLevel::Trace, LogLevel::Debug, LogLevel::Info, LogLevel::Warn, LogLevel::Error, LogLevel::Off}) {
+        if (to_string(l) == t)
+            return l;
     }
     return std::nullopt;
 }
@@ -32,11 +39,21 @@ std::string json_escape(std::string_view text) {
     out.reserve(text.size() + 2);
     for (unsigned char c : text) {
         switch (c) {
-            case '"': out += "\\\""; break;
-            case '\\': out += "\\\\"; break;
-            case '\n': out += "\\n"; break;
-            case '\r': out += "\\r"; break;
-            case '\t': out += "\\t"; break;
+            case '"':
+                out += "\\\"";
+                break;
+            case '\\':
+                out += "\\\\";
+                break;
+            case '\n':
+                out += "\\n";
+                break;
+            case '\r':
+                out += "\\r";
+                break;
+            case '\t':
+                out += "\\t";
+                break;
             default:
                 if (c < 0x20) {
                     char buf[8];
@@ -85,7 +102,8 @@ void Logger::set_stream(std::ostream* stream) {
 void Logger::log(LogLevel level, std::string_view component, std::string_view message,
                  std::initializer_list<LogField> fields) {
     std::lock_guard lock(mutex_);
-    if (level == LogLevel::Off || level < level_) return;
+    if (level == LogLevel::Off || level < level_)
+        return;
     std::string line = "{\"ts\":\"" + utc_timestamp() + "\",\"level\":\"" + std::string(to_string(level)) +
                        "\",\"component\":\"" + json_escape(component) + "\",\"msg\":\"" +
                        json_escape(message) + "\"";

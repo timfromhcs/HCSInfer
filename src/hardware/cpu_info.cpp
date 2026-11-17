@@ -18,7 +18,9 @@
 namespace hcs::hardware {
 
 namespace {
-constexpr bool bit(std::uint32_t v, int n) { return ((v >> n) & 1u) != 0; }
+constexpr bool bit(std::uint32_t v, int n) {
+    return ((v >> n) & 1u) != 0;
+}
 
 #if defined(_MSC_VER) || defined(__x86_64__) || defined(__i386__)
 #define HCS_X86 1
@@ -44,7 +46,8 @@ std::string regs_to_string(std::initializer_list<std::uint32_t> words) {
 std::string trim(std::string s) {
     s.erase(std::find(s.begin(), s.end(), '\0'), s.end());
     const auto b = s.find_first_not_of(' ');
-    if (b == std::string::npos) return {};
+    if (b == std::string::npos)
+        return {};
     const auto e = s.find_last_not_of(' ');
     return s.substr(b, e - b + 1);
 }
@@ -57,14 +60,17 @@ CpuRaw read_cpu_raw() {
     CpuidRegs l0 = cpuid(0);
     raw.max_leaf = l0.eax;
     raw.vendor = trim(regs_to_string({l0.ebx, l0.edx, l0.ecx}));
-    if (raw.max_leaf >= 1) raw.l1 = cpuid(1);
+    if (raw.max_leaf >= 1)
+        raw.l1 = cpuid(1);
     if (raw.max_leaf >= 7) {
         raw.l7 = cpuid(7, 0);
-        if (raw.l7.eax >= 1) raw.l7_1 = cpuid(7, 1);
+        if (raw.l7.eax >= 1)
+            raw.l7_1 = cpuid(7, 1);
     }
     CpuidRegs e0 = cpuid(0x80000000u);
     raw.max_ext_leaf = e0.eax;
-    if (raw.max_ext_leaf >= 0x80000001u) raw.l80000001 = cpuid(0x80000001u);
+    if (raw.max_ext_leaf >= 0x80000001u)
+        raw.l80000001 = cpuid(0x80000001u);
     if (raw.max_ext_leaf >= 0x80000004u) {
         std::string brand;
         for (std::uint32_t leaf = 0x80000002u; leaf <= 0x80000004u; ++leaf) {
@@ -98,7 +104,8 @@ json decode_cpu_identity(const CpuRaw& raw) {
         const std::uint32_t ext_family = (eax >> 20) & 0xFFu;
         const std::uint32_t ext_model = (eax >> 16) & 0xFu;
         const std::uint32_t disp_family = family == 0xFu ? family + ext_family : family;
-        const std::uint32_t disp_model = (family == 0x6u || family == 0xFu) ? (ext_model << 4) + model : model;
+        const std::uint32_t disp_model =
+            (family == 0x6u || family == 0xFu) ? (ext_model << 4) + model : model;
         j["family"] = disp_family;
         j["model"] = disp_model;
         j["stepping"] = eax & 0xFu;
@@ -159,13 +166,14 @@ json cpu_report() {
     GetLogicalProcessorInformationEx(RelationProcessorCore, nullptr, &len);
     if (len > 0 && GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
         std::vector<char> buf(len);
-        if (GetLogicalProcessorInformationEx(RelationProcessorCore,
-                                             reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(buf.data()),
-                                             &len)) {
+        if (GetLogicalProcessorInformationEx(
+                RelationProcessorCore, reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(buf.data()),
+                &len)) {
             std::uint32_t cores = 0, logical = 0;
             for (DWORD off = 0; off < len;) {
                 auto* p = reinterpret_cast<PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(buf.data() + off);
-                if (p->Size == 0) break;
+                if (p->Size == 0)
+                    break;
                 if (p->Relationship == RelationProcessorCore) {
                     ++cores;
                     for (WORD g = 0; g < p->Processor.GroupCount; ++g)

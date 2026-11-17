@@ -1,7 +1,7 @@
 // Real sockets: HttpServer bound to 127.0.0.1 on an ephemeral port, driven by a real HTTP client.
 // The engine is FakeTextEngine (plumbing only, not inference evidence).
-#include <httplib.h>
 #include <gtest/gtest.h>
+#include <httplib.h>
 
 #include <atomic>
 #include <thread>
@@ -40,14 +40,17 @@ struct Server {
         : handler(*fx.cp, opts(), fx.logger), server(handler, topts(max_body), fx.logger) {
         auto p = server.start();
         EXPECT_TRUE(p.ok());
-        if (p) port = p.value();
+        if (p)
+            port = p.value();
     }
     ~Server() { server.stop(); }
     httplib::Headers auth() const { return {{"Authorization", std::string("Bearer ") + kToken}}; }
 };
 
 json chat_body(bool stream) {
-    return {{"model", "tiny"}, {"stream", stream}, {"messages", json::array({json{{"role", "user"}, {"content", "hi"}}})}};
+    return {{"model", "tiny"},
+            {"stream", stream},
+            {"messages", json::array({json{{"role", "user"}, {"content", "hi"}}})}};
 }
 
 }  // namespace
@@ -147,7 +150,9 @@ TEST(ApiSocket, SseStreamsIncrementallyOverTheWire) {
     ASSERT_TRUE(r);
     EXPECT_EQ(content_type.rfind("text/event-stream", 0), 0u);
     ASSERT_GE(seen.size(), 4u) << "stream arrived as a single blob";
-    EXPECT_GE(std::chrono::duration_cast<std::chrono::milliseconds>(seen.back().first - seen.front().first).count(), 100);
+    EXPECT_GE(
+        std::chrono::duration_cast<std::chrono::milliseconds>(seen.back().first - seen.front().first).count(),
+        100);
     std::string all;
     for (auto& entry : seen) all += entry.second;
     EXPECT_NE(all.find("data: [DONE]"), std::string::npos);
@@ -157,9 +162,11 @@ TEST(ApiSocket, SseStreamsIncrementallyOverTheWire) {
         const auto e = all.find("\n\n", pos);
         const std::string payload = all.substr(pos + 6, e - pos - 6);
         pos = e;
-        if (payload == "[DONE]") break;
+        if (payload == "[DONE]")
+            break;
         auto j = json::parse(payload);
-        if (j["choices"][0]["delta"].contains("content")) text += j["choices"][0]["delta"]["content"].get<std::string>();
+        if (j["choices"][0]["delta"].contains("content"))
+            text += j["choices"][0]["delta"]["content"].get<std::string>();
     }
     EXPECT_EQ(text, "Hello from the fake engine");
 }
@@ -177,13 +184,16 @@ TEST(ApiSocket, ClientAbortMidStreamCancelsGeneration) {
         req.headers = s.auth();
         req.set_header("Content-Type", "application/json");
         req.body = chat_body(true).dump();
-        req.content_receiver = [&](const char*, size_t, size_t, size_t) { return ++n < 5; };  // abort the connection
+        req.content_receiver = [&](const char*, size_t, size_t, size_t) {
+            return ++n < 5;
+        };  // abort the connection
         (void)c.send(req);
     }
     bool stopped = false;
     for (int i = 0; i < 600 && !stopped; ++i) {
         stopped = !s.fx.engine.generating.load();
-        if (!stopped) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (!stopped)
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     EXPECT_TRUE(stopped) << "engine kept running after the client disconnected";
 }
@@ -217,7 +227,8 @@ using RawSock = SOCKET;
 const RawSock kNoSock = INVALID_SOCKET;
 RawSock raw_connect(int port) {
     RawSock s = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (s == kNoSock) return kNoSock;
+    if (s == kNoSock)
+        return kNoSock;
     sockaddr_in a{};
     a.sin_family = AF_INET;
     a.sin_port = htons(static_cast<unsigned short>(port));
@@ -231,14 +242,17 @@ RawSock raw_connect(int port) {
 bool raw_send(RawSock s, const std::string& d) {
     return ::send(s, d.data(), static_cast<int>(d.size()), 0) == static_cast<int>(d.size());
 }
-void raw_close(RawSock s) { ::closesocket(s); }
+void raw_close(RawSock s) {
+    ::closesocket(s);
+}
 // True when the server closed the connection (orderly or reset) within `ms`.
 bool raw_peer_closed_within(RawSock s, int ms) {
     fd_set rd;
     FD_ZERO(&rd);
     FD_SET(s, &rd);
     timeval tv{ms / 1000, (ms % 1000) * 1000};
-    if (::select(0, &rd, nullptr, nullptr, &tv) <= 0) return false;
+    if (::select(0, &rd, nullptr, nullptr, &tv) <= 0)
+        return false;
     char b[256];
     const int n = ::recv(s, b, sizeof(b), 0);
     return n <= 0;
@@ -258,20 +272,23 @@ TEST(ApiSocketAudit, NonStreamingClientDisconnectCancelsTheJob) {
     const std::string body = chat_body(false).dump();
     RawSock c = raw_connect(s.port);
     ASSERT_NE(c, kNoSock);
-    ASSERT_TRUE(raw_send(c, "POST /v1/chat/completions HTTP/1.1\r\nHost: 127.0.0.1:" + std::to_string(s.port) +
-                                "\r\nAuthorization: Bearer " + kToken + "\r\nContent-Type: application/json\r\nContent-Length: " +
+    ASSERT_TRUE(raw_send(c, "POST /v1/chat/completions HTTP/1.1\r\nHost: 127.0.0.1:" +
+                                std::to_string(s.port) + "\r\nAuthorization: Bearer " + kToken +
+                                "\r\nContent-Type: application/json\r\nContent-Length: " +
                                 std::to_string(body.size()) + "\r\nConnection: close\r\n\r\n" + body));
     bool started = false;
     for (int i = 0; i < 300 && !started; ++i) {
         started = s.fx.engine.generating.load();
-        if (!started) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (!started)
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     ASSERT_TRUE(started) << "generation never started";
     raw_close(c);  // the client goes away without reading the (non-streaming) response
     bool stopped = false;
     for (int i = 0; i < 300 && !stopped; ++i) {
         stopped = !s.fx.engine.generating.load();
-        if (!stopped) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (!stopped)
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     EXPECT_TRUE(stopped) << "engine kept generating for a client that disconnected";
     EXPECT_TRUE(s.fx.cp->wait_job(JobId{1}, std::chrono::milliseconds(3000)));
@@ -279,8 +296,8 @@ TEST(ApiSocketAudit, NonStreamingClientDisconnectCancelsTheJob) {
 #endif
 }
 
-// D2: idle sockets must not starve the server. Excess connections are refused immediately (bounded pool + bounded
-// queue) and sockets that never send a request are dropped after the read timeout.
+// D2: idle sockets must not starve the server. Excess connections are refused immediately (bounded pool +
+// bounded queue) and sockets that never send a request are dropped after the read timeout.
 namespace {
 struct TinyServer {
     test::ApiFixture fx;
@@ -300,7 +317,8 @@ struct TinyServer {
     TinyServer() : handler(*fx.cp, Server::opts(), fx.logger), server(handler, topts(), fx.logger) {
         auto p = server.start();
         EXPECT_TRUE(p.ok());
-        if (p) port = p.value();
+        if (p)
+            port = p.value();
     }
     ~TinyServer() { server.stop(); }
 };
@@ -314,13 +332,15 @@ TEST(ApiSocketAudit, IdleConnectionFloodDoesNotStarveHealthAndIsBounded) {
     std::vector<RawSock> idle;
     for (int i = 0; i < 30; ++i) {
         RawSock c = raw_connect(s.port);
-        if (c != kNoSock) idle.push_back(c);
+        if (c != kNoSock)
+            idle.push_back(c);
     }
     ASSERT_GE(idle.size(), 20u);
     // At most threads + queue (= 4) idle connections are kept; the rest must be refused right away.
     int refused_fast = 0;
     for (auto c : idle)
-        if (raw_peer_closed_within(c, 100)) ++refused_fast;
+        if (raw_peer_closed_within(c, 100))
+            ++refused_fast;
     EXPECT_GE(refused_fast, static_cast<int>(idle.size()) - 6) << "the connection queue is unbounded";
     // The ones that were kept are dropped by the 1 s read timeout; then a normal request is served again.
     const auto t0 = std::chrono::steady_clock::now();
@@ -330,9 +350,11 @@ TEST(ApiSocketAudit, IdleConnectionFloodDoesNotStarveHealthAndIsBounded) {
     httplib::Result r;
     for (int i = 0; i < 40 && !(r && r->status == 200); ++i) {
         r = c.Get("/hcs/v1/health");
-        if (!(r && r->status == 200)) std::this_thread::sleep_for(std::chrono::milliseconds(150));
+        if (!(r && r->status == 200))
+            std::this_thread::sleep_for(std::chrono::milliseconds(150));
     }
-    const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - t0).count();
+    const auto ms =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - t0).count();
     ASSERT_TRUE(r && r->status == 200) << "health never answered";
     EXPECT_LT(ms, 4000) << "idle sockets starved the server for " << ms << " ms";
     for (auto c2 : idle) raw_close(c2);
@@ -346,7 +368,8 @@ TEST(ApiSocketAudit, SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout) {
     TinyServer s;
     RawSock c = raw_connect(s.port);
     ASSERT_NE(c, kNoSock);
-    EXPECT_TRUE(raw_peer_closed_within(c, 3500)) << "an idle socket kept a worker for more than 3.5 s (read timeout is 1 s)";
+    EXPECT_TRUE(raw_peer_closed_within(c, 3500))
+        << "an idle socket kept a worker for more than 3.5 s (read timeout is 1 s)";
     raw_close(c);
 #endif
 }

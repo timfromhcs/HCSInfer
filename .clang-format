@@ -8,3 +8,8 @@ AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: Never
 DerivePointerAlignment: false
 PointerAlignment: Left
+# Includes are deliberately NOT sorted: several translation units include Windows SDK headers in a
+# load-bearing order (windows.h before psapi.h/winioctl.h; NOMINMAX before windows.h). Google style would
+# sort them alphabetically and break the build for a purely cosmetic change.
+SortIncludes: Never
+IncludeBlocks: Preserve

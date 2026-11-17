@@ -28,16 +28,43 @@ const std::set<std::pair<S, S>> kLegal = {
 
 void drive_to(ModelLifecycle& m, S target) {
     switch (target) {
-        case S::Unregistered: return;
-        case S::Discovered: ASSERT_TRUE(m.transition(S::Discovered)); return;
-        case S::Validating: drive_to(m, S::Discovered); ASSERT_TRUE(m.transition(S::Validating)); return;
-        case S::ReadyToLoad: drive_to(m, S::Validating); ASSERT_TRUE(m.transition(S::ReadyToLoad)); return;
-        case S::Loading: drive_to(m, S::ReadyToLoad); ASSERT_TRUE(m.transition(S::Loading)); return;
-        case S::Loaded: drive_to(m, S::Loading); ASSERT_TRUE(m.transition(S::Loaded)); return;
-        case S::Running: drive_to(m, S::Loaded); ASSERT_TRUE(m.transition(S::Running)); return;
-        case S::Unloading: drive_to(m, S::Loaded); ASSERT_TRUE(m.transition(S::Unloading)); return;
-        case S::Unloaded: drive_to(m, S::Unloading); ASSERT_TRUE(m.transition(S::Unloaded)); return;
-        case S::Failed: drive_to(m, S::Loading); ASSERT_TRUE(m.fail(FailureKind::Recoverable, "x")); return;
+        case S::Unregistered:
+            return;
+        case S::Discovered:
+            ASSERT_TRUE(m.transition(S::Discovered));
+            return;
+        case S::Validating:
+            drive_to(m, S::Discovered);
+            ASSERT_TRUE(m.transition(S::Validating));
+            return;
+        case S::ReadyToLoad:
+            drive_to(m, S::Validating);
+            ASSERT_TRUE(m.transition(S::ReadyToLoad));
+            return;
+        case S::Loading:
+            drive_to(m, S::ReadyToLoad);
+            ASSERT_TRUE(m.transition(S::Loading));
+            return;
+        case S::Loaded:
+            drive_to(m, S::Loading);
+            ASSERT_TRUE(m.transition(S::Loaded));
+            return;
+        case S::Running:
+            drive_to(m, S::Loaded);
+            ASSERT_TRUE(m.transition(S::Running));
+            return;
+        case S::Unloading:
+            drive_to(m, S::Loaded);
+            ASSERT_TRUE(m.transition(S::Unloading));
+            return;
+        case S::Unloaded:
+            drive_to(m, S::Unloading);
+            ASSERT_TRUE(m.transition(S::Unloaded));
+            return;
+        case S::Failed:
+            drive_to(m, S::Loading);
+            ASSERT_TRUE(m.fail(FailureKind::Recoverable, "x"));
+            return;
     }
 }
 }  // namespace
@@ -62,7 +89,8 @@ TEST(Lifecycle, EveryPairBehavesAccordingToTable) {
             EXPECT_EQ(r.ok(), legal) << to_string(from) << " -> " << to_string(to);
             if (!legal) {
                 EXPECT_EQ(m.state(), from) << "state must be unchanged after an illegal transition";
-                EXPECT_TRUE(r.error().code == ErrorCode::InvalidState || r.error().code == ErrorCode::InvalidArgument);
+                EXPECT_TRUE(r.error().code == ErrorCode::InvalidState ||
+                            r.error().code == ErrorCode::InvalidArgument);
             }
         }
     }
@@ -136,7 +164,8 @@ TEST(Lifecycle, ExactlyOneConcurrentOwnerWinsTheLoad) {
         std::vector<std::thread> ts;
         for (int i = 0; i < 8; ++i) {
             ts.emplace_back([&] {
-                if (m.transition_from(S::ReadyToLoad, S::Loading)) ++winners;
+                if (m.transition_from(S::ReadyToLoad, S::Loading))
+                    ++winners;
             });
         }
         for (auto& t : ts) t.join();

@@ -14,29 +14,38 @@ int run_stdio(const std::vector<std::string>& args, const std::filesystem::path&
     for (std::size_t i = 0; i < args.size(); ++i) {
         const std::string& a = args[i];
         if (a == "--help" || a == "-h") {
-            out << "Usage: HCSInfer mcp stdio [--model-root <dir>]... [--timeout-s <n>] [--max-concurrent <n>]\n"
+            out << "Usage: HCSInfer mcp stdio [--model-root <dir>]... [--timeout-s <n>] [--max-concurrent "
+                   "<n>]\n"
                    "\n"
                    "Serves MCP (2026-07-28, plus the 2025-11-25 initialize handshake) as newline-delimited\n"
-                   "JSON-RPC on stdin/stdout. Logs go to stderr. Model files must lie inside an approved root\n"
+                   "JSON-RPC on stdin/stdout. Logs go to stderr. Model files must lie inside an approved "
+                   "root\n"
                    "(--model-root or settings.json). Closing stdin shuts the server down.\n";
             return 0;
         }
         auto need = [&](std::string& dst) {
-            if (i + 1 >= args.size()) return false;
+            if (i + 1 >= args.size())
+                return false;
             dst = args[++i];
             return true;
         };
         std::string v;
         if (a == "--model-root") {
-            if (!need(v)) { err << "error: --model-root needs a value [invalid_argument]\n"; return exit_code(ErrorCode::InvalidArgument); }
+            if (!need(v)) {
+                err << "error: --model-root needs a value [invalid_argument]\n";
+                return exit_code(ErrorCode::InvalidArgument);
+            }
             roots.push_back(v);
         } else if (a == "--timeout-s" || a == "--max-concurrent") {
-            if (!need(v) || v.empty() || v.size() > 6 || v.find_first_not_of("0123456789") != std::string::npos || std::stoul(v) == 0) {
+            if (!need(v) || v.empty() || v.size() > 6 ||
+                v.find_first_not_of("0123456789") != std::string::npos || std::stoul(v) == 0) {
                 err << "error: " << a << " needs a positive integer [invalid_argument]\n";
                 return exit_code(ErrorCode::InvalidArgument);
             }
-            if (a == "--timeout-s") mo.call_timeout = std::chrono::seconds(std::stoul(v));
-            else mo.max_concurrent_calls = std::stoul(v);
+            if (a == "--timeout-s")
+                mo.call_timeout = std::chrono::seconds(std::stoul(v));
+            else
+                mo.max_concurrent_calls = std::stoul(v);
         } else {
             err << "error: unknown option: " << a << " [invalid_argument]\n";
             return exit_code(ErrorCode::InvalidArgument);

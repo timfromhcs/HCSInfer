@@ -28,8 +28,10 @@ using nlohmann::json;
 const char* vision_help() {
     return "Usage: HCSInfer vision --model <path-or-id> --image <file> --prompt \"...\" [options]\n"
            "\n"
-           "Analyses one image with a multimodal GGUF model (llama.cpp + libmtmd). The model needs its vision\n"
-           "projector (mmproj GGUF): pass --mmproj, or place exactly one mmproj*.gguf next to the model file.\n"
+           "Analyses one image with a multimodal GGUF model (llama.cpp + libmtmd). The model needs its "
+           "vision\n"
+           "projector (mmproj GGUF): pass --mmproj, or place exactly one mmproj*.gguf next to the model "
+           "file.\n"
            "Supported image formats: png, jpeg, bmp, gif. Limits: 32 MiB encoded, 16 Mpixel decoded.\n"
            "\n"
            "Options:\n"
@@ -69,17 +71,22 @@ int run_vision(std::vector<std::string> args, const std::string&, std::ostream& 
 namespace {
 
 std::atomic<bool> g_interrupted{false};
-void vision_on_sigint(int) { g_interrupted.store(true); }
+void vision_on_sigint(int) {
+    g_interrupted.store(true);
+}
 
 int fail(std::ostream& err, const Error& e) {
     err << "error: " << e.message << " [" << to_string(e.code) << "]\n";
     return e.exit_code();
 }
-int fail(std::ostream& err, ErrorCode c, const std::string& m) { return fail(err, Error(c, m)); }
+int fail(std::ostream& err, ErrorCode c, const std::string& m) {
+    return fail(err, Error(c, m));
+}
 
 bool take_value(std::vector<std::string>& a, const std::string& flag, std::string& value, bool& bad) {
     auto it = std::find(a.begin(), a.end(), flag);
-    if (it == a.end()) return false;
+    if (it == a.end())
+        return false;
     if (it + 1 == a.end()) {
         bad = true;
         return true;
@@ -90,16 +97,21 @@ bool take_value(std::vector<std::string>& a, const std::string& flag, std::strin
 }
 bool take_flag(std::vector<std::string>& a, const std::string& flag) {
     auto it = std::find(a.begin(), a.end(), flag);
-    if (it == a.end()) return false;
+    if (it == a.end())
+        return false;
     a.erase(it);
     return true;
 }
 
 fs::path state_dir(const std::string& override_dir) {
-    if (!override_dir.empty()) return fs::path(override_dir);
-    if (const char* e = std::getenv("HCS_STATE_DIR"); e && *e) return fs::path(e);
-    if (const char* l = std::getenv("LOCALAPPDATA"); l && *l) return fs::path(l) / "HCSInfer";
-    if (const char* h = std::getenv("HOME"); h && *h) return fs::path(h) / ".hcsinfer";
+    if (!override_dir.empty())
+        return fs::path(override_dir);
+    if (const char* e = std::getenv("HCS_STATE_DIR"); e && *e)
+        return fs::path(e);
+    if (const char* l = std::getenv("LOCALAPPDATA"); l && *l)
+        return fs::path(l) / "HCSInfer";
+    if (const char* h = std::getenv("HOME"); h && *h)
+        return fs::path(h) / ".hcsinfer";
     return fs::path(".hcsinfer");
 }
 
@@ -107,16 +119,21 @@ Result<std::string> resolve_model(const std::string& spec, const std::string& st
     std::error_code ec;
     if (spec.find("..") != std::string::npos && fs::exists(spec, ec))
         return Error(ErrorCode::SecurityViolation, "model path must not contain '..'");
-    if (fs::is_regular_file(spec, ec)) return fs::weakly_canonical(spec, ec).string();
+    if (fs::is_regular_file(spec, ec))
+        return fs::weakly_canonical(spec, ec).string();
     const fs::path reg_file = state_dir(state_override) / "registry.json";
     if (fs::exists(reg_file, ec)) {
         auto text = read_file_limited(reg_file, 64u << 20);
-        if (!text) return text.error();
+        if (!text)
+            return text.error();
         ModelRegistry reg;
-        if (auto r = reg.load_json(text.value()); !r) return r.error();
-        if (auto m = reg.get(spec); m) return m.value().path;
+        if (auto r = reg.load_json(text.value()); !r)
+            return r.error();
+        if (auto m = reg.get(spec); m)
+            return m.value().path;
     }
-    return Error(ErrorCode::NotFound, "model '" + spec + "' is neither an existing file nor a registered model id");
+    return Error(ErrorCode::NotFound,
+                 "model '" + spec + "' is neither an existing file nor a registered model id");
 }
 
 // The single mmproj*.gguf beside the model (case-insensitive prefix); ambiguity is an error, not a guess.
@@ -125,14 +142,18 @@ Result<std::string> find_sibling_projector(const fs::path& model) {
     std::vector<fs::path> found;
     for (const auto& e : fs::directory_iterator(model.parent_path(), ec)) {
         std::error_code ec2;
-        if (!e.is_regular_file(ec2)) continue;
+        if (!e.is_regular_file(ec2))
+            continue;
         std::string n = e.path().filename().string();
-        std::transform(n.begin(), n.end(), n.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-        if (n.rfind("mmproj", 0) == 0 && e.path().extension() == ".gguf") found.push_back(e.path());
+        std::transform(n.begin(), n.end(), n.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        if (n.rfind("mmproj", 0) == 0 && e.path().extension() == ".gguf")
+            found.push_back(e.path());
     }
     if (found.empty())
-        return Error(ErrorCode::InvalidArgument,
-                     "no vision projector given: pass --mmproj <file> (no mmproj*.gguf found beside the model)");
+        return Error(
+            ErrorCode::InvalidArgument,
+            "no vision projector given: pass --mmproj <file> (no mmproj*.gguf found beside the model)");
     if (found.size() > 1)
         return Error(ErrorCode::InvalidArgument,
                      "several mmproj*.gguf files sit beside the model; pass --mmproj <file> explicitly");
@@ -143,7 +164,8 @@ Result<std::string> find_sibling_projector(const fs::path& model) {
 
 int run_vision(std::vector<std::string> args, const std::string& state_override, std::ostream& out,
                std::ostream& err) {
-    if (std::any_of(args.begin(), args.end(), [](const std::string& a) { return a == "--help" || a == "-h"; })) {
+    if (std::any_of(args.begin(), args.end(),
+                    [](const std::string& a) { return a == "--help" || a == "-h"; })) {
         out << vision_help();
         return 0;
     }
@@ -164,29 +186,44 @@ int run_vision(std::vector<std::string> args, const std::string& state_override,
     take_value(args, "--seed", v_seed, bad);
     take_value(args, "--threads", v_thr, bad);
     const bool as_json = take_flag(args, "--json");
-    if (bad) return fail(err, ErrorCode::InvalidArgument, "an option is missing its value");
-    if (!args.empty()) return fail(err, ErrorCode::InvalidArgument, "unexpected argument: " + args.front());
-    if (model.empty()) return fail(err, ErrorCode::InvalidArgument, "--model is required");
-    if (image.empty()) return fail(err, ErrorCode::InvalidArgument, "--image is required");
-    if (!has_prompt || prompt.empty()) return fail(err, ErrorCode::InvalidArgument, "--prompt is required");
+    if (bad)
+        return fail(err, ErrorCode::InvalidArgument, "an option is missing its value");
+    if (!args.empty())
+        return fail(err, ErrorCode::InvalidArgument, "unexpected argument: " + args.front());
+    if (model.empty())
+        return fail(err, ErrorCode::InvalidArgument, "--model is required");
+    if (image.empty())
+        return fail(err, ErrorCode::InvalidArgument, "--image is required");
+    if (!has_prompt || prompt.empty())
+        return fail(err, ErrorCode::InvalidArgument, "--prompt is required");
 
     LoadRequest lr;
     VisionRequest vr;
     vr.text.temperature = 0.2f;
     try {
-        if (!v_gpu.empty()) lr.gpu_layers = std::stoi(v_gpu);
-        if (!v_ctx.empty()) lr.context_tokens = static_cast<std::uint32_t>(std::stoul(v_ctx));
-        if (!v_thr.empty()) lr.threads = std::stoi(v_thr);
-        if (!v_max.empty()) vr.text.max_tokens = static_cast<std::uint32_t>(std::stoul(v_max));
-        if (!v_temp.empty()) vr.text.temperature = std::stof(v_temp);
-        if (!v_seed.empty()) vr.text.seed = std::stoull(v_seed);
+        if (!v_gpu.empty())
+            lr.gpu_layers = std::stoi(v_gpu);
+        if (!v_ctx.empty())
+            lr.context_tokens = static_cast<std::uint32_t>(std::stoul(v_ctx));
+        if (!v_thr.empty())
+            lr.threads = std::stoi(v_thr);
+        if (!v_max.empty())
+            vr.text.max_tokens = static_cast<std::uint32_t>(std::stoul(v_max));
+        if (!v_temp.empty())
+            vr.text.temperature = std::stof(v_temp);
+        if (!v_seed.empty())
+            vr.text.seed = std::stoull(v_seed);
     } catch (const std::exception&) {
         return fail(err, ErrorCode::InvalidArgument, "a numeric option has an invalid value");
     }
-    if (backend == "cpu") lr.backend = Backend::Cpu;
-    else if (backend == "vulkan") lr.backend = Backend::Vulkan;
-    else if (backend == "auto") lr.backend = Backend::Auto;
-    else return fail(err, ErrorCode::InvalidArgument, "--backend must be auto, cpu or vulkan");
+    if (backend == "cpu")
+        lr.backend = Backend::Cpu;
+    else if (backend == "vulkan")
+        lr.backend = Backend::Vulkan;
+    else if (backend == "auto")
+        lr.backend = Backend::Auto;
+    else
+        return fail(err, ErrorCode::InvalidArgument, "--backend must be auto, cpu or vulkan");
     lr.device = device;
     vr.text.prompt = prompt;
     vr.text.system_prompt = system;
@@ -196,34 +233,41 @@ int run_vision(std::vector<std::string> args, const std::string& state_override,
         std::error_code ec;
         if (image.find("..") != std::string::npos)
             return fail(err, ErrorCode::SecurityViolation, "image path must not contain '..'");
-        if (!fs::is_regular_file(image, ec)) return fail(err, ErrorCode::NotFound, "image file not found: " + image);
+        if (!fs::is_regular_file(image, ec))
+            return fail(err, ErrorCode::NotFound, "image file not found: " + image);
         auto bytes = read_file_limited(image, engines::LlamaTextEngine::kMaxVisionImageBytes);
-        if (!bytes) return fail(err, bytes.error());
+        if (!bytes)
+            return fail(err, bytes.error());
         vr.image.bytes.assign(bytes.value().begin(), bytes.value().end());
     }
 
     auto path = resolve_model(model, state_override);
-    if (!path) return fail(err, path.error());
+    if (!path)
+        return fail(err, path.error());
     lr.model_path = path.value();
     lr.model_id = model;
     if (mmproj.empty()) {
         auto p = find_sibling_projector(fs::path(lr.model_path));
-        if (!p) return fail(err, p.error());
+        if (!p)
+            return fail(err, p.error());
         lr.projector_path = p.value();
     } else {
         std::error_code ec;
         if (mmproj.find("..") != std::string::npos)
             return fail(err, ErrorCode::SecurityViolation, "mmproj path must not contain '..'");
-        if (!fs::is_regular_file(mmproj, ec)) return fail(err, ErrorCode::NotFound, "mmproj file not found: " + mmproj);
+        if (!fs::is_regular_file(mmproj, ec))
+            return fail(err, ErrorCode::NotFound, "mmproj file not found: " + mmproj);
         lr.projector_path = fs::weakly_canonical(mmproj, ec).string();
     }
 
     JobQueue queue;
     engines::LlamaTextEngine engine(queue);
-    if (auto r = engine.load(lr); !r) return fail(err, r.error());
+    if (auto r = engine.load(lr); !r)
+        return fail(err, r.error());
     const EngineMetrics lm = engine.metrics();
     if (!as_json) {
-        err << "[hcsinfer] backend=" << lm.backend << " device=" << lm.device << " load_ms=" << static_cast<long>(lm.load_ms)
+        err << "[hcsinfer] backend=" << lm.backend << " device=" << lm.device
+            << " load_ms=" << static_cast<long>(lm.load_ms)
             << " vision=" << (engine.vision_loaded() ? "yes" : "no") << "\n";
     }
 
@@ -231,7 +275,8 @@ int run_vision(std::vector<std::string> args, const std::string& state_override,
     std::mutex text_mu;
     std::string text;
     auto id = engine.analyze_image(vr, [&](const JobEvent& ev) {
-        if (ev.kind != JobEventKind::Output) return;
+        if (ev.kind != JobEventKind::Output)
+            return;
         std::lock_guard l(text_mu);
         text += ev.text;
         if (!as_json) {
@@ -258,7 +303,8 @@ int run_vision(std::vector<std::string> args, const std::string& state_override,
         return rc;
     }
     const EngineMetrics m = engine.metrics();
-    if (!as_json) out << "\n";
+    if (!as_json)
+        out << "\n";
     int rc = 0;
     if (!as_json)
         err << "[hcsinfer] ttft_ms=" << static_cast<long>(m.ttft_ms) << " prompt_tokens=" << m.prompt_tokens

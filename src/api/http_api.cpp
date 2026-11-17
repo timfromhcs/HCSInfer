@@ -22,9 +22,11 @@ namespace {
 
 using json = nlohmann::json;
 
-// Model output is not guaranteed to be valid UTF-8 (a stray continuation byte, a flushed partial sequence): never let
-// serialisation throw and turn a successful generation into a 500 (M10 audit C4).
-std::string dump_safe(const json& j) { return j.dump(-1, ' ', false, json::error_handler_t::replace); }
+// Model output is not guaranteed to be valid UTF-8 (a stray continuation byte, a flushed partial sequence):
+// never let serialisation throw and turn a successful generation into a 500 (M10 audit C4).
+std::string dump_safe(const json& j) {
+    return j.dump(-1, ' ', false, json::error_handler_t::replace);
+}
 
 std::string lower(std::string s) {
     for (auto& c : s) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
@@ -40,31 +42,51 @@ bool ct_equal(std::string_view a, std::string_view b) {
 
 int http_status_for(ErrorCode c) {
     switch (c) {
-        case ErrorCode::Ok: return 200;
-        case ErrorCode::InvalidArgument: return 400;
-        case ErrorCode::ModelError: return 422;
-        case ErrorCode::BackendError: return 502;
-        case ErrorCode::OutOfMemory: return 503;
-        case ErrorCode::Cancelled: return 409;
-        case ErrorCode::NotFound: return 404;
-        case ErrorCode::IoError: return 500;
-        case ErrorCode::SecurityViolation: return 403;
-        case ErrorCode::Unsupported: return 501;
-        case ErrorCode::InvalidState: return 409;
-        case ErrorCode::AlreadyExists: return 409;
-        case ErrorCode::Busy: return 429;
-        case ErrorCode::Timeout: return 504;
-        case ErrorCode::Internal: return 500;
+        case ErrorCode::Ok:
+            return 200;
+        case ErrorCode::InvalidArgument:
+            return 400;
+        case ErrorCode::ModelError:
+            return 422;
+        case ErrorCode::BackendError:
+            return 502;
+        case ErrorCode::OutOfMemory:
+            return 503;
+        case ErrorCode::Cancelled:
+            return 409;
+        case ErrorCode::NotFound:
+            return 404;
+        case ErrorCode::IoError:
+            return 500;
+        case ErrorCode::SecurityViolation:
+            return 403;
+        case ErrorCode::Unsupported:
+            return 501;
+        case ErrorCode::InvalidState:
+            return 409;
+        case ErrorCode::AlreadyExists:
+            return 409;
+        case ErrorCode::Busy:
+            return 429;
+        case ErrorCode::Timeout:
+            return 504;
+        case ErrorCode::Internal:
+            return 500;
     }
     return 500;
 }
 
 std::string type_for(int status) {
-    if (status == 401) return "authentication_error";
-    if (status == 403) return "permission_error";
-    if (status == 404) return "not_found_error";
-    if (status == 429) return "rate_limit_error";
-    if (status >= 500) return "server_error";
+    if (status == 401)
+        return "authentication_error";
+    if (status == 403)
+        return "permission_error";
+    if (status == 404)
+        return "not_found_error";
+    if (status == 429)
+        return "rate_limit_error";
+    if (status >= 500)
+        return "server_error";
     return "invalid_request_error";
 }
 
@@ -72,9 +94,13 @@ std::vector<std::string> split_path(const std::string& p) {
     std::vector<std::string> out;
     std::size_t i = 0;
     while (i < p.size()) {
-        if (p[i] == '/') { ++i; continue; }
+        if (p[i] == '/') {
+            ++i;
+            continue;
+        }
         std::size_t j = p.find('/', i);
-        if (j == std::string::npos) j = p.size();
+        if (j == std::string::npos)
+            j = p.size();
         out.push_back(p.substr(i, j - i));
         i = j;
     }
@@ -94,15 +120,20 @@ std::string host_part(const std::string& hp) {
 
 bool is_ipv4_literal(const std::string& h) {
     int dots = 0;
-    if (h.empty()) return false;
+    if (h.empty())
+        return false;
     for (char c : h) {
-        if (c == '.') ++dots;
-        else if (c < '0' || c > '9') return false;
+        if (c == '.')
+            ++dots;
+        else if (c < '0' || c > '9')
+            return false;
     }
     return dots == 3 && h.front() != '.' && h.back() != '.' && h.find("..") == std::string::npos;
 }
 
-bool is_ipv6_literal(const std::string& h) { return h.size() >= 3 && h.front() == '[' && h.back() == ']'; }
+bool is_ipv6_literal(const std::string& h) {
+    return h.size() >= 3 && h.front() == '[' && h.back() == ']';
+}
 
 }  // namespace
 
@@ -165,7 +196,9 @@ ApiHandler::ApiHandler(ControlPlane& cp, ApiOptions options, Logger& logger)
     chat_schema_ = chat_completions_schema(cp_.options().max_tokens_cap);
 }
 
-void ApiHandler::set_port(int port) { port_.store(port); }
+void ApiHandler::set_port(int port) {
+    port_.store(port);
+}
 
 std::string ApiHandler::new_request_id() {
     std::lock_guard lk(rng_mutex_);
@@ -182,44 +215,62 @@ std::string ApiHandler::new_request_id() {
 }
 
 bool ApiHandler::host_allowed(const std::string& host_header) const {
-    if (host_header.empty() || host_header.size() > 255) return false;
+    if (host_header.empty() || host_header.size() > 255)
+        return false;
     const std::string h = host_part(host_header);
-    if (h == "localhost" || h == "127.0.0.1" || h == "[::1]") return true;
-    if (h == lower(opt_.bind_host) || h == "[" + lower(opt_.bind_host) + "]") return true;
+    if (h == "localhost" || h == "127.0.0.1" || h == "[::1]")
+        return true;
+    if (h == lower(opt_.bind_host) || h == "[" + lower(opt_.bind_host) + "]")
+        return true;
     for (const auto& a : opt_.allowed_hosts)
-        if (h == lower(a)) return true;
+        if (h == lower(a))
+            return true;
     // LAN opt-in: IP literals cannot be DNS-rebound, names can, so names stay allow-listed only.
-    if (opt_.lan && (is_ipv4_literal(h) || is_ipv6_literal(h))) return true;
+    if (opt_.lan && (is_ipv4_literal(h) || is_ipv6_literal(h)))
+        return true;
     return false;
 }
 
 bool ApiHandler::origin_allowed(const std::string& origin) const {
-    if (origin.empty() || origin.size() > 255) return false;
+    if (origin.empty() || origin.size() > 255)
+        return false;
     for (const auto& a : opt_.allowed_origins)
-        if (lower(a) == lower(origin)) return true;
+        if (lower(a) == lower(origin))
+            return true;
     const std::string o = lower(origin);
     std::string rest;
-    if (o.rfind("http://", 0) == 0) rest = o.substr(7);
-    else if (o.rfind("https://", 0) == 0) rest = o.substr(8);
-    else return false;  // includes "null" and file:// origins
-    if (rest.find('/') != std::string::npos) return false;
-    if (!host_allowed(rest)) return false;
+    if (o.rfind("http://", 0) == 0)
+        rest = o.substr(7);
+    else if (o.rfind("https://", 0) == 0)
+        rest = o.substr(8);
+    else
+        return false;  // includes "null" and file:// origins
+    if (rest.find('/') != std::string::npos)
+        return false;
+    if (!host_allowed(rest))
+        return false;
     // Same port as this server: another local web app is still a cross-origin caller.
     std::string port_text;
     if (!rest.empty() && rest[0] == '[') {
         const auto e = rest.find(']');
-        if (e != std::string::npos && e + 1 < rest.size() && rest[e + 1] == ':') port_text = rest.substr(e + 2);
+        if (e != std::string::npos && e + 1 < rest.size() && rest[e + 1] == ':')
+            port_text = rest.substr(e + 2);
     } else if (const auto c = rest.find(':'); c != std::string::npos) {
         port_text = rest.substr(c + 1);
     }
     return port_text == std::to_string(port_.load());
 }
 
-HttpResponse ApiHandler::error(int status, const std::string& type, const std::string& code, const std::string& msg,
-                               const std::string& rid) const {
+HttpResponse ApiHandler::error(int status, const std::string& type, const std::string& code,
+                               const std::string& msg, const std::string& rid) const {
     HttpResponse r;
     r.status = status;
-    json j = {{"error", {{"message", redact_paths(msg)}, {"type", type}, {"code", code}, {"param", nullptr}, {"request_id", rid}}}};
+    json j = {{"error",
+               {{"message", redact_paths(msg)},
+                {"type", type},
+                {"code", code},
+                {"param", nullptr},
+                {"request_id", rid}}}};
     r.body = dump_safe(j);
     return r;
 }
@@ -227,7 +278,8 @@ HttpResponse ApiHandler::error(int status, const std::string& type, const std::s
 HttpResponse ApiHandler::from_error(const Error& e, const std::string& rid) const {
     const int st = http_status_for(e.code);
     auto r = error(st, type_for(st), std::string(to_string(e.code)), e.message, rid);
-    if (st == 429) r.headers.emplace_back("Retry-After", "1");
+    if (st == 429)
+        r.headers.emplace_back("Retry-After", "1");
     return r;
 }
 
@@ -253,9 +305,10 @@ HttpResponse ApiHandler::handle(const HttpRequest& req) {
             resp = error(403, "permission_error", "origin_not_allowed", "Origin is not allowed", rid);
 #ifdef HCS_HAVE_GUI
         } else if (auto g = hcs::gui::serve(req.method, req.path)) {
-            // Embedded web UI (ADR-009): static assets, no secret inside, reachable only after the Host/Origin checks
-            // above and before bearer auth (the page itself carries no token; the user supplies it in the URL
-            // fragment, which is never sent to the server). Not counted as an in-flight API request.
+            // Embedded web UI (ADR-009): static assets, no secret inside, reachable only after the
+            // Host/Origin checks above and before bearer auth (the page itself carries no token; the user
+            // supplies it in the URL fragment, which is never sent to the server). Not counted as an
+            // in-flight API request.
             resp.status = g->status;
             resp.content_type = g->content_type;
             resp.headers = g->headers;
@@ -263,7 +316,8 @@ HttpResponse ApiHandler::handle(const HttpRequest& req) {
 #endif
         } else if (!is_health && [&] {
                        const std::string a = get("authorization");
-                       if (a.size() < 8 || lower(a.substr(0, 7)) != "bearer ") return true;
+                       if (a.size() < 8 || lower(a.substr(0, 7)) != "bearer ")
+                           return true;
                        return opt_.token.empty() || !ct_equal(a.substr(7), opt_.token);
                    }()) {
             resp = error(401, "authentication_error", "unauthorized", "missing or invalid bearer token", rid);
@@ -272,17 +326,20 @@ HttpResponse ApiHandler::handle(const HttpRequest& req) {
             std::shared_ptr<Inflight> guard;
             // Health and job cancellation are never throttled: cancelling is the way out of overload.
             const bool is_cancel = req.method == "POST" && req.path.rfind("/hcs/v1/jobs/", 0) == 0 &&
-                                   req.path.size() > 7 && req.path.compare(req.path.size() - 7, 7, "/cancel") == 0;
+                                   req.path.size() > 7 &&
+                                   req.path.compare(req.path.size() - 7, 7, "/cancel") == 0;
             if (!is_health && !is_cancel) {
                 if (inflight_.fetch_add(1) >= opt_.max_inflight) {
                     inflight_.fetch_sub(1);
-                    resp = error(429, "rate_limit_error", "too_many_requests", "too many concurrent requests", rid);
+                    resp = error(429, "rate_limit_error", "too_many_requests", "too many concurrent requests",
+                                 rid);
                     resp.headers.emplace_back("Retry-After", "1");
                 } else {
                     guard = std::make_shared<Inflight>(inflight_);
                 }
             }
-            if (is_health || is_cancel || guard) resp = dispatch(req, rid, guard);
+            if (is_health || is_cancel || guard)
+                resp = dispatch(req, rid, guard);
         }
     } catch (const std::exception& e) {
         log_.error("api", "unhandled exception", {{"rid", rid}, {"what", e.what()}});
@@ -291,17 +348,20 @@ HttpResponse ApiHandler::handle(const HttpRequest& req) {
     resp.headers.emplace_back("X-Request-Id", rid);
     resp.headers.emplace_back("X-Content-Type-Options", "nosniff");
     resp.headers.emplace_back("Cache-Control", "no-store");
-    log_.info("api", "request",
-              {{"method", req.method}, {"path", req.path}, {"status", std::to_string(resp.status)}, {"rid", rid}});
+    log_.info(
+        "api", "request",
+        {{"method", req.method}, {"path", req.path}, {"status", std::to_string(resp.status)}, {"rid", rid}});
     return resp;
 }
 
-HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid, const std::shared_ptr<Inflight>& guard) {
+HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid,
+                                  const std::shared_ptr<Inflight>& guard) {
     const auto seg = split_path(req.path);
     const bool is_get = req.method == "GET";
     const bool is_post = req.method == "POST";
     auto not_allowed = [&](const char* allow) {
-        auto r = error(405, "invalid_request_error", "method_not_allowed", "method not allowed for this route", rid);
+        auto r = error(405, "invalid_request_error", "method_not_allowed",
+                       "method not allowed for this route", rid);
         r.headers.emplace_back("Allow", allow);
         return r;
     };
@@ -311,21 +371,30 @@ HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid
 
     // --- OpenAI-compatible ---
     if (req.path == "/v1/models") {
-        if (!is_get) return not_allowed("GET");
+        if (!is_get)
+            return not_allowed("GET");
         json data = json::array();
         for (const auto& v : cp_.models()) {
-            if (v.manifest.kind == ModelKind::Image) continue;
-            data.push_back({{"id", v.manifest.id}, {"object", "model"}, {"created", 0}, {"owned_by", "local"},
-                            {"hcs", {{"state", std::string(to_string(v.state))}, {"quantization", v.manifest.quantization}}}});
+            if (v.manifest.kind == ModelKind::Image)
+                continue;
+            data.push_back(
+                {{"id", v.manifest.id},
+                 {"object", "model"},
+                 {"created", 0},
+                 {"owned_by", "local"},
+                 {"hcs",
+                  {{"state", std::string(to_string(v.state))}, {"quantization", v.manifest.quantization}}}});
         }
         return json_ok({{"object", "list"}, {"data", data}});
     }
     if (req.path == "/v1/chat/completions") {
-        if (!is_post) return not_allowed("POST");
+        if (!is_post)
+            return not_allowed("POST");
         return chat(req, rid, guard);
     }
     if (req.path == "/v1/images/generations" || req.path == "/v1/images/edits") {
-        if (!is_post) return not_allowed("POST");
+        if (!is_post)
+            return not_allowed("POST");
         return images(req, rid, guard, req.path == "/v1/images/edits");
     }
 
@@ -334,84 +403,111 @@ HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid
         const std::string& a = seg[2];
         if (seg.size() == 3) {
             if (a == "health") {
-                if (!is_get) return not_allowed("GET");
+                if (!is_get)
+                    return not_allowed("GET");
                 return json_ok({{"status", "ok"}, {"version", cp_.options().version}});
             }
             if (a == "runtime" || a == "devices" || a == "memory" || a == "models") {
-                if (!is_get) return not_allowed("GET");
-                if (a == "runtime") return json_ok(cp_.runtime_json());
-                if (a == "devices") return json_ok(cp_.devices_json());
-                if (a == "memory") return json_ok(cp_.memory_json());
+                if (!is_get)
+                    return not_allowed("GET");
+                if (a == "runtime")
+                    return json_ok(cp_.runtime_json());
+                if (a == "devices")
+                    return json_ok(cp_.devices_json());
+                if (a == "memory")
+                    return json_ok(cp_.memory_json());
                 json arr = json::array();
                 for (const auto& v : cp_.models()) arr.push_back(cp_.model_json(v));
                 return json_ok({{"models", arr}});
             }
             if (a == "benchmarks") {
-                if (!is_post) return not_allowed("POST");
+                if (!is_post)
+                    return not_allowed("POST");
                 return error(501, "server_error", "unsupported", "benchmarks are not implemented yet", rid);
             }
         }
         if (a == "models" && seg.size() == 4) {
-            if (!is_get) return not_allowed("GET");
+            if (!is_get)
+                return not_allowed("GET");
             auto v = cp_.model(seg[3]);
-            if (!v) return from_error(v.error(), rid);
+            if (!v)
+                return from_error(v.error(), rid);
             return json_ok(cp_.model_json(v.value()));
         }
         if (a == "models" && seg.size() == 5 && (seg[4] == "load" || seg[4] == "unload")) {
-            if (!is_post) return not_allowed("POST");
+            if (!is_post)
+                return not_allowed("POST");
             if (seg[4] == "load") {
                 auto id = cp_.submit_load(seg[3]);
-                if (!id) return from_error(id.error(), rid);
-                json j = {{"job_id", to_string(id.value())}, {"status_url", "/hcs/v1/jobs/" + to_string(id.value())}};
+                if (!id)
+                    return from_error(id.error(), rid);
+                json j = {{"job_id", to_string(id.value())},
+                          {"status_url", "/hcs/v1/jobs/" + to_string(id.value())}};
                 return json_ok(j, 202);
             }
             auto v = cp_.model(seg[3]);
-            if (!v) return from_error(v.error(), rid);
+            if (!v)
+                return from_error(v.error(), rid);
             const auto lm = cp_.loaded_model();
             if (!lm || *lm != seg[3])
                 return error(409, "invalid_request_error", "invalid_state", "that model is not loaded", rid);
-            if (auto r = cp_.unload_model(); !r) return from_error(r.error(), rid);
+            if (auto r = cp_.unload_model(); !r)
+                return from_error(r.error(), rid);
             return json_ok({{"id", seg[3]}, {"state", "unloaded"}});
         }
         if (a == "jobs" && (seg.size() == 4 || (seg.size() == 5 && seg[4] == "cancel"))) {
             auto id = ControlPlane::parse_job_id(seg[3]);
-            if (!id) return error(400, "invalid_request_error", "invalid_argument", "malformed job id", rid);
+            if (!id)
+                return error(400, "invalid_request_error", "invalid_argument", "malformed job id", rid);
             if (seg.size() == 4) {
-                if (!is_get) return not_allowed("GET");
+                if (!is_get)
+                    return not_allowed("GET");
                 auto st = cp_.job_status(*id);
-                if (!st) return from_error(st.error(), rid);
+                if (!st)
+                    return from_error(st.error(), rid);
                 return json_ok(cp_.job_json(st.value()));
             }
-            if (!is_post) return not_allowed("POST");
-            if (auto r = cp_.cancel_job(*id); !r) return from_error(r.error(), rid);
+            if (!is_post)
+                return not_allowed("POST");
+            if (auto r = cp_.cancel_job(*id); !r)
+                return from_error(r.error(), rid);
             auto st = cp_.job_status(*id);
-            if (!st) return from_error(st.error(), rid);
+            if (!st)
+                return from_error(st.error(), rid);
             return json_ok(cp_.job_json(st.value()));
         }
     }
     return error(404, "not_found_error", "not_found", "no such route", rid);
 }
 
-HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, const std::shared_ptr<Inflight>& guard) {
+HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,
+                              const std::shared_ptr<Inflight>& guard) {
     using clock = std::chrono::steady_clock;
     auto ct = req.headers.find("content-type");
     if (ct == req.headers.end() || lower(ct->second).rfind("application/json", 0) != 0)
-        return error(415, "invalid_request_error", "unsupported_media_type", "Content-Type must be application/json", rid);
+        return error(415, "invalid_request_error", "unsupported_media_type",
+                     "Content-Type must be application/json", rid);
     if (req.body.size() > opt_.max_body_bytes)
-        return error(413, "invalid_request_error", "payload_too_large", "request body exceeds the configured limit", rid);
+        return error(413, "invalid_request_error", "payload_too_large",
+                     "request body exceeds the configured limit", rid);
     if (!json_depth_ok(req.body, kMaxJsonDepth))
         return error(400, "invalid_request_error", "invalid_json", "JSON nesting too deep", rid);
     json body = json::parse(req.body, nullptr, false);
-    if (body.is_discarded()) return error(400, "invalid_request_error", "invalid_json", "malformed JSON body", rid);
+    if (body.is_discarded())
+        return error(400, "invalid_request_error", "invalid_json", "malformed JSON body", rid);
     if (auto v = validate_json(chat_schema_, body); !v)
         return error(400, "invalid_request_error", "invalid_request", v.error().message, rid);
     for (const char* k : {"tools", "functions", "tool_choice", "function_call"}) {
-        if (body.contains(k)) return error(501, "server_error", "unsupported", std::string("'") + k + "' is not supported", rid);
+        if (body.contains(k))
+            return error(501, "server_error", "unsupported", std::string("'") + k + "' is not supported",
+                         rid);
     }
     if (body.contains("response_format") &&
         !(body["response_format"].is_object() && body["response_format"].contains("type") &&
-          body["response_format"]["type"].is_string() && body["response_format"]["type"].get<std::string>() == "text"))
-        return error(501, "server_error", "unsupported", "only response_format {\"type\":\"text\"} is supported", rid);
+          body["response_format"]["type"].is_string() &&
+          body["response_format"]["type"].get<std::string>() == "text"))
+        return error(501, "server_error", "unsupported",
+                     "only response_format {\"type\":\"text\"} is supported", rid);
 
     ChatParams p;
     p.model = body.value("model", "");
@@ -443,45 +539,57 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
                         return error(400, "invalid_request_error", "invalid_request",
                                      "images are only allowed in user messages", rid);
                     auto img = decode_image_data_uri(uri, cp_.options().max_image_bytes);
-                    if (!img) return error(400, "invalid_request_error", "invalid_image", img.error().message, rid);
+                    if (!img)
+                        return error(400, "invalid_request_error", "invalid_image", img.error().message, rid);
                     cm.images.push_back(std::move(img.value()));
                 } else if (t == "input_image") {
                     return error(400, "invalid_request_error", "invalid_request",
-                                 "unsupported content part type 'input_image'; use {\"type\":\"image_url\"} with a data URI", rid);
+                                 "unsupported content part type 'input_image'; use {\"type\":\"image_url\"} "
+                                 "with a data URI",
+                                 rid);
                 } else {
-                    return error(400, "invalid_request_error", "invalid_request", "unsupported content part type '" + t + "'", rid);
+                    return error(400, "invalid_request_error", "invalid_request",
+                                 "unsupported content part type '" + t + "'", rid);
                 }
             }
         }
         p.messages.push_back(std::move(cm));
     }
-    if (body.contains("max_tokens")) p.max_tokens = body["max_tokens"].get<std::uint32_t>();
-    else if (body.contains("max_completion_tokens")) p.max_tokens = body["max_completion_tokens"].get<std::uint32_t>();
-    if (body.contains("temperature")) p.temperature = body["temperature"].get<float>();
-    if (body.contains("seed")) p.seed = body["seed"].get<std::uint64_t>();
+    if (body.contains("max_tokens"))
+        p.max_tokens = body["max_tokens"].get<std::uint32_t>();
+    else if (body.contains("max_completion_tokens"))
+        p.max_tokens = body["max_completion_tokens"].get<std::uint32_t>();
+    if (body.contains("temperature"))
+        p.temperature = body["temperature"].get<float>();
+    if (body.contains("seed"))
+        p.seed = body["seed"].get<std::uint64_t>();
     const bool stream = body.value("stream", false);
 
     auto sub = cp_.submit_chat(p);
-    if (!sub) return from_error(sub.error(), rid);
+    if (!sub)
+        return from_error(sub.error(), rid);
     const JobId job = sub.value().id;
     auto channel = sub.value().channel;
     const auto deadline = clock::now() + opt_.request_timeout;
-    // A request whose client is gone must not keep the single engine worker busy (M10 audit D3). The transport's
-    // probe is polled in short slices while we wait for output.
+    // A request whose client is gone must not keep the single engine worker busy (M10 audit D3). The
+    // transport's probe is polled in short slices while we wait for output.
     const auto peer_closed = req.peer_closed;
     constexpr auto kPoll = std::chrono::milliseconds(150);
     auto next_probe = clock::now();
     auto peer_gone = [&peer_closed, &next_probe, kPoll] {
-        if (!peer_closed) return false;
+        if (!peer_closed)
+            return false;
         const auto now = clock::now();
-        if (now < next_probe) return false;  // one cheap socket probe per poll interval, not one per token
+        if (now < next_probe)
+            return false;  // one cheap socket probe per poll interval, not one per token
         next_probe = now + kPoll;
         return peer_closed();
     };
     auto abandoned = [&]() {
         (void)cp_.cancel_job(job);
         (void)cp_.wait_job(job, std::chrono::milliseconds(2000));
-        return error(499, "invalid_request_error", "client_closed_request", "client closed the connection", rid);
+        return error(499, "invalid_request_error", "client_closed_request", "client closed the connection",
+                     rid);
     };
     const std::string cid = "chatcmpl-" + std::to_string(job.value);
     const std::int64_t created = static_cast<std::int64_t>(std::time(nullptr));
@@ -498,31 +606,40 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
         JobEvent ev;
         switch (channel->pop(ev, std::min(deadline, clock::now() + kPoll))) {
             case JobChannel::Pop::Event:
-                if (ev.kind == JobEventKind::Output) { first = std::move(ev.text); got_first = true; }
+                if (ev.kind == JobEventKind::Output) {
+                    first = std::move(ev.text);
+                    got_first = true;
+                }
                 break;
-            case JobChannel::Pop::Done: finished = true; break;
+            case JobChannel::Pop::Done:
+                finished = true;
+                break;
             case JobChannel::Pop::Timeout:
                 if (clock::now() >= deadline) {
                     (void)cp_.cancel_job(job);
                     (void)cp_.wait_job(job, std::chrono::milliseconds(2000));
                     return error(504, "server_error", "timeout", "request timed out", rid);
                 }
-                if (peer_gone()) return abandoned();
+                if (peer_gone())
+                    return abandoned();
                 break;
         }
     }
-    if (!finished && peer_gone()) return abandoned();
+    if (!finished && peer_gone())
+        return abandoned();
     if (finished && !got_first) {
         auto st = cp_.job_status(job);
         if (st && (st.value().state == JobState::Failed || st.value().state == JobState::Cancelled)) {
-            if (st.value().error) return from_error(*st.value().error, rid);
+            if (st.value().error)
+                return from_error(*st.value().error, rid);
             return error(409, "invalid_request_error", "cancelled", "job was cancelled", rid);
         }
     }
 
     auto usage_json = [this, job]() -> json {
         auto r = cp_.chat_result(job);
-        if (!r) return nullptr;
+        if (!r)
+            return nullptr;
         return {{"prompt_tokens", r.value().prompt_tokens},
                 {"completion_tokens", r.value().completion_tokens},
                 {"total_tokens", r.value().prompt_tokens + r.value().completion_tokens}};
@@ -538,9 +655,12 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
             JobEvent ev;
             switch (channel->pop(ev, std::min(deadline, clock::now() + kPoll))) {
                 case JobChannel::Pop::Event:
-                    if (ev.kind == JobEventKind::Output) text += ev.text;
+                    if (ev.kind == JobEventKind::Output)
+                        text += ev.text;
                     break;
-                case JobChannel::Pop::Done: finished = true; break;
+                case JobChannel::Pop::Done:
+                    finished = true;
+                    break;
                 case JobChannel::Pop::Timeout:
                     if (clock::now() >= deadline) {
                         (void)cp_.cancel_job(job);
@@ -549,12 +669,15 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
                     }
                     break;
             }
-            // Events keep flowing while a generation runs, so poll the peer on every iteration, not only on idle.
-            if (!finished && peer_gone()) return abandoned();
+            // Events keep flowing while a generation runs, so poll the peer on every iteration, not only on
+            // idle.
+            if (!finished && peer_gone())
+                return abandoned();
         }
         auto st = cp_.job_status(job);
         if (st && st.value().state != JobState::Succeeded) {
-            if (st.value().error) return from_error(*st.value().error, rid);
+            if (st.value().error)
+                return from_error(*st.value().error, rid);
             return error(409, "invalid_request_error", "cancelled", "job was cancelled", rid);
         }
         json j = {{"id", cid},
@@ -572,68 +695,79 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
     HttpResponse r;
     r.content_type = "text/event-stream";
     r.headers.emplace_back("X-Accel-Buffering", "no");
-    r.stream = [this, guard, channel, job, cid, created, model_name, first = std::move(first), got_first, finished,
-                deadline, usage_json, finish_reason, rid, peer_closed](const StreamWriter& write) {
+    r.stream = [this, guard, channel, job, cid, created, model_name, first = std::move(first), got_first,
+                finished, deadline, usage_json, finish_reason, rid, peer_closed](const StreamWriter& write) {
         (void)guard;  // keeps the in-flight slot until streaming ends
         try {
-        auto chunk = [&](const json& delta, const json& fr, const json* usage) {
-            json j = {{"id", cid},
-                      {"object", "chat.completion.chunk"},
-                      {"created", created},
-                      {"model", model_name()},
-                      {"choices", json::array({json{{"index", 0}, {"delta", delta}, {"finish_reason", fr}}})}};
-            if (usage) j["usage"] = *usage;
-            return "data: " + dump_safe(j) + "\n\n";
-        };
-        if (!write(chunk({{"role", "assistant"}, {"content", ""}}, nullptr, nullptr))) {
-            (void)cp_.cancel_job(job);
-            return;
-        }
-        if (got_first && !write(chunk({{"content", first}}, nullptr, nullptr))) {
-            (void)cp_.cancel_job(job);
-            return;
-        }
-        bool done = finished;
-        bool failed = false;
-        std::string fail_msg;
-        while (!done) {
-            JobEvent ev;
-            switch (channel->pop(ev, std::min(deadline, std::chrono::steady_clock::now() + std::chrono::milliseconds(150)))) {
-                case JobChannel::Pop::Event:
-                    if (ev.kind == JobEventKind::Output && !write(chunk({{"content", ev.text}}, nullptr, nullptr))) {
-                        (void)cp_.cancel_job(job);  // client disconnected: stop the real work
-                        return;
-                    }
-                    break;
-                case JobChannel::Pop::Done: done = true; break;
-                case JobChannel::Pop::Timeout:
-                    if (std::chrono::steady_clock::now() >= deadline) {
-                        (void)cp_.cancel_job(job);
-                        failed = true;
-                        fail_msg = "request timed out";
+            auto chunk = [&](const json& delta, const json& fr, const json* usage) {
+                json j = {
+                    {"id", cid},
+                    {"object", "chat.completion.chunk"},
+                    {"created", created},
+                    {"model", model_name()},
+                    {"choices", json::array({json{{"index", 0}, {"delta", delta}, {"finish_reason", fr}}})}};
+                if (usage)
+                    j["usage"] = *usage;
+                return "data: " + dump_safe(j) + "\n\n";
+            };
+            if (!write(chunk({{"role", "assistant"}, {"content", ""}}, nullptr, nullptr))) {
+                (void)cp_.cancel_job(job);
+                return;
+            }
+            if (got_first && !write(chunk({{"content", first}}, nullptr, nullptr))) {
+                (void)cp_.cancel_job(job);
+                return;
+            }
+            bool done = finished;
+            bool failed = false;
+            std::string fail_msg;
+            while (!done) {
+                JobEvent ev;
+                switch (channel->pop(ev, std::min(deadline, std::chrono::steady_clock::now() +
+                                                                std::chrono::milliseconds(150)))) {
+                    case JobChannel::Pop::Event:
+                        if (ev.kind == JobEventKind::Output &&
+                            !write(chunk({{"content", ev.text}}, nullptr, nullptr))) {
+                            (void)cp_.cancel_job(job);  // client disconnected: stop the real work
+                            return;
+                        }
+                        break;
+                    case JobChannel::Pop::Done:
                         done = true;
-                    } else if (peer_closed && peer_closed()) {  // no token to write yet, but the client is gone
-                        (void)cp_.cancel_job(job);
-                        return;
-                    }
-                    break;
+                        break;
+                    case JobChannel::Pop::Timeout:
+                        if (std::chrono::steady_clock::now() >= deadline) {
+                            (void)cp_.cancel_job(job);
+                            failed = true;
+                            fail_msg = "request timed out";
+                            done = true;
+                        } else if (peer_closed &&
+                                   peer_closed()) {  // no token to write yet, but the client is gone
+                            (void)cp_.cancel_job(job);
+                            return;
+                        }
+                        break;
+                }
             }
-        }
-        if (!failed) {
-            (void)cp_.wait_job(job, std::chrono::milliseconds(2000));
-            if (auto st = cp_.job_status(job); st && st.value().state != JobState::Succeeded) {
-                failed = true;
-                fail_msg = st.value().error ? st.value().error->message : "job was cancelled";
+            if (!failed) {
+                (void)cp_.wait_job(job, std::chrono::milliseconds(2000));
+                if (auto st = cp_.job_status(job); st && st.value().state != JobState::Succeeded) {
+                    failed = true;
+                    fail_msg = st.value().error ? st.value().error->message : "job was cancelled";
+                }
             }
-        }
-        if (failed) {
-            json e = {{"error", {{"message", redact_paths(fail_msg)}, {"type", "server_error"}, {"code", "stream_aborted"}, {"request_id", rid}}}};
-            (void)write("data: " + dump_safe(e) + "\n\n");
-        } else {
-            const json u = usage_json();
-            (void)write(chunk(json::object(), finish_reason(), u.is_null() ? nullptr : &u));
-        }
-        (void)write("data: [DONE]\n\n");
+            if (failed) {
+                json e = {{"error",
+                           {{"message", redact_paths(fail_msg)},
+                            {"type", "server_error"},
+                            {"code", "stream_aborted"},
+                            {"request_id", rid}}}};
+                (void)write("data: " + dump_safe(e) + "\n\n");
+            } else {
+                const json u = usage_json();
+                (void)write(chunk(json::object(), finish_reason(), u.is_null() ? nullptr : &u));
+            }
+            (void)write("data: [DONE]\n\n");
         } catch (const std::exception& e) {
             // Nothing may escape into the transport thread: stop the real work and end the stream.
             log_.error("api", "stream threw", {{"what", e.what()}});
@@ -666,12 +800,15 @@ json image_request_schema(bool edit, std::size_t max_prompt, std::uint32_t max_s
 // "WIDTHxHEIGHT" (digits only, at most 5 each).
 bool parse_size(const std::string& t, std::uint32_t& w, std::uint32_t& h) {
     const auto x = t.find('x');
-    if (x == std::string::npos || x == 0 || x + 1 >= t.size()) return false;
+    if (x == std::string::npos || x == 0 || x + 1 >= t.size())
+        return false;
     auto num = [](const std::string& d, std::uint32_t& out) {
-        if (d.empty() || d.size() > 5) return false;
+        if (d.empty() || d.size() > 5)
+            return false;
         std::uint32_t v = 0;
         for (char c : d) {
-            if (c < '0' || c > '9') return false;
+            if (c < '0' || c > '9')
+                return false;
             v = v * 10 + static_cast<std::uint32_t>(c - '0');
         }
         out = v;
@@ -682,30 +819,36 @@ bool parse_size(const std::string& t, std::uint32_t& w, std::uint32_t& h) {
 
 }  // namespace
 
-HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid, const std::shared_ptr<Inflight>& guard,
-                                bool edit) {
+HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
+                                const std::shared_ptr<Inflight>& guard, bool edit) {
     using clock = std::chrono::steady_clock;
     (void)guard;  // holds the in-flight slot for the whole (blocking) request
     if (!cp_.has_image_stream_engine())
         return error(501, "server_error", "unsupported",
-                     "image generation/editing is not available: no image engine (stable-diffusion.cpp) is linked into "
+                     "image generation/editing is not available: no image engine (stable-diffusion.cpp) is "
+                     "linked into "
                      "this build",
                      rid);
     auto ct = req.headers.find("content-type");
     if (ct != req.headers.end() && lower(ct->second).rfind("multipart/", 0) == 0)
-        return error(415, "invalid_request_error", "unsupported_media_type",
-                     "multipart/form-data is not supported: send application/json (the input image as a data URI in "
-                     "'image')",
-                     rid);
+        return error(
+            415, "invalid_request_error", "unsupported_media_type",
+            "multipart/form-data is not supported: send application/json (the input image as a data URI in "
+            "'image')",
+            rid);
     if (ct == req.headers.end() || lower(ct->second).rfind("application/json", 0) != 0)
-        return error(415, "invalid_request_error", "unsupported_media_type", "Content-Type must be application/json", rid);
+        return error(415, "invalid_request_error", "unsupported_media_type",
+                     "Content-Type must be application/json", rid);
     if (req.body.size() > opt_.max_body_bytes)
-        return error(413, "invalid_request_error", "payload_too_large", "request body exceeds the configured limit", rid);
+        return error(413, "invalid_request_error", "payload_too_large",
+                     "request body exceeds the configured limit", rid);
     if (!json_depth_ok(req.body, kMaxJsonDepth))
         return error(400, "invalid_request_error", "invalid_json", "JSON nesting too deep", rid);
     json body = json::parse(req.body, nullptr, false);
-    if (body.is_discarded()) return error(400, "invalid_request_error", "invalid_json", "malformed JSON body", rid);
-    if (auto v = validate_json(image_request_schema(edit, cp_.options().max_prompt_bytes, cp_.options().max_image_steps), body);
+    if (body.is_discarded())
+        return error(400, "invalid_request_error", "invalid_json", "malformed JSON body", rid);
+    if (auto v = validate_json(
+            image_request_schema(edit, cp_.options().max_prompt_bytes, cp_.options().max_image_steps), body);
         !v)
         return error(400, "invalid_request_error", "invalid_request", v.error().message, rid);
     if (body.contains("mask"))
@@ -718,21 +861,28 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid, 
     p.model = body.value("model", "");
     p.prompt = body["prompt"].get<std::string>();
     p.negative_prompt = body.value("negative_prompt", "");
-    if (body.contains("steps")) p.steps = body["steps"].get<std::uint32_t>();
-    if (body.contains("seed")) p.seed = body["seed"].get<std::uint64_t>();
-    if (body.contains("cfg_scale")) p.cfg_scale = body["cfg_scale"].get<float>();
-    if (body.contains("strength")) p.strength = body["strength"].get<float>();
+    if (body.contains("steps"))
+        p.steps = body["steps"].get<std::uint32_t>();
+    if (body.contains("seed"))
+        p.seed = body["seed"].get<std::uint64_t>();
+    if (body.contains("cfg_scale"))
+        p.cfg_scale = body["cfg_scale"].get<float>();
+    if (body.contains("strength"))
+        p.strength = body["strength"].get<float>();
     bool size_given = false;
     if (body.contains("size")) {
         if (!parse_size(body["size"].get<std::string>(), p.width, p.height))
-            return error(400, "invalid_request_error", "invalid_request", "size must look like \"256x256\"", rid);
+            return error(400, "invalid_request_error", "invalid_request", "size must look like \"256x256\"",
+                         rid);
         size_given = true;
     }
     if (edit) {
         std::string uri = body["image"].get<std::string>();
-        if (uri.rfind("data:", 0) != 0) uri = "data:image/png;base64," + uri;  // bare base64 is accepted too
+        if (uri.rfind("data:", 0) != 0)
+            uri = "data:image/png;base64," + uri;  // bare base64 is accepted too
         auto img = decode_image_data_uri(uri, cp_.options().max_image_bytes);
-        if (!img) return error(400, "invalid_request_error", "invalid_image", img.error().message, rid);
+        if (!img)
+            return error(400, "invalid_request_error", "invalid_image", img.error().message, rid);
         if (!size_given) {  // default: keep the input image's size
             if (auto pr = probe_image(img.value().bytes.data(), img.value().bytes.size())) {
                 p.width = pr->width;
@@ -743,7 +893,8 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid, 
     }
 
     auto sub = cp_.submit_image(p, edit);
-    if (!sub) return from_error(sub.error(), rid);
+    if (!sub)
+        return from_error(sub.error(), rid);
     const JobId job = sub.value().id;
     auto channel = sub.value().channel;
     const auto deadline = clock::now() + opt_.request_timeout;
@@ -753,8 +904,11 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid, 
     while (!finished) {
         JobEvent ev;
         switch (channel->pop(ev, std::min(deadline, clock::now() + kPoll))) {
-            case JobChannel::Pop::Event: break;
-            case JobChannel::Pop::Done: finished = true; break;
+            case JobChannel::Pop::Event:
+                break;
+            case JobChannel::Pop::Done:
+                finished = true;
+                break;
             case JobChannel::Pop::Timeout:
                 if (clock::now() >= deadline) {
                     (void)cp_.cancel_job(job);
@@ -765,24 +919,35 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid, 
                 if (peer_closed && peer_closed()) {
                     (void)cp_.cancel_job(job);
                     (void)cp_.wait_job(job, std::chrono::milliseconds(5000));
-                    return error(499, "invalid_request_error", "client_closed_request", "client closed the connection", rid);
+                    return error(499, "invalid_request_error", "client_closed_request",
+                                 "client closed the connection", rid);
                 }
                 break;
         }
     }
     auto st = cp_.job_status(job);
-    if (!st) return from_error(st.error(), rid);
+    if (!st)
+        return from_error(st.error(), rid);
     if (st.value().state != JobState::Succeeded) {
-        if (st.value().error) return from_error(*st.value().error, rid);
+        if (st.value().error)
+            return from_error(*st.value().error, rid);
         return error(409, "invalid_request_error", "cancelled", "job was cancelled", rid);
     }
     auto img = cp_.image_result(job);
-    if (!img) return from_error(img.error(), rid);
+    if (!img)
+        return from_error(img.error(), rid);
     const ImageResult& r = img.value();
-    json hcs = {{"job_id", to_string(job)}, {"request_id", rid}, {"format", r.format}, {"width", r.width},
-                {"height", r.height},       {"steps", r.steps},  {"generation_ms", r.generation_ms}};
-    if (auto lm = cp_.loaded_model()) hcs["model"] = *lm;
-    if (p.seed) hcs["seed"] = *p.seed;
+    json hcs = {{"job_id", to_string(job)},
+                {"request_id", rid},
+                {"format", r.format},
+                {"width", r.width},
+                {"height", r.height},
+                {"steps", r.steps},
+                {"generation_ms", r.generation_ms}};
+    if (auto lm = cp_.loaded_model())
+        hcs["model"] = *lm;
+    if (p.seed)
+        hcs["seed"] = *p.seed;
     json j = {{"created", static_cast<std::int64_t>(std::time(nullptr))},
               {"data", json::array({json{{"b64_json", base64_encode(r.bytes.data(), r.bytes.size())}}})},
               {"hcs", std::move(hcs)}};

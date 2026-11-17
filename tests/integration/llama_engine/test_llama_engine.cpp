@@ -5,11 +5,11 @@
 
 #include <atomic>
 #include <chrono>
-#include <mutex>
-#include <optional>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <mutex>
+#include <optional>
 #include <string>
 #include <thread>
 
@@ -33,13 +33,14 @@ std::string env(const char* n) {
     return v ? v : "";
 }
 
-#define REQUIRE_MODEL_OR_SKIP(path_var)                                                              \
-    const std::string path_var = env("HCS_TEST_GGUF");                                               \
-    if (path_var.empty()) GTEST_SKIP() << "NOT RUN: HCS_TEST_GGUF is not set (real-model test)"
+#define REQUIRE_MODEL_OR_SKIP(path_var)                \
+    const std::string path_var = env("HCS_TEST_GGUF"); \
+    if (path_var.empty())                              \
+    GTEST_SKIP() << "NOT RUN: HCS_TEST_GGUF is not set (real-model test)"
 
-#define REQUIRE_GPU_OR_SKIP()                                                                        \
-    if (LlamaTextEngine::gpu_devices().empty())                                                      \
-    GTEST_SKIP() << "NOT RUN: no GPU device visible to this build (vulkan_compiled=" +               \
+#define REQUIRE_GPU_OR_SKIP()                                                          \
+    if (LlamaTextEngine::gpu_devices().empty())                                        \
+    GTEST_SKIP() << "NOT RUN: no GPU device visible to this build (vulkan_compiled=" + \
                         std::to_string(LlamaTextEngine::vulkan_compiled()) + ")"
 
 struct GenResult {
@@ -58,7 +59,8 @@ GenResult run_text(JobQueue& q, LlamaTextEngine& e, TextRequest req) {
         }
     });
     EXPECT_TRUE(id.ok()) << (id.ok() ? "" : id.error().message);
-    if (!id.ok()) return r;
+    if (!id.ok())
+        return r;
     EXPECT_TRUE(q.wait(id.value(), 300s));
     auto st = q.status(id.value());
     r.state = st.value().state;
@@ -98,16 +100,18 @@ std::uint64_t working_set_bytes() {
 void evidence(const std::string& json_line) {
     std::cout << "[evidence] " << json_line << "\n";
     const std::string dir = env("HCS_TEST_EVIDENCE_DIR");
-    if (dir.empty()) return;
+    if (dir.empty())
+        return;
     std::ofstream f(dir + "/llama-adapter-results.jsonl", std::ios::app);
     f << json_line << "\n";
 }
 
 std::string metrics_json(const char* test, const EngineMetrics& m, const GenResult& r) {
-    return std::string("{\"test\":\"") + test + "\",\"backend\":\"" + m.backend + "\",\"device\":\"" + m.device +
-           "\",\"offloaded_layers\":" + std::to_string(m.offloaded_layers) +
-           ",\"total_layers\":" + std::to_string(m.total_layers) + ",\"load_ms\":" + std::to_string(m.load_ms) +
-           ",\"ttft_ms\":" + std::to_string(m.ttft_ms) + ",\"prompt_tokens\":" + std::to_string(m.prompt_tokens) +
+    return std::string("{\"test\":\"") + test + "\",\"backend\":\"" + m.backend + "\",\"device\":\"" +
+           m.device + "\",\"offloaded_layers\":" + std::to_string(m.offloaded_layers) +
+           ",\"total_layers\":" + std::to_string(m.total_layers) +
+           ",\"load_ms\":" + std::to_string(m.load_ms) + ",\"ttft_ms\":" + std::to_string(m.ttft_ms) +
+           ",\"prompt_tokens\":" + std::to_string(m.prompt_tokens) +
            ",\"prompt_tps\":" + std::to_string(m.prompt_tokens_per_second) +
            ",\"decode_tokens\":" + std::to_string(m.decode_tokens) +
            ",\"decode_tps\":" + std::to_string(m.decode_tokens_per_second) +
@@ -186,7 +190,8 @@ TEST(LlamaEngineErrors, BadArguments) {
     EXPECT_EQ(e.load(lr).error().code, ErrorCode::InvalidArgument);
     lr = load_req("x.gguf", Backend::Cpu);
     lr.projector_path = "definitely-missing-mmproj.gguf";
-    EXPECT_EQ(e.load(lr).error().code, ErrorCode::NotFound);  // projector is validated before upstream is touched
+    EXPECT_EQ(e.load(lr).error().code,
+              ErrorCode::NotFound);  // projector is validated before upstream is touched
 }
 
 // Vision request validation without any model (detailed vision tests: tests/integration/llama_vision).
@@ -303,11 +308,13 @@ static void cancellation_case(const std::string& model, Backend b, const char* n
     std::atomic<int> chunks{0};
     auto id = e.generate(greedy("Write a very long story about a dragon, with many chapters.", 3000),
                          [&](const JobEvent& ev) {
-                             if (ev.kind == JobEventKind::Output) chunks.fetch_add(1);
+                             if (ev.kind == JobEventKind::Output)
+                                 chunks.fetch_add(1);
                          });
     ASSERT_TRUE(id.ok());
     const auto t0 = std::chrono::steady_clock::now();
-    while (chunks.load() < 5 && std::chrono::steady_clock::now() - t0 < 120s) std::this_thread::sleep_for(10ms);
+    while (chunks.load() < 5 && std::chrono::steady_clock::now() - t0 < 120s)
+        std::this_thread::sleep_for(10ms);
     ASSERT_GE(chunks.load(), 5) << "generation did not start streaming";
     const int at_cancel = chunks.load();
     const auto t_cancel = std::chrono::steady_clock::now();
@@ -320,8 +327,8 @@ static void cancellation_case(const std::string& model, Backend b, const char* n
     EXPECT_LT(chunks.load(), 3000) << "generation ran to the token limit despite cancellation";
     EXPECT_LT(stop_ms, 5000.0);
     evidence(std::string("{\"test\":\"") + name + "\",\"chunks_at_cancel\":" + std::to_string(at_cancel) +
-             ",\"chunks_final\":" + std::to_string(chunks.load()) + ",\"stop_latency_ms\":" + std::to_string(stop_ms) +
-             "}");
+             ",\"chunks_final\":" + std::to_string(chunks.load()) +
+             ",\"stop_latency_ms\":" + std::to_string(stop_ms) + "}");
 
     // The context is intact and reusable after a cancelled job.
     auto r = run_text(q, e, greedy("Say hi.", 8));
@@ -378,7 +385,8 @@ static void cycle_case(const std::string& model, Backend b, const char* name, in
              ",\"private_bytes_after_each_unload\":" + pj + ",\"working_set_after_each_unload\":" + wj +
              ",\"private_growth_after_cycle3\":" + std::to_string(growth) +
              ",\"working_set_growth_after_cycle3\":" + std::to_string(growth_ws) + "}");
-    EXPECT_LT(growth, 48ll * 1024 * 1024) << "private bytes grew by " << growth << " over cycles 3.." << cycles;
+    EXPECT_LT(growth, 48ll * 1024 * 1024)
+        << "private bytes grew by " << growth << " over cycles 3.." << cycles;
 }
 
 TEST(LlamaEngineReal, LoadUnloadTenTimesCpuNoLeakGrowth) {

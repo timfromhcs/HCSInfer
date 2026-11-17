@@ -56,10 +56,13 @@ inline std::string fake_gguf(std::uint32_t version = 3) {
 inline bool make_dir_link(const std::filesystem::path& link, const std::filesystem::path& target) {
     std::error_code ec;
     std::filesystem::create_directory_symlink(target, link, ec);
-    if (!ec) return true;
+    if (!ec)
+        return true;
 #ifdef _WIN32
-    const std::string cmd = "cmd /c mklink /J \"" + link.string() + "\" \"" + target.string() + "\" >nul 2>nul";
-    if (std::system(cmd.c_str()) == 0) return std::filesystem::exists(link, ec);
+    const std::string cmd =
+        "cmd /c mklink /J \"" + link.string() + "\" \"" + target.string() + "\" >nul 2>nul";
+    if (std::system(cmd.c_str()) == 0)
+        return std::filesystem::exists(link, ec);
 #endif
     return false;
 }

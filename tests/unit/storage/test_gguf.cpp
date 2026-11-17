@@ -77,12 +77,18 @@ TEST(Gguf, HugeStringLengthIsRejected) {
 
 TEST(Gguf, TensorBeyondFileOrMisalignedOrBadDims) {
     tst::GgufBuilder g;
-    auto build = [&](std::uint32_t nd, std::uint64_t d0, std::uint32_t type, std::uint64_t off, std::size_t data_bytes) {
+    auto build = [&](std::uint32_t nd, std::uint64_t d0, std::uint32_t type, std::uint64_t off,
+                     std::size_t data_bytes) {
         g.b.clear();
-        g.raw("GGUF", 4); g.u32(3); g.u64(1); g.u64(0);
-        g.str("w"); g.u32(nd);
+        g.raw("GGUF", 4);
+        g.u32(3);
+        g.u64(1);
+        g.u64(0);
+        g.str("w");
+        g.u32(nd);
         for (std::uint32_t i = 0; i < nd; ++i) g.u64(i == 0 ? d0 : 2);
-        g.u32(type); g.u64(off);
+        g.u32(type);
+        g.u64(off);
         while (g.b.size() % 32) g.b.push_back(0);
         g.b.resize(g.b.size() + data_bytes, 0);
         return parse(g.b);
@@ -101,41 +107,75 @@ TEST(Gguf, TensorBeyondFileOrMisalignedOrBadDims) {
 
 TEST(Gguf, ArrayDepthAndLengthLimits) {
     tst::GgufBuilder g;
-    g.raw("GGUF", 4); g.u32(3); g.u64(0); g.u64(1);
+    g.raw("GGUF", 4);
+    g.u32(3);
+    g.u64(0);
+    g.u64(1);
     g.str("deep");
     g.u32(9);
-    for (int i = 0; i < 8; ++i) { g.u32(9); g.u64(1); }  // nested arrays beyond the depth cap
-    g.u32(4); g.u64(1); g.u32(0);
+    for (int i = 0; i < 8; ++i) {
+        g.u32(9);
+        g.u64(1);
+    }  // nested arrays beyond the depth cap
+    g.u32(4);
+    g.u64(1);
+    g.u32(0);
     EXPECT_FALSE(parse(g.b).ok());
 
     tst::GgufBuilder h;
-    h.raw("GGUF", 4); h.u32(3); h.u64(0); h.u64(1);
-    h.str("arr"); h.u32(9); h.u32(4); h.u64(1ull << 40);  // 2^40 u32 elements in a tiny file
+    h.raw("GGUF", 4);
+    h.u32(3);
+    h.u64(0);
+    h.u64(1);
+    h.str("arr");
+    h.u32(9);
+    h.u32(4);
+    h.u64(1ull << 40);  // 2^40 u32 elements in a tiny file
     h.b.resize(h.b.size() + 64, 0);
     EXPECT_FALSE(parse(h.b).ok());
 
     tst::GgufBuilder s;
-    s.raw("GGUF", 4); s.u32(3); s.u64(0); s.u64(1);
-    s.str("arr"); s.u32(9); s.u32(8); s.u64(1ull << 30);  // 2^30 strings
+    s.raw("GGUF", 4);
+    s.u32(3);
+    s.u64(0);
+    s.u64(1);
+    s.str("arr");
+    s.u32(9);
+    s.u32(8);
+    s.u64(1ull << 30);  // 2^30 strings
     s.b.resize(s.b.size() + 64, 0);
     EXPECT_FALSE(parse(s.b).ok());
 
     tst::GgufBuilder u;
-    u.raw("GGUF", 4); u.u32(3); u.u64(0); u.u64(1);
-    u.str("k"); u.u32(77);  // unknown value type
+    u.raw("GGUF", 4);
+    u.u32(3);
+    u.u64(0);
+    u.u64(1);
+    u.str("k");
+    u.u32(77);  // unknown value type
     u.b.resize(u.b.size() + 64, 0);
     EXPECT_FALSE(parse(u.b).ok());
 }
 
 TEST(Gguf, InvalidAlignment) {
     tst::GgufBuilder g;
-    g.raw("GGUF", 4); g.u32(3); g.u64(0); g.u64(1);
-    g.str("general.alignment"); g.u32(4); g.u32(33);
+    g.raw("GGUF", 4);
+    g.u32(3);
+    g.u64(0);
+    g.u64(1);
+    g.str("general.alignment");
+    g.u32(4);
+    g.u32(33);
     g.b.resize(g.b.size() + 64, 0);
     EXPECT_FALSE(parse(g.b).ok());
     tst::GgufBuilder z;
-    z.raw("GGUF", 4); z.u32(3); z.u64(0); z.u64(1);
-    z.str("general.alignment"); z.u32(4); z.u32(0);
+    z.raw("GGUF", 4);
+    z.u32(3);
+    z.u64(0);
+    z.u64(1);
+    z.str("general.alignment");
+    z.u32(4);
+    z.u32(0);
     z.b.resize(z.b.size() + 64, 0);
     EXPECT_FALSE(parse(z.b).ok());
 }

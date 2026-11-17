@@ -111,7 +111,8 @@ TEST(Settings, RejectsCorruptAndMistypedInput) {
     EXPECT_EQ(parse_settings("[]").error().code, ErrorCode::InvalidArgument);
     EXPECT_EQ(parse_settings(R"({"schema_version":"1"})").error().code, ErrorCode::InvalidArgument);
     EXPECT_EQ(parse_settings(R"({"schema_version":1,"port":"80"})").error().code, ErrorCode::InvalidArgument);
-    EXPECT_EQ(parse_settings(R"({"schema_version":1,"accel":"quantum"})").error().code, ErrorCode::InvalidArgument);
+    EXPECT_EQ(parse_settings(R"({"schema_version":1,"accel":"quantum"})").error().code,
+              ErrorCode::InvalidArgument);
     EXPECT_EQ(parse_settings(R"({"schema_version":-1})").error().code, ErrorCode::InvalidArgument);
 }
 
@@ -146,15 +147,18 @@ TEST(Settings, NonLoopbackBindNeedsExplicitLanOptIn) {
     EXPECT_EQ(r.error().code, ErrorCode::SecurityViolation);
     s.allow_lan = true;
     EXPECT_TRUE(validate(s));
-    for (const char* h : {"127.0.0.1", "localhost", "::1", "[::1]", "127.1.2.3"}) EXPECT_TRUE(is_loopback_host(h)) << h;
-    for (const char* h : {"0.0.0.0", "192.168.1.5", "::", "example.com"}) EXPECT_FALSE(is_loopback_host(h)) << h;
+    for (const char* h : {"127.0.0.1", "localhost", "::1", "[::1]", "127.1.2.3"})
+        EXPECT_TRUE(is_loopback_host(h)) << h;
+    for (const char* h : {"0.0.0.0", "192.168.1.5", "::", "example.com"})
+        EXPECT_FALSE(is_loopback_host(h)) << h;
 }
 
 // M10 audit D7: "127." is a prefix of many DNS names; only real 127.0.0.0/8 literals are loopback.
 TEST(Settings, LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch) {
-    for (const char* h : {"127.foo.invalid", "127.example.net", "127.0.0.1.evil.com", "127.", "127.1", "127.1.2",
-                          "127.0.0.256", "127.0.0.1.1", "127.0.0.1 ", " 127.0.0.1", "127.0.0.01x", "127..0.1", "0127.0.0.1", "127.0.0.01",
-                          "127.0.0.-1", "::ffff:8.8.8.8", "[::2]", "localhost.evil.com", ""})
+    for (const char* h :
+         {"127.foo.invalid", "127.example.net", "127.0.0.1.evil.com", "127.", "127.1", "127.1.2",
+          "127.0.0.256", "127.0.0.1.1", "127.0.0.1 ", " 127.0.0.1", "127.0.0.01x", "127..0.1", "0127.0.0.1",
+          "127.0.0.01", "127.0.0.-1", "::ffff:8.8.8.8", "[::2]", "localhost.evil.com", ""})
         EXPECT_FALSE(is_loopback_host(h)) << h;
     EXPECT_FALSE(is_loopback_host(std::string_view("127.0.0.1\0evil", 14)));
     for (const char* h : {"127.0.0.1", "127.255.255.254", "127.0.0.0", "localhost", "::1", "[::1]"})

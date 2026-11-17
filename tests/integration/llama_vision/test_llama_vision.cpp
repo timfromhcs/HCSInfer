@@ -31,9 +31,9 @@ std::string env(const char* n) {
     return v ? v : "";
 }
 
-#define REQUIRE_VLM_OR_SKIP()                                                                         \
-    const std::string vlm = env("HCS_TEST_VLM"), mmproj = env("HCS_TEST_MMPROJ");                     \
-    if (vlm.empty() || mmproj.empty())                                                                \
+#define REQUIRE_VLM_OR_SKIP()                                                     \
+    const std::string vlm = env("HCS_TEST_VLM"), mmproj = env("HCS_TEST_MMPROJ"); \
+    if (vlm.empty() || mmproj.empty())                                            \
     GTEST_SKIP() << "NOT RUN: HCS_TEST_VLM / HCS_TEST_MMPROJ not set (real multimodal-model test)"
 
 struct Run {
@@ -73,7 +73,8 @@ Run run_vision(JobQueue& q, LlamaTextEngine& e, VisionRequest req) {
 }
 
 VisionRequest red_square_request(
-    const std::string& prompt = "What colour is the large square in this image? Answer in one short sentence.") {
+    const std::string& prompt =
+        "What colour is the large square in this image? Answer in one short sentence.") {
     VisionRequest v;
     v.image.bytes = test::make_red_square_png(256);
     v.text.prompt = prompt;
@@ -101,7 +102,8 @@ std::string json_escape(const std::string& s) {
 
 void evidence(const std::string& name, const std::string& json_fields) {
     const std::string dir = env("HCS_TEST_EVIDENCE_DIR");
-    if (dir.empty()) return;
+    if (dir.empty())
+        return;
     std::ofstream f(dir + "/llama_vision.jsonl", std::ios::app);
     f << "{\"test\":\"" << name << "\"," << json_fields << "}\n";
 }
@@ -118,7 +120,8 @@ TEST(LlamaVisionReal, DescribesAGeneratedImageOnCpu) {
     ASSERT_EQ(r.state, JobState::Succeeded) << (r.error ? r.error->message : "");
     EXPECT_FALSE(r.text.empty());
     const auto m = e.metrics();
-    // The prompt alone is ~30 tokens; image chunks add dozens more, so a large count proves the image was consumed.
+    // The prompt alone is ~30 tokens; image chunks add dozens more, so a large count proves the image was
+    // consumed.
     EXPECT_GT(m.prompt_tokens, 60u);
     EXPECT_GT(m.decode_tokens, 0u);
     std::string low = r.text;
@@ -126,9 +129,10 @@ TEST(LlamaVisionReal, DescribesAGeneratedImageOnCpu) {
     std::cout << "[vision answer] " << r.text << "\n";
     evidence("DescribesAGeneratedImageOnCpu",
              "\"backend\":\"" + m.backend + "\",\"prompt_tokens\":" + std::to_string(m.prompt_tokens) +
-                 ",\"decode_tokens\":" + std::to_string(m.decode_tokens) + ",\"ttft_ms\":" + std::to_string(m.ttft_ms) +
-                 ",\"decode_tps\":" + std::to_string(m.decode_tokens_per_second) + ",\"mentions_red\":" +
-                 (low.find("red") != std::string::npos ? "true" : "false") + ",\"text\":\"" + json_escape(r.text) + "\"");
+                 ",\"decode_tokens\":" + std::to_string(m.decode_tokens) + ",\"ttft_ms\":" +
+                 std::to_string(m.ttft_ms) + ",\"decode_tps\":" + std::to_string(m.decode_tokens_per_second) +
+                 ",\"mentions_red\":" + (low.find("red") != std::string::npos ? "true" : "false") +
+                 ",\"text\":\"" + json_escape(r.text) + "\"");
     EXPECT_NE(low.find("red"), std::string::npos) << "answer: " << r.text;
 }
 
@@ -150,9 +154,9 @@ TEST(LlamaVisionReal, DescribesAGeneratedImageOnVulkan) {
     for (auto& c : low) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
     std::cout << "[vision answer, vulkan] " << r.text << " (device " << m.device << ")" << std::endl;
     evidence("DescribesAGeneratedImageOnVulkan",
-             "\"backend\":\"" + m.backend + "\",\"device\":\"" + json_escape(m.device) + "\",\"prompt_tokens\":" +
-                 std::to_string(m.prompt_tokens) + ",\"ttft_ms\":" + std::to_string(m.ttft_ms) + ",\"text\":\"" +
-                 json_escape(r.text) + "\"");
+             "\"backend\":\"" + m.backend + "\",\"device\":\"" + json_escape(m.device) +
+                 "\",\"prompt_tokens\":" + std::to_string(m.prompt_tokens) +
+                 ",\"ttft_ms\":" + std::to_string(m.ttft_ms) + ",\"text\":\"" + json_escape(r.text) + "\"");
     EXPECT_NE(low.find("red"), std::string::npos) << "answer: " << r.text;
 }
 
@@ -255,7 +259,8 @@ TEST(LlamaVisionReal, CancellationStopsAVisionJob) {
     v.text.max_tokens = 400;
     std::atomic<int> pieces{0};
     auto id = e.analyze_image(v, [&](const JobEvent& ev) {
-        if (ev.kind == JobEventKind::Output) ++pieces;
+        if (ev.kind == JobEventKind::Output)
+            ++pieces;
     });
     ASSERT_TRUE(id.ok());
     for (int i = 0; i < 6000 && pieces.load() < 3; ++i) std::this_thread::sleep_for(10ms);
@@ -294,14 +299,15 @@ TEST(LlamaVisionReal, MissingOrBrokenProjectorFilesAreCleanLoadErrors) {
     test::write_file(d / "mmproj-trunc.gguf", test::fake_gguf());  // GGUF magic, no content
     auto trunc = e.load(vlm_load(vlm, (d / "mmproj-trunc.gguf").string()));
     ASSERT_FALSE(trunc.ok());
-    EXPECT_FALSE(e.loaded());                        // failed load leaves nothing behind
+    EXPECT_FALSE(e.loaded());                         // failed load leaves nothing behind
     EXPECT_TRUE(e.load(vlm_load(vlm, mmproj)).ok());  // and the engine is reusable
 }
 
 TEST(LlamaVisionReal, ProjectorThatDoesNotMatchTheTextModelIsRejected) {
     REQUIRE_VLM_OR_SKIP();
     const std::string text_model = env("HCS_TEST_GGUF");
-    if (text_model.empty()) GTEST_SKIP() << "NOT RUN: HCS_TEST_GGUF (a plain text GGUF) is not set";
+    if (text_model.empty())
+        GTEST_SKIP() << "NOT RUN: HCS_TEST_GGUF (a plain text GGUF) is not set";
     JobQueue q;
     LlamaTextEngine e(q);
     auto r = e.load(vlm_load(text_model, mmproj));  // SmolVLM projector on a Qwen3 text model

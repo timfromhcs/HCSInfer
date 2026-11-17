@@ -55,7 +55,8 @@ TEST(Stream, InOrderDeliveryAcrossBufferAndWorkerCounts) {
                         return {};
                     },
                     so);
-                ASSERT_TRUE(st.ok()) << codec_name(c) << " b=" << buffers << " w=" << workers << ": " << st.error().message;
+                ASSERT_TRUE(st.ok()) << codec_name(c) << " b=" << buffers << " w=" << workers << ": "
+                                     << st.error().message;
                 EXPECT_EQ(got, f.src);
                 EXPECT_EQ(st.value().chunks, f.reader->chunks().size());
             }
@@ -67,18 +68,25 @@ TEST(Stream, BufferMemoryIsBoundedAndBudgetEnforced) {
     Fixture f(Codec::Zstd, 4'000'000, 256 * 1024);  // ~16 chunks
     StreamOptions so;
     so.buffers = 3;
-    auto st = f.reader->stream([](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> { return {}; }, so);
+    auto st = f.reader->stream(
+        [](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> { return {}; }, so);
     ASSERT_TRUE(st.ok());
     // 3 slots * (max stored + max raw); stored <= raw + slack.
     EXPECT_LE(st.value().buffer_bytes_allocated, 3u * (256u * 1024u * 2u + 2048u));
     EXPECT_LT(st.value().buffer_bytes_allocated, f.src.size());
     so.max_buffer_bytes = 1000;  // far below the need
-    auto over = f.reader->stream([](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> { return {}; }, so);
+    auto over = f.reader->stream(
+        [](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> { return {}; }, so);
     ASSERT_FALSE(over.ok());
     EXPECT_EQ(over.error().code, ErrorCode::OutOfMemory);
     so.max_buffer_bytes = 0;
     so.buffers = 0;
-    EXPECT_EQ(f.reader->stream([](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> { return {}; }, so).error().code,
+    EXPECT_EQ(f.reader
+                  ->stream([](std::size_t, const ChunkEntry&,
+                              std::span<const std::uint8_t>) -> Result<void> { return {}; },
+                           so)
+                  .error()
+                  .code,
               ErrorCode::InvalidArgument);
 }
 
@@ -89,7 +97,8 @@ TEST(Stream, SlowSinkBackPressuresWithoutGrowingMemory) {
     std::size_t n = 0;
     auto st = f.reader->stream(
         [&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> {
-            if (++n % 8 == 0) std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            if (++n % 8 == 0)
+                std::this_thread::sleep_for(std::chrono::milliseconds(5));
             return {};
         },
         so);
@@ -107,7 +116,8 @@ TEST(Stream, CancellationFromSinkStopsPromptlyAndLeaksNothing) {
     const auto t0 = std::chrono::steady_clock::now();
     auto st = f.reader->stream(
         [&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> {
-            if (++seen == 3) cs.request_cancel();
+            if (++seen == 3)
+                cs.request_cancel();
             return {};
         },
         so);
@@ -117,7 +127,12 @@ TEST(Stream, CancellationFromSinkStopsPromptlyAndLeaksNothing) {
     EXPECT_LT(std::chrono::steady_clock::now() - t0, std::chrono::seconds(10));
     // The file can be streamed again right after (no dangling reads / handles).
     std::size_t again = 0;
-    auto st2 = f.reader->stream([&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> { ++again; return {}; }, StreamOptions{});
+    auto st2 = f.reader->stream(
+        [&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> {
+            ++again;
+            return {};
+        },
+        StreamOptions{});
     ASSERT_TRUE(st2.ok());
     EXPECT_EQ(again, f.reader->chunks().size());
 }
@@ -128,7 +143,8 @@ TEST(Stream, PreCancelledTokenReturnsCancelled) {
     cs.request_cancel();
     StreamOptions so;
     so.cancel = cs.token();
-    auto st = f.reader->stream([](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> { return {}; }, so);
+    auto st = f.reader->stream(
+        [](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> { return {}; }, so);
     ASSERT_FALSE(st.ok());
     EXPECT_EQ(st.error().code, ErrorCode::Cancelled);
 }
@@ -138,7 +154,8 @@ TEST(Stream, SinkErrorPropagatesAndStops) {
     std::size_t seen = 0;
     auto st = f.reader->stream(
         [&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> {
-            if (++seen == 2) return Error(ErrorCode::OutOfMemory, "sink full");
+            if (++seen == 2)
+                return Error(ErrorCode::OutOfMemory, "sink full");
             return {};
         },
         StreamOptions{});
@@ -149,9 +166,11 @@ TEST(Stream, SinkErrorPropagatesAndStops) {
 
 TEST(Stream, SinkExceptionBecomesInternalError) {
     Fixture f(Codec::Raw, 500'000, 64 * 1024);
-    auto st = f.reader->stream([](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> {
-        throw std::runtime_error("boom");
-    }, StreamOptions{});
+    auto st = f.reader->stream(
+        [](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> {
+            throw std::runtime_error("boom");
+        },
+        StreamOptions{});
     ASSERT_FALSE(st.ok());
     EXPECT_EQ(st.error().code, ErrorCode::Internal);
 }
@@ -166,8 +185,12 @@ TEST(Stream, CorruptChunkOnDiskIsDetectedWithoutHang) {
         auto r = HcsModelReader::open(f.td / "bad.hcsmodel");
         ASSERT_TRUE(r.ok());
         std::size_t seen = 0;
-        auto st = r.value()->stream([&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> { ++seen; return {}; },
-                                    StreamOptions{});
+        auto st = r.value()->stream(
+            [&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> {
+                ++seen;
+                return {};
+            },
+            StreamOptions{});
         ASSERT_FALSE(st.ok()) << codec_name(c);
         EXPECT_EQ(st.error().code, ErrorCode::ModelError);
         EXPECT_LE(seen, 7u);
@@ -193,7 +216,11 @@ TEST(Stream, SubRangeOfChunks) {
     EXPECT_EQ(0, std::memcmp(got.data(), f.src.data() + 3 * 64 * 1024, got.size()));
     so.begin_chunk = 9;
     so.end_chunk = 2;
-    EXPECT_FALSE(f.reader->stream([](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> { return {}; }, so).ok());
+    EXPECT_FALSE(f.reader
+                     ->stream([](std::size_t, const ChunkEntry&,
+                                 std::span<const std::uint8_t>) -> Result<void> { return {}; },
+                              so)
+                     .ok());
 }
 
 TEST(Stream, PlainFileStreamsWithoutHashes) {
@@ -203,10 +230,12 @@ TEST(Stream, PlainFileStreamsWithoutHashes) {
     auto r = PlainFileReader::open(td / "plain.bin", 64 * 1024);
     ASSERT_TRUE(r.ok());
     std::vector<std::uint8_t> got;
-    auto st = r.value()->stream([&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t> d) -> Result<void> {
-        got.insert(got.end(), d.begin(), d.end());
-        return {};
-    }, StreamOptions{});
+    auto st = r.value()->stream(
+        [&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t> d) -> Result<void> {
+            got.insert(got.end(), d.begin(), d.end());
+            return {};
+        },
+        StreamOptions{});
     ASSERT_TRUE(st.ok()) << st.error().message;
     EXPECT_EQ(got, src);
     std::vector<std::uint8_t> part(100);
@@ -223,10 +252,14 @@ TEST(Stream, RepeatedStartStopIsStable) {
         so.buffers = 1 + (i % 4);
         so.cancel = cs.token();
         std::size_t seen = 0;
-        auto st = f.reader->stream([&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> {
-            if (++seen == static_cast<std::size_t>(i % 5)) cs.request_cancel();
-            return {};
-        }, so);
-        if (!st.ok()) EXPECT_EQ(st.error().code, ErrorCode::Cancelled);
+        auto st = f.reader->stream(
+            [&](std::size_t, const ChunkEntry&, std::span<const std::uint8_t>) -> Result<void> {
+                if (++seen == static_cast<std::size_t>(i % 5))
+                    cs.request_cancel();
+                return {};
+            },
+            so);
+        if (!st.ok())
+            EXPECT_EQ(st.error().code, ErrorCode::Cancelled);
     }
 }

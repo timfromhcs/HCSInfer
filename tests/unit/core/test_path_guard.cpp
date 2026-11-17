@@ -41,7 +41,8 @@ TEST(PathGuard, RejectsDotDotTraversal) {
     ASSERT_FALSE(r);
     EXPECT_EQ(r.error().code, ErrorCode::SecurityViolation);
     // Even a ".." that would stay inside is rejected: no lexical tricks accepted.
-    EXPECT_EQ(f.guard.resolve(f.root / "models" / ".." / "models").error().code, ErrorCode::SecurityViolation);
+    EXPECT_EQ(f.guard.resolve(f.root / "models" / ".." / "models").error().code,
+              ErrorCode::SecurityViolation);
 }
 
 TEST(PathGuard, RejectsAbsolutePathOutside) {
@@ -90,7 +91,8 @@ TEST(PathGuard, AddRootValidation) {
 TEST(PathGuard, LinkInsideRootPointingOutsideIsRejected) {
     Fixture f;
     const fs::path link = f.root / "link";
-    if (!hcs::test::make_dir_link(link, f.outside)) GTEST_SKIP() << "cannot create symlink/junction here";
+    if (!hcs::test::make_dir_link(link, f.outside))
+        GTEST_SKIP() << "cannot create symlink/junction here";
     auto r = f.guard.resolve(link / "secret.txt");
     ASSERT_FALSE(r) << "escape through link was accepted: " << r.value().string();
     EXPECT_EQ(r.error().code, ErrorCode::SecurityViolation);
@@ -100,7 +102,8 @@ TEST(PathGuard, LinkInsideRootPointingOutsideIsRejected) {
 TEST(PathGuard, LinkInsideRootPointingInsideIsAccepted) {
     Fixture f;
     const fs::path link = f.root / "alias";
-    if (!hcs::test::make_dir_link(link, f.root / "models")) GTEST_SKIP() << "cannot create symlink/junction here";
+    if (!hcs::test::make_dir_link(link, f.root / "models"))
+        GTEST_SKIP() << "cannot create symlink/junction here";
     auto r = f.guard.resolve(link / "a.gguf");
     ASSERT_TRUE(r) << r.error().message;
     // Resolved form points at the real location, inside the root.
@@ -117,7 +120,8 @@ TEST(PathGuard, WindowsCaseInsensitiveRootMatch) {
 
 TEST(PathGuard, WindowsRejectsDeviceNamespaceAndStreams) {
     Fixture f;
-    EXPECT_EQ(f.guard.resolve(fs::path(L"\\\\?\\C:\\Windows\\win.ini")).error().code, ErrorCode::SecurityViolation);
+    EXPECT_EQ(f.guard.resolve(fs::path(L"\\\\?\\C:\\Windows\\win.ini")).error().code,
+              ErrorCode::SecurityViolation);
     EXPECT_EQ(f.guard.resolve(fs::path(L"\\\\.\\PhysicalDrive0")).error().code, ErrorCode::SecurityViolation);
     auto stream = (f.root / "models" / "a.gguf").wstring() + L":hidden";
     EXPECT_EQ(f.guard.resolve(fs::path(stream)).error().code, ErrorCode::SecurityViolation);
@@ -130,10 +134,9 @@ TEST(PathGuard, WindowsRejectsDeviceNamespaceAndStreams) {
 TEST(PathGuard, WindowsRejectsDosDeviceNamesInsideRoot) {
     Fixture f;
     const std::vector<std::wstring> bad = {
-        L"CON",       L"con",         L"NUL",        L"NUL.png",     L"nul.tar.gz",  L"COM1",
-        L"com9.txt",  L"LPT1",        L"lpt9.bin",   L"PRN",         L"AUX",         L"CONIN$",
-        L"CONOUT$",   L"CLOCK$",      L"nul .txt",   L"COM1  ",      L"con.",        L"aux ...",
-        L"COM¹", L"LPT².x", L"COM³"};
+        L"CON",      L"con",      L"NUL",  L"NUL.png", L"nul.tar.gz", L"COM1",    L"com9.txt",
+        L"LPT1",     L"lpt9.bin", L"PRN",  L"AUX",     L"CONIN$",     L"CONOUT$", L"CLOCK$",
+        L"nul .txt", L"COM1  ",   L"con.", L"aux ...", L"COM¹",       L"LPT².x",  L"COM³"};
     for (const auto& name : bad) {
         auto r = f.guard.resolve((f.root / "models" / name));
         ASSERT_FALSE(r) << "accepted reserved name";
@@ -145,20 +148,23 @@ TEST(PathGuard, WindowsRejectsDosDeviceNamesInsideRoot) {
 
 TEST(PathGuard, WindowsRejectsWildcardsAndTrailingDotsInsideRoot) {
     Fixture f;
-    const std::vector<std::wstring> bad = {L"*.png", L"a?.png", L"a<b", L"a>b", L"a|b", L"a\"b",
-                                           L"model.gguf.", L"model.gguf ", L"model.gguf. ", L"ctl\x01x"};
+    const std::vector<std::wstring> bad = {L"*.png",        L"a?.png",  L"a<b",         L"a>b",
+                                           L"a|b",          L"a\"b",    L"model.gguf.", L"model.gguf ",
+                                           L"model.gguf. ", L"ctl\x01x"};
     for (const auto& name : bad) {
         auto r = f.guard.resolve(f.root / "models" / name);
         ASSERT_FALSE(r) << "accepted unsafe name";
         EXPECT_EQ(r.error().code, ErrorCode::SecurityViolation) << r.error().message;
     }
-    EXPECT_EQ(f.guard.resolve(f.root / "models" / std::wstring(300, L'a')).error().code, ErrorCode::SecurityViolation);
+    EXPECT_EQ(f.guard.resolve(f.root / "models" / std::wstring(300, L'a')).error().code,
+              ErrorCode::SecurityViolation);
 }
 
 TEST(PathGuard, WindowsStillAcceptsLookalikeLegitimateNames) {
     Fixture f;
-    for (const wchar_t* name : {L"console.gguf", L"comet.png", L"nullable.bin", L"COM10.txt", L"LPT0", L"a.b.gguf",
-                                L"con-sole", L"auxiliary", L"prn_2", L".hidden", L"model (1).gguf"}) {
+    for (const wchar_t* name :
+         {L"console.gguf", L"comet.png", L"nullable.bin", L"COM10.txt", L"LPT0", L"a.b.gguf", L"con-sole",
+          L"auxiliary", L"prn_2", L".hidden", L"model (1).gguf"}) {
         auto r = f.guard.resolve(f.root / "models" / name);
         EXPECT_TRUE(r) << "rejected a legitimate name: " << r.error().message;
     }

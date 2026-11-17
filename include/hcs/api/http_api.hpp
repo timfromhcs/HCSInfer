@@ -17,15 +17,15 @@
 namespace hcs::api {
 
 struct HttpRequest {
-    std::string method;                           // upper-case
-    std::string path;                             // without query string
-    std::string query;                            // raw, without '?'
-    std::map<std::string, std::string> headers;   // keys lower-cased
+    std::string method;                          // upper-case
+    std::string path;                            // without query string
+    std::string query;                           // raw, without '?'
+    std::map<std::string, std::string> headers;  // keys lower-cased
     std::string body;
     std::string remote_addr;
-    // Optional transport probe: returns true once the peer has closed the connection. The handler polls it while it
-    // waits for a long job so an abandoned request cancels its job instead of generating on (M10 audit D3).
-    // Empty = unknown (never treated as closed).
+    // Optional transport probe: returns true once the peer has closed the connection. The handler polls it
+    // while it waits for a long job so an abandoned request cancels its job instead of generating on (M10
+    // audit D3). Empty = unknown (never treated as closed).
     std::function<bool()> peer_closed;
 };
 
@@ -69,9 +69,11 @@ public:
 
 private:
     struct Inflight;
-    HttpResponse dispatch(const HttpRequest& req, const std::string& rid, const std::shared_ptr<Inflight>& guard);
+    HttpResponse dispatch(const HttpRequest& req, const std::string& rid,
+                          const std::shared_ptr<Inflight>& guard);
     HttpResponse chat(const HttpRequest& req, const std::string& rid, const std::shared_ptr<Inflight>& guard);
-    HttpResponse images(const HttpRequest& req, const std::string& rid, const std::shared_ptr<Inflight>& guard, bool edit);
+    HttpResponse images(const HttpRequest& req, const std::string& rid,
+                        const std::shared_ptr<Inflight>& guard, bool edit);
     HttpResponse error(int status, const std::string& type, const std::string& code, const std::string& msg,
                        const std::string& rid) const;
     HttpResponse from_error(const Error& e, const std::string& rid) const;
@@ -92,13 +94,14 @@ struct TransportOptions {
     std::string host = "127.0.0.1";
     int port = 8765;  // 0 => pick a free port
     std::size_t max_body_bytes = 1 * 1024 * 1024;
-    // Connection budget: at most `threads` connections are served and `max_queued` more wait for a worker; any
-    // further connection is closed immediately (M10 audit D2). One idle socket therefore costs at most
-    // `idle_timeout_s` of one worker, and a flood is bounded by (threads + max_queued) sockets, not by memory.
+    // Connection budget: at most `threads` connections are served and `max_queued` more wait for a worker;
+    // any further connection is closed immediately (M10 audit D2). One idle socket therefore costs at most
+    // `idle_timeout_s` of one worker, and a flood is bounded by (threads + max_queued) sockets, not by
+    // memory.
     std::size_t threads = 8;
     std::size_t max_queued = 32;
-    int idle_timeout_s = 2;    // wait for the first byte of a request (also the keep-alive wait)
-    int read_timeout_s = 5;    // per read once bytes flow (headers, body)
+    int idle_timeout_s = 2;  // wait for the first byte of a request (also the keep-alive wait)
+    int read_timeout_s = 5;  // per read once bytes flow (headers, body)
     int write_timeout_s = 30;
 };
 

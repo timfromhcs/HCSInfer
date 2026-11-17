@@ -11,11 +11,10 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <thread>
 #include <vector>
-
-#include <nlohmann/json.hpp>
 
 #include "hcs/api/control_plane.hpp"
 
@@ -27,9 +26,9 @@ inline constexpr const char* kLegacyVersion = "2025-11-25";
 struct McpOptions {
     std::string server_name = "hcsinfer";
     std::string server_version = "unknown";
-    std::size_t max_line_bytes = 1024 * 1024;       // longer input lines are rejected (-32600)
-    std::size_t max_concurrent_calls = 4;           // in-flight tools/call; more => error result "busy"
-    std::chrono::milliseconds call_timeout{300000}; // hard cap per tool call
+    std::size_t max_line_bytes = 1024 * 1024;        // longer input lines are rejected (-32600)
+    std::size_t max_concurrent_calls = 4;            // in-flight tools/call; more => error result "busy"
+    std::chrono::milliseconds call_timeout{300000};  // hard cap per tool call
     std::size_t max_image_bytes = 8 * 1024 * 1024;
 };
 

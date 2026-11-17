@@ -11,7 +11,8 @@ using namespace hcs::gui;
 namespace {
 std::string header(const GuiResponse& r, const std::string& name) {
     for (const auto& h : r.headers)
-        if (h.first == name) return h.second;
+        if (h.first == name)
+            return h.second;
     return {};
 }
 std::string asset_text(const std::string& name) {
@@ -96,7 +97,8 @@ TEST(GuiAssets, NoExternalUrlsOrInlineCode) {
     }
     EXPECT_EQ(scripts, 1);
     const std::string js = asset_text("app.js");
-    for (const char* bad : {"eval(", "new Function", "document.write", "innerHTML", "outerHTML", "insertAdjacentHTML", "XMLHttpRequest", "WebSocket", "EventSource"})
+    for (const char* bad : {"eval(", "new Function", "document.write", "innerHTML", "outerHTML",
+                            "insertAdjacentHTML", "XMLHttpRequest", "WebSocket", "EventSource"})
         EXPECT_EQ(js.find(bad), std::string::npos) << bad;
 }
 
@@ -111,8 +113,9 @@ TEST(GuiAssets, TokenComesFromFragmentNeverQueryString) {
 }
 
 TEST(GuiAssets, TraversalAndMalformedPathsAreRejected) {
-    for (const char* p : {"/ui/../secret", "/ui/..", "/ui/..%2f..%2fetc", "/ui/%2e%2e/x", "/ui/a/b", "/ui/a\\b", "/ui/..\\x", "/ui/.hidden",
-                          "/ui//app.js", "/ui/app.js/", "/ui/C:app.js", "/ui/app.js%00.png", "/ui/app js", "/ui/\x01"}) {
+    for (const char* p : {"/ui/../secret", "/ui/..", "/ui/..%2f..%2fetc", "/ui/%2e%2e/x", "/ui/a/b",
+                          "/ui/a\\b", "/ui/..\\x", "/ui/.hidden", "/ui//app.js", "/ui/app.js/",
+                          "/ui/C:app.js", "/ui/app.js%00.png", "/ui/app js", "/ui/\x01"}) {
         auto r = serve("GET", p);
         ASSERT_TRUE(r.has_value()) << p;
         EXPECT_EQ(r->status, 400) << p;
@@ -132,7 +135,8 @@ TEST(GuiAssets, UnknownAssetIs404AndNamespaceEdges) {
 }
 
 TEST(GuiAssets, OtherPathsAreNotHandled) {
-    for (const char* p : {"/v1/models", "/v1/chat/completions", "/hcs/v1/health", "/hcs/v1/jobs/job-1", "/uix", "/ui-x/app.js", "/index.html", ""}) {
+    for (const char* p : {"/v1/models", "/v1/chat/completions", "/hcs/v1/health", "/hcs/v1/jobs/job-1",
+                          "/uix", "/ui-x/app.js", "/index.html", ""}) {
         EXPECT_FALSE(handles_path(p)) << p;
         EXPECT_FALSE(serve("GET", p).has_value()) << p;
     }

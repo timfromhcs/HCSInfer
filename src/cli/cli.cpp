@@ -1,10 +1,5 @@
 #include "hcs/cli/cli.hpp"
 
-#include "benchmark_cmd.hpp"
-#include "chat_cmd.hpp"
-#include "image_cmd.hpp"
-#include "vision_cmd.hpp"
-
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>
@@ -14,14 +9,19 @@
 #include <ostream>
 #include <sstream>
 
+#include "benchmark_cmd.hpp"
+#include "chat_cmd.hpp"
 #include "hcs/fs_util.hpp"
 #include "hcs/model_registry.hpp"
 #include "hcs/path_guard.hpp"
 #include "hcs/result.hpp"
 #include "hcs/version.hpp"
+#include "image_cmd.hpp"
+#include "vision_cmd.hpp"
 
 #ifdef HCS_HAVE_API
 #include <iostream>
+
 #include "hcs/api/runtime.hpp"
 #endif
 #ifdef HCS_HAVE_MCP
@@ -49,7 +49,8 @@ const char* kRootHelp =
     "Usage: HCSInfer [--state-dir <dir>] <command> [options]\n"
     "\n"
     "Commands:\n"
-    "  doctor [--json]               Hardware/runtime diagnostics (unknown values are reported as 'unknown')\n"
+    "  doctor [--json]               Hardware/runtime diagnostics (unknown values are reported as "
+    "'unknown')\n"
     "  models list [--json]          List registered models\n"
     "  models scan <dir> [--json]    Read-only scan of a model folder (GGUF/safetensors headers validated)\n"
     "  models inspect <id>           Show a model manifest as JSON\n"
@@ -62,11 +63,13 @@ const char* kRootHelp =
     "  vision --model <path-or-id> --image <file> --prompt ... [--mmproj <file>] [--json]\n"
     "                                Image analysis via llama.cpp libmtmd (see `vision --help`)\n"
     "  benchmark --suite quick --model <path-or-id> [--export file]\n"
-    "                                Real text-model benchmark, JSON per AGENTS.md 21.1 (see `benchmark --help`)\n"
+    "                                Real text-model benchmark, JSON per AGENTS.md 21.1 (see `benchmark "
+    "--help`)\n"
     "  tune|cache                    Planned - not implemented yet (exit code 10)\n"
     "\n"
     "Global options:\n"
-    "  --state-dir <dir>   State directory (default: $HCS_STATE_DIR, %LOCALAPPDATA%\\HCSInfer or ~/.hcsinfer)\n"
+    "  --state-dir <dir>   State directory (default: $HCS_STATE_DIR, %LOCALAPPDATA%\\HCSInfer or "
+    "~/.hcsinfer)\n"
     "  --version           Print version\n"
     "  --help, -h          Show help (works at every level)\n"
     "\n"
@@ -106,7 +109,8 @@ const char* kModelsInspectHelp = "Usage: HCSInfer models inspect <id>\n";
 
 bool has_flag(std::vector<std::string>& v, const std::string& flag) {
     auto it = std::find(v.begin(), v.end(), flag);
-    if (it == v.end()) return false;
+    if (it == v.end())
+        return false;
     v.erase(it);
     return true;
 }
@@ -119,14 +123,18 @@ int fail(std::ostream& err, const Error& e) {
     err << "error: " << e.message << " [" << to_string(e.code) << "]\n";
     return e.exit_code();
 }
-int fail(std::ostream& err, ErrorCode c, const std::string& msg) { return fail(err, Error(c, msg)); }
+int fail(std::ostream& err, ErrorCode c, const std::string& msg) {
+    return fail(err, Error(c, msg));
+}
 
 // Removes "<flag> <value>" from v. Returns false when the flag is present without a value.
 bool take_option(std::vector<std::string>& v, const std::string& flag, std::string& value, bool& present) {
     present = false;
     auto it = std::find(v.begin(), v.end(), flag);
-    if (it == v.end()) return true;
-    if (it + 1 == v.end()) return false;
+    if (it == v.end())
+        return true;
+    if (it + 1 == v.end())
+        return false;
     value = *(it + 1);
     present = true;
     v.erase(it, it + 2);
@@ -134,48 +142,70 @@ bool take_option(std::vector<std::string>& v, const std::string& flag, std::stri
 }
 
 fs::path state_dir(const std::string& override_dir) {
-    if (!override_dir.empty()) return fs::path(override_dir);
-    if (const char* e = std::getenv("HCS_STATE_DIR"); e && *e) return fs::path(e);
-    if (const char* l = std::getenv("LOCALAPPDATA"); l && *l) return fs::path(l) / "HCSInfer";
-    if (const char* h = std::getenv("HOME"); h && *h) return fs::path(h) / ".hcsinfer";
+    if (!override_dir.empty())
+        return fs::path(override_dir);
+    if (const char* e = std::getenv("HCS_STATE_DIR"); e && *e)
+        return fs::path(e);
+    if (const char* l = std::getenv("LOCALAPPDATA"); l && *l)
+        return fs::path(l) / "HCSInfer";
+    if (const char* h = std::getenv("HOME"); h && *h)
+        return fs::path(h) / ".hcsinfer";
     return fs::path(".hcsinfer");
 }
 
 Result<void> load_registry(ModelRegistry& reg, const fs::path& file) {
     std::error_code ec;
-    if (!fs::exists(file, ec)) return {};
+    if (!fs::exists(file, ec))
+        return {};
     auto text = read_file_limited(file, 64u << 20);
-    if (!text) return text.error();
+    if (!text)
+        return text.error();
     return reg.load_json(text.value());
 }
 
 int cmd_doctor(std::vector<std::string> args, std::ostream& out, std::ostream& err) {
-    if (wants_help(args)) { out << kDoctorHelp; return 0; }
+    if (wants_help(args)) {
+        out << kDoctorHelp;
+        return 0;
+    }
     const bool as_json = has_flag(args, "--json");
 #ifdef HCS_HAVE_HARDWARE
     hcs::hardware::DoctorOptions opt;
     opt.json = as_json;
     opt.no_vulkan = has_flag(args, "--no-vulkan");
-    for (const char* name : {"--storage-root", "--read-file", "--read-max-mib", "--read-buffer-kib", "--read-repeats"}) {
+    for (const char* name :
+         {"--storage-root", "--read-file", "--read-max-mib", "--read-buffer-kib", "--read-repeats"}) {
         std::string value;
         bool present = false;
         if (!take_option(args, name, value, present))
             return fail(err, ErrorCode::InvalidArgument, std::string(name) + " needs a value");
-        if (!present) continue;
+        if (!present)
+            continue;
         const std::string n = name;
-        if (n == "--storage-root") { opt.storage_root = value; continue; }
-        if (n == "--read-file") { opt.read_file = value; continue; }
+        if (n == "--storage-root") {
+            opt.storage_root = value;
+            continue;
+        }
+        if (n == "--read-file") {
+            opt.read_file = value;
+            continue;
+        }
         if (value.empty() || value.find_first_not_of("0123456789") != std::string::npos || value.size() > 9)
             return fail(err, ErrorCode::InvalidArgument, n + " needs a positive integer");
         const std::uint64_t num = std::stoull(value);
-        if (n == "--read-max-mib") opt.read_max_bytes = num << 20;
-        else if (n == "--read-buffer-kib") opt.read_buffer_bytes = static_cast<std::uint32_t>(std::min<std::uint64_t>(num, 1u << 20) << 10);
-        else opt.read_repeats = static_cast<std::uint32_t>(num);
+        if (n == "--read-max-mib")
+            opt.read_max_bytes = num << 20;
+        else if (n == "--read-buffer-kib")
+            opt.read_buffer_bytes = static_cast<std::uint32_t>(std::min<std::uint64_t>(num, 1u << 20) << 10);
+        else
+            opt.read_repeats = static_cast<std::uint32_t>(num);
     }
-    if (!args.empty()) return fail(err, ErrorCode::InvalidArgument, "unexpected argument: " + args.front());
+    if (!args.empty())
+        return fail(err, ErrorCode::InvalidArgument, "unexpected argument: " + args.front());
     return hcs::hardware::run_doctor(opt, out, err);
 #else
-    if (!args.empty()) return fail(err, ErrorCode::InvalidArgument, "unexpected argument: " + args.front());
+    if (!args.empty())
+        return fail(err, ErrorCode::InvalidArgument, "unexpected argument: " + args.front());
 #ifdef _WIN32
     const char* os = "windows";
 #else
@@ -187,9 +217,9 @@ int cmd_doctor(std::vector<std::string> args, std::ostream& out, std::ostream& e
         j["hcsinfer_version"] = HCS_VERSION_STRING;
         j["hardware_module"] = "absent";
         j["os"] = os;
-        for (const char* k : {"os_build", "cpu", "cpu_features", "gpu", "gpu_vendor_id", "gpu_device_id",
-                              "driver_version", "vulkan_api_version", "ram_bytes", "uma_reservation",
-                              "model_vault_drive"}) {
+        for (const char* k :
+             {"os_build", "cpu", "cpu_features", "gpu", "gpu_vendor_id", "gpu_device_id", "driver_version",
+              "vulkan_api_version", "ram_bytes", "uma_reservation", "model_vault_drive"}) {
             j[k] = "unknown";
         }
         out << j.dump(2) << "\n";
@@ -209,22 +239,39 @@ int cmd_doctor(std::vector<std::string> args, std::ostream& out, std::ostream& e
 
 int cmd_models(std::vector<std::string> args, const std::string& state_override, std::ostream& out,
                std::ostream& err) {
-    if (args.empty()) { err << kModelsHelp; return exit_code(ErrorCode::InvalidArgument); }
+    if (args.empty()) {
+        err << kModelsHelp;
+        return exit_code(ErrorCode::InvalidArgument);
+    }
     const std::string sub = args.front();
     args.erase(args.begin());
-    if (sub == "--help" || sub == "-h") { out << kModelsHelp; return 0; }
+    if (sub == "--help" || sub == "-h") {
+        out << kModelsHelp;
+        return 0;
+    }
 
     const fs::path registry_file = state_dir(state_override) / "registry.json";
 
     if (sub == "list") {
-        if (wants_help(args)) { out << kModelsListHelp; return 0; }
+        if (wants_help(args)) {
+            out << kModelsListHelp;
+            return 0;
+        }
         const bool as_json = has_flag(args, "--json");
-        if (!args.empty()) return fail(err, ErrorCode::InvalidArgument, "unexpected argument: " + args.front());
+        if (!args.empty())
+            return fail(err, ErrorCode::InvalidArgument, "unexpected argument: " + args.front());
         ModelRegistry reg;
-        if (auto r = load_registry(reg, registry_file); !r) return fail(err, r.error());
-        if (as_json) { out << reg.to_json(); return 0; }
+        if (auto r = load_registry(reg, registry_file); !r)
+            return fail(err, r.error());
+        if (as_json) {
+            out << reg.to_json();
+            return 0;
+        }
         const auto models = reg.list();
-        if (models.empty()) { out << "No models registered. Use: HCSInfer models scan <dir>\n"; return 0; }
+        if (models.empty()) {
+            out << "No models registered. Use: HCSInfer models scan <dir>\n";
+            return 0;
+        }
         out << std::left << std::setw(32) << "ID" << std::setw(13) << "FORMAT" << std::setw(9) << "KIND"
             << std::setw(14) << "SIZE (MiB)" << "PATH\n";
         for (const auto& m : models) {
@@ -234,16 +281,24 @@ int cmd_models(std::vector<std::string> args, const std::string& state_override,
         return 0;
     }
     if (sub == "scan") {
-        if (wants_help(args)) { out << kModelsScanHelp; return 0; }
+        if (wants_help(args)) {
+            out << kModelsScanHelp;
+            return 0;
+        }
         const bool as_json = has_flag(args, "--json");
-        if (args.size() != 1) return fail(err, ErrorCode::InvalidArgument, "scan requires exactly one <dir>");
+        if (args.size() != 1)
+            return fail(err, ErrorCode::InvalidArgument, "scan requires exactly one <dir>");
         PathGuard guard;
-        if (auto r = guard.add_root(args[0]); !r) return fail(err, r.error());
+        if (auto r = guard.add_root(args[0]); !r)
+            return fail(err, r.error());
         ModelRegistry reg;
-        if (auto r = load_registry(reg, registry_file); !r) return fail(err, r.error());
+        if (auto r = load_registry(reg, registry_file); !r)
+            return fail(err, r.error());
         auto report = reg.scan(args[0], guard);
-        if (!report) return fail(err, report.error());
-        if (auto w = atomic_write_file(registry_file, reg.to_json()); !w) return fail(err, w.error());
+        if (!report)
+            return fail(err, report.error());
+        if (auto w = atomic_write_file(registry_file, reg.to_json()); !w)
+            return fail(err, w.error());
         const ScanReport& rep = report.value();
         if (as_json) {
             json j;
@@ -260,36 +315,52 @@ int cmd_models(std::vector<std::string> args, const std::string& state_override,
         return 0;
     }
     if (sub == "inspect") {
-        if (wants_help(args)) { out << kModelsInspectHelp; return 0; }
-        if (args.size() != 1) return fail(err, ErrorCode::InvalidArgument, "inspect requires exactly one <id>");
+        if (wants_help(args)) {
+            out << kModelsInspectHelp;
+            return 0;
+        }
+        if (args.size() != 1)
+            return fail(err, ErrorCode::InvalidArgument, "inspect requires exactly one <id>");
         ModelRegistry reg;
-        if (auto r = load_registry(reg, registry_file); !r) return fail(err, r.error());
+        if (auto r = load_registry(reg, registry_file); !r)
+            return fail(err, r.error());
         auto m = reg.get(args[0]);
-        if (!m) return fail(err, m.error());
+        if (!m)
+            return fail(err, m.error());
         // Reuse registry JSON for one model: extract it.
         json all = json::parse(reg.to_json());
         for (const auto& e : all["models"]) {
-            if (e["id"] == args[0]) { out << e.dump(2) << "\n"; return 0; }
+            if (e["id"] == args[0]) {
+                out << e.dump(2) << "\n";
+                return 0;
+            }
         }
         return fail(err, ErrorCode::Internal, "registry inconsistency");
     }
     if (sub == "load" || sub == "unload") {
-        if (wants_help(args)) { out << kModelsHelp; return 0; }
-        return fail(err, ErrorCode::Unsupported, "models " + sub + " is planned: engine adapters are not implemented yet");
+        if (wants_help(args)) {
+            out << kModelsHelp;
+            return 0;
+        }
+        return fail(err, ErrorCode::Unsupported,
+                    "models " + sub + " is planned: engine adapters are not implemented yet");
     }
     return fail(err, ErrorCode::InvalidArgument, "unknown models subcommand: " + sub);
 }
 
 }  // namespace
 
-std::string root_help() { return kRootHelp; }
+std::string root_help() {
+    return kRootHelp;
+}
 
 int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostream& err) {
     std::vector<std::string> args;
     std::string state_override;
     for (std::size_t i = 0; i < raw_args.size(); ++i) {
         if (raw_args[i] == "--state-dir") {
-            if (i + 1 >= raw_args.size()) return fail(err, ErrorCode::InvalidArgument, "--state-dir needs a value");
+            if (i + 1 >= raw_args.size())
+                return fail(err, ErrorCode::InvalidArgument, "--state-dir needs a value");
             state_override = raw_args[++i];
         } else {
             args.push_back(raw_args[i]);
@@ -300,18 +371,31 @@ int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostrea
         return exit_code(ErrorCode::InvalidArgument);
     }
     const std::string cmd = args.front();
-    if (cmd == "--help" || cmd == "-h" || cmd == "help") { out << kRootHelp; return 0; }
-    if (cmd == "--version") { out << "HCSInfer " << HCS_VERSION_STRING << "\n"; return 0; }
+    if (cmd == "--help" || cmd == "-h" || cmd == "help") {
+        out << kRootHelp;
+        return 0;
+    }
+    if (cmd == "--version") {
+        out << "HCSInfer " << HCS_VERSION_STRING << "\n";
+        return 0;
+    }
     args.erase(args.begin());
 
-    if (cmd == "doctor") return cmd_doctor(std::move(args), out, err);
-    if (cmd == "chat") return run_chat(std::move(args), state_override, out, err);
-    if (cmd == "benchmark") return run_benchmark(std::move(args), state_override, out, err);
-    if (cmd == "vision") return run_vision(std::move(args), state_override, out, err);
-    if (cmd == "image") return run_image(std::move(args), state_override, out, err);
-    if (cmd == "models") return cmd_models(std::move(args), state_override, out, err);
+    if (cmd == "doctor")
+        return cmd_doctor(std::move(args), out, err);
+    if (cmd == "chat")
+        return run_chat(std::move(args), state_override, out, err);
+    if (cmd == "benchmark")
+        return run_benchmark(std::move(args), state_override, out, err);
+    if (cmd == "vision")
+        return run_vision(std::move(args), state_override, out, err);
+    if (cmd == "image")
+        return run_image(std::move(args), state_override, out, err);
+    if (cmd == "models")
+        return cmd_models(std::move(args), state_override, out, err);
 #ifdef HCS_HAVE_API
-    if (cmd == "serve") return hcs::api::run_serve(args, state_dir(state_override), out, err);
+    if (cmd == "serve")
+        return hcs::api::run_serve(args, state_dir(state_override), out, err);
 #endif
 #ifdef HCS_HAVE_MCP
     if (cmd == "mcp") {
@@ -319,14 +403,17 @@ int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostrea
             out << "Usage: HCSInfer mcp stdio [options]\n\nRun `HCSInfer mcp stdio --help` for details.\n";
             return args.empty() ? exit_code(ErrorCode::InvalidArgument) : 0;
         }
-        if (args[0] != "stdio") return fail(err, ErrorCode::InvalidArgument, "unknown mcp transport: " + args[0] + " (only 'stdio' is implemented)");
+        if (args[0] != "stdio")
+            return fail(err, ErrorCode::InvalidArgument,
+                        "unknown mcp transport: " + args[0] + " (only 'stdio' is implemented)");
         args.erase(args.begin());
         return hcs::mcp::run_stdio(args, state_dir(state_override), std::cin, out, err);
     }
 #endif
     if (std::find(std::begin(kPlanned), std::end(kPlanned), cmd) != std::end(kPlanned)) {
         if (wants_help(args)) {
-            out << "Usage: HCSInfer " << cmd << " ...\n\nPlanned: this command is not implemented yet (exit code 10).\n";
+            out << "Usage: HCSInfer " << cmd
+                << " ...\n\nPlanned: this command is not implemented yet (exit code 10).\n";
             return 0;
         }
         return fail(err, ErrorCode::Unsupported, "'" + cmd + "' is planned and not implemented yet");

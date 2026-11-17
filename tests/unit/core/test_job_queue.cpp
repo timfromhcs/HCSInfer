@@ -22,7 +22,8 @@ struct Gate {
             started_p.set_value();
             while (!ctx.cancelled() && release.wait_for(1ms) != std::future_status::ready) {
             }
-            if (ctx.cancelled()) return make_error(ErrorCode::Cancelled, "cancelled");
+            if (ctx.cancelled())
+                return make_error(ErrorCode::Cancelled, "cancelled");
             return {};
         };
     }
@@ -53,7 +54,8 @@ TEST(JobQueue, RunsJobToSuccessWithEvents) {
     EXPECT_EQ(ev.back().state, JobState::Succeeded);
     std::string streamed;
     for (const auto& e : ev) {
-        if (e.kind == JobEventKind::Output) streamed += e.text;
+        if (e.kind == JobEventKind::Output)
+            streamed += e.text;
     }
     EXPECT_EQ(streamed, "tok1tok2");
     EXPECT_EQ(q.events(id.value(), 3).front().seq, 3u);
@@ -61,7 +63,8 @@ TEST(JobQueue, RunsJobToSuccessWithEvents) {
 
 TEST(JobQueue, FailureCarriesError) {
     JobQueue q;
-    auto id = q.submit("bad", [](JobContext&) -> Result<void> { return make_error(ErrorCode::ModelError, "boom"); });
+    auto id = q.submit("bad",
+                       [](JobContext&) -> Result<void> { return make_error(ErrorCode::ModelError, "boom"); });
     ASSERT_TRUE(q.wait(id.value(), 5s));
     auto st = q.status(id.value()).value();
     EXPECT_EQ(st.state, JobState::Failed);
@@ -102,7 +105,10 @@ TEST(JobQueue, CancelQueuedJobNeverRuns) {
     auto first = q.submit("gate", gate.fn());
     gate.started.wait();
     std::atomic<bool> ran{false};
-    auto second = q.submit("queued", [&](JobContext&) -> Result<void> { ran = true; return {}; });
+    auto second = q.submit("queued", [&](JobContext&) -> Result<void> {
+        ran = true;
+        return {};
+    });
     EXPECT_EQ(q.pending(), 1u);
     EXPECT_EQ(q.status(second.value()).value().state, JobState::Queued);
     ASSERT_TRUE(q.cancel(second.value()));

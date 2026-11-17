@@ -17,8 +17,10 @@ constexpr std::uint32_t kMaxBuffer = 64u << 20;
 std::string validate(const DoctorOptions& o) {
     if (o.read_buffer_bytes < kMinBuffer || o.read_buffer_bytes > kMaxBuffer)
         return "read buffer must be between 64 KiB and 64 MiB";
-    if (o.read_repeats < 1 || o.read_repeats > 5) return "read repeats must be between 1 and 5";
-    if (o.read_max_bytes < 1) return "read max bytes must be >= 1";
+    if (o.read_repeats < 1 || o.read_repeats > 5)
+        return "read repeats must be between 1 and 5";
+    if (o.read_max_bytes < 1)
+        return "read max bytes must be >= 1";
     return {};
 }
 
@@ -29,9 +31,11 @@ std::string upper(std::string s) {
 
 // "0x1002" -> "1002"
 std::string id_digits(const json& v) {
-    if (!v.is_string()) return {};
+    if (!v.is_string())
+        return {};
     std::string s = v.get<std::string>();
-    if (s.rfind("0x", 0) == 0) s = s.substr(2);
+    if (s.rfind("0x", 0) == 0)
+        s = s.substr(2);
     return upper(s);
 }
 
@@ -43,12 +47,14 @@ json build_summary(const json& r) {
     json feats = json::array();
     if (cpu["features"].is_object())
         for (auto it = cpu["features"].begin(); it != cpu["features"].end(); ++it)
-            if (it.value().is_boolean() && it.value().get<bool>() && it.key().rfind("os_", 0) != 0) feats.push_back(it.key());
+            if (it.value().is_boolean() && it.value().get<bool>() && it.key().rfind("os_", 0) != 0)
+                feats.push_back(it.key());
     s["cpu_features"] = feats;
     s["ram_bytes"] = r["memory"]["total_physical_bytes"];
     if (os["build"].is_number()) {
         std::string b = "10.0." + std::to_string(os["build"].get<std::uint32_t>());
-        if (os["ubr"].is_number()) b += "." + std::to_string(os["ubr"].get<std::uint32_t>());
+        if (os["ubr"].is_number())
+            b += "." + std::to_string(os["ubr"].get<std::uint32_t>());
         s["os_build"] = b;
     } else {
         s["os_build"] = unknown();
@@ -96,7 +102,8 @@ json build_summary(const json& r) {
                                        : std::string();
             if (id.find("VEN_" + ven) != std::string::npos && id.find("DEV_" + dev) != std::string::npos) {
                 s["registry_driver_version"] = e["driver_version"];
-                if (!s["driver_version"].is_string() || s["driver_version"] == "unknown") s["driver_version"] = e["driver_version"];
+                if (!s["driver_version"].is_string() || s["driver_version"] == "unknown")
+                    s["driver_version"] = e["driver_version"];
                 break;
             }
         }
@@ -129,17 +136,21 @@ json build_report(const DoctorOptions& o) {
     return r;
 }
 
-std::string dump(const json& j) { return j.dump(2, ' ', false, json::error_handler_t::replace); }
+std::string dump(const json& j) {
+    return j.dump(2, ' ', false, json::error_handler_t::replace);
+}
 
 }  // namespace
 
 std::string collect_report_json(const DoctorOptions& options, bool* ok) {
     const std::string err = validate(options);
     if (!err.empty()) {
-        if (ok) *ok = false;
+        if (ok)
+            *ok = false;
         return dump(json{{"error", err}});
     }
-    if (ok) *ok = true;
+    if (ok)
+        *ok = true;
     return dump(build_report(options));
 }
 

@@ -62,7 +62,8 @@ TEST(ModelRegistry, RejectsBadAndDuplicateIds) {
 TEST(ModelRegistry, LifecycleThroughRegistryAndRemovalGuard) {
     ModelRegistry r;
     ASSERT_TRUE(r.add(manifest("m")));
-    for (auto s : {ModelState::Validating, ModelState::ReadyToLoad, ModelState::Loading, ModelState::Loaded}) {
+    for (auto s :
+         {ModelState::Validating, ModelState::ReadyToLoad, ModelState::Loading, ModelState::Loaded}) {
         ASSERT_TRUE(r.transition("m", s));
     }
     EXPECT_EQ(r.remove("m").error().code, ErrorCode::InvalidState);  // loaded: refuse
@@ -77,7 +78,8 @@ TEST(ModelRegistry, FailMarksFailed) {
     ModelRegistry r;
     ASSERT_TRUE(r.add(manifest("m")));
     EXPECT_FALSE(r.fail("m", FailureKind::Recoverable, "too early"));  // Discovered cannot fail
-    for (auto s : {ModelState::Validating, ModelState::ReadyToLoad, ModelState::Loading}) ASSERT_TRUE(r.transition("m", s));
+    for (auto s : {ModelState::Validating, ModelState::ReadyToLoad, ModelState::Loading})
+        ASSERT_TRUE(r.transition("m", s));
     ASSERT_TRUE(r.fail("m", FailureKind::NonRecoverable, "oom"));
     EXPECT_EQ(r.state("m").value(), ModelState::Failed);
 }
@@ -103,7 +105,8 @@ TEST(ModelRegistry, LoadJsonRejectsGarbage) {
     ModelRegistry r;
     EXPECT_EQ(r.load_json("nope").error().code, ErrorCode::InvalidArgument);
     EXPECT_EQ(r.load_json(R"({"schema_version":9,"models":[]})").error().code, ErrorCode::Unsupported);
-    EXPECT_EQ(r.load_json(R"({"schema_version":1,"models":[{"id":"x"}]})").error().code, ErrorCode::InvalidArgument);
+    EXPECT_EQ(r.load_json(R"({"schema_version":1,"models":[{"id":"x"}]})").error().code,
+              ErrorCode::InvalidArgument);
     EXPECT_EQ(r.load_json(R"({"schema_version":1,"models":[{"id":"BAD ID","path":"p"}]})").error().code,
               ErrorCode::InvalidArgument);
 }
@@ -172,7 +175,8 @@ TEST(ModelRegistryScan, DoesNotFollowLinksOutOfRoot) {
     TempDir t;
     write_file(t / "outside" / "evil.gguf", hcs::test::fake_gguf());
     write_file(t / "root" / "fine.gguf", hcs::test::fake_gguf());
-    if (!hcs::test::make_dir_link(t / "root" / "escape", t / "outside")) GTEST_SKIP() << "no symlink/junction support";
+    if (!hcs::test::make_dir_link(t / "root" / "escape", t / "outside"))
+        GTEST_SKIP() << "no symlink/junction support";
     PathGuard g;
     ASSERT_TRUE(g.add_root(t / "root"));
     ModelRegistry r;
@@ -209,6 +213,9 @@ TEST(ModelRegistryScan, NeverModifiesScannedFiles) {
     EXPECT_EQ(hcs::test::read_file(f), before);
     EXPECT_EQ(fs::last_write_time(f), stamp);
     std::size_t n = 0;
-    for (auto& e : fs::recursive_directory_iterator(t / "r")) { (void)e; ++n; }
+    for (auto& e : fs::recursive_directory_iterator(t / "r")) {
+        (void)e;
+        ++n;
+    }
     EXPECT_EQ(n, 1u);
 }

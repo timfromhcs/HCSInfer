@@ -40,11 +40,14 @@ public:
         return {};
     }
     Result<JobId> generate(const TextRequest&) override { return make_error(ErrorCode::Unsupported, "fake"); }
-    Result<JobId> analyze_image(const VisionRequest&) override { return make_error(ErrorCode::Unsupported, "fake"); }
+    Result<JobId> analyze_image(const VisionRequest&) override {
+        return make_error(ErrorCode::Unsupported, "fake");
+    }
     EngineMetrics metrics() const override { return {}; }
     bool vision_loaded() const override { return projector_loaded; }
 
-    Result<TextResult> generate_stream(const TextRequest&, const TokenSink& sink, const CancellationToken&) override {
+    Result<TextResult> generate_stream(const TextRequest&, const TokenSink& sink,
+                                       const CancellationToken&) override {
         ++text_calls;
         sink("text only");
         return TextResult{};
@@ -56,9 +59,11 @@ public:
             last_vision = r;
         }
         ++vision_calls;
-        if (!projector_loaded) return make_error(ErrorCode::Unsupported, "fake: no projector");
+        if (!projector_loaded)
+            return make_error(ErrorCode::Unsupported, "fake: no projector");
         for (const char* p : {"A red", " square", " on white."})
-            if (!sink(p)) break;
+            if (!sink(p))
+                break;
         TextResult t;
         t.completion_tokens = 3;
         return t;
@@ -86,8 +91,10 @@ struct Fixture {
         (void)guard.add_root(root);
         (void)registry.scan(root, guard);
         for (const auto& m : registry.list()) {
-            if (m.path.find("smol-Q8_0") != std::string::npos) vlm_id = m.id;
-            if (m.path.find("plain.gguf") != std::string::npos) plain_id = m.id;
+            if (m.path.find("smol-Q8_0") != std::string::npos)
+                vlm_id = m.id;
+            if (m.path.find("plain.gguf") != std::string::npos)
+                plain_id = m.id;
         }
         queue = std::make_unique<JobQueue>();
         opts.version = "test";
@@ -95,7 +102,8 @@ struct Fixture {
     }
     ~Fixture() { queue->shutdown(); }
 
-    ChatParams vision_params(const std::string& model, std::vector<std::uint8_t> png = test::make_red_square_png(32)) {
+    ChatParams vision_params(const std::string& model,
+                             std::vector<std::uint8_t> png = test::make_red_square_png(32)) {
         ChatParams p;
         p.model = model;
         ChatMessage m;
@@ -114,13 +122,16 @@ struct Fixture {
     };
     Out run(const ChatParams& p) {
         auto sub = cp->submit_chat(p);
-        if (!sub) return {JobState::Failed, "", std::string(to_string(sub.error().code))};
+        if (!sub)
+            return {JobState::Failed, "", std::string(to_string(sub.error().code))};
         Out o{JobState::Queued, "", ""};
         while (true) {
             JobEvent ev;
-            const auto r = sub.value().channel->pop(ev, std::chrono::steady_clock::now() + std::chrono::seconds(10));
+            const auto r =
+                sub.value().channel->pop(ev, std::chrono::steady_clock::now() + std::chrono::seconds(10));
             if (r == JobChannel::Pop::Event) {
-                if (ev.kind == JobEventKind::Output) o.text += ev.text;
+                if (ev.kind == JobEventKind::Output)
+                    o.text += ev.text;
             } else {
                 break;
             }
@@ -128,7 +139,8 @@ struct Fixture {
         (void)cp->wait_job(sub.value().id, std::chrono::seconds(5));
         auto st = cp->job_status(sub.value().id);
         o.state = st.value().state;
-        if (st.value().error) o.code = std::string(to_string(st.value().error->code));
+        if (st.value().error)
+            o.code = std::string(to_string(st.value().error->code));
         return o;
     }
 };
@@ -170,7 +182,8 @@ TEST(VisionPairing, AmbiguousFolderIsNotGuessed) {
     for (const auto& m : reg.list()) {
         auto p = cp.projector_path_for(m);
         ASSERT_TRUE(p.ok());
-        EXPECT_TRUE(p.value().empty()) << m.id;  // a projector is never loaded as a model's partner by guesswork
+        EXPECT_TRUE(p.value().empty())
+            << m.id;  // a projector is never loaded as a model's partner by guesswork
     }
     q.shutdown();
 }
@@ -240,7 +253,8 @@ TEST(VisionControlPlane, ValidationRejectsBadShapesAndImages) {
     EXPECT_FALSE(f.cp->validate_chat(notext).ok());
 
     auto garbage = good;
-    garbage.messages[0].images[0].bytes = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25};
+    garbage.messages[0].images[0].bytes = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13,
+                                           14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25};
     auto g = f.cp->validate_chat(garbage);
     ASSERT_FALSE(g.ok());
     EXPECT_EQ(g.error().code, ErrorCode::InvalidArgument);
@@ -282,13 +296,15 @@ struct Http {
         return handler.handle(r);
     }
     json vision_body(const std::string& model, const std::string& uri, bool stream = false) {
-        return {{"model", model},
-                {"stream", stream},
-                {"max_tokens", 32},
-                {"messages",
-                 json::array({json{{"role", "user"},
-                                   {"content", json::array({json{{"type", "text"}, {"text", "what colour is the square?"}},
-                                                            json{{"type", "image_url"}, {"image_url", {{"url", uri}}}}})}}})}};
+        return {
+            {"model", model},
+            {"stream", stream},
+            {"max_tokens", 32},
+            {"messages",
+             json::array({json{
+                 {"role", "user"},
+                 {"content", json::array({json{{"type", "text"}, {"text", "what colour is the square?"}},
+                                          json{{"type", "image_url"}, {"image_url", {{"url", uri}}}}})}}})}};
     }
 };
 
@@ -325,8 +341,9 @@ TEST(VisionHttp, StreamingWorksWithImages) {
 
 TEST(VisionHttp, RemoteUrlsPathsAndBadDataUrisAreRejected) {
     Http h;
-    for (const char* u : {"http://example.com/a.png", "https://example.com/a.png", "file:///C:/Windows/win.ini",
-                          "C:\\Windows\\win.ini", "data:image/png;base64,@@@@", "data:text/html;base64,QUJD"}) {
+    for (const char* u :
+         {"http://example.com/a.png", "https://example.com/a.png", "file:///C:/Windows/win.ini",
+          "C:\\Windows\\win.ini", "data:image/png;base64,@@@@", "data:text/html;base64,QUJD"}) {
         auto r = h.post(h.vision_body(h.fx.vlm_id, u));
         EXPECT_EQ(r.status, 400) << u << " -> " << r.body;
     }
@@ -337,7 +354,8 @@ TEST(VisionHttp, NonImageBytesAndOversizedDimensionsAre400) {
     ControlPlaneOptions cpo;
     cpo.max_image_pixels = 4096;
     Http h(cpo);
-    auto not_img = h.post(h.vision_body(h.fx.vlm_id, "data:image/png;base64,QUJDREVGR0hJSktMTU5PUFFSU1RVVldY"));
+    auto not_img =
+        h.post(h.vision_body(h.fx.vlm_id, "data:image/png;base64,QUJDREVGR0hJSktMTU5PUFFSU1RVVldY"));
     EXPECT_EQ(not_img.status, 400) << not_img.body;
     auto big = h.post(h.vision_body(h.fx.vlm_id, test::png_data_uri(test::make_png_header_only(100, 100))));
     EXPECT_EQ(big.status, 400) << big.body;
@@ -365,7 +383,9 @@ json call_req(int id, const std::string& tool, json args) {
     json meta = {{"io.modelcontextprotocol/protocolVersion", mcp::kModernVersion},
                  {"io.modelcontextprotocol/clientInfo", {{"name", "test"}, {"version", "0"}}},
                  {"io.modelcontextprotocol/clientCapabilities", json::object()}};
-    return {{"jsonrpc", "2.0"}, {"id", id}, {"method", "tools/call"},
+    return {{"jsonrpc", "2.0"},
+            {"id", id},
+            {"method", "tools/call"},
             {"params", {{"name", tool}, {"arguments", args}, {"_meta", meta}}}};
 }
 
@@ -376,11 +396,10 @@ TEST(VisionMcp, AnalyzeReadsApprovedPathAndReturnsText) {
     mcp::McpServer server(*f.cp, {}, f.logger);
     const auto png = test::make_red_square_png(32);
     test::write_file(f.root / "img.png", std::string(png.begin(), png.end()));
-    auto r = json::parse(server.handle_line(call_req(1, "hcs.vision.analyze",
-                                                     {{"model", f.vlm_id},
-                                                      {"prompt", "colour?"},
-                                                      {"image_path", (f.root / "img.png").string()}})
-                                                .dump()));
+    auto r = json::parse(server.handle_line(
+        call_req(1, "hcs.vision.analyze",
+                 {{"model", f.vlm_id}, {"prompt", "colour?"}, {"image_path", (f.root / "img.png").string()}})
+            .dump()));
     ASSERT_FALSE(r["result"]["isError"].get<bool>()) << r.dump();
     EXPECT_EQ(r["result"]["structuredContent"]["text"], "A red square on white.");
     EXPECT_EQ(f.engine.last_vision.image.bytes, png);
@@ -397,10 +416,15 @@ TEST(VisionMcp, PathEscapesNonImagesAndMissingProjectorAreCleanErrors) {
         EXPECT_TRUE(r["result"]["isError"].get<bool>()) << r.dump();
         return r["result"]["structuredContent"]["error"]["code"].get<std::string>();
     };
-    EXPECT_EQ(code_of(1, {{"prompt", "x"}, {"image_path", (outside / "secret.png").string()}}), "security_violation");
+    EXPECT_EQ(code_of(1, {{"prompt", "x"}, {"image_path", (outside / "secret.png").string()}}),
+              "security_violation");
     test::write_file(f.root / "notimg.png", "this is not an image at all, just text bytes");
-    EXPECT_EQ(code_of(2, {{"model", f.vlm_id}, {"prompt", "x"}, {"image_path", (f.root / "notimg.png").string()}}), "invalid_argument");
+    EXPECT_EQ(
+        code_of(2, {{"model", f.vlm_id}, {"prompt", "x"}, {"image_path", (f.root / "notimg.png").string()}}),
+        "invalid_argument");
     test::write_file(f.root / "ok.png", std::string(png.begin(), png.end()));
-    EXPECT_EQ(code_of(3, {{"model", f.plain_id}, {"prompt", "x"}, {"image_path", (f.root / "ok.png").string()}}), "unsupported");
+    EXPECT_EQ(
+        code_of(3, {{"model", f.plain_id}, {"prompt", "x"}, {"image_path", (f.root / "ok.png").string()}}),
+        "unsupported");
     EXPECT_EQ(f.engine.vision_calls.load(), 0);
 }

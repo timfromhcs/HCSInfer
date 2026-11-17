@@ -14,7 +14,7 @@ namespace hcs::test {
 
 class FakeImageEngine final : public api::IImageStreamEngine {
 public:
-    int delay_ms = 0;               // per 10 ms slice, rendering takes `slices` slices
+    int delay_ms = 0;  // per 10 ms slice, rendering takes `slices` slices
     int slices = 1;
     bool run_until_cancel = false;  // renders forever, only stops on cancel
     bool fail_load = false;
@@ -24,7 +24,8 @@ public:
     ImageRequest last;
 
     Result<void> load(const LoadRequest&) override {
-        if (fail_load) return make_error(ErrorCode::ModelError, "fake image load failure");
+        if (fail_load)
+            return make_error(ErrorCode::ModelError, "fake image load failure");
         ++loads;
         return {};
     }
@@ -32,8 +33,12 @@ public:
         ++unloads;
         return {};
     }
-    Result<JobId> generate(const ImageRequest&) override { return make_error(ErrorCode::Unsupported, "fake: blocking only"); }
-    Result<JobId> edit(const ImageRequest&) override { return make_error(ErrorCode::Unsupported, "fake: blocking only"); }
+    Result<JobId> generate(const ImageRequest&) override {
+        return make_error(ErrorCode::Unsupported, "fake: blocking only");
+    }
+    Result<JobId> edit(const ImageRequest&) override {
+        return make_error(ErrorCode::Unsupported, "fake: blocking only");
+    }
     EngineMetrics metrics() const override {
         EngineMetrics m;
         m.backend = "fake";
@@ -62,8 +67,10 @@ private:
                 rendering = false;
                 return make_error(ErrorCode::Cancelled, "fake render cancelled");
             }
-            if (delay_ms > 0) std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
-            else if (run_until_cancel) std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            if (delay_ms > 0)
+                std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+            else if (run_until_cancel)
+                std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
         rendering = false;
         api::ImageResult out;

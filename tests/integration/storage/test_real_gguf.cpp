@@ -18,7 +18,8 @@ std::string model_path() {
 
 TEST(RealGguf, HeaderParsesAndTensorsLieInsideTheFile) {
     const auto path = model_path();
-    if (path.empty()) GTEST_SKIP() << "BLOCKED: HCS_TEST_GGUF is not set";
+    if (path.empty())
+        GTEST_SKIP() << "BLOCKED: HCS_TEST_GGUF is not set";
     auto r = PlainFileReader::open(path);
     ASSERT_TRUE(r.ok()) << r.error().message;
     ASSERT_TRUE(r.value()->gguf().has_value());
@@ -28,13 +29,15 @@ TEST(RealGguf, HeaderParsesAndTensorsLieInsideTheFile) {
     EXPECT_EQ(g.tensors.size(), g.tensor_count);
     EXPECT_FALSE(g.architecture.empty());
     for (const auto& t : g.tensors) {
-        if (t.size_known) EXPECT_LE(g.data_offset + t.offset + t.byte_size, g.file_size) << t.name;
+        if (t.size_known)
+            EXPECT_LE(g.data_offset + t.offset + t.byte_size, g.file_size) << t.name;
     }
 }
 
 TEST(RealGguf, StreamingDeliversEveryByteInOrder) {
     const auto path = model_path();
-    if (path.empty()) GTEST_SKIP() << "BLOCKED: HCS_TEST_GGUF is not set";
+    if (path.empty())
+        GTEST_SKIP() << "BLOCKED: HCS_TEST_GGUF is not set";
     auto r = PlainFileReader::open(path, 4u << 20);
     ASSERT_TRUE(r.ok()) << r.error().message;
     std::uint64_t total = 0;

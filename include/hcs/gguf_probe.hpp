@@ -30,9 +30,9 @@ struct GgufProbeResult {
     std::uint64_t tensor_count = 0;
     std::uint64_t kv_count = 0;
     std::size_t tensor_names_read = 0;
-    std::string architecture;         // "general.architecture" when the file declares it
+    std::string architecture;             // "general.architecture" when the file declares it
     ModelKind kind = ModelKind::Unknown;  // best-effort hint, refined by engine adapters
-    std::string reason;               // why it is invalid or incomplete (empty when clean)
+    std::string reason;                   // why it is invalid or incomplete (empty when clean)
 };
 
 // Probes an in-memory prefix. `max_tensor_names` bounds how many tensor-info entries are walked.

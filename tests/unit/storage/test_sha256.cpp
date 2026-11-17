@@ -9,7 +9,8 @@ using namespace hcs::storage;
 
 namespace {
 std::string hex_of(const std::string& s) {
-    return to_hex(sha256(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(s.data()), s.size())));
+    return to_hex(
+        sha256(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(s.data()), s.size())));
 }
 struct ForcePortable {
     explicit ForcePortable(bool f) { sha256_force_portable(f); }
@@ -40,7 +41,8 @@ TEST(Sha256, MillionAs) {
 
 TEST(Sha256, HardwareMatchesPortableOnManyLengthsAndSplits) {
     const auto data = test::random_bytes(5000, 7);
-    for (std::size_t len : {0u, 1u, 55u, 56u, 57u, 63u, 64u, 65u, 119u, 120u, 127u, 128u, 129u, 1000u, 4999u, 5000u}) {
+    for (std::size_t len :
+         {0u, 1u, 55u, 56u, 57u, 63u, 64u, 65u, 119u, 120u, 127u, 128u, 129u, 1000u, 4999u, 5000u}) {
         const std::span<const std::uint8_t> s(data.data(), len);
         Digest hw = sha256(s);
         Digest sw;

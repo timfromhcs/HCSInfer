@@ -17,9 +17,9 @@
 namespace hcs::storage {
 
 struct StreamOptions {
-    std::size_t buffers = 4;       // slots in flight (1..64)
-    std::size_t workers = 0;       // decode threads; 0 = min(buffers, 3)
-    bool verify_hash = true;       // false only for plain (non-HCSMODEL) files
+    std::size_t buffers = 4;  // slots in flight (1..64)
+    std::size_t workers = 0;  // decode threads; 0 = min(buffers, 3)
+    bool verify_hash = true;  // false only for plain (non-HCSMODEL) files
     std::size_t begin_chunk = 0;
     std::size_t end_chunk = std::numeric_limits<std::size_t>::max();  // clamped to table size
     std::uint64_t max_buffer_bytes = 0;  // 0 = unlimited; otherwise OutOfMemory before allocating

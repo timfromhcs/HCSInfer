@@ -39,14 +39,17 @@ HttpRequest convert(const httplib::Request& r) {
         if (it == out.headers.end()) {
             out.headers.emplace(key, v);
         } else if (key == "host" || key == "authorization" || key == "origin" || key == "content-type") {
-            it->second = "\x01" "duplicate-header";  // ambiguous security header: guaranteed to fail validation
+            it->second =
+                "\x01"
+                "duplicate-header";  // ambiguous security header: guaranteed to fail validation
         }
     }
     out.body = r.body;
     out.remote_addr = r.remote_addr;
-    // Lets the handler notice an abandoned request while it waits for a long job (M10 audit D3). The probe is only
-    // called on the connection's own worker thread while the request is being served.
-    if (r.is_connection_closed) out.peer_closed = r.is_connection_closed;
+    // Lets the handler notice an abandoned request while it waits for a long job (M10 audit D3). The probe is
+    // only called on the connection's own worker thread while the request is being served.
+    if (r.is_connection_closed)
+        out.peer_closed = r.is_connection_closed;
     return out;
 }
 
@@ -72,24 +75,28 @@ void apply(HttpResponse resp, httplib::Response& res) {
 HttpServer::HttpServer(ApiHandler& handler, TransportOptions options, Logger& logger)
     : impl_(std::make_unique<Impl>(handler, std::move(options), logger)) {}
 
-HttpServer::~HttpServer() { stop(); }
+HttpServer::~HttpServer() {
+    stop();
+}
 
 Result<int> HttpServer::start() {
     auto& s = *impl_;
-    if (s.running.load()) return make_error(ErrorCode::InvalidState, "server already running");
+    if (s.running.load())
+        return make_error(ErrorCode::InvalidState, "server already running");
     const auto threads = std::max<std::size_t>(1, s.opt.threads);
     const auto queued = std::max<std::size_t>(1, s.opt.max_queued);
-    // httplib::ThreadPool(n, max_n, mqr): n fixed workers, max_n == n (no dynamic threads) and a bounded queue of
-    // `mqr` waiting connections. A connection that finds the queue full is closed immediately, so the socket
-    // backlog can no longer grow without limit and idle sockets cannot starve the server (M10 audit D2: the old
-    // call ThreadPool(threads, queued) put `queued` into max_n and left the queue unbounded).
+    // httplib::ThreadPool(n, max_n, mqr): n fixed workers, max_n == n (no dynamic threads) and a bounded
+    // queue of `mqr` waiting connections. A connection that finds the queue full is closed immediately, so
+    // the socket backlog can no longer grow without limit and idle sockets cannot starve the server (M10
+    // audit D2: the old call ThreadPool(threads, queued) put `queued` into max_n and left the queue
+    // unbounded).
     s.svr.new_task_queue = [threads, queued] { return new httplib::ThreadPool(threads, threads, queued); };
     s.svr.set_payload_max_length(s.opt.max_body_bytes);
     s.svr.set_read_timeout(s.opt.read_timeout_s, 0);
     s.svr.set_write_timeout(s.opt.write_timeout_s, 0);
     s.svr.set_keep_alive_max_count(16);
-    // httplib waits for the first byte of every request (also the first one) under this timeout, not under the
-    // read timeout: a socket that connects and says nothing is dropped after idle_timeout_s.
+    // httplib waits for the first byte of every request (also the first one) under this timeout, not under
+    // the read timeout: a socket that connects and says nothing is dropped after idle_timeout_s.
     s.svr.set_keep_alive_timeout(std::max(1, s.opt.idle_timeout_s));
 
     auto handler = [&s](const httplib::Request& req, httplib::Response& res) {
@@ -105,16 +112,20 @@ Result<int> HttpServer::start() {
     s.svr.set_error_handler([](const httplib::Request&, httplib::Response& res) {
         if (res.body.empty()) {
             const std::string code = res.status == 413 ? "payload_too_large" : "http_error";
-            res.set_content("{\"error\":{\"message\":\"request rejected by the HTTP layer\",\"type\":\"invalid_request_error\","
-                            "\"code\":\"" + code + "\",\"param\":null}}",
-                            "application/json");
+            res.set_content(
+                "{\"error\":{\"message\":\"request rejected by the HTTP "
+                "layer\",\"type\":\"invalid_request_error\","
+                "\"code\":\"" +
+                    code + "\",\"param\":null}}",
+                "application/json");
         }
     });
 
     int port = s.opt.port;
     if (port == 0) {
         port = s.svr.bind_to_any_port(s.opt.host);
-        if (port < 0) return make_error(ErrorCode::IoError, "cannot bind " + s.opt.host);
+        if (port < 0)
+            return make_error(ErrorCode::IoError, "cannot bind " + s.opt.host);
     } else if (!s.svr.bind_to_port(s.opt.host, port)) {
         return make_error(ErrorCode::IoError, "cannot bind " + s.opt.host + ":" + std::to_string(port) +
                                                   " (port in use or address not available)");
@@ -127,20 +138,24 @@ Result<int> HttpServer::start() {
         s.running = false;
     });
     // Wait until the accept loop is live so callers can connect immediately.
-    for (int i = 0; i < 500 && !s.svr.is_running(); ++i) std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    for (int i = 0; i < 500 && !s.svr.is_running(); ++i)
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
     s.log.info("api", "listening", {{"host", s.opt.host}, {"port", std::to_string(port)}});
     return port;
 }
 
 void HttpServer::stop() {
-    if (!impl_) return;
+    if (!impl_)
+        return;
     impl_->svr.stop();
-    if (impl_->thread.joinable()) impl_->thread.join();
+    if (impl_->thread.joinable())
+        impl_->thread.join();
     impl_->running = false;
 }
 
 void HttpServer::wait() {
-    if (impl_ && impl_->thread.joinable()) impl_->thread.join();
+    if (impl_ && impl_->thread.joinable())
+        impl_->thread.join();
 }
 
 }  // namespace hcs::api

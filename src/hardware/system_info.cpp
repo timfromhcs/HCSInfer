@@ -7,10 +7,10 @@
 namespace hcs::hardware {
 
 json system_report() {
-    json os = {{"name", "unknown"},         {"version", "unknown"},
-               {"build", "unknown"},        {"ubr", "unknown"},
-               {"display_version", "unknown"}, {"product_name_registry", "unknown"},
-               {"architecture", "unknown"}};
+    json os = {
+        {"name", "unknown"},        {"version", "unknown"},         {"build", "unknown"},
+        {"ubr", "unknown"},         {"display_version", "unknown"}, {"product_name_registry", "unknown"},
+        {"architecture", "unknown"}};
     json mem = {{"total_physical_bytes", unknown()},     {"available_physical_bytes", unknown()},
                 {"installed_physical_bytes", unknown()}, {"commit_limit_bytes", unknown()},
                 {"commit_available_bytes", unknown()},   {"memory_load_percent", unknown()},
@@ -24,7 +24,8 @@ json system_report() {
 #endif
     using RtlGetVersionFn = LONG(WINAPI*)(OSVERSIONINFOW*);
     if (HMODULE nt = GetModuleHandleW(L"ntdll.dll")) {
-        if (auto fn = reinterpret_cast<RtlGetVersionFn>(reinterpret_cast<void*>(GetProcAddress(nt, "RtlGetVersion")))) {
+        if (auto fn = reinterpret_cast<RtlGetVersionFn>(
+                reinterpret_cast<void*>(GetProcAddress(nt, "RtlGetVersion")))) {
             OSVERSIONINFOW v{};
             v.dwOSVersionInfoSize = sizeof(v);
             if (fn(&v) == 0) {

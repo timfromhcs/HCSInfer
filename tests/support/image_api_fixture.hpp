@@ -1,6 +1,7 @@
 #pragma once
-// Fixture for the image API/MCP contract tests: one text model ("tiny") and one registered image model ("sdmodel") inside
-// an approved root, a FakeTextEngine, a FakeImageEngine and a ControlPlane wired with both.
+// Fixture for the image API/MCP contract tests: one text model ("tiny") and one registered image model
+// ("sdmodel") inside an approved root, a FakeTextEngine, a FakeImageEngine and a ControlPlane wired with
+// both.
 #include <memory>
 
 #include "fake_image_engine.hpp"
@@ -29,7 +30,8 @@ struct ImageApiFixture {
         write_file(root / "tiny.gguf", fake_gguf());
         (void)guard.add_root(root);
         (void)registry.scan(root, guard);
-        write_file(root / "sd-weights.gguf", fake_gguf());  // written after the scan: registered by hand below
+        write_file(root / "sd-weights.gguf",
+                   fake_gguf());  // written after the scan: registered by hand below
         // The scan cannot tell a header-only fake from an image model: register the kind explicitly.
         ModelManifest m;
         m.id = "sdmodel";
@@ -41,8 +43,9 @@ struct ImageApiFixture {
         (void)registry.add(m);
         queue = std::make_unique<JobQueue>();
         opts.version = "test";
-        cp = std::make_unique<api::ControlPlane>(registry, guard, budget, *queue, &text, logger, opts,
-                                                 with_image_engine ? static_cast<IImageEngine*>(&image) : nullptr);
+        cp = std::make_unique<api::ControlPlane>(
+            registry, guard, budget, *queue, &text, logger, opts,
+            with_image_engine ? static_cast<IImageEngine*>(&image) : nullptr);
     }
     ~ImageApiFixture() { queue->shutdown(); }
 };

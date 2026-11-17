@@ -1,5 +1,5 @@
-// Contract tests for the MCP tools hcs.image.generate / hcs.image.edit. FakeImageEngine = plumbing only, not evidence
-// of image generation (AGENTS.md 16.2); real output is covered by tests/e2e/image_real.
+// Contract tests for the MCP tools hcs.image.generate / hcs.image.edit. FakeImageEngine = plumbing only, not
+// evidence of image generation (AGENTS.md 16.2); real output is covered by tests/e2e/image_real.
 #include <gtest/gtest.h>
 
 #include <atomic>
@@ -32,18 +32,23 @@ struct Mcp {
         const std::string line = server.handle_line(req.dump());
         return line.empty() ? json(nullptr) : json::parse(line);
     }
-    json tool(int id, const std::string& name, json args = json::object()) { return rpc(call_req(id, name, args)); }
+    json tool(int id, const std::string& name, json args = json::object()) {
+        return rpc(call_req(id, name, args));
+    }
 };
 
 bool wait_for(const std::function<bool()>& f, int ms = 3000) {
     for (int i = 0; i < ms / 5; ++i) {
-        if (f()) return true;
+        if (f())
+            return true;
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
     return f();
 }
 
-std::string code_of(const json& r) { return r["result"]["structuredContent"]["error"]["code"]; }
+std::string code_of(const json& r) {
+    return r["result"]["structuredContent"]["error"]["code"];
+}
 
 }  // namespace
 
@@ -69,7 +74,12 @@ TEST(McpImage, ToolsAreListedWithRealSchemas) {
 TEST(McpImage, GenerateReturnsAnImageContentBlock) {
     Mcp m;
     auto r = m.tool(1, "hcs.image.generate",
-                    {{"model", "sdmodel"}, {"prompt", "a red apple"}, {"width", 256}, {"height", 256}, {"steps", 2}, {"seed", 3}});
+                    {{"model", "sdmodel"},
+                     {"prompt", "a red apple"},
+                     {"width", 256},
+                     {"height", 256},
+                     {"steps", 2},
+                     {"seed", 3}});
     ASSERT_FALSE(r["result"]["isError"].get<bool>()) << r.dump();
     const auto& content = r["result"]["content"];
     ASSERT_EQ(content[0]["type"], "image");
@@ -88,13 +98,24 @@ TEST(McpImage, GenerateReturnsAnImageContentBlock) {
 
 TEST(McpImage, GenerateValidatesEverythingBeforeTheEngine) {
     Mcp m;
-    EXPECT_EQ(code_of(m.tool(1, "hcs.image.generate", {{"model", "sdmodel"}, {"prompt", "x"}, {"width", 250}})), "invalid_argument");
-    EXPECT_EQ(code_of(m.tool(2, "hcs.image.generate", {{"model", "sdmodel"}, {"prompt", "x"}, {"width", 2048}, {"height", 2048}})), "invalid_argument");
-    EXPECT_EQ(code_of(m.tool(3, "hcs.image.generate", {{"model", "sdmodel"}, {"prompt", "x"}, {"steps", 1000}})), "invalid_argument");
-    EXPECT_EQ(code_of(m.tool(4, "hcs.image.generate", {{"model", "tiny"}, {"prompt", "x"}})), "invalid_argument") << "text model";
+    EXPECT_EQ(
+        code_of(m.tool(1, "hcs.image.generate", {{"model", "sdmodel"}, {"prompt", "x"}, {"width", 250}})),
+        "invalid_argument");
+    EXPECT_EQ(code_of(m.tool(2, "hcs.image.generate",
+                             {{"model", "sdmodel"}, {"prompt", "x"}, {"width", 2048}, {"height", 2048}})),
+              "invalid_argument");
+    EXPECT_EQ(
+        code_of(m.tool(3, "hcs.image.generate", {{"model", "sdmodel"}, {"prompt", "x"}, {"steps", 1000}})),
+        "invalid_argument");
+    EXPECT_EQ(code_of(m.tool(4, "hcs.image.generate", {{"model", "tiny"}, {"prompt", "x"}})),
+              "invalid_argument")
+        << "text model";
     EXPECT_EQ(code_of(m.tool(5, "hcs.image.generate", {{"model", "nope"}, {"prompt", "x"}})), "not_found");
-    EXPECT_EQ(code_of(m.tool(6, "hcs.image.generate", {{"model", "sdmodel"}, {"prompt", "x"}, {"extra", 1}})), "invalid_argument");
-    EXPECT_EQ(code_of(m.tool(7, "hcs.image.generate", {{"prompt", "x"}, {"width", 64}, {"height", 64}, {"steps", 1}})), "invalid_state")
+    EXPECT_EQ(code_of(m.tool(6, "hcs.image.generate", {{"model", "sdmodel"}, {"prompt", "x"}, {"extra", 1}})),
+              "invalid_argument");
+    EXPECT_EQ(code_of(m.tool(7, "hcs.image.generate",
+                             {{"prompt", "x"}, {"width", 64}, {"height", 64}, {"steps", 1}})),
+              "invalid_state")
         << "no image model loaded";
     EXPECT_EQ(m.fx.image.generations.load(), 0);
 }
@@ -110,14 +131,23 @@ TEST(McpImage, EditReadsOnlyFromApprovedRootsAndKeepsTheInputSize) {
     const auto png = test::make_red_square_png(64);
     test::write_file(outside / "secret.png", std::string(png.begin(), png.end()));
     // outside the approved root: refused before anything is read, even though the file is a valid PNG
-    EXPECT_EQ(code_of(m.tool(1, "hcs.image.edit", {{"model", "sdmodel"}, {"prompt", "x"}, {"input_path", (outside / "secret.png").string()}})),
-              "security_violation");
-    EXPECT_EQ(code_of(m.tool(2, "hcs.image.edit", {{"prompt", "x"}, {"input_path", (m.fx.root / ".." / "x.png").string()}})),
+    EXPECT_EQ(
+        code_of(m.tool(
+            1, "hcs.image.edit",
+            {{"model", "sdmodel"}, {"prompt", "x"}, {"input_path", (outside / "secret.png").string()}})),
+        "security_violation");
+    EXPECT_EQ(code_of(m.tool(2, "hcs.image.edit",
+                             {{"prompt", "x"}, {"input_path", (m.fx.root / ".." / "x.png").string()}})),
               "security_violation");
     EXPECT_EQ(m.fx.image.edits.load(), 0);
 
     test::write_file(m.fx.root / "in.png", std::string(png.begin(), png.end()));
-    auto r = m.tool(3, "hcs.image.edit", {{"model", "sdmodel"}, {"prompt", "make it blue"}, {"input_path", (m.fx.root / "in.png").string()}, {"steps", 2}, {"strength", 0.4}});
+    auto r = m.tool(3, "hcs.image.edit",
+                    {{"model", "sdmodel"},
+                     {"prompt", "make it blue"},
+                     {"input_path", (m.fx.root / "in.png").string()},
+                     {"steps", 2},
+                     {"strength", 0.4}});
     ASSERT_FALSE(r["result"]["isError"].get<bool>()) << r.dump();
     EXPECT_EQ(r["result"]["content"][0]["type"], "image");
     EXPECT_EQ(m.fx.image.edits.load(), 1);
@@ -127,7 +157,12 @@ TEST(McpImage, EditReadsOnlyFromApprovedRootsAndKeepsTheInputSize) {
 
     // a non-image file inside the root is a clean error, not a decoder run
     test::write_file(m.fx.root / "junk.png", "not an image at all");
-    EXPECT_EQ(code_of(m.tool(4, "hcs.image.edit", {{"model", "sdmodel"}, {"prompt", "x"}, {"input_path", (m.fx.root / "junk.png").string()}, {"width", 64}, {"height", 64}})),
+    EXPECT_EQ(code_of(m.tool(4, "hcs.image.edit",
+                             {{"model", "sdmodel"},
+                              {"prompt", "x"},
+                              {"input_path", (m.fx.root / "junk.png").string()},
+                              {"width", 64},
+                              {"height", 64}})),
               "invalid_argument");
     EXPECT_EQ(m.fx.image.edits.load(), 1);
 }
@@ -136,7 +171,11 @@ TEST(McpImage, CancellationNotificationStopsTheRender) {
     Mcp m;
     m.fx.image.run_until_cancel = true;
     json resp;
-    std::thread t([&] { resp = m.rpc(call_req(9, "hcs.image.generate", {{"model", "sdmodel"}, {"prompt", "x"}, {"width", 64}, {"height", 64}, {"steps", 1}})); });
+    std::thread t([&] {
+        resp = m.rpc(
+            call_req(9, "hcs.image.generate",
+                     {{"model", "sdmodel"}, {"prompt", "x"}, {"width", 64}, {"height", 64}, {"steps", 1}}));
+    });
     ASSERT_TRUE(wait_for([&] { return m.fx.image.rendering.load(); }));
     json note = {{"jsonrpc", "2.0"}, {"method", "notifications/cancelled"}, {"params", {{"requestId", 9}}}};
     (void)m.server.handle_line(note.dump());
@@ -150,7 +189,8 @@ TEST(McpImage, ToolTimeoutCancelsTheRender) {
     o.call_timeout = std::chrono::milliseconds(300);
     Mcp m(o);
     m.fx.image.run_until_cancel = true;
-    auto r = m.tool(1, "hcs.image.generate", {{"model", "sdmodel"}, {"prompt", "x"}, {"width", 64}, {"height", 64}, {"steps", 1}});
+    auto r = m.tool(1, "hcs.image.generate",
+                    {{"model", "sdmodel"}, {"prompt", "x"}, {"width", 64}, {"height", 64}, {"steps", 1}});
     EXPECT_EQ(code_of(r), "timeout");
     EXPECT_TRUE(wait_for([&] { return !m.fx.image.rendering.load(); }));
 }

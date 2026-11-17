@@ -4,25 +4,38 @@ namespace hcs {
 
 std::string_view to_string(ModelState s) noexcept {
     switch (s) {
-        case ModelState::Unregistered: return "Unregistered";
-        case ModelState::Discovered: return "Discovered";
-        case ModelState::Validating: return "Validating";
-        case ModelState::ReadyToLoad: return "ReadyToLoad";
-        case ModelState::Loading: return "Loading";
-        case ModelState::Loaded: return "Loaded";
-        case ModelState::Running: return "Running";
-        case ModelState::Unloading: return "Unloading";
-        case ModelState::Unloaded: return "Unloaded";
-        case ModelState::Failed: return "Failed";
+        case ModelState::Unregistered:
+            return "Unregistered";
+        case ModelState::Discovered:
+            return "Discovered";
+        case ModelState::Validating:
+            return "Validating";
+        case ModelState::ReadyToLoad:
+            return "ReadyToLoad";
+        case ModelState::Loading:
+            return "Loading";
+        case ModelState::Loaded:
+            return "Loaded";
+        case ModelState::Running:
+            return "Running";
+        case ModelState::Unloading:
+            return "Unloading";
+        case ModelState::Unloaded:
+            return "Unloaded";
+        case ModelState::Failed:
+            return "Failed";
     }
     return "Unknown";
 }
 
 std::string_view to_string(FailureKind k) noexcept {
     switch (k) {
-        case FailureKind::None: return "none";
-        case FailureKind::Recoverable: return "recoverable";
-        case FailureKind::NonRecoverable: return "non_recoverable";
+        case FailureKind::None:
+            return "none";
+        case FailureKind::Recoverable:
+            return "recoverable";
+        case FailureKind::NonRecoverable:
+            return "non_recoverable";
     }
     return "unknown";
 }
@@ -30,16 +43,26 @@ std::string_view to_string(FailureKind k) noexcept {
 bool is_legal_transition(ModelState from, ModelState to) noexcept {
     using S = ModelState;
     switch (from) {
-        case S::Unregistered: return to == S::Discovered;
-        case S::Discovered: return to == S::Validating;
-        case S::Validating: return to == S::ReadyToLoad || to == S::Failed;
-        case S::ReadyToLoad: return to == S::Loading || to == S::Validating;
-        case S::Loading: return to == S::Loaded || to == S::Failed;
-        case S::Loaded: return to == S::Running || to == S::Unloading || to == S::Failed;
-        case S::Running: return to == S::Loaded || to == S::Unloading || to == S::Failed;
-        case S::Unloading: return to == S::Unloaded || to == S::Failed;
-        case S::Unloaded: return to == S::Loading || to == S::Validating;
-        case S::Failed: return to == S::Validating || to == S::Unloading;  // kind-dependent, see below
+        case S::Unregistered:
+            return to == S::Discovered;
+        case S::Discovered:
+            return to == S::Validating;
+        case S::Validating:
+            return to == S::ReadyToLoad || to == S::Failed;
+        case S::ReadyToLoad:
+            return to == S::Loading || to == S::Validating;
+        case S::Loading:
+            return to == S::Loaded || to == S::Failed;
+        case S::Loaded:
+            return to == S::Running || to == S::Unloading || to == S::Failed;
+        case S::Running:
+            return to == S::Loaded || to == S::Unloading || to == S::Failed;
+        case S::Unloading:
+            return to == S::Unloaded || to == S::Failed;
+        case S::Unloaded:
+            return to == S::Loading || to == S::Validating;
+        case S::Failed:
+            return to == S::Validating || to == S::Unloading;  // kind-dependent, see below
     }
     return false;
 }
@@ -66,8 +89,9 @@ Result<void> ModelLifecycle::transition_locked(ModelState to) {
         return make_error(ErrorCode::InvalidArgument, "use fail() to enter the Failed state");
     }
     if (!is_legal_transition(state_, to)) {
-        return make_error(ErrorCode::InvalidState, "illegal model transition " + std::string(to_string(state_)) +
-                                                       " -> " + std::string(to_string(to)));
+        return make_error(ErrorCode::InvalidState, "illegal model transition " +
+                                                       std::string(to_string(state_)) + " -> " +
+                                                       std::string(to_string(to)));
     }
     if (state_ == ModelState::Failed && failure_kind_ == FailureKind::NonRecoverable &&
         to != ModelState::Unloading) {

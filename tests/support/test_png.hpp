@@ -29,7 +29,8 @@ inline void png_put32(std::vector<std::uint8_t>& v, std::uint32_t x) {
     for (int s = 24; s >= 0; s -= 8) v.push_back(static_cast<std::uint8_t>(x >> s));
 }
 
-inline void png_chunk(std::vector<std::uint8_t>& out, const char* type, const std::vector<std::uint8_t>& data) {
+inline void png_chunk(std::vector<std::uint8_t>& out, const char* type,
+                      const std::vector<std::uint8_t>& data) {
     png_put32(out, static_cast<std::uint32_t>(data.size()));
     std::vector<std::uint8_t> td(type, type + 4);
     td.insert(td.end(), data.begin(), data.end());
@@ -66,9 +67,11 @@ std::vector<std::uint8_t> make_png_rgb(std::uint32_t w, std::uint32_t h, PixelFn
         z.push_back(static_cast<std::uint8_t>(n >> 8));
         z.push_back(static_cast<std::uint8_t>(~n & 0xFF));
         z.push_back(static_cast<std::uint8_t>((~n >> 8) & 0xFF));
-        z.insert(z.end(), raw.begin() + static_cast<std::ptrdiff_t>(off), raw.begin() + static_cast<std::ptrdiff_t>(off + n));
+        z.insert(z.end(), raw.begin() + static_cast<std::ptrdiff_t>(off),
+                 raw.begin() + static_cast<std::ptrdiff_t>(off + n));
         off += n;
-        if (last) break;
+        if (last)
+            break;
     }
     png_put32(z, (b << 16) | a);
 
@@ -87,7 +90,8 @@ std::vector<std::uint8_t> make_png_rgb(std::uint32_t w, std::uint32_t h, PixelFn
 inline std::vector<std::uint8_t> make_red_square_png(std::uint32_t size = 128) {
     return make_png_rgb(size, size, [size](std::uint32_t x, std::uint32_t y) {
         const bool in = x >= size / 4 && x < size * 3 / 4 && y >= size / 4 && y < size * 3 / 4;
-        return std::array<std::uint8_t, 3>{in ? std::uint8_t{220} : std::uint8_t{255}, in ? std::uint8_t{20} : std::uint8_t{255},
+        return std::array<std::uint8_t, 3>{in ? std::uint8_t{220} : std::uint8_t{255},
+                                           in ? std::uint8_t{20} : std::uint8_t{255},
                                            in ? std::uint8_t{20} : std::uint8_t{255}};
     });
 }
@@ -100,7 +104,8 @@ inline std::vector<std::uint8_t> make_png_header_only(std::uint32_t w, std::uint
     png_put32(ihdr, h);
     ihdr.insert(ihdr.end(), {8, 2, 0, 0, 0});
     png_chunk(png, "IHDR", ihdr);
-    png_chunk(png, "IDAT", {0x00});  // stb_image's info scan needs a chunk after IHDR; still no usable pixel data
+    png_chunk(png, "IDAT",
+              {0x00});  // stb_image's info scan needs a chunk after IHDR; still no usable pixel data
     return png;
 }
 
@@ -108,7 +113,8 @@ inline std::string base64(const std::vector<std::uint8_t>& d) {
     static const char* t = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::string o;
     for (std::size_t i = 0; i < d.size(); i += 3) {
-        const std::uint32_t v = (static_cast<std::uint32_t>(d[i]) << 16) | (i + 1 < d.size() ? static_cast<std::uint32_t>(d[i + 1]) << 8 : 0u) |
+        const std::uint32_t v = (static_cast<std::uint32_t>(d[i]) << 16) |
+                                (i + 1 < d.size() ? static_cast<std::uint32_t>(d[i + 1]) << 8 : 0u) |
                                 (i + 2 < d.size() ? d[i + 2] : 0u);
         o.push_back(t[(v >> 18) & 63]);
         o.push_back(t[(v >> 12) & 63]);
@@ -118,6 +124,8 @@ inline std::string base64(const std::vector<std::uint8_t>& d) {
     return o;
 }
 
-inline std::string png_data_uri(const std::vector<std::uint8_t>& png) { return "data:image/png;base64," + base64(png); }
+inline std::string png_data_uri(const std::vector<std::uint8_t>& png) {
+    return "data:image/png;base64," + base64(png);
+}
 
 }  // namespace hcs::test

@@ -26,8 +26,9 @@ TEST_P(CodecRoundTrip, BitExactForCompressibleRandomAndTinyInputs) {
 }
 
 INSTANTIATE_TEST_SUITE_P(All, CodecRoundTrip,
-                         ::testing::Values(std::pair{Codec::Raw, 0}, std::pair{Codec::Lz4, 0}, std::pair{Codec::Lz4, 9},
-                                           std::pair{Codec::Zstd, 0}, std::pair{Codec::Zstd, 1}, std::pair{Codec::Zstd, 12}));
+                         ::testing::Values(std::pair{Codec::Raw, 0}, std::pair{Codec::Lz4, 0},
+                                           std::pair{Codec::Lz4, 9}, std::pair{Codec::Zstd, 0},
+                                           std::pair{Codec::Zstd, 1}, std::pair{Codec::Zstd, 12}));
 
 TEST(Codec, CompressibleDataActuallyShrinks) {
     const auto src = test::compressible_bytes(1 << 20, 3);
@@ -49,8 +50,10 @@ TEST(Codec, CorruptBlockIsRejectedNotCrashing) {
             bad[pos] ^= 0xFF;
             std::vector<std::uint8_t> out(src.size());
             auto r = decompress(c, bad, out);
-            if (!r.ok()) ++rejected;
-            else if (out != src) ++silently_wrong;  // codecs have no checksum here; the chunk SHA-256 catches this
+            if (!r.ok())
+                ++rejected;
+            else if (out != src)
+                ++silently_wrong;  // codecs have no checksum here; the chunk SHA-256 catches this
         }
         EXPECT_GT(rejected + silently_wrong, 0) << codec_name(c);
         // truncated stream

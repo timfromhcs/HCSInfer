@@ -15,16 +15,18 @@ using json = nlohmann::json;
 constexpr std::uint64_t kKiB = 1024;
 
 // Chat-template control tokens inside user text must reach the tokenizer as plain text, otherwise
-// "<|im_end|><|im_start|>system ..." forges a role boundary (M10 audit C3). A zero-width space after the '<' keeps the
-// text readable but stops it matching a special token. The engine should also tokenize user text with
-// parse_special=false; this is the control-plane side of that defence.
+// "<|im_end|><|im_start|>system ..." forges a role boundary (M10 audit C3). A zero-width space after the '<'
+// keeps the text readable but stops it matching a special token. The engine should also tokenize user text
+// with parse_special=false; this is the control-plane side of that defence.
 std::string neutralize_control_tokens(const std::string& text) {
-    static constexpr std::string_view kMarkers[] = {"<|", "<s>", "</s>", "<start_of_turn>", "<end_of_turn>", "<bos>", "<eos>"};
+    static constexpr std::string_view kMarkers[] = {
+        "<|", "<s>", "</s>", "<start_of_turn>", "<end_of_turn>", "<bos>", "<eos>"};
     std::string out;
     out.reserve(text.size());
     for (std::size_t i = 0; i < text.size(); ++i) {
         out.push_back(text[i]);
-        if (text[i] != '<') continue;
+        if (text[i] != '<')
+            continue;
         for (auto m : kMarkers) {
             if (text.compare(i, m.size(), m) == 0) {
                 out += "\xE2\x80\x8B";  // U+200B ZERO WIDTH SPACE
@@ -41,7 +43,8 @@ void JobChannel::push(const JobEvent& e) {
     {
         std::lock_guard lk(m_);
         q_.push_back(e);
-        if (e.kind == JobEventKind::StateChanged && is_terminal(e.state)) done_ = true;
+        if (e.kind == JobEventKind::StateChanged && is_terminal(e.state))
+            done_ = true;
     }
     cv_.notify_all();
 }
@@ -54,8 +57,10 @@ JobChannel::Pop JobChannel::pop(JobEvent& out, std::chrono::steady_clock::time_p
             q_.pop_front();
             return Pop::Event;
         }
-        if (done_) return Pop::Done;
-        if (cv_.wait_until(lk, deadline) == std::cv_status::timeout && q_.empty() && !done_) return Pop::Timeout;
+        if (done_)
+            return Pop::Done;
+        if (cv_.wait_until(lk, deadline) == std::cv_status::timeout && q_.empty() && !done_)
+            return Pop::Timeout;
     }
 }
 
@@ -82,23 +87,27 @@ ControlPlane::ControlPlane(ModelRegistry& registry, PathGuard& guard, MemoryBudg
 }
 
 // Budget total = measured application headroom (AGENTS.md 10.1) + what this process already holds, so that
-// remaining() == the headroom the machine has RIGHT NOW. Without a probe (or when it fails) the total is left alone.
+// remaining() == the headroom the machine has RIGHT NOW. Without a probe (or when it fails) the total is left
+// alone.
 void ControlPlane::refresh_budget() const {
-    if (!opt_.memory_probe) return;
+    if (!opt_.memory_probe)
+        return;
     std::optional<MemoryMeasurements> m;
     try {
         m = opt_.memory_probe();
     } catch (...) {
         return;
     }
-    if (!m) return;
+    if (!m)
+        return;
     std::lock_guard lk(budget_mutex_);
     const std::uint64_t headroom = compute_application_budget(*m);
     const auto total = checked_add(headroom, budget_.reserved());
     budget_.update_budget(total ? *total : UINT64_MAX);
 }
 
-std::uint64_t ControlPlane::kv_cache_estimate(std::uint64_t model_bytes, std::uint32_t context_tokens) noexcept {
+std::uint64_t ControlPlane::kv_cache_estimate(std::uint64_t model_bytes,
+                                              std::uint32_t context_tokens) noexcept {
     const std::uint64_t per_token = std::clamp<std::uint64_t>(model_bytes / 3500, 96 * kKiB, 512 * kKiB);
     const auto kv = checked_mul(per_token, context_tokens);
     return kv ? *kv : UINT64_MAX;
@@ -109,19 +118,23 @@ std::vector<ModelView> ControlPlane::models() const {
     for (auto& m : registry_.list()) {
         ModelView v;
         v.manifest = m;
-        if (auto s = registry_.state(m.id)) v.state = s.value();
+        if (auto s = registry_.state(m.id))
+            v.state = s.value();
         out.push_back(std::move(v));
     }
     return out;
 }
 
 Result<ModelView> ControlPlane::model(const std::string& id) const {
-    if (!is_valid_model_id(id)) return make_error(ErrorCode::InvalidArgument, "invalid model id");
+    if (!is_valid_model_id(id))
+        return make_error(ErrorCode::InvalidArgument, "invalid model id");
     auto m = registry_.get(id);
-    if (!m) return m.error();
+    if (!m)
+        return m.error();
     ModelView v;
     v.manifest = m.value();
-    if (auto s = registry_.state(id)) v.state = s.value();
+    if (auto s = registry_.state(id))
+        v.state = s.value();
     return v;
 }
 
@@ -142,7 +155,8 @@ Result<void> ControlPlane::unload_locked() {
     bool is_image = false;
     {
         std::lock_guard lk(state_mutex_);
-        if (!loaded_) return make_error(ErrorCode::InvalidState, "no model is loaded");
+        if (!loaded_)
+            return make_error(ErrorCode::InvalidState, "no model is loaded");
         id = *loaded_;
         is_image = loaded_is_image_;
     }
@@ -167,19 +181,24 @@ Result<void> ControlPlane::unload_locked() {
 }
 
 Result<void> ControlPlane::load_locked(const std::string& id, const CancellationToken& token) {
-    if (!is_valid_model_id(id)) return make_error(ErrorCode::InvalidArgument, "invalid model id");
+    if (!is_valid_model_id(id))
+        return make_error(ErrorCode::InvalidArgument, "invalid model id");
     auto mm = registry_.get(id);
-    if (!mm) return mm.error();
+    if (!mm)
+        return mm.error();
     const ModelManifest m = mm.value();
     {
         std::lock_guard lk(state_mutex_);
-        if (loaded_ && *loaded_ == id) return {};
+        if (loaded_ && *loaded_ == id)
+            return {};
     }
     if (m.kind == ModelKind::Image) {
         if (!image_engine_)
-            return make_error(ErrorCode::Unsupported,
-                              "'" + id + "' is an image model but no image engine (stable-diffusion.cpp) is built into "
-                                         "this binary");
+            return make_error(
+                ErrorCode::Unsupported,
+                "'" + id +
+                    "' is an image model but no image engine (stable-diffusion.cpp) is built into "
+                    "this binary");
     } else if (!engine_) {
         return make_error(ErrorCode::Unsupported,
                           "no text engine is built into this binary, so text/vision models cannot be loaded");
@@ -192,12 +211,14 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
     // The path comes from the registry (written by a read-only scan) but is re-checked against
     // the approved roots at load time: a hand-edited registry or a moved link cannot escape.
     auto resolved = guard_.resolve(m.path);
-    if (!resolved) return resolved.error();
+    if (!resolved)
+        return resolved.error();
 
-    if (token.cancelled()) return make_error(ErrorCode::Cancelled, "load cancelled before start");
+    if (token.cancelled())
+        return make_error(ErrorCode::Cancelled, "load cancelled before start");
 
-    // Budget check BEFORE evicting the currently loaded model (AGENTS.md 10.3). The budget is re-measured now, and
-    // the estimate covers the weights AND the KV cache of the configured context (M10 audit D4).
+    // Budget check BEFORE evicting the currently loaded model (AGENTS.md 10.3). The budget is re-measured
+    // now, and the estimate covers the weights AND the KV cache of the configured context (M10 audit D4).
     refresh_budget();
     const std::uint64_t kv_bytes = image_model ? 0 : kv_cache_estimate(m.size_bytes, opt_.context_tokens);
     const std::uint64_t need = checked_add(m.size_bytes, kv_bytes).value_or(UINT64_MAX);
@@ -205,27 +226,32 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
         std::uint64_t freed = 0;
         {
             std::lock_guard lk(state_mutex_);
-            if (loaded_bytes_) freed = *loaded_bytes_;
+            if (loaded_bytes_)
+                freed = *loaded_bytes_;
         }
         const std::uint64_t avail = checked_add(budget_.remaining(), freed).value_or(UINT64_MAX);
         if (need > avail)
-            return make_error(ErrorCode::OutOfMemory,
-                              "model needs about " + std::to_string(need) + " bytes (weights " +
-                                  std::to_string(m.size_bytes) + " + KV cache " + std::to_string(kv_bytes) + " for " +
-                                  std::to_string(opt_.context_tokens) + " context tokens) but only " + std::to_string(avail) +
-                                  " are available: unload other models, pick a smaller quantization, reduce the context "
-                                  "size or use CPU mode");
+            return make_error(
+                ErrorCode::OutOfMemory,
+                "model needs about " + std::to_string(need) + " bytes (weights " +
+                    std::to_string(m.size_bytes) + " + KV cache " + std::to_string(kv_bytes) + " for " +
+                    std::to_string(opt_.context_tokens) + " context tokens) but only " +
+                    std::to_string(avail) +
+                    " are available: unload other models, pick a smaller quantization, reduce the context "
+                    "size or use CPU mode");
     }
 
     if (auto s = registry_.state(id)) {
         const auto st = s.value();
         if (st == ModelState::Discovered || st == ModelState::Unloaded || st == ModelState::Failed) {
-            if (auto r = registry_.transition(id, ModelState::Validating); !r) return r;
+            if (auto r = registry_.transition(id, ModelState::Validating); !r)
+                return r;
         } else {
             return make_error(ErrorCode::InvalidState, "model is in state " + std::string(to_string(st)));
         }
     }
-    if (auto r = registry_.transition(id, ModelState::ReadyToLoad); !r) return r;
+    if (auto r = registry_.transition(id, ModelState::ReadyToLoad); !r)
+        return r;
 
     bool had_prev = false;
     {
@@ -242,8 +268,8 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
         (void)budget_.release("model:" + id);
         (void)budget_.release("kv:" + id);
     };
-    // ReadyToLoad cannot fail directly (lifecycle table): step back to Validating first so the model is retryable
-    // instead of stuck in ReadyToLoad.
+    // ReadyToLoad cannot fail directly (lifecycle table): step back to Validating first so the model is
+    // retryable instead of stuck in ReadyToLoad.
     auto fail_before_loading = [&](const std::string& why) {
         (void)registry_.transition(id, ModelState::Validating);
         (void)registry_.fail(id, FailureKind::Recoverable, why);
@@ -314,7 +340,8 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
 Result<void> ControlPlane::unload_model() {
     if (!engine_ && !image_engine_)
         return make_error(ErrorCode::Unsupported, "no inference engine is built into this binary");
-    if (const auto j = active_job_.load(); j != 0) (void)queue_.cancel(JobId{j});
+    if (const auto j = active_job_.load(); j != 0)
+        (void)queue_.cancel(JobId{j});
     std::lock_guard lk(engine_mutex_);
     return unload_locked();
 }
@@ -322,10 +349,13 @@ Result<void> ControlPlane::unload_model() {
 Result<JobId> ControlPlane::submit_load(const std::string& id) {
     if (!engine_ && !image_engine_)
         return make_error(ErrorCode::Unsupported, "no inference engine is built into this binary");
-    if (!is_valid_model_id(id)) return make_error(ErrorCode::InvalidArgument, "invalid model id");
-    if (auto m = registry_.get(id); !m) return m.error();
+    if (!is_valid_model_id(id))
+        return make_error(ErrorCode::InvalidArgument, "invalid model id");
+    if (auto m = registry_.get(id); !m)
+        return m.error();
     return queue_.submit("model.load", [this, id](JobContext& ctx) -> Result<void> {
-        if (ctx.cancelled()) return make_error(ErrorCode::Cancelled, "cancelled before start");
+        if (ctx.cancelled())
+            return make_error(ErrorCode::Cancelled, "cancelled before start");
         return load_model(id, ctx.token());
     });
 }
@@ -344,8 +374,10 @@ std::string ControlPlane::build_prompt(const std::vector<ChatMessage>& messages,
 }
 
 Result<void> ControlPlane::validate_chat(const ChatParams& p) const {
-    if (p.messages.empty()) return make_error(ErrorCode::InvalidArgument, "messages must not be empty");
-    if (p.messages.size() > opt_.max_messages) return make_error(ErrorCode::InvalidArgument, "too many messages");
+    if (p.messages.empty())
+        return make_error(ErrorCode::InvalidArgument, "messages must not be empty");
+    if (p.messages.size() > opt_.max_messages)
+        return make_error(ErrorCode::InvalidArgument, "too many messages");
     std::size_t total = 0;
     for (const auto& m : p.messages) {
         if (m.role != "system" && m.role != "user" && m.role != "assistant")
@@ -367,7 +399,8 @@ Result<void> ControlPlane::validate_chat(const ChatParams& p) const {
 Result<Submitted> ControlPlane::submit_with_channel(const std::string& name, JobFn fn) {
     auto ch = std::make_shared<JobChannel>();
     auto id = queue_.submit(name, std::move(fn), [ch](const JobEvent& e) { ch->push(e); });
-    if (!id) return id.error();
+    if (!id)
+        return id.error();
     return Submitted{id.value(), ch};
 }
 
@@ -380,38 +413,47 @@ void ControlPlane::note_result(JobId id, const TextResult& r) {
 Result<TextResult> ControlPlane::chat_result(JobId id) const {
     std::lock_guard lk(results_mutex_);
     auto it = results_.find(id.value);
-    if (it == results_.end()) return make_error(ErrorCode::NotFound, "no result for job");
+    if (it == results_.end())
+        return make_error(ErrorCode::NotFound, "no result for job");
     return it->second;
 }
 
 Result<Submitted> ControlPlane::submit_chat(const ChatParams& original) {
-    if (auto v = validate_chat(original); !v) return v.error();
+    if (auto v = validate_chat(original); !v)
+        return v.error();
     ChatParams p = original;
     for (auto& m : p.messages) m.content = neutralize_control_tokens(m.content);
-    if (chat_has_images(p)) return submit_vision_chat(p);
-    if (!engine_) return make_error(ErrorCode::Unsupported, "no inference engine is built into this binary");
+    if (chat_has_images(p))
+        return submit_vision_chat(p);
+    if (!engine_)
+        return make_error(ErrorCode::Unsupported, "no inference engine is built into this binary");
     if (!stream_)
-        return make_error(ErrorCode::Unsupported,
-                          "the linked text engine does not implement hcs::api::ITextStreamEngine (token streaming)");
+        return make_error(
+            ErrorCode::Unsupported,
+            "the linked text engine does not implement hcs::api::ITextStreamEngine (token streaming)");
     return submit_with_channel("chat.generate", [this, p](JobContext& ctx) -> Result<void> {
-        if (ctx.cancelled()) return make_error(ErrorCode::Cancelled, "cancelled before start");
-        // One critical section for "switch to the requested model" and "use it": a concurrent load/unload cannot slip
-        // in between and make this job run on a different model (M10 audit S2).
+        if (ctx.cancelled())
+            return make_error(ErrorCode::Cancelled, "cancelled before start");
+        // One critical section for "switch to the requested model" and "use it": a concurrent load/unload
+        // cannot slip in between and make this job run on a different model (M10 audit S2).
         std::lock_guard lk(engine_mutex_);
         if (!p.model.empty()) {
             const auto cur = loaded_model();
             if (!cur || *cur != p.model) {
-                if (auto r = load_locked(p.model, ctx.token()); !r) return r;
+                if (auto r = load_locked(p.model, ctx.token()); !r)
+                    return r;
             }
         }
         std::string id;
         {
             std::lock_guard sl(state_mutex_);
             if (!loaded_)
-                return make_error(ErrorCode::InvalidState, "no model is loaded: load one first or pass a model id");
+                return make_error(ErrorCode::InvalidState,
+                                  "no model is loaded: load one first or pass a model id");
             id = *loaded_;
         }
-        if (ctx.cancelled()) return make_error(ErrorCode::Cancelled, "cancelled before start");
+        if (ctx.cancelled())
+            return make_error(ErrorCode::Cancelled, "cancelled before start");
         active_job_.store(ctx.id().value);
         (void)registry_.transition(id, ModelState::Running);
         TextRequest tr;
@@ -421,7 +463,8 @@ Result<Submitted> ControlPlane::submit_chat(const ChatParams& original) {
                                      (ms.size() == 2 && ms[0].role == "system" && ms[1].role == "user");
             if (opt_.chat_template == "auto" && single_turn) {
                 tr.prompt = ms.back().content;
-                if (ms.size() == 2) tr.system_prompt = ms[0].content;
+                if (ms.size() == 2)
+                    tr.system_prompt = ms[0].content;
                 tr.apply_chat_template = true;
             } else {
                 tr.prompt = build_prompt(ms, opt_.chat_template == "plain" ? "plain" : "chatml");
@@ -436,7 +479,8 @@ Result<Submitted> ControlPlane::submit_chat(const ChatParams& original) {
             r = stream_->generate_stream(
                 tr,
                 [&ctx](std::string_view piece) {
-                    if (ctx.cancelled()) return false;
+                    if (ctx.cancelled())
+                        return false;
                     ctx.output(std::string(piece));
                     return !ctx.cancelled();
                 },
@@ -446,7 +490,8 @@ Result<Submitted> ControlPlane::submit_chat(const ChatParams& original) {
         }
         active_job_.store(0);
         (void)registry_.transition(id, ModelState::Loaded);
-        if (!r) return r.error();
+        if (!r)
+            return r.error();
         note_result(ctx.id(), r.value());
         if (ctx.cancelled() || r.value().finish_reason == "cancelled")
             return make_error(ErrorCode::Cancelled, "generation cancelled");
@@ -456,20 +501,28 @@ Result<Submitted> ControlPlane::submit_chat(const ChatParams& original) {
 
 // ---- jobs ----------------------------------------------------------------------------------
 std::optional<JobId> ControlPlane::parse_job_id(const std::string& t) {
-    if (t.size() < 5 || t.size() > 24 || t.compare(0, 4, "job-") != 0) return std::nullopt;
+    if (t.size() < 5 || t.size() > 24 || t.compare(0, 4, "job-") != 0)
+        return std::nullopt;
     std::uint64_t v = 0;
     for (std::size_t i = 4; i < t.size(); ++i) {
-        if (t[i] < '0' || t[i] > '9') return std::nullopt;
+        if (t[i] < '0' || t[i] > '9')
+            return std::nullopt;
         const std::uint64_t d = static_cast<std::uint64_t>(t[i] - '0');
-        if (v > (UINT64_MAX - d) / 10) return std::nullopt;
+        if (v > (UINT64_MAX - d) / 10)
+            return std::nullopt;
         v = v * 10 + d;
     }
-    if (v == 0) return std::nullopt;
+    if (v == 0)
+        return std::nullopt;
     return JobId{v};
 }
 
-Result<JobStatus> ControlPlane::job_status(JobId id) const { return queue_.status(id); }
-Result<void> ControlPlane::cancel_job(JobId id) { return queue_.cancel(id); }
+Result<JobStatus> ControlPlane::job_status(JobId id) const {
+    return queue_.status(id);
+}
+Result<void> ControlPlane::cancel_job(JobId id) {
+    return queue_.cancel(id);
+}
 
 json ControlPlane::job_json(const JobStatus& st) const {
     json j;
@@ -478,7 +531,8 @@ json ControlPlane::job_json(const JobStatus& st) const {
     j["state"] = std::string(to_string(st.state));
     j["event_count"] = st.event_count;
     if (st.error)
-        j["error"] = {{"code", std::string(to_string(st.error->code))}, {"message", redact_paths(st.error->message)}};
+        j["error"] = {{"code", std::string(to_string(st.error->code))},
+                      {"message", redact_paths(st.error->message)}};
     else
         j["error"] = nullptr;
     if (auto r = chat_result(st.id)) {
@@ -514,7 +568,8 @@ json ControlPlane::model_json(const ModelView& v) const {
     j["sha256"] = v.manifest.sha256.empty() ? json("unknown") : json(v.manifest.sha256);
     std::string st;  // "ReadyToLoad" -> "ready_to_load"
     for (char c : to_string(v.state)) {
-        if (std::isupper(static_cast<unsigned char>(c)) && !st.empty()) st.push_back('_');
+        if (std::isupper(static_cast<unsigned char>(c)) && !st.empty())
+            st.push_back('_');
         st.push_back(static_cast<char>(std::tolower(static_cast<unsigned char>(c))));
     }
     j["state"] = st;
@@ -537,12 +592,10 @@ json ControlPlane::runtime_json() const {
     j["image_engine"] = {{"available", image_engine_ != nullptr}, {"streaming", image_stream_ != nullptr}};
     if (image_engine_) {
         const auto m = image_engine_->metrics();
-        j["image_engine"]["metrics"] = {{"backend", m.backend},
-                                        {"device", m.device},
-                                        {"load_ms", m.load_ms},
-                                        {"image_generation_ms", m.image_generation_ms},
-                                        {"image_steps", m.image_steps},
-                                        {"resident_bytes", m.resident_bytes}};
+        j["image_engine"]["metrics"] = {
+            {"backend", m.backend},         {"device", m.device},
+            {"load_ms", m.load_ms},         {"image_generation_ms", m.image_generation_ms},
+            {"image_steps", m.image_steps}, {"resident_bytes", m.resident_bytes}};
     } else {
         j["image_engine"]["reason"] = "no image engine (stable-diffusion.cpp) is built into this binary";
     }
@@ -580,7 +633,8 @@ json ControlPlane::memory_json() const {
     if (total == 0) {
         j["total_bytes"] = "unknown";
         j["remaining_bytes"] = "unknown";
-        j["note"] = "no live memory measurement is available in this build; model-size budget checks are skipped";
+        j["note"] =
+            "no live memory measurement is available in this build; model-size budget checks are skipped";
     } else {
         j["total_bytes"] = total;
         j["remaining_bytes"] = budget_.remaining();
@@ -588,11 +642,13 @@ json ControlPlane::memory_json() const {
     if (opt_.memory_probe) {
         try {
             if (auto m = opt_.memory_probe()) {
-                j["measured"] = {{"available_physical_bytes", m->available_physical_bytes},
-                                 {"os_reserve_bytes", m->os_reserve_bytes},
-                                 {"safety_margin_bytes", m->safety_margin_bytes},
-                                 {"application_headroom_bytes", compute_application_budget(*m)},
-                                 {"vulkan_headroom_bytes", m->vulkan_headroom_bytes ? json(*m->vulkan_headroom_bytes) : json("unknown")}};
+                j["measured"] = {
+                    {"available_physical_bytes", m->available_physical_bytes},
+                    {"os_reserve_bytes", m->os_reserve_bytes},
+                    {"safety_margin_bytes", m->safety_margin_bytes},
+                    {"application_headroom_bytes", compute_application_budget(*m)},
+                    {"vulkan_headroom_bytes",
+                     m->vulkan_headroom_bytes ? json(*m->vulkan_headroom_bytes) : json("unknown")}};
             }
         } catch (...) {
         }

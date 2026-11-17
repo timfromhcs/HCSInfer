@@ -28,14 +28,15 @@ public:
     Result<TextResult> generate_stream(const TextRequest& req, const TokenSink& sink,
                                        const CancellationToken& token) override {
         return run_stream(
-            req.max_tokens, [&](EventCallback cb) { return engine_.generate(req, std::move(cb)); }, sink, token);
+            req.max_tokens, [&](EventCallback cb) { return engine_.generate(req, std::move(cb)); }, sink,
+            token);
     }
 
     Result<TextResult> analyze_image_stream(const VisionRequest& req, const TokenSink& sink,
                                             const CancellationToken& token) override {
         return run_stream(
-            req.text.max_tokens, [&](EventCallback cb) { return engine_.analyze_image(req, std::move(cb)); }, sink,
-            token);
+            req.text.max_tokens, [&](EventCallback cb) { return engine_.analyze_image(req, std::move(cb)); },
+            sink, token);
     }
 
 private:
@@ -52,33 +53,40 @@ private:
         auto sh = std::make_shared<Shared>();
         auto job = start([sh](const JobEvent& e) {
             std::lock_guard lk(sh->m);
-            if (e.kind == JobEventKind::Output) sh->pieces.push_back(e.text);
-            if (e.kind == JobEventKind::StateChanged && is_terminal(e.state)) sh->done = true;
+            if (e.kind == JobEventKind::Output)
+                sh->pieces.push_back(e.text);
+            if (e.kind == JobEventKind::StateChanged && is_terminal(e.state))
+                sh->done = true;
             sh->cv.notify_all();
         });
-        if (!job) return job.error();
+        if (!job)
+            return job.error();
         bool stop = false;
         while (true) {
             std::deque<std::string> batch;
             bool done;
             {
                 std::unique_lock lk(sh->m);
-                sh->cv.wait_for(lk, std::chrono::milliseconds(20), [&] { return sh->done || !sh->pieces.empty(); });
+                sh->cv.wait_for(lk, std::chrono::milliseconds(20),
+                                [&] { return sh->done || !sh->pieces.empty(); });
                 batch.swap(sh->pieces);
                 done = sh->done;
             }
             for (auto& p : batch) {
-                if (!stop && !sink(p)) stop = true;  // sink gone: stop generating, drop remaining text
+                if (!stop && !sink(p))
+                    stop = true;  // sink gone: stop generating, drop remaining text
             }
             if ((stop || token.cancelled()) && !done) {
                 (void)queue_.cancel(job.value());
                 stop = true;
             }
-            if (done && batch.empty()) break;
+            if (done && batch.empty())
+                break;
         }
         (void)queue_.wait(job.value(), std::chrono::seconds(5));
         auto st = queue_.status(job.value());
-        if (!st) return st.error();
+        if (!st)
+            return st.error();
         TextResult r;
         const auto m = engine_.metrics();
         r.prompt_tokens = static_cast<std::uint32_t>(m.prompt_tokens);
@@ -86,9 +94,12 @@ private:
         r.ttft_ms = m.ttft_ms;
         r.tokens_per_second = m.tokens_per_second;
         if (st.value().state == JobState::Failed)
-            return st.value().error ? *st.value().error : make_error(ErrorCode::BackendError, "generation failed");
-        if (st.value().state == JobState::Cancelled || stop || token.cancelled()) r.finish_reason = "cancelled";
-        else r.finish_reason = r.completion_tokens >= max_tokens ? "length" : "stop";
+            return st.value().error ? *st.value().error
+                                    : make_error(ErrorCode::BackendError, "generation failed");
+        if (st.value().state == JobState::Cancelled || stop || token.cancelled())
+            r.finish_reason = "cancelled";
+        else
+            r.finish_reason = r.completion_tokens >= max_tokens ? "length" : "stop";
         return r;
     }
 

@@ -35,7 +35,8 @@ struct Slot {
 
 class Pipeline {
 public:
-    Pipeline(const FileSource& src, std::span<const ChunkEntry> chunks, const StreamOptions& o, const ChunkSink& sink)
+    Pipeline(const FileSource& src, std::span<const ChunkEntry> chunks, const StreamOptions& o,
+             const ChunkSink& sink)
         : src_(src), chunks_(chunks), opt_(o), sink_(sink) {}
     ~Pipeline() { shutdown(); }
 
@@ -78,7 +79,8 @@ private:
 
 void Pipeline::wake_io() {
 #ifdef _WIN32
-    if (iocp_) PostQueuedCompletionStatus(iocp_, 0, 1, nullptr);
+    if (iocp_)
+        PostQueuedCompletionStatus(iocp_, 0, 1, nullptr);
 #else
     cv_work_.notify_all();
 #endif
@@ -99,7 +101,8 @@ void Pipeline::fail(Error e) {
 }
 
 void Pipeline::shutdown() {
-    if (shut_) return;
+    if (shut_)
+        return;
     shut_ = true;
     {
         std::lock_guard lk(m_);
@@ -108,9 +111,11 @@ void Pipeline::shutdown() {
     cv_ready_.notify_all();
     cv_work_.notify_all();
     wake_io();
-    if (io_.joinable()) io_.join();
+    if (io_.joinable())
+        io_.join();
     for (auto& t : workers_)
-        if (t.joinable()) t.join();
+        if (t.joinable())
+            t.join();
 #ifdef _WIN32
     if (iocp_) {
         CloseHandle(iocp_);
@@ -126,14 +131,16 @@ Result<void> Pipeline::decode_slot(Slot& s) {
     if (e.codec == Codec::Raw) {
         // Decode in place: the stored bytes are the data. Only verify.
         if (opt_.verify_hash && sha256(std::span<const std::uint8_t>(s.stored.get(), raw)) != e.hash)
-            return Error(ErrorCode::ModelError, "HCSMODEL: chunk " + std::to_string(s.chunk) + " checksum mismatch (corrupt or tampered data)");
+            return Error(ErrorCode::ModelError, "HCSMODEL: chunk " + std::to_string(s.chunk) +
+                                                    " checksum mismatch (corrupt or tampered data)");
         s.data = s.stored.get();
         s.data_size = raw;
         return {};
     }
-    auto r = decode_chunk(e, std::span<const std::uint8_t>(s.stored.get(), comp), std::span<std::uint8_t>(s.raw.get(), raw),
-                          opt_.verify_hash);
-    if (!r) return Error(r.error().code, r.error().message + " (chunk " + std::to_string(s.chunk) + ")");
+    auto r = decode_chunk(e, std::span<const std::uint8_t>(s.stored.get(), comp),
+                          std::span<std::uint8_t>(s.raw.get(), raw), opt_.verify_hash);
+    if (!r)
+        return Error(r.error().code, r.error().message + " (chunk " + std::to_string(s.chunk) + ")");
     s.data = s.raw.get();
     s.data_size = raw;
     return {};
@@ -145,7 +152,8 @@ void Pipeline::worker_thread() {
         {
             std::unique_lock lk(m_);
             cv_work_.wait(lk, [&] { return stop_ || !workq_.empty(); });
-            if (stop_) return;
+            if (stop_)
+                return;
             idx = workq_.front();
             workq_.pop_front();
             slots_[idx].state = SlotState::Decoding;
@@ -187,7 +195,8 @@ void Pipeline::io_thread() {
             Slot& s = slots_[si];
             {
                 std::lock_guard lk(m_);
-                if (s.state != SlotState::Free) break;
+                if (s.state != SlotState::Free)
+                    break;
                 s.state = SlotState::Reading;
                 s.chunk = next;
             }
@@ -199,7 +208,8 @@ void Pipeline::io_thread() {
             if (!ReadFile(h, s.stored.get(), static_cast<DWORD>(e.comp_size), nullptr, &ov)) {
                 const DWORD ec = GetLastError();
                 if (ec != ERROR_IO_PENDING) {
-                    fail(Error(ErrorCode::IoError, "overlapped read failed (Win32 error " + std::to_string(ec) + ")"));
+                    fail(Error(ErrorCode::IoError,
+                               "overlapped read failed (Win32 error " + std::to_string(ec) + ")"));
                     break;
                 }
             }
@@ -216,16 +226,19 @@ void Pipeline::io_thread() {
             CancelIoEx(h, nullptr);
             io_cancelled = true;
         }
-        if (pending == 0 && (stopping || next >= end_)) break;
+        if (pending == 0 && (stopping || next >= end_))
+            break;
 
         ULONG n = 0;
         if (!GetQueuedCompletionStatusEx(iocp_, ents, 16, &n, INFINITE, FALSE)) {
-            fail(Error(ErrorCode::IoError, "completion port failure (Win32 error " + std::to_string(GetLastError()) + ")"));
+            fail(Error(ErrorCode::IoError,
+                       "completion port failure (Win32 error " + std::to_string(GetLastError()) + ")"));
             continue;
         }
         for (ULONG k = 0; k < n; ++k) {
             OVERLAPPED* pov = ents[k].lpOverlapped;
-            if (!pov) continue;  // wake-up packet
+            if (!pov)
+                continue;  // wake-up packet
             const std::size_t si = static_cast<std::size_t>(pov - ovs_.data());
             --pending;
             DWORD got = 0;
@@ -234,17 +247,20 @@ void Pipeline::io_thread() {
             if (!ok) {
                 const DWORD ec = GetLastError();
                 if (ec != ERROR_OPERATION_ABORTED)
-                    fail(Error(ErrorCode::IoError, "read failed (Win32 error " + std::to_string(ec) + "); device removed or file truncated?"));
+                    fail(Error(ErrorCode::IoError, "read failed (Win32 error " + std::to_string(ec) +
+                                                       "); device removed or file truncated?"));
                 continue;
             }
             if (got != chunks_[s.chunk].comp_size) {
-                fail(Error(ErrorCode::IoError, "short read for chunk " + std::to_string(s.chunk) + " (truncated file?)"));
+                fail(Error(ErrorCode::IoError,
+                           "short read for chunk " + std::to_string(s.chunk) + " (truncated file?)"));
                 continue;
             }
             stored_read_ += got;
             {
                 std::lock_guard lk(m_);
-                if (stop_) continue;
+                if (stop_)
+                    continue;
                 s.state = SlotState::Read;
                 workq_.push_back(si);
             }
@@ -262,7 +278,8 @@ void Pipeline::io_thread() {
         {
             std::unique_lock lk(m_);
             cv_work_.wait(lk, [&] { return stop_ || s.state == SlotState::Free; });
-            if (stop_) return;
+            if (stop_)
+                return;
             s.state = SlotState::Reading;
             s.chunk = next;
         }
@@ -285,37 +302,46 @@ void Pipeline::io_thread() {
 
 Result<StreamStats> Pipeline::run() {
     const auto t0 = Clock::now();
-    if (opt_.buffers == 0 || opt_.buffers > 64) return Error(ErrorCode::InvalidArgument, "buffers must be in [1, 64]");
+    if (opt_.buffers == 0 || opt_.buffers > 64)
+        return Error(ErrorCode::InvalidArgument, "buffers must be in [1, 64]");
     begin_ = opt_.begin_chunk;
     end_ = std::min(opt_.end_chunk, chunks_.size());
-    if (begin_ > end_) return Error(ErrorCode::InvalidArgument, "begin_chunk beyond end_chunk");
+    if (begin_ > end_)
+        return Error(ErrorCode::InvalidArgument, "begin_chunk beyond end_chunk");
     StreamStats stats;
-    if (begin_ == end_) return stats;
+    if (begin_ == end_)
+        return stats;
 
     std::uint64_t max_stored = 0, max_raw = 0;
     bool need_raw_buf = false;
     for (std::size_t i = begin_; i < end_; ++i) {
         const ChunkEntry& e = chunks_[i];
-        if (e.raw_size == 0 || e.raw_size > kMaxChunkRawSize || e.comp_size == 0 || e.comp_size > kMaxChunkRawSize + (kMaxChunkRawSize >> 8) + 1024)
+        if (e.raw_size == 0 || e.raw_size > kMaxChunkRawSize || e.comp_size == 0 ||
+            e.comp_size > kMaxChunkRawSize + (kMaxChunkRawSize >> 8) + 1024)
             return Error(ErrorCode::InvalidArgument, "chunk size outside the pipeline caps");
         if (!range_within(e.offset, e.comp_size, src_.size()))
-            return Error(ErrorCode::IoError, "chunk " + std::to_string(i) + " lies outside the file (truncated)");
+            return Error(ErrorCode::IoError,
+                         "chunk " + std::to_string(i) + " lies outside the file (truncated)");
         max_stored = std::max(max_stored, e.comp_size);
         max_raw = std::max(max_raw, e.raw_size);
-        if (e.codec != Codec::Raw) need_raw_buf = true;
+        if (e.codec != Codec::Raw)
+            need_raw_buf = true;
     }
     nslots_ = std::min<std::size_t>(opt_.buffers, end_ - begin_);
     const std::uint64_t per_slot = max_stored + (need_raw_buf ? max_raw : 0);
     const auto total = checked_mul(per_slot, nslots_);
-    if (!total) return Error(ErrorCode::OutOfMemory, "pipeline buffer size overflow");
+    if (!total)
+        return Error(ErrorCode::OutOfMemory, "pipeline buffer size overflow");
     if (opt_.max_buffer_bytes && *total > opt_.max_buffer_bytes)
-        return Error(ErrorCode::OutOfMemory, "pipeline buffers (" + std::to_string(*total) + " bytes) exceed the budget (" +
-                                                 std::to_string(opt_.max_buffer_bytes) + " bytes); reduce buffers or chunk size");
+        return Error(ErrorCode::OutOfMemory,
+                     "pipeline buffers (" + std::to_string(*total) + " bytes) exceed the budget (" +
+                         std::to_string(opt_.max_buffer_bytes) + " bytes); reduce buffers or chunk size");
     try {
         slots_.resize(nslots_);
         for (auto& s : slots_) {
             s.stored = std::make_unique_for_overwrite<std::uint8_t[]>(static_cast<std::size_t>(max_stored));
-            if (need_raw_buf) s.raw = std::make_unique_for_overwrite<std::uint8_t[]>(static_cast<std::size_t>(max_raw));
+            if (need_raw_buf)
+                s.raw = std::make_unique_for_overwrite<std::uint8_t[]>(static_cast<std::size_t>(max_raw));
         }
     } catch (const std::bad_alloc&) {
         return Error(ErrorCode::OutOfMemory, "cannot allocate streaming buffers");
@@ -324,11 +350,14 @@ Result<StreamStats> Pipeline::run() {
 
 #ifdef _WIN32
     auto af = FileSource::open(src_.path(), opt_.sequential_hint);
-    if (!af) return af.error();
+    if (!af)
+        return af.error();
     async_file_ = std::move(af).value();
-    if (async_file_->size() != src_.size()) return Error(ErrorCode::IoError, "file changed while opening the streaming handle");
+    if (async_file_->size() != src_.size())
+        return Error(ErrorCode::IoError, "file changed while opening the streaming handle");
     iocp_ = CreateIoCompletionPort(static_cast<HANDLE>(async_file_->native_handle()), nullptr, 0, 1);
-    if (!iocp_) return Error(ErrorCode::IoError, "CreateIoCompletionPort failed");
+    if (!iocp_)
+        return Error(ErrorCode::IoError, "CreateIoCompletionPort failed");
     ovs_.assign(nslots_, OVERLAPPED{});
 #endif
 
@@ -392,7 +421,8 @@ Result<StreamStats> Pipeline::run() {
         }
     }
     shutdown();  // joins all threads; outstanding overlapped reads are cancelled and drained first
-    if (!outcome) return outcome.error();
+    if (!outcome)
+        return outcome.error();
     stats.stored_bytes_read = stored_read_.load();
     stats.wall_seconds = std::chrono::duration<double>(Clock::now() - t0).count();
     stats.consumer_wait_seconds = wait_s;
@@ -401,9 +431,10 @@ Result<StreamStats> Pipeline::run() {
 
 }  // namespace
 
-Result<StreamStats> stream_chunks(const FileSource& file, std::span<const ChunkEntry> chunks, const StreamOptions& options,
-                                  const ChunkSink& sink) {
-    if (!sink) return Error(ErrorCode::InvalidArgument, "sink must not be empty");
+Result<StreamStats> stream_chunks(const FileSource& file, std::span<const ChunkEntry> chunks,
+                                  const StreamOptions& options, const ChunkSink& sink) {
+    if (!sink)
+        return Error(ErrorCode::InvalidArgument, "sink must not be empty");
     try {
         Pipeline p(file, chunks, options, sink);
         return p.run();

@@ -1,6 +1,6 @@
-// Integration tests for the stable-diffusion.cpp adapter through the BLOCKING entry points used by the HTTP/MCP
-// image routes (IImageStreamEngine). Real model required: set HCS_TEST_DIFFUSION_MODEL=<small diffusion GGUF>.
-// Output is verified structurally (PNG signature, size); image quality is not judged.
+// Integration tests for the stable-diffusion.cpp adapter through the BLOCKING entry points used by the
+// HTTP/MCP image routes (IImageStreamEngine). Real model required: set HCS_TEST_DIFFUSION_MODEL=<small
+// diffusion GGUF>. Output is verified structurally (PNG signature, size); image quality is not judged.
 #include <gtest/gtest.h>
 
 #include <atomic>
@@ -22,9 +22,10 @@ std::string env(const char* n) {
     return v ? v : "";
 }
 
-#define REQUIRE_MODEL_OR_SKIP(path_var)                                                              \
-    const std::string path_var = env("HCS_TEST_DIFFUSION_MODEL");                                    \
-    if (path_var.empty()) GTEST_SKIP() << "NOT RUN: HCS_TEST_DIFFUSION_MODEL is not set (real-model test)"
+#define REQUIRE_MODEL_OR_SKIP(path_var)                           \
+    const std::string path_var = env("HCS_TEST_DIFFUSION_MODEL"); \
+    if (path_var.empty())                                         \
+    GTEST_SKIP() << "NOT RUN: HCS_TEST_DIFFUSION_MODEL is not set (real-model test)"
 
 bool is_png(const api::ImageResult& r) {
     static const std::uint8_t sig[8] = {0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A};
@@ -60,8 +61,8 @@ ImageRequest small_request() {
 
 }  // namespace
 
-// Regression: the blocking entry points pass an EMPTY progress sink; the progress callback used to call it anyway and
-// every blocking generation failed with "bad function call".
+// Regression: the blocking entry points pass an EMPTY progress sink; the progress callback used to call it
+// anyway and every blocking generation failed with "bad function call".
 TEST(DiffusionBlocking, GenerateWithoutAProgressSinkProducesAPng) {
     REQUIRE_MODEL_OR_SKIP(path);
     Loaded m(path);
@@ -118,7 +119,8 @@ TEST(DiffusionBlocking, CancellationStopsTheRender) {
     t.join();
     const auto secs = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
     EXPECT_FALSE(r) << "a cancelled render must not return an image";
-    if (!r) EXPECT_EQ(r.error().code, ErrorCode::Cancelled) << r.error().message;
+    if (!r)
+        EXPECT_EQ(r.error().code, ErrorCode::Cancelled) << r.error().message;
     EXPECT_LT(secs, 120.0) << "cancellation must stop the render promptly";
 }
 

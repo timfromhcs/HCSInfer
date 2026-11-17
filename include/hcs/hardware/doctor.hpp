@@ -9,9 +9,9 @@ namespace hcs::hardware {
 
 struct DoctorOptions {
     bool json = false;
-    bool no_vulkan = false;           // CPU-fallback mode: Vulkan is not even loaded
-    std::string storage_root;         // optional existing path: volume/filesystem/bus info
-    std::string read_file;            // optional existing file for the read-only read benchmark
+    bool no_vulkan = false;                       // CPU-fallback mode: Vulkan is not even loaded
+    std::string storage_root;                     // optional existing path: volume/filesystem/bus info
+    std::string read_file;                        // optional existing file for the read-only read benchmark
     std::uint64_t read_max_bytes = 256ull << 20;  // upper bound of bytes read per sample
     std::uint32_t read_buffer_bytes = 4u << 20;   // bounded read buffer (64 KiB .. 64 MiB)
     std::uint32_t read_repeats = 1;               // 1 .. 5 samples

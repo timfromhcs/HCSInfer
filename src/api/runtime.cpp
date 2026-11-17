@@ -2,9 +2,9 @@
 
 #include <algorithm>
 #include <atomic>
-#include <cstdlib>
 #include <chrono>
 #include <csignal>
+#include <cstdlib>
 #include <iostream>
 #include <sstream>
 #include <thread>
@@ -21,17 +21,22 @@
 namespace hcs::api {
 
 #ifndef HCS_HAVE_LLAMA_ENGINE
-std::unique_ptr<ITextEngine> make_default_text_engine(JobQueue&) { return nullptr; }
+std::unique_ptr<ITextEngine> make_default_text_engine(JobQueue&) {
+    return nullptr;
+}
 #endif
 #ifndef HCS_HAVE_DIFFUSION_ENGINE
-std::unique_ptr<IImageEngine> make_default_image_engine(JobQueue&) { return nullptr; }
+std::unique_ptr<IImageEngine> make_default_image_engine(JobQueue&) {
+    return nullptr;
+}
 #endif
 
 Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger& logger) {
     std::unique_ptr<Runtime> rt(new Runtime());
     const auto settings_file = options.state_dir / "settings.json";
     auto st = load_settings(settings_file);
-    if (!st) return st.error();
+    if (!st)
+        return st.error();
     rt->settings = st.value();
 
     std::vector<std::string> roots = rt->settings.model_roots;
@@ -45,8 +50,10 @@ Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger&
     std::error_code ec;
     if (std::filesystem::exists(reg_file, ec)) {
         auto text = read_file_limited(reg_file, 64u << 20);
-        if (!text) return text.error();
-        if (auto r = rt->registry.load_json(text.value()); !r) return r.error();
+        if (!text)
+            return text.error();
+        if (auto r = rt->registry.load_json(text.value()); !r)
+            return r.error();
     }
 
     rt->queue = std::make_unique<JobQueue>(options.queue);
@@ -61,15 +68,23 @@ Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger&
     co.version = HCS_VERSION_STRING;
     co.context_tokens = rt->settings.context_tokens;
     switch (rt->settings.accel) {
-        case AccelProfile::CpuOnly: co.backend = Backend::Cpu; break;
-        case AccelProfile::Vulkan: co.backend = Backend::Vulkan; break;
-        case AccelProfile::Auto: co.backend = Backend::Auto; break;
+        case AccelProfile::CpuOnly:
+            co.backend = Backend::Cpu;
+            break;
+        case AccelProfile::Vulkan:
+            co.backend = Backend::Vulkan;
+            break;
+        case AccelProfile::Auto:
+            co.backend = Backend::Auto;
+            break;
     }
-    // Live memory budget (AGENTS.md 10.1, M10 audit D4): an injected probe wins, else the OS measurement from the
-    // hardware module. Without either, the budget stays unknown and /hcs/v1/memory says so.
-    if (options.memory_probe) co.memory_probe = options.memory_probe;
+    // Live memory budget (AGENTS.md 10.1, M10 audit D4): an injected probe wins, else the OS measurement from
+    // the hardware module. Without either, the budget stays unknown and /hcs/v1/memory says so.
+    if (options.memory_probe)
+        co.memory_probe = options.memory_probe;
 #ifdef HCS_HAVE_HARDWARE
-    if (!co.memory_probe) co.memory_probe = [] { return hcs::hardware::measure_memory(); };
+    if (!co.memory_probe)
+        co.memory_probe = [] { return hcs::hardware::measure_memory(); };
 #endif
 #ifdef HCS_HAVE_HARDWARE
     if (!co.devices_provider) {
@@ -83,14 +98,16 @@ Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger&
         };
     }
 #endif
-    rt->control = std::make_unique<ControlPlane>(rt->registry, rt->guard, rt->budget, *rt->queue, rt->engine.get(),
-                                                 logger, co, rt->image_engine.get());
+    rt->control = std::make_unique<ControlPlane>(rt->registry, rt->guard, rt->budget, *rt->queue,
+                                                 rt->engine.get(), logger, co, rt->image_engine.get());
     return rt;
 }
 
 namespace {
 std::atomic<bool> g_stop{false};
-extern "C" void on_signal(int) { g_stop.store(true); }
+extern "C" void on_signal(int) {
+    g_stop.store(true);
+}
 
 const char* kServeHelp =
     "Usage: HCSInfer serve [options]\n"
@@ -111,17 +128,21 @@ const char* kServeHelp =
     "  --max-body-bytes <n>     Request body cap (default 1048576)\n"
     "  --max-inflight <n>       Concurrent request cap (default 8)\n"
     "  --timeout-s <n>          Per-request generation timeout (default 300)\n"
-    "  --chat-template <t>      auto (default: model template for single-turn, ChatML otherwise) | chatml | plain\n"
+    "  --chat-template <t>      auto (default: model template for single-turn, ChatML otherwise) | chatml | "
+    "plain\n"
     "  --help                   This text\n";
 
 bool parse_uint(const std::string& s, unsigned long long max, unsigned long long& out) {
-    if (s.empty() || s.size() > 18) return false;
+    if (s.empty() || s.size() > 18)
+        return false;
     unsigned long long v = 0;
     for (char c : s) {
-        if (c < '0' || c > '9') return false;
+        if (c < '0' || c > '9')
+            return false;
         v = v * 10 + static_cast<unsigned>(c - '0');
     }
-    if (v > max) return false;
+    if (v > max)
+        return false;
     out = v;
     return true;
 }
@@ -141,34 +162,68 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     for (std::size_t i = 0; i < args.size(); ++i) {
         const std::string& a = args[i];
         auto need = [&](std::string& dst) {
-            if (i + 1 >= args.size()) return false;
+            if (i + 1 >= args.size())
+                return false;
             dst = args[++i];
             return true;
         };
         std::string v;
-        if (a == "--help" || a == "-h") { out << kServeHelp; return 0; }
-        if (a == "--lan") lan = true;
-        else if (a == "--host") { if (!need(host)) return bad("--host needs a value"); }
-        else if (a == "--token") { if (!need(token)) return bad("--token needs a value"); }
-        else if (a == "--chat-template") { if (!need(tmpl)) return bad("--chat-template needs a value"); }
-        else if (a == "--model-root") { if (!need(v)) return bad("--model-root needs a value"); roots.push_back(v); }
-        else if (a == "--allow-host") { if (!need(v)) return bad("--allow-host needs a value"); hosts.push_back(v); }
-        else if (a == "--allow-origin") { if (!need(v)) return bad("--allow-origin needs a value"); origins.push_back(v); }
-        else if (a == "--port") { if (!need(v) || !parse_uint(v, 65535, port)) return bad("--port must be 0..65535"); }
-        else if (a == "--max-body-bytes") { if (!need(v) || !parse_uint(v, 1ull << 30, body_cap) || body_cap == 0) return bad("--max-body-bytes must be 1..1073741824"); }
-        else if (a == "--max-inflight") { if (!need(v) || !parse_uint(v, 1024, inflight) || inflight == 0) return bad("--max-inflight must be 1..1024"); }
-        else if (a == "--timeout-s") { if (!need(v) || !parse_uint(v, 86400, timeout_s) || timeout_s == 0) return bad("--timeout-s must be 1..86400"); }
-        else return bad("unknown option: " + a);
+        if (a == "--help" || a == "-h") {
+            out << kServeHelp;
+            return 0;
+        }
+        if (a == "--lan")
+            lan = true;
+        else if (a == "--host") {
+            if (!need(host))
+                return bad("--host needs a value");
+        } else if (a == "--token") {
+            if (!need(token))
+                return bad("--token needs a value");
+        } else if (a == "--chat-template") {
+            if (!need(tmpl))
+                return bad("--chat-template needs a value");
+        } else if (a == "--model-root") {
+            if (!need(v))
+                return bad("--model-root needs a value");
+            roots.push_back(v);
+        } else if (a == "--allow-host") {
+            if (!need(v))
+                return bad("--allow-host needs a value");
+            hosts.push_back(v);
+        } else if (a == "--allow-origin") {
+            if (!need(v))
+                return bad("--allow-origin needs a value");
+            origins.push_back(v);
+        } else if (a == "--port") {
+            if (!need(v) || !parse_uint(v, 65535, port))
+                return bad("--port must be 0..65535");
+        } else if (a == "--max-body-bytes") {
+            if (!need(v) || !parse_uint(v, 1ull << 30, body_cap) || body_cap == 0)
+                return bad("--max-body-bytes must be 1..1073741824");
+        } else if (a == "--max-inflight") {
+            if (!need(v) || !parse_uint(v, 1024, inflight) || inflight == 0)
+                return bad("--max-inflight must be 1..1024");
+        } else if (a == "--timeout-s") {
+            if (!need(v) || !parse_uint(v, 86400, timeout_s) || timeout_s == 0)
+                return bad("--timeout-s must be 1..86400");
+        } else
+            return bad("unknown option: " + a);
     }
-    if (tmpl != "auto" && tmpl != "chatml" && tmpl != "plain") return bad("--chat-template must be auto, chatml or plain");
+    if (tmpl != "auto" && tmpl != "chatml" && tmpl != "plain")
+        return bad("--chat-template must be auto, chatml or plain");
     if (token.empty()) {
-        if (const char* e = std::getenv("HCS_API_TOKEN"); e && *e) token = e;
+        if (const char* e = std::getenv("HCS_API_TOKEN"); e && *e)
+            token = e;
     }
     const bool token_given = !token.empty();
-    if (token_given && token.size() < 16) return bad("token must be at least 16 characters");
-    if (!token_given) token = generate_token();
+    if (token_given && token.size() < 16)
+        return bad("token must be at least 16 characters");
+    if (!token_given)
+        token = generate_token();
 
-    if (host.empty()) host = lan ? "0.0.0.0" : "127.0.0.1";
+    if (host.empty())
+        host = lan ? "0.0.0.0" : "127.0.0.1";
     Settings probe;
     probe.bind_host = host;
     probe.allow_lan = lan;
@@ -177,7 +232,8 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
         err << "error: " << v.error().message << " [" << to_string(v.error().code) << "]\n";
         return v.error().exit_code();
     }
-    if (lan && token.empty()) return bad("--lan requires a token");
+    if (lan && token.empty())
+        return bad("--lan requires a token");
 
     Logger& log = global_logger();
     RuntimeOptions ro;
@@ -216,14 +272,20 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     std::signal(SIGINT, on_signal);
     std::signal(SIGTERM, on_signal);
     err << "HCSInfer API listening on http://" << host << ":" << bound.value() << "\n";
-    if (!token_given) err << "HCSInfer API token: " << token << "\n";
-    err << "HCSInfer web UI: http://" << (host == "0.0.0.0" ? std::string("127.0.0.1") : host) << ":" << bound.value()
-        << "/  (enter the token on the page, or open it with #token=<token> appended; the fragment is never sent to the server)\n";
-    if (lan) err << "warning: --lan exposes the API to your network; keep the token secret\n";
+    if (!token_given)
+        err << "HCSInfer API token: " << token << "\n";
+    err << "HCSInfer web UI: http://" << (host == "0.0.0.0" ? std::string("127.0.0.1") : host) << ":"
+        << bound.value()
+        << "/  (enter the token on the page, or open it with #token=<token> appended; the fragment is never "
+           "sent to the server)\n";
+    if (lan)
+        err << "warning: --lan exposes the API to your network; keep the token secret\n";
     if (!rt.value()->control->has_engine())
-        err << "note: no inference engine is linked into this build; chat and model loading report 'unsupported'\n";
+        err << "note: no inference engine is linked into this build; chat and model loading report "
+               "'unsupported'\n";
     if (rt.value()->guard.empty())
-        err << "note: no approved model roots; pass --model-root <dir> (or set model_roots in settings.json) to allow loading\n";
+        err << "note: no approved model roots; pass --model-root <dir> (or set model_roots in settings.json) "
+               "to allow loading\n";
     err.flush();
     while (!g_stop.load()) std::this_thread::sleep_for(std::chrono::milliseconds(100));
     err << "shutting down\n";

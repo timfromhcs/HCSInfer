@@ -23,10 +23,12 @@ constexpr const char* kMetaCaps = "io.modelcontextprotocol/clientCapabilities";
 constexpr const char* kMetaServerInfo = "io.modelcontextprotocol/serverInfo";
 
 bool method_is(const json& m, const char* name) {
-    return m.is_object() && m.contains("method") && m["method"].is_string() && m["method"].get<std::string>() == name;
+    return m.is_object() && m.contains("method") && m["method"].is_string() &&
+           m["method"].get<std::string>() == name;
 }
 bool jsonrpc_ok(const json& m) {
-    return m.is_object() && m.contains("jsonrpc") && m["jsonrpc"].is_string() && m["jsonrpc"].get<std::string>() == "2.0";
+    return m.is_object() && m.contains("jsonrpc") && m["jsonrpc"].is_string() &&
+           m["jsonrpc"].get<std::string>() == "2.0";
 }
 
 constexpr int kParseError = -32700;
@@ -36,7 +38,9 @@ constexpr int kInvalidParams = -32602;
 constexpr int kInternal = -32603;
 constexpr int kUnsupportedVersion = -32022;
 
-std::string dump_safe(const json& j) { return j.dump(-1, ' ', false, json::error_handler_t::replace); }
+std::string dump_safe(const json& j) {
+    return j.dump(-1, ' ', false, json::error_handler_t::replace);
+}
 
 json str_schema(std::size_t max_len, const char* desc) {
     return {{"type", "string"}, {"maxLength", max_len}, {"description", desc}};
@@ -59,7 +63,8 @@ json message_array_schema() {
 json tool(const std::string& name, const std::string& title, const std::string& desc, json props,
           std::vector<std::string> required, bool read_only, bool destructive = false) {
     json schema = {{"type", "object"}, {"properties", std::move(props)}, {"additionalProperties", false}};
-    if (!required.empty()) schema["required"] = std::move(required);
+    if (!required.empty())
+        schema["required"] = std::move(required);
     return {{"name", name},
             {"title", title},
             {"description", desc},
@@ -80,67 +85,83 @@ bool ids_equal_key(const json& id, std::string& key) {
 
 json tool_list(std::uint32_t cap) {
     const json id = str_schema(64, "Model id from hcs.models.list");
-    const json model_opt = str_schema(64, "Model id to use (loads it if needed). Omit to use the loaded model.");
+    const json model_opt =
+        str_schema(64, "Model id to use (loads it if needed). Omit to use the loaded model.");
     json tools = json::array();
-    tools.push_back(tool("hcs.models.list", "List models", "List registered models and their lifecycle state.", json::object(), {}, true));
-    tools.push_back(tool("hcs.models.inspect", "Inspect model", "Show the manifest and state of one model (no file paths).",
-                         {{"id", id}}, {"id"}, true));
-    tools.push_back(tool("hcs.models.load", "Load model",
-                         "Load a registered model into the text engine (file must be inside an approved root). "
-                         "Unloads the previously loaded model first.",
-                         {{"id", id}}, {"id"}, false));
-    tools.push_back(tool("hcs.models.unload", "Unload model", "Unload the currently loaded model (cancels running generation).",
-                         json::object(), {}, false, true));
-    tools.push_back(tool(
-        "hcs.chat.generate", "Generate text",
-        "Generate a chat completion with the loaded (or given) model. Provide either 'prompt' (one user message) or 'messages'.",
-        {{"model", model_opt},
-         {"prompt", str_schema(262144, "A single user message.")},
-         {"messages", message_array_schema()},
-         {"max_tokens", {{"type", "integer"}, {"minimum", 1}, {"maximum", cap}}},
-         {"temperature", {{"type", "number"}, {"minimum", 0}, {"maximum", 2}}},
-         {"seed", {{"type", "integer"}, {"minimum", 0}}}},
-        {}, false));
-    tools.push_back(tool("hcs.vision.analyze", "Analyze image",
-                         "Answer a question about an image (png/jpeg/gif/bmp file inside an approved root) with the loaded "
-                         "(or given) multimodal model. The model must have its mmproj projector next to it; otherwise the "
-                         "call reports 'unsupported'.",
-                         {{"model", model_opt}, {"prompt", str_schema(65536, "Question about the image.")},
-                          {"image_path", str_schema(1024, "Image file inside an approved root.")},
+    tools.push_back(tool("hcs.models.list", "List models",
+                         "List registered models and their lifecycle state.", json::object(), {}, true));
+    tools.push_back(tool("hcs.models.inspect", "Inspect model",
+                         "Show the manifest and state of one model (no file paths).", {{"id", id}}, {"id"},
+                         true));
+    tools.push_back(
+        tool("hcs.models.load", "Load model",
+             "Load a registered model into the text engine (file must be inside an approved root). "
+             "Unloads the previously loaded model first.",
+             {{"id", id}}, {"id"}, false));
+    tools.push_back(tool("hcs.models.unload", "Unload model",
+                         "Unload the currently loaded model (cancels running generation).", json::object(),
+                         {}, false, true));
+    tools.push_back(tool("hcs.chat.generate", "Generate text",
+                         "Generate a chat completion with the loaded (or given) model. Provide either "
+                         "'prompt' (one user message) or 'messages'.",
+                         {{"model", model_opt},
+                          {"prompt", str_schema(262144, "A single user message.")},
+                          {"messages", message_array_schema()},
                           {"max_tokens", {{"type", "integer"}, {"minimum", 1}, {"maximum", cap}}},
                           {"temperature", {{"type", "number"}, {"minimum", 0}, {"maximum", 2}}},
                           {"seed", {{"type", "integer"}, {"minimum", 0}}}},
-                         {"prompt", "image_path"}, true));
-    const json image_model_opt = str_schema(64, "Image model id (kind 'image'); loads it if needed. Omit to use the loaded image model.");
-    tools.push_back(tool("hcs.image.generate", "Generate image",
-                         "Text-to-image with the loaded (or given) stable-diffusion.cpp model. Returns the PNG inline "
-                         "(MCP image content, base64) plus size/steps/timing. Width/height must be multiples of 8 and "
-                         "within the server's pixel budget. Reports 'unsupported' when no image engine is linked.",
-                         {{"model", image_model_opt}, {"prompt", str_schema(65536, "Image prompt.")},
-                          {"negative_prompt", str_schema(65536, "What to avoid.")},
-                          {"width", {{"type", "integer"}, {"minimum", 64}, {"maximum", 2048}}},
-                          {"height", {{"type", "integer"}, {"minimum", 64}, {"maximum", 2048}}},
-                          {"steps", {{"type", "integer"}, {"minimum", 1}, {"maximum", 150}}},
-                          {"seed", {{"type", "integer"}, {"minimum", 0}}},
-                          {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}}},
-                         {"prompt"}, false));
-    tools.push_back(tool("hcs.image.edit", "Edit image",
-                         "Image-to-image edit of a png/jpeg file inside an approved root (the path is checked before "
-                         "anything is read). Output size defaults to the input's size. Returns the PNG inline.",
-                         {{"model", image_model_opt}, {"prompt", str_schema(65536, "Edit instruction / new prompt.")},
-                          {"negative_prompt", str_schema(65536, "What to avoid.")},
-                          {"input_path", str_schema(1024, "Input image inside an approved root.")},
-                          {"width", {{"type", "integer"}, {"minimum", 64}, {"maximum", 2048}}},
-                          {"height", {{"type", "integer"}, {"minimum", 64}, {"maximum", 2048}}},
-                          {"steps", {{"type", "integer"}, {"minimum", 1}, {"maximum", 150}}},
-                          {"strength", {{"type", "number"}, {"minimum", 0}, {"maximum", 1}}},
-                          {"seed", {{"type", "integer"}, {"minimum", 0}}},
-                          {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}}},
-                         {"prompt", "input_path"}, false));
-    tools.push_back(tool("hcs.runtime.status", "Runtime status", "Engine, loaded model, memory budget and (optionally) device report.",
-                         {{"include_devices", {{"type", "boolean"}, {"description", "Include the hardware/device report (may take a moment)."}}}},
-                         {}, true));
-    tools.push_back(tool("hcs.jobs.status", "Job status", "State of a job returned by another tool or the HTTP API.",
+                         {}, false));
+    tools.push_back(tool(
+        "hcs.vision.analyze", "Analyze image",
+        "Answer a question about an image (png/jpeg/gif/bmp file inside an approved root) with the loaded "
+        "(or given) multimodal model. The model must have its mmproj projector next to it; otherwise the "
+        "call reports 'unsupported'.",
+        {{"model", model_opt},
+         {"prompt", str_schema(65536, "Question about the image.")},
+         {"image_path", str_schema(1024, "Image file inside an approved root.")},
+         {"max_tokens", {{"type", "integer"}, {"minimum", 1}, {"maximum", cap}}},
+         {"temperature", {{"type", "number"}, {"minimum", 0}, {"maximum", 2}}},
+         {"seed", {{"type", "integer"}, {"minimum", 0}}}},
+        {"prompt", "image_path"}, true));
+    const json image_model_opt = str_schema(
+        64, "Image model id (kind 'image'); loads it if needed. Omit to use the loaded image model.");
+    tools.push_back(
+        tool("hcs.image.generate", "Generate image",
+             "Text-to-image with the loaded (or given) stable-diffusion.cpp model. Returns the PNG inline "
+             "(MCP image content, base64) plus size/steps/timing. Width/height must be multiples of 8 and "
+             "within the server's pixel budget. Reports 'unsupported' when no image engine is linked.",
+             {{"model", image_model_opt},
+              {"prompt", str_schema(65536, "Image prompt.")},
+              {"negative_prompt", str_schema(65536, "What to avoid.")},
+              {"width", {{"type", "integer"}, {"minimum", 64}, {"maximum", 2048}}},
+              {"height", {{"type", "integer"}, {"minimum", 64}, {"maximum", 2048}}},
+              {"steps", {{"type", "integer"}, {"minimum", 1}, {"maximum", 150}}},
+              {"seed", {{"type", "integer"}, {"minimum", 0}}},
+              {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}}},
+             {"prompt"}, false));
+    tools.push_back(
+        tool("hcs.image.edit", "Edit image",
+             "Image-to-image edit of a png/jpeg file inside an approved root (the path is checked before "
+             "anything is read). Output size defaults to the input's size. Returns the PNG inline.",
+             {{"model", image_model_opt},
+              {"prompt", str_schema(65536, "Edit instruction / new prompt.")},
+              {"negative_prompt", str_schema(65536, "What to avoid.")},
+              {"input_path", str_schema(1024, "Input image inside an approved root.")},
+              {"width", {{"type", "integer"}, {"minimum", 64}, {"maximum", 2048}}},
+              {"height", {{"type", "integer"}, {"minimum", 64}, {"maximum", 2048}}},
+              {"steps", {{"type", "integer"}, {"minimum", 1}, {"maximum", 150}}},
+              {"strength", {{"type", "number"}, {"minimum", 0}, {"maximum", 1}}},
+              {"seed", {{"type", "integer"}, {"minimum", 0}}},
+              {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}}},
+             {"prompt", "input_path"}, false));
+    tools.push_back(tool(
+        "hcs.runtime.status", "Runtime status",
+        "Engine, loaded model, memory budget and (optionally) device report.",
+        {{"include_devices",
+          {{"type", "boolean"}, {"description", "Include the hardware/device report (may take a moment)."}}}},
+        {}, true));
+    tools.push_back(tool("hcs.jobs.status", "Job status",
+                         "State of a job returned by another tool or the HTTP API.",
                          {{"job_id", str_schema(24, "e.g. job-12")}}, {"job_id"}, true));
     tools.push_back(tool("hcs.jobs.cancel", "Cancel job", "Cancel a queued or running job.",
                          {{"job_id", str_schema(24, "e.g. job-12")}}, {"job_id"}, false, true));
@@ -157,7 +178,8 @@ McpServer::~McpServer() = default;
 
 json McpServer::rpc_error(const json& id, int code, const std::string& msg, json data) const {
     json e = {{"code", code}, {"message", msg}};
-    if (!data.is_null()) e["data"] = std::move(data);
+    if (!data.is_null())
+        e["data"] = std::move(data);
     return {{"jsonrpc", "2.0"}, {"id", id}, {"error", std::move(e)}};
 }
 
@@ -176,26 +198,33 @@ json McpServer::tool_ok(json structured) const {
 }
 
 json McpServer::tool_err(const std::string& raw_msg, const std::string& code) const {
-    const std::string msg = api::redact_paths(raw_msg);  // no absolute local paths towards the client (M10 audit D6)
+    const std::string msg =
+        api::redact_paths(raw_msg);  // no absolute local paths towards the client (M10 audit D6)
     return {{"content", json::array({json{{"type", "text"}, {"text", code + ": " + msg}}})},
             {"structuredContent", {{"error", {{"code", code}, {"message", msg}}}}},
             {"isError", true}};
 }
 
-json McpServer::tool_err(const Error& e) const { return tool_err(e.message, std::string(to_string(e.code))); }
+json McpServer::tool_err(const Error& e) const {
+    return tool_err(e.message, std::string(to_string(e.code)));
+}
 
 void McpServer::cancel_request(const json& request_id) {
     std::string key;
-    if (!ids_equal_key(request_id, key)) return;  // malformed: ignore (spec)
+    if (!ids_equal_key(request_id, key))
+        return;  // malformed: ignore (spec)
     std::uint64_t job = 0;
     {
         std::lock_guard lk(mu_);
         auto it = cancelled_.find(key);
-        if (it == cancelled_.end()) return;  // unknown/finished: ignore
+        if (it == cancelled_.end())
+            return;  // unknown/finished: ignore
         it->second = true;
-        if (auto j = running_jobs_.find(key); j != running_jobs_.end()) job = j->second;
+        if (auto j = running_jobs_.find(key); j != running_jobs_.end())
+            job = j->second;
     }
-    if (job != 0) (void)cp_.cancel_job(JobId{job});
+    if (job != 0)
+        (void)cp_.cancel_job(JobId{job});
 }
 
 // Waits for a chat job, honouring MCP cancellation and the hard timeout.
@@ -210,7 +239,8 @@ json McpServer::wait_chat(const api::Submitted& sub, const std::string& req_key)
         auto it = cancelled_.find(req_key);
         return it != cancelled_.end() && it->second;
     };
-    if (is_cancelled()) (void)cp_.cancel_job(sub.id);
+    if (is_cancelled())
+        (void)cp_.cancel_job(sub.id);
     const auto deadline = clock::now() + opt_.call_timeout;
     std::string text;
     bool done = false, timed_out = false;
@@ -219,9 +249,12 @@ json McpServer::wait_chat(const api::Submitted& sub, const std::string& req_key)
         const auto slice = std::min(deadline, clock::now() + std::chrono::milliseconds(100));
         switch (sub.channel->pop(ev, slice)) {
             case api::JobChannel::Pop::Event:
-                if (ev.kind == JobEventKind::Output) text += ev.text;
+                if (ev.kind == JobEventKind::Output)
+                    text += ev.text;
                 break;
-            case api::JobChannel::Pop::Done: done = true; break;
+            case api::JobChannel::Pop::Done:
+                done = true;
+                break;
             case api::JobChannel::Pop::Timeout:
                 if (clock::now() >= deadline) {
                     (void)cp_.cancel_job(sub.id);
@@ -236,11 +269,14 @@ json McpServer::wait_chat(const api::Submitted& sub, const std::string& req_key)
         std::lock_guard lk(mu_);
         running_jobs_.erase(req_key);
     }
-    if (timed_out) return tool_err("tool call timed out", "timeout");
+    if (timed_out)
+        return tool_err("tool call timed out", "timeout");
     auto st = cp_.job_status(sub.id);
-    if (!st) return tool_err(st.error());
+    if (!st)
+        return tool_err(st.error());
     if (st.value().state != JobState::Succeeded) {
-        if (st.value().error) return tool_err(*st.value().error);
+        if (st.value().error)
+            return tool_err(*st.value().error);
         return tool_err("job was cancelled", "cancelled");
     }
     json out = {{"text", text}, {"job_id", to_string(sub.id)}};
@@ -249,12 +285,13 @@ json McpServer::wait_chat(const api::Submitted& sub, const std::string& req_key)
         out["usage"] = {{"prompt_tokens", r.value().prompt_tokens},
                         {"completion_tokens", r.value().completion_tokens}};
     }
-    if (auto lm = cp_.loaded_model()) out["model"] = *lm;
+    if (auto lm = cp_.loaded_model())
+        out["model"] = *lm;
     return tool_ok(std::move(out));
 }
 
-// Waits for an image job, honouring MCP cancellation and the hard timeout. Success carries the PNG as an MCP image
-// content block; structuredContent holds the metadata only (the pixels are not duplicated as text).
+// Waits for an image job, honouring MCP cancellation and the hard timeout. Success carries the PNG as an MCP
+// image content block; structuredContent holds the metadata only (the pixels are not duplicated as text).
 json McpServer::wait_image(const api::Submitted& sub, const std::string& req_key) {
     using clock = std::chrono::steady_clock;
     {
@@ -266,14 +303,18 @@ json McpServer::wait_image(const api::Submitted& sub, const std::string& req_key
         auto it = cancelled_.find(req_key);
         return it != cancelled_.end() && it->second;
     };
-    if (is_cancelled()) (void)cp_.cancel_job(sub.id);
+    if (is_cancelled())
+        (void)cp_.cancel_job(sub.id);
     const auto deadline = clock::now() + opt_.call_timeout;
     bool done = false, timed_out = false;
     while (!done) {
         JobEvent ev;
         switch (sub.channel->pop(ev, std::min(deadline, clock::now() + std::chrono::milliseconds(100)))) {
-            case api::JobChannel::Pop::Event: break;
-            case api::JobChannel::Pop::Done: done = true; break;
+            case api::JobChannel::Pop::Event:
+                break;
+            case api::JobChannel::Pop::Done:
+                done = true;
+                break;
             case api::JobChannel::Pop::Timeout:
                 if (clock::now() >= deadline) {
                     (void)cp_.cancel_job(sub.id);
@@ -288,19 +329,25 @@ json McpServer::wait_image(const api::Submitted& sub, const std::string& req_key
         std::lock_guard lk(mu_);
         running_jobs_.erase(req_key);
     }
-    if (timed_out) return tool_err("tool call timed out", "timeout");
+    if (timed_out)
+        return tool_err("tool call timed out", "timeout");
     auto st = cp_.job_status(sub.id);
-    if (!st) return tool_err(st.error());
+    if (!st)
+        return tool_err(st.error());
     if (st.value().state != JobState::Succeeded) {
-        if (st.value().error) return tool_err(*st.value().error);
+        if (st.value().error)
+            return tool_err(*st.value().error);
         return tool_err("job was cancelled", "cancelled");
     }
     auto img = cp_.image_result(sub.id);
-    if (!img) return tool_err(img.error());
+    if (!img)
+        return tool_err(img.error());
     const api::ImageResult& r = img.value();
-    json meta = {{"job_id", to_string(sub.id)}, {"format", r.format}, {"width", r.width}, {"height", r.height},
-                 {"steps", r.steps},            {"generation_ms", r.generation_ms}, {"bytes", r.bytes.size()}};
-    if (auto lm = cp_.loaded_model()) meta["model"] = *lm;
+    json meta = {{"job_id", to_string(sub.id)}, {"format", r.format}, {"width", r.width},
+                 {"height", r.height},          {"steps", r.steps},   {"generation_ms", r.generation_ms},
+                 {"bytes", r.bytes.size()}};
+    if (auto lm = cp_.loaded_model())
+        meta["model"] = *lm;
     return {{"content", json::array({json{{"type", "image"},
                                           {"data", api::base64_encode(r.bytes.data(), r.bytes.size())},
                                           {"mimeType", "image/" + r.format}},
@@ -318,13 +365,15 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
     }
     if (name == "hcs.models.inspect") {
         auto v = cp_.model(args["id"].get<std::string>());
-        if (!v) return tool_err(v.error());
+        if (!v)
+            return tool_err(v.error());
         return tool_ok(cp_.model_json(v.value()));
     }
     if (name == "hcs.models.load") {
         const std::string id = args["id"].get<std::string>();
         auto job = cp_.submit_load(id);
-        if (!job) return tool_err(job.error());
+        if (!job)
+            return tool_err(job.error());
         {
             std::lock_guard lk(mu_);
             running_jobs_[req_key] = job.value().value;
@@ -339,8 +388,9 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
                 cancelled = it != cancelled_.end() && it->second;
             }
             if (cancelled) {
-                // Queued loads stop right away; a load already inside the engine cannot be interrupted, but the
-                // call must not keep its slot (and the waiting client) until the engine returns (M10 audit C2).
+                // Queued loads stop right away; a load already inside the engine cannot be interrupted, but
+                // the call must not keep its slot (and the waiting client) until the engine returns (M10
+                // audit C2).
                 (void)cp_.cancel_job(job.value());
                 was_cancelled = true;
                 break;
@@ -355,39 +405,53 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
             std::lock_guard lk(mu_);
             running_jobs_.erase(req_key);
         }
-        if (was_cancelled) return tool_err("load was cancelled", "cancelled");
-        if (timed_out) return tool_err("model load timed out", "timeout");
+        if (was_cancelled)
+            return tool_err("load was cancelled", "cancelled");
+        if (timed_out)
+            return tool_err("model load timed out", "timeout");
         auto st = cp_.job_status(job.value());
-        if (!st) return tool_err(st.error());
+        if (!st)
+            return tool_err(st.error());
         if (st.value().state != JobState::Succeeded)
-            return st.value().error ? tool_err(*st.value().error) : tool_err("load was cancelled", "cancelled");
+            return st.value().error ? tool_err(*st.value().error)
+                                    : tool_err("load was cancelled", "cancelled");
         return tool_ok({{"id", id}, {"state", "loaded"}});
     }
     if (name == "hcs.models.unload") {
-        if (auto r = cp_.unload_model(); !r) return tool_err(r.error());
+        if (auto r = cp_.unload_model(); !r)
+            return tool_err(r.error());
         return tool_ok({{"state", "unloaded"}});
     }
     if (name == "hcs.chat.generate") {
         api::ChatParams p;
         p.model = args.value("model", "");
         const bool has_prompt = args.contains("prompt"), has_msgs = args.contains("messages");
-        if (has_prompt == has_msgs) return tool_err("provide exactly one of 'prompt' or 'messages'", "invalid_argument");
-        if (has_prompt) p.messages.push_back({"user", args["prompt"].get<std::string>()});
+        if (has_prompt == has_msgs)
+            return tool_err("provide exactly one of 'prompt' or 'messages'", "invalid_argument");
+        if (has_prompt)
+            p.messages.push_back({"user", args["prompt"].get<std::string>()});
         else
-            for (const auto& m : args["messages"]) p.messages.push_back({m["role"].get<std::string>(), m["content"].get<std::string>()});
-        if (args.contains("max_tokens")) p.max_tokens = args["max_tokens"].get<std::uint32_t>();
-        if (args.contains("temperature")) p.temperature = args["temperature"].get<float>();
-        if (args.contains("seed")) p.seed = args["seed"].get<std::uint64_t>();
+            for (const auto& m : args["messages"])
+                p.messages.push_back({m["role"].get<std::string>(), m["content"].get<std::string>()});
+        if (args.contains("max_tokens"))
+            p.max_tokens = args["max_tokens"].get<std::uint32_t>();
+        if (args.contains("temperature"))
+            p.temperature = args["temperature"].get<float>();
+        if (args.contains("seed"))
+            p.seed = args["seed"].get<std::uint64_t>();
         auto sub = cp_.submit_chat(p);
-        if (!sub) return tool_err(sub.error());
+        if (!sub)
+            return tool_err(sub.error());
         return wait_chat(sub.value(), req_key);
     }
     if (name == "hcs.vision.analyze") {
         // The path rule is enforced before anything is read: nothing outside an approved root is probed.
         auto resolved = cp_.guard().resolve(args["image_path"].get<std::string>());
-        if (!resolved) return tool_err(resolved.error());
+        if (!resolved)
+            return tool_err(resolved.error());
         auto bytes = read_file_limited(resolved.value(), opt_.max_image_bytes);
-        if (!bytes) return tool_err(bytes.error());
+        if (!bytes)
+            return tool_err(bytes.error());
         api::ChatParams p;
         p.model = args.value("model", "");
         api::ChatMessage m;
@@ -396,11 +460,15 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
         m.images.push_back(ImageInput{std::vector<std::uint8_t>(bytes.value().begin(), bytes.value().end())});
         p.messages.push_back(std::move(m));
         p.temperature = 0.2f;
-        if (args.contains("max_tokens")) p.max_tokens = args["max_tokens"].get<std::uint32_t>();
-        if (args.contains("temperature")) p.temperature = args["temperature"].get<float>();
-        if (args.contains("seed")) p.seed = args["seed"].get<std::uint64_t>();
+        if (args.contains("max_tokens"))
+            p.max_tokens = args["max_tokens"].get<std::uint32_t>();
+        if (args.contains("temperature"))
+            p.temperature = args["temperature"].get<float>();
+        if (args.contains("seed"))
+            p.seed = args["seed"].get<std::uint64_t>();
         auto sub = cp_.submit_chat(p);
-        if (!sub) return tool_err(sub.error());
+        if (!sub)
+            return tool_err(sub.error());
         return wait_chat(sub.value(), req_key);
     }
     if (name == "hcs.image.generate" || name == "hcs.image.edit") {
@@ -409,18 +477,26 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
         p.model = args.value("model", "");
         p.prompt = args["prompt"].get<std::string>();
         p.negative_prompt = args.value("negative_prompt", "");
-        if (args.contains("width")) p.width = args["width"].get<std::uint32_t>();
-        if (args.contains("height")) p.height = args["height"].get<std::uint32_t>();
-        if (args.contains("steps")) p.steps = args["steps"].get<std::uint32_t>();
-        if (args.contains("seed")) p.seed = args["seed"].get<std::uint64_t>();
-        if (args.contains("cfg_scale")) p.cfg_scale = args["cfg_scale"].get<float>();
-        if (args.contains("strength")) p.strength = args["strength"].get<float>();
+        if (args.contains("width"))
+            p.width = args["width"].get<std::uint32_t>();
+        if (args.contains("height"))
+            p.height = args["height"].get<std::uint32_t>();
+        if (args.contains("steps"))
+            p.steps = args["steps"].get<std::uint32_t>();
+        if (args.contains("seed"))
+            p.seed = args["seed"].get<std::uint64_t>();
+        if (args.contains("cfg_scale"))
+            p.cfg_scale = args["cfg_scale"].get<float>();
+        if (args.contains("strength"))
+            p.strength = args["strength"].get<float>();
         if (edit) {
             // The path rule is enforced before anything is read: nothing outside an approved root is probed.
             auto resolved = cp_.guard().resolve(args["input_path"].get<std::string>());
-            if (!resolved) return tool_err(resolved.error());
+            if (!resolved)
+                return tool_err(resolved.error());
             auto bytes = read_file_limited(resolved.value(), opt_.max_image_bytes);
-            if (!bytes) return tool_err(bytes.error());
+            if (!bytes)
+                return tool_err(bytes.error());
             ImageInput in{std::vector<std::uint8_t>(bytes.value().begin(), bytes.value().end())};
             if (!args.contains("width") && !args.contains("height")) {  // default: keep the input's size
                 if (auto pr = api::probe_image(in.bytes.data(), in.bytes.size())) {
@@ -431,22 +507,27 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
             p.init_image = std::move(in);
         }
         auto sub = cp_.submit_image(p, edit);
-        if (!sub) return tool_err(sub.error());
+        if (!sub)
+            return tool_err(sub.error());
         return wait_image(sub.value(), req_key);
     }
     if (name == "hcs.runtime.status") {
         json j = {{"runtime", cp_.runtime_json()}, {"memory", cp_.memory_json()}};
-        if (args.value("include_devices", false)) j["devices"] = cp_.devices_json();
+        if (args.value("include_devices", false))
+            j["devices"] = cp_.devices_json();
         return tool_ok(std::move(j));
     }
     if (name == "hcs.jobs.status" || name == "hcs.jobs.cancel") {
         auto id = ControlPlane::parse_job_id(args["job_id"].get<std::string>());
-        if (!id) return tool_err("malformed job id", "invalid_argument");
+        if (!id)
+            return tool_err("malformed job id", "invalid_argument");
         if (name == "hcs.jobs.cancel") {
-            if (auto r = cp_.cancel_job(*id); !r) return tool_err(r.error());
+            if (auto r = cp_.cancel_job(*id); !r)
+                return tool_err(r.error());
         }
         auto st = cp_.job_status(*id);
-        if (!st) return tool_err(st.error());
+        if (!st)
+            return tool_err(st.error());
         return tool_ok(cp_.job_json(st.value()));
     }
     return tool_err("unknown tool", "not_found");
@@ -460,7 +541,8 @@ json McpServer::handle_message(const json& msg, const std::function<bool()>&, co
     const json id = is_request ? msg["id"] : json(nullptr);
     if (is_request && !(id.is_string() || id.is_number_integer()))
         return rpc_error(nullptr, kInvalidRequest, "id must be a string or integer");
-    // By reference: copying `params` is a recursive deep copy (stack overflow on hostile nesting, M10 audit D1).
+    // By reference: copying `params` is a recursive deep copy (stack overflow on hostile nesting, M10 audit
+    // D1).
     static const json kNoParams = json::object();
     const json& params = msg.contains("params") ? msg.at("params") : kNoParams;
     if (msg.contains("params") && !params.is_object()) {
@@ -468,10 +550,12 @@ json McpServer::handle_message(const json& msg, const std::function<bool()>&, co
     }
 
     if (!is_request) {  // notifications: never answered
-        if (method == "notifications/cancelled" && params.contains("requestId")) cancel_request(params["requestId"]);
+        if (method == "notifications/cancelled" && params.contains("requestId"))
+            cancel_request(params["requestId"]);
         else if (method == "notifications/initialized") {
             std::lock_guard lk(mu_);
-            if (legacy_session_) legacy_initialized_ = true;
+            if (legacy_session_)
+                legacy_initialized_ = true;
         }
         return nullptr;
     }
@@ -486,10 +570,12 @@ json McpServer::handle_message(const json& msg, const std::function<bool()>&, co
             legacy_initialized_ = false;
         }
         // Legacy handshake: only 2025-11-25 is served this way; the client decides whether to continue.
-        json r = {{"protocolVersion", kLegacyVersion},
-                  {"capabilities", {{"tools", {{"listChanged", false}}}}},
-                  {"serverInfo", {{"name", opt_.server_name}, {"version", opt_.server_version}}},
-                  {"instructions", "Local HCSInfer control plane. Tools operate on registered models inside approved roots."}};
+        json r = {
+            {"protocolVersion", kLegacyVersion},
+            {"capabilities", {{"tools", {{"listChanged", false}}}}},
+            {"serverInfo", {{"name", opt_.server_name}, {"version", opt_.server_version}}},
+            {"instructions",
+             "Local HCSInfer control plane. Tools operate on registered models inside approved roots."}};
         return ok_result(id, std::move(r), false);
     }
 
@@ -506,10 +592,12 @@ json McpServer::handle_message(const json& msg, const std::function<bool()>&, co
                 return rpc_error(id, kUnsupportedVersion, "Unsupported protocol version",
                                  {{"supported", supported}, {"requested", v}});
         }
-        json r = {{"supportedVersions", supported},
-                  {"capabilities", {{"tools", {{"listChanged", false}}}}},
-                  {"serverInfo", {{"name", opt_.server_name}, {"version", opt_.server_version}}},
-                  {"instructions", "Local HCSInfer control plane. Tools operate on registered models inside approved roots."}};
+        json r = {
+            {"supportedVersions", supported},
+            {"capabilities", {{"tools", {{"listChanged", false}}}}},
+            {"serverInfo", {{"name", opt_.server_name}, {"version", opt_.server_version}}},
+            {"instructions",
+             "Local HCSInfer control plane. Tools operate on registered models inside approved roots."}};
         return ok_result(id, std::move(r), true);
     }
 
@@ -519,19 +607,26 @@ json McpServer::handle_message(const json& msg, const std::function<bool()>&, co
             std::lock_guard lk(mu_);
             inited = legacy_initialized_;
         }
-        if (method == "ping") return ok_result(id, json::object(), false);
-        if (!inited) return rpc_error(id, kInvalidRequest, "session not initialized: send notifications/initialized first");
+        if (method == "ping")
+            return ok_result(id, json::object(), false);
+        if (!inited)
+            return rpc_error(id, kInvalidRequest,
+                             "session not initialized: send notifications/initialized first");
     } else {
         if (!params.contains(kMeta) || !params[kMeta].is_object() || !params[kMeta].contains(kMetaVersion) ||
             !params[kMeta][kMetaVersion].is_string())
             return rpc_error(id, kInvalidParams,
                              std::string("missing params._meta[\"") + kMetaVersion +
-                                 "\"]; this server speaks MCP " + kModernVersion + " (stateless). Legacy clients must send initialize first.");
+                                 "\"]; this server speaks MCP " + kModernVersion +
+                                 " (stateless). Legacy clients must send initialize first.");
         const std::string v = params[kMeta][kMetaVersion].get<std::string>();
         if (v != kModernVersion) {
             if (v == kLegacyVersion)
-                return rpc_error(id, kInvalidParams, "protocol " + std::string(kLegacyVersion) + " requires the initialize handshake first");
-            return rpc_error(id, kUnsupportedVersion, "Unsupported protocol version", {{"supported", supported}, {"requested", v}});
+                return rpc_error(
+                    id, kInvalidParams,
+                    "protocol " + std::string(kLegacyVersion) + " requires the initialize handshake first");
+            return rpc_error(id, kUnsupportedVersion, "Unsupported protocol version",
+                             {{"supported", supported}, {"requested", v}});
         }
         if (!params[kMeta].contains(kMetaCaps) || !params[kMeta][kMetaCaps].is_object())
             return rpc_error(id, kInvalidParams, std::string("missing params._meta[\"") + kMetaCaps + "\"]");
@@ -551,10 +646,12 @@ json McpServer::handle_message(const json& msg, const std::function<bool()>&, co
             return rpc_error(id, kInvalidParams, "tools/call requires a string 'name'");
         const std::string name = params["name"].get<std::string>();
         auto sit = schemas_.find(name);
-        if (sit == schemas_.end()) return rpc_error(id, kInvalidParams, "unknown tool: " + name.substr(0, 128));
+        if (sit == schemas_.end())
+            return rpc_error(id, kInvalidParams, "unknown tool: " + name.substr(0, 128));
         static const json kNoArgs = json::object();
         const json& args = params.contains("arguments") ? params.at("arguments") : kNoArgs;
-        if (!args.is_object()) return rpc_error(id, kInvalidParams, "'arguments' must be an object");
+        if (!args.is_object())
+            return rpc_error(id, kInvalidParams, "'arguments' must be an object");
         // Invalid arguments are tool execution errors, not protocol errors (spec: Tools).
         if (auto v = api::validate_json(sit->second, args); !v)
             return ok_result(id, tool_err(v.error().message, "invalid_argument"), modern);
@@ -574,12 +671,14 @@ std::string McpServer::handle_line(const std::string& line) {
     if (!api::json_depth_ok(line, api::kMaxJsonDepth))
         return dump_safe(rpc_error(nullptr, kInvalidRequest, "JSON nesting too deep"));
     json msg = json::parse(line, nullptr, false);
-    if (msg.is_discarded()) return dump_safe(rpc_error(nullptr, kParseError, "parse error"));
+    if (msg.is_discarded())
+        return dump_safe(rpc_error(nullptr, kParseError, "parse error"));
     std::string key;
     const bool has_key = msg.is_object() && msg.contains("id") && ids_equal_key(msg["id"], key);
     if (has_key) {
         std::lock_guard lk(mu_);
-        if (cancelled_.count(key))  // same id already in flight: would hijack the other call's cancellation slot
+        if (cancelled_.count(
+                key))  // same id already in flight: would hijack the other call's cancellation slot
             return dump_safe(rpc_error(msg["id"], kInvalidRequest, "request id is already in flight"));
         cancelled_[key] = false;
     }
@@ -590,7 +689,8 @@ std::string McpServer::handle_line(const std::string& line) {
         cancelled = cancelled_[key];
         cancelled_.erase(key);
     }
-    if (resp.is_null() || cancelled) return {};
+    if (resp.is_null() || cancelled)
+        return {};
     return dump_safe(resp);
 }
 
@@ -624,10 +724,12 @@ void McpServer::run(std::istream& in, std::ostream& out) {
     char c;
     auto process = [&](const std::string& text, bool too_long) {
         if (too_long) {
-            write(rpc_error(nullptr, kInvalidRequest, "message exceeds " + std::to_string(opt_.max_line_bytes) + " bytes"));
+            write(rpc_error(nullptr, kInvalidRequest,
+                            "message exceeds " + std::to_string(opt_.max_line_bytes) + " bytes"));
             return;
         }
-        if (text.find_first_not_of(" \t\r") == std::string::npos) return;
+        if (text.find_first_not_of(" \t\r") == std::string::npos)
+            return;
         // Reject hostile nesting before the parser or any copy sees it (M10 audit D1).
         if (!api::json_depth_ok(text, api::kMaxJsonDepth)) {
             write(rpc_error(nullptr, kInvalidRequest, "JSON nesting too deep"));
@@ -655,19 +757,22 @@ void McpServer::run(std::istream& in, std::ostream& out) {
                 log_.error("mcp", "handler threw", {{"what", e.what()}});
                 resp = rpc_error(has_key ? msg["id"] : json(nullptr), kInternal, "internal error");
             }
-            if (!resp.is_null()) write(resp);
+            if (!resp.is_null())
+                write(resp);
             return;
         }
         // tools/call: worker thread so the reader can keep consuming notifications/cancelled.
         reap();
         {
             std::lock_guard lk(mu_);
-            if (cancelled_.count(key)) {  // a second call with an id that is still in flight (ids must be unique)
+            if (cancelled_.count(
+                    key)) {  // a second call with an id that is still in flight (ids must be unique)
                 write(rpc_error(msg["id"], kInvalidRequest, "request id is already in flight"));
                 return;
             }
             if (active_calls_ >= opt_.max_concurrent_calls) {
-                write(ok_result(msg["id"], tool_err("too many concurrent tool calls", "busy"), !legacy_session_));
+                write(ok_result(msg["id"], tool_err("too many concurrent tool calls", "busy"),
+                                !legacy_session_));
                 return;
             }
             ++active_calls_;
@@ -690,7 +795,8 @@ void McpServer::run(std::istream& in, std::ostream& out) {
                                    --active_calls_;
                                }
                                // Spec: no response for a cancelled request.
-                               if (!cancelled && !resp.is_null()) write(resp);
+                               if (!cancelled && !resp.is_null())
+                                   write(resp);
                                done->store(true);
                            }),
                            done});
@@ -709,13 +815,15 @@ void McpServer::run(std::istream& in, std::ostream& out) {
             }
         }
     }
-    if (!line.empty() || overflow) process(line, overflow);
+    if (!line.empty() || overflow)
+        process(line, overflow);
 
     // EOF = shutdown signal. In-flight calls get a short grace period, then are cancelled.
     const auto grace = std::chrono::steady_clock::now() + std::chrono::seconds(10);
     while (std::chrono::steady_clock::now() < grace) {
         reap();
-        if (workers.empty()) break;
+        if (workers.empty())
+            break;
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
     if (!workers.empty()) {
@@ -727,7 +835,8 @@ void McpServer::run(std::istream& in, std::ostream& out) {
         for (const auto& k : keys) {
             try {
                 cancel_request(json::parse(k));
-            } catch (...) {}
+            } catch (...) {
+            }
         }
         for (auto& w : workers) w.t.join();
     }

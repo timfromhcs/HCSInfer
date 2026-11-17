@@ -12,7 +12,9 @@ TEST(HardwareFormat, Bytes) {
     EXPECT_EQ(format_bytes(1536ull << 20), "1.50 GiB");
 }
 
-TEST(HardwareFormat, MibS) { EXPECT_EQ(format_mib_s(123.456), "123.5 MiB/s"); }
+TEST(HardwareFormat, MibS) {
+    EXPECT_EQ(format_mib_s(123.456), "123.5 MiB/s");
+}
 
 TEST(HardwareFormat, BusAndDriveTypes) {
     EXPECT_EQ(bus_type_name(7), "usb");

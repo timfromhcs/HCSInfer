@@ -10,13 +10,18 @@ namespace {
 class FakeText final : public ITextEngine {
 public:
     Result<void> load(const LoadRequest& r) override {
-        if (r.model_path.empty()) return make_error(ErrorCode::InvalidArgument, "no path");
+        if (r.model_path.empty())
+            return make_error(ErrorCode::InvalidArgument, "no path");
         loaded = true;
         return {};
     }
-    Result<void> unload() override { loaded = false; return {}; }
+    Result<void> unload() override {
+        loaded = false;
+        return {};
+    }
     Result<JobId> generate(const TextRequest&) override {
-        if (!loaded) return make_error(ErrorCode::InvalidState, "not loaded");
+        if (!loaded)
+            return make_error(ErrorCode::InvalidState, "not loaded");
         return JobId{1};
     }
     Result<JobId> analyze_image(const VisionRequest&) override {
@@ -32,7 +37,8 @@ public:
     Result<void> unload() override { return {}; }
     Result<JobId> generate(const ImageRequest&) override { return JobId{2}; }
     Result<JobId> edit(const ImageRequest& r) override {
-        if (!r.init_image) return make_error(ErrorCode::InvalidArgument, "edit needs init image");
+        if (!r.init_image)
+            return make_error(ErrorCode::InvalidArgument, "edit needs init image");
         return JobId{3};
     }
     EngineMetrics metrics() const override { return {}; }

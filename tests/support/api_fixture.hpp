@@ -30,7 +30,8 @@ struct ApiFixture {
         (void)registry.scan(root, guard);
         queue = std::make_unique<JobQueue>();
         opts.version = "test";
-        cp = std::make_unique<api::ControlPlane>(registry, guard, budget, *queue, with_engine ? &engine : nullptr, logger, opts);
+        cp = std::make_unique<api::ControlPlane>(registry, guard, budget, *queue,
+                                                 with_engine ? &engine : nullptr, logger, opts);
     }
     ~ApiFixture() { queue->shutdown(); }
 };

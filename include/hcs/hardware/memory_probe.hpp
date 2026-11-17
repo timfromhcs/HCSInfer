@@ -6,7 +6,8 @@
 //   available_physical_bytes : memory the OS can hand out right now (free + reclaimable cache)
 //   os_reserve_bytes         : kept for the OS and other programs: max(1 GiB, 10 % of installed RAM)
 //   safety_margin_bytes      : 512 MiB slack for allocator overhead, graph workspace and GUI/API
-//   vulkan_headroom_bytes    : NOT filled in yet (needs a Vulkan device query); on a UMA iGPU the heap is carved
+//   vulkan_headroom_bytes    : NOT filled in yet (needs a Vulkan device query); on a UMA iGPU the heap is
+//   carved
 //                              out of the same RAM, so the physical figure is the binding one.
 #include <optional>
 
@@ -18,6 +19,7 @@ namespace hcs::hardware {
 std::optional<MemoryMeasurements> measure_memory();
 
 // Pure policy so it can be unit-tested: derives reserve/margin from the installed RAM size.
-MemoryMeasurements make_measurements(std::uint64_t total_physical_bytes, std::uint64_t available_physical_bytes);
+MemoryMeasurements make_measurements(std::uint64_t total_physical_bytes,
+                                     std::uint64_t available_physical_bytes);
 
 }  // namespace hcs::hardware

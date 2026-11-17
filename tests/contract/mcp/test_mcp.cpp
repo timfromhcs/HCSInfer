@@ -35,17 +35,21 @@ json call_req(int id, const std::string& tool, json args = json::object()) {
 struct Mcp {
     test::ApiFixture fx;
     McpServer server;
-    explicit Mcp(McpOptions o = {}, bool with_engine = true) : fx(with_engine), server(*fx.cp, o, fx.logger) {}
+    explicit Mcp(McpOptions o = {}, bool with_engine = true)
+        : fx(with_engine), server(*fx.cp, o, fx.logger) {}
     json rpc(const json& req) {
         const std::string line = server.handle_line(req.dump());
         return line.empty() ? json(nullptr) : json::parse(line);
     }
-    json tool(int id, const std::string& name, json args = json::object()) { return rpc(call_req(id, name, args)); }
+    json tool(int id, const std::string& name, json args = json::object()) {
+        return rpc(call_req(id, name, args));
+    }
 };
 
 bool wait_for(const std::function<bool()>& f, int ms = 3000) {
     for (int i = 0; i < ms / 5; ++i) {
-        if (f()) return true;
+        if (f())
+            return true;
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
     return f();
@@ -73,7 +77,8 @@ protected:
     int_type underflow() override {
         std::unique_lock lk(m_);
         cv_.wait(lk, [&] { return pos_ < data_.size() || closed_; });
-        if (pos_ >= data_.size()) return traits_type::eof();
+        if (pos_ >= data_.size())
+            return traits_type::eof();
         cur_ = data_[pos_++];
         setg(&cur_, &cur_, &cur_ + 1);
         return traits_type::to_int_type(cur_);
@@ -178,21 +183,30 @@ TEST(McpProtocol, LegacyHandshakeStillWorks) {
     Mcp m;
     // Before initialize a bare request is refused with a hint.
     EXPECT_EQ(m.rpc({{"jsonrpc", "2.0"}, {"id", 1}, {"method", "tools/list"}})["error"]["code"], -32602);
-    auto init = m.rpc({{"jsonrpc", "2.0"}, {"id", 2}, {"method", "initialize"},
-                       {"params", {{"protocolVersion", kLegacyVersion}, {"capabilities", json::object()}, {"clientInfo", {{"name", "old"}, {"version", "1"}}}}}});
+    auto init = m.rpc({{"jsonrpc", "2.0"},
+                       {"id", 2},
+                       {"method", "initialize"},
+                       {"params",
+                        {{"protocolVersion", kLegacyVersion},
+                         {"capabilities", json::object()},
+                         {"clientInfo", {{"name", "old"}, {"version", "1"}}}}}});
     ASSERT_TRUE(init.contains("result")) << init.dump();
     EXPECT_EQ(init["result"]["protocolVersion"], kLegacyVersion);
     EXPECT_TRUE(init["result"]["capabilities"].contains("tools"));
     EXPECT_FALSE(init["result"].contains("resultType"));
     // Not usable until notifications/initialized
     EXPECT_TRUE(m.rpc({{"jsonrpc", "2.0"}, {"id", 3}, {"method", "tools/list"}}).contains("error"));
-    EXPECT_TRUE(m.rpc({{"jsonrpc", "2.0"}, {"method", "notifications/initialized"}}).is_null());  // notification: no reply
+    EXPECT_TRUE(m.rpc({{"jsonrpc", "2.0"}, {"method", "notifications/initialized"}})
+                    .is_null());  // notification: no reply
     auto ping = m.rpc({{"jsonrpc", "2.0"}, {"id", 4}, {"method", "ping"}});
     EXPECT_TRUE(ping["result"].is_object());
     auto list = m.rpc({{"jsonrpc", "2.0"}, {"id", 5}, {"method", "tools/list"}});
     ASSERT_TRUE(list.contains("result"));
     EXPECT_GE(list["result"]["tools"].size(), 11u);
-    auto call = m.rpc({{"jsonrpc", "2.0"}, {"id", 6}, {"method", "tools/call"}, {"params", {{"name", "hcs.models.list"}, {"arguments", json::object()}}}});
+    auto call = m.rpc({{"jsonrpc", "2.0"},
+                       {"id", 6},
+                       {"method", "tools/call"},
+                       {"params", {{"name", "hcs.models.list"}, {"arguments", json::object()}}}});
     EXPECT_FALSE(call["result"]["isError"].get<bool>());
 }
 
@@ -201,16 +215,26 @@ TEST(McpProtocol, MalformedMessages) {
     auto parse = json::parse(m.server.handle_line("{not json"));
     EXPECT_EQ(parse["error"]["code"], -32700);
     EXPECT_TRUE(parse["id"].is_null());
-    EXPECT_EQ(json::parse(m.server.handle_line("[]"))["error"]["code"], -32600);          // batches unsupported
-    EXPECT_EQ(json::parse(m.server.handle_line(R"({"id":1,"method":"x"})"))["error"]["code"], -32600);  // no jsonrpc
-    EXPECT_EQ(json::parse(m.server.handle_line(R"({"jsonrpc":"2.0","id":{"a":1},"method":"x"})"))["error"]["code"], -32600);
-    EXPECT_EQ(json::parse(m.server.handle_line(R"({"jsonrpc":"2.0","id":1,"method":5})"))["error"]["code"], -32600);
-    EXPECT_EQ(json::parse(m.server.handle_line(R"({"jsonrpc":"2.0","id":1,"method":"tools/list","params":[]})"))["error"]["code"], -32602);
+    EXPECT_EQ(json::parse(m.server.handle_line("[]"))["error"]["code"], -32600);  // batches unsupported
+    EXPECT_EQ(json::parse(m.server.handle_line(R"({"id":1,"method":"x"})"))["error"]["code"],
+              -32600);  // no jsonrpc
+    EXPECT_EQ(
+        json::parse(m.server.handle_line(R"({"jsonrpc":"2.0","id":{"a":1},"method":"x"})"))["error"]["code"],
+        -32600);
+    EXPECT_EQ(json::parse(m.server.handle_line(R"({"jsonrpc":"2.0","id":1,"method":5})"))["error"]["code"],
+              -32600);
+    EXPECT_EQ(json::parse(m.server.handle_line(
+                  R"({"jsonrpc":"2.0","id":1,"method":"tools/list","params":[]})"))["error"]["code"],
+              -32602);
     EXPECT_TRUE(m.server.handle_line(R"({"jsonrpc":"2.0","method":"notifications/unknown"})").empty());
-    EXPECT_TRUE(m.server.handle_line(R"({"jsonrpc":"2.0","method":"notifications/cancelled","params":{"requestId":999}})").empty());
+    EXPECT_TRUE(
+        m.server
+            .handle_line(R"({"jsonrpc":"2.0","method":"notifications/cancelled","params":{"requestId":999}})")
+            .empty());
 }
 
-// ---- tools --------------------------------------------------------------------------------------------------
+// ---- tools
+// --------------------------------------------------------------------------------------------------
 TEST(McpTools, ListHasNarrowSchemasForEveryRequiredTool) {
     Mcp m;
     auto r = m.rpc(modern_req(1, "tools/list"));
@@ -219,15 +243,16 @@ TEST(McpTools, ListHasNarrowSchemasForEveryRequiredTool) {
         const std::string n = t["name"];
         names.insert(n);
         EXPECT_LE(n.size(), 128u);
-        for (char c : n) EXPECT_TRUE(std::isalnum(static_cast<unsigned char>(c)) || c == '_' || c == '-' || c == '.') << n;
+        for (char c : n)
+            EXPECT_TRUE(std::isalnum(static_cast<unsigned char>(c)) || c == '_' || c == '-' || c == '.') << n;
         EXPECT_EQ(t["inputSchema"]["type"], "object") << n;
         EXPECT_EQ(t["inputSchema"]["additionalProperties"], false) << "schema for " << n << " must be closed";
         EXPECT_TRUE(t.contains("description"));
         EXPECT_TRUE(t["annotations"].contains("readOnlyHint"));
     }
-    for (const char* want : {"hcs.models.list", "hcs.models.inspect", "hcs.models.load", "hcs.models.unload", "hcs.chat.generate",
-                             "hcs.runtime.status", "hcs.jobs.status", "hcs.jobs.cancel", "hcs.vision.analyze",
-                             "hcs.image.generate", "hcs.image.edit"})
+    for (const char* want : {"hcs.models.list", "hcs.models.inspect", "hcs.models.load", "hcs.models.unload",
+                             "hcs.chat.generate", "hcs.runtime.status", "hcs.jobs.status", "hcs.jobs.cancel",
+                             "hcs.vision.analyze", "hcs.image.generate", "hcs.image.edit"})
         EXPECT_TRUE(names.count(want)) << want;
     // deterministic order across calls
     EXPECT_EQ(m.rpc(modern_req(2, "tools/list"))["result"]["tools"], r["result"]["tools"]);
@@ -255,7 +280,8 @@ TEST(McpTools, ModelsListAndInspect) {
 
 TEST(McpTools, InvalidArgumentsAreToolErrorsUnknownToolIsProtocolError) {
     Mcp m;
-    for (const json& args : {json{{"id", 5}}, json{{"id", "tiny"}, {"extra", 1}}, json::object(), json{{"id", std::string(100, 'a')}}}) {
+    for (const json& args : {json{{"id", 5}}, json{{"id", "tiny"}, {"extra", 1}}, json::object(),
+                             json{{"id", std::string(100, 'a')}}}) {
         auto r = m.tool(1, "hcs.models.inspect", args);
         ASSERT_TRUE(r.contains("result")) << args.dump() << " -> " << r.dump();
         EXPECT_TRUE(r["result"]["isError"].get<bool>()) << args.dump();
@@ -264,7 +290,9 @@ TEST(McpTools, InvalidArgumentsAreToolErrorsUnknownToolIsProtocolError) {
     auto unknown = m.tool(2, "hcs.rm.rf");
     EXPECT_EQ(unknown["error"]["code"], -32602);
     EXPECT_EQ(m.rpc(modern_req(3, "tools/call", {{"name", 5}}))["error"]["code"], -32602);
-    EXPECT_EQ(m.rpc(modern_req(4, "tools/call", {{"name", "hcs.models.list"}, {"arguments", "x"}}))["error"]["code"], -32602);
+    EXPECT_EQ(m.rpc(modern_req(4, "tools/call",
+                               {{"name", "hcs.models.list"}, {"arguments", "x"}}))["error"]["code"],
+              -32602);
 }
 
 TEST(McpTools, LoadChatUnloadRoundTrip) {
@@ -285,20 +313,30 @@ TEST(McpTools, LoadChatUnloadRoundTrip) {
     EXPECT_FALSE(m.tool(5, "hcs.models.unload")["result"]["isError"].get<bool>());
     EXPECT_TRUE(m.tool(6, "hcs.models.unload")["result"]["isError"].get<bool>());
     // chat with a model argument auto-loads
-    auto chat2 = m.tool(7, "hcs.chat.generate", {{"model", "other"}, {"messages", json::array({json{{"role", "user"}, {"content", "x"}}})}});
+    auto chat2 =
+        m.tool(7, "hcs.chat.generate",
+               {{"model", "other"}, {"messages", json::array({json{{"role", "user"}, {"content", "x"}}})}});
     EXPECT_FALSE(chat2["result"]["isError"].get<bool>()) << chat2.dump();
 }
 
 TEST(McpTools, ChatNeedsExactlyOneOfPromptOrMessages) {
     Mcp m;
     EXPECT_TRUE(m.tool(1, "hcs.chat.generate", {{"model", "tiny"}})["result"]["isError"].get<bool>());
-    EXPECT_TRUE(m.tool(2, "hcs.chat.generate", {{"model", "tiny"}, {"prompt", "a"}, {"messages", json::array({json{{"role", "user"}, {"content", "b"}}})}})["result"]["isError"].get<bool>());
-    EXPECT_TRUE(m.tool(3, "hcs.chat.generate", {{"model", "tiny"}, {"prompt", "a"}, {"max_tokens", 100000000}})["result"]["isError"].get<bool>());
+    EXPECT_TRUE(
+        m.tool(2, "hcs.chat.generate",
+               {{"model", "tiny"},
+                {"prompt", "a"},
+                {"messages", json::array({json{{"role", "user"}, {"content", "b"}}})}})["result"]["isError"]
+            .get<bool>());
+    EXPECT_TRUE(m.tool(3, "hcs.chat.generate",
+                       {{"model", "tiny"}, {"prompt", "a"}, {"max_tokens", 100000000}})["result"]["isError"]
+                    .get<bool>());
 }
 
 TEST(McpTools, ModelIdPathTraversalIsRejected) {
     Mcp m;
-    for (const char* id : {"../../etc/passwd", "..\\..\\windows\\system32", "C:\\windows\\win.ini", "tiny/../other"}) {
+    for (const char* id :
+         {"../../etc/passwd", "..\\..\\windows\\system32", "C:\\windows\\win.ini", "tiny/../other"}) {
         auto r = m.tool(1, "hcs.models.load", {{"id", id}});
         EXPECT_TRUE(r["result"]["isError"].get<bool>()) << id;
         EXPECT_EQ(r["result"]["structuredContent"]["error"]["code"], "invalid_argument") << id;
@@ -310,36 +348,56 @@ TEST(McpTools, ImagePathsAreGuardedEvenForUnsupportedTools) {
     Mcp m;
     test::TempDir outside;
     test::write_file(outside / "secret.png", "x");
-    auto esc = m.tool(1, "hcs.vision.analyze", {{"prompt", "what"}, {"image_path", (outside / "secret.png").string()}});
+    auto esc = m.tool(1, "hcs.vision.analyze",
+                      {{"prompt", "what"}, {"image_path", (outside / "secret.png").string()}});
     EXPECT_TRUE(esc["result"]["isError"].get<bool>());
     EXPECT_EQ(esc["result"]["structuredContent"]["error"]["code"], "security_violation");
-    auto dots = m.tool(2, "hcs.vision.analyze", {{"prompt", "what"}, {"image_path", (m.fx.root / ".." / "x.png").string()}});
+    auto dots = m.tool(2, "hcs.vision.analyze",
+                       {{"prompt", "what"}, {"image_path", (m.fx.root / ".." / "x.png").string()}});
     EXPECT_EQ(dots["result"]["structuredContent"]["error"]["code"], "security_violation");
     {
-        // a real (generated) PNG: the fake engine has no vision, so the call reaches the engine and is "unsupported"
+        // a real (generated) PNG: the fake engine has no vision, so the call reaches the engine and is
+        // "unsupported"
         const auto png = test::make_red_square_png(32);
         test::write_file(m.fx.root / "ok.png", std::string(png.begin(), png.end()));
     }
-    auto ok = m.tool(3, "hcs.vision.analyze", {{"prompt", "what"}, {"image_path", (m.fx.root / "ok.png").string()}});
+    auto ok = m.tool(3, "hcs.vision.analyze",
+                     {{"prompt", "what"}, {"image_path", (m.fx.root / "ok.png").string()}});
     EXPECT_EQ(ok["result"]["structuredContent"]["error"]["code"], "unsupported");
-    EXPECT_EQ(m.tool(4, "hcs.image.generate", {{"prompt", "a cat"}})["result"]["structuredContent"]["error"]["code"], "unsupported");
-    EXPECT_EQ(m.tool(5, "hcs.image.edit", {{"prompt", "a cat"}, {"input_path", (outside / "secret.png").string()}})["result"]["structuredContent"]["error"]["code"], "security_violation");
+    EXPECT_EQ(m.tool(4, "hcs.image.generate",
+                     {{"prompt", "a cat"}})["result"]["structuredContent"]["error"]["code"],
+              "unsupported");
+    EXPECT_EQ(m.tool(5, "hcs.image.edit",
+                     {{"prompt", "a cat"},
+                      {"input_path",
+                       (outside / "secret.png").string()}})["result"]["structuredContent"]["error"]["code"],
+              "security_violation");
 }
 
 TEST(McpTools, JobIdsAreValidated) {
     Mcp m;
-    EXPECT_EQ(m.tool(1, "hcs.jobs.status", {{"job_id", "banana"}})["result"]["structuredContent"]["error"]["code"], "invalid_argument");
-    EXPECT_EQ(m.tool(2, "hcs.jobs.status", {{"job_id", "job-777"}})["result"]["structuredContent"]["error"]["code"], "not_found");
-    EXPECT_EQ(m.tool(3, "hcs.jobs.cancel", {{"job_id", "job-777"}})["result"]["structuredContent"]["error"]["code"], "not_found");
+    EXPECT_EQ(
+        m.tool(1, "hcs.jobs.status", {{"job_id", "banana"}})["result"]["structuredContent"]["error"]["code"],
+        "invalid_argument");
+    EXPECT_EQ(
+        m.tool(2, "hcs.jobs.status", {{"job_id", "job-777"}})["result"]["structuredContent"]["error"]["code"],
+        "not_found");
+    EXPECT_EQ(
+        m.tool(3, "hcs.jobs.cancel", {{"job_id", "job-777"}})["result"]["structuredContent"]["error"]["code"],
+        "not_found");
 }
 
 TEST(McpTools, NoEngineIsReportedAsUnsupported) {
     Mcp m({}, false);
-    EXPECT_EQ(m.tool(1, "hcs.models.load", {{"id", "tiny"}})["result"]["structuredContent"]["error"]["code"], "unsupported");
-    EXPECT_EQ(m.tool(2, "hcs.chat.generate", {{"prompt", "x"}})["result"]["structuredContent"]["error"]["code"], "unsupported");
+    EXPECT_EQ(m.tool(1, "hcs.models.load", {{"id", "tiny"}})["result"]["structuredContent"]["error"]["code"],
+              "unsupported");
+    EXPECT_EQ(
+        m.tool(2, "hcs.chat.generate", {{"prompt", "x"}})["result"]["structuredContent"]["error"]["code"],
+        "unsupported");
 }
 
-// ---- stdio loop ----------------------------------------------------------------------------------------------
+// ---- stdio loop
+// ----------------------------------------------------------------------------------------------
 TEST(McpStdio, StdoutCarriesOnlyJsonRpcAndLogsStayElsewhere) {
     Mcp m;
     std::stringstream in;
@@ -362,7 +420,8 @@ TEST(McpStdio, StdoutCarriesOnlyJsonRpcAndLogsStayElsewhere) {
         ASSERT_FALSE(j.is_discarded()) << "non-JSON line on stdout: " << l;
         EXPECT_EQ(j["jsonrpc"], "2.0");
         EXPECT_TRUE(j.contains("result") || j.contains("error"));
-        if (j["id"].is_number()) answered.insert(j["id"].get<int>());
+        if (j["id"].is_number())
+            answered.insert(j["id"].get<int>());
         ++n;
     }
     EXPECT_EQ(n, 5);  // discover, parse error, list, load, chat
@@ -409,8 +468,13 @@ TEST(McpStdio, CancelNotificationStopsWorkAndSuppressesTheResponse) {
     ASSERT_TRUE(wait_for([&] { return outbuf.lines().size() >= 1; }));
     pipe.feed(call_req(7, "hcs.chat.generate", {{"prompt", "go"}, {"max_tokens", 100}}).dump() + "\n");
     ASSERT_TRUE(wait_for([&] { return m.fx.engine.generating.load(); }));
-    pipe.feed(json({{"jsonrpc", "2.0"}, {"method", "notifications/cancelled"}, {"params", {{"requestId", 7}, {"reason", "test"}}}}).dump() + "\n");
-    ASSERT_TRUE(wait_for([&] { return !m.fx.engine.generating.load(); })) << "cancellation did not stop the engine";
+    pipe.feed(json({{"jsonrpc", "2.0"},
+                    {"method", "notifications/cancelled"},
+                    {"params", {{"requestId", 7}, {"reason", "test"}}}})
+                  .dump() +
+              "\n");
+    ASSERT_TRUE(wait_for([&] { return !m.fx.engine.generating.load(); }))
+        << "cancellation did not stop the engine";
     // The server stays alive and serves further requests; the cancelled one is never answered.
     pipe.feed(modern_req(8, "server/discover").dump() + "\n");
     ASSERT_TRUE(wait_for([&] { return outbuf.lines().size() >= 2; }));
@@ -443,7 +507,10 @@ TEST(McpStdio, ConcurrentCallLimit) {
     auto busy = json::parse(outbuf.lines()[1]);
     EXPECT_EQ(busy["id"], 3);
     EXPECT_EQ(busy["result"]["structuredContent"]["error"]["code"], "busy");
-    pipe.feed(json({{"jsonrpc", "2.0"}, {"method", "notifications/cancelled"}, {"params", {{"requestId", 2}}}}).dump() + "\n");
+    pipe.feed(
+        json({{"jsonrpc", "2.0"}, {"method", "notifications/cancelled"}, {"params", {{"requestId", 2}}}})
+            .dump() +
+        "\n");
     pipe.close();
     srv.join();
 }
@@ -460,11 +527,13 @@ TEST(McpStdio, EofCancelsStragglersAfterGraceAndExits) {
     EXPECT_NE(out.str().find("\"id\":1"), std::string::npos);
 }
 
-// ---- M10 audit regressions ---------------------------------------------------------------------------------
+// ---- M10 audit regressions
+// ---------------------------------------------------------------------------------
 namespace {
 
 std::string nested(int depth) {
-    return std::string(static_cast<std::size_t>(depth), '[') + std::string(static_cast<std::size_t>(depth), ']');
+    return std::string(static_cast<std::size_t>(depth), '[') +
+           std::string(static_cast<std::size_t>(depth), ']');
 }
 
 // One request line whose params carry a pathologically deep array next to a valid _meta.
@@ -472,7 +541,8 @@ std::string deep_params_line(const std::string& method, int depth, bool in_argum
     std::string line = std::string("{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"") + method +
                        "\",\"params\":{\"_meta\":" + meta().dump();
     if (in_arguments)
-        line += ",\"name\":\"hcs.models.inspect\",\"arguments\":{\"id\":\"tiny\",\"x\":" + nested(depth) + "}}}";
+        line +=
+            ",\"name\":\"hcs.models.inspect\",\"arguments\":{\"id\":\"tiny\",\"x\":" + nested(depth) + "}}}";
     else
         line += ",\"x\":" + nested(depth) + "}}";
     return line;
@@ -488,7 +558,8 @@ public:
     Result<JobId> generate(const TextRequest& r) override { return fake.generate(r); }
     Result<JobId> analyze_image(const VisionRequest& r) override { return fake.analyze_image(r); }
     EngineMetrics metrics() const override { return fake.metrics(); }
-    Result<api::TextResult> generate_stream(const TextRequest& r, const api::TokenSink& sink, const CancellationToken& t) override {
+    Result<api::TextResult> generate_stream(const TextRequest& r, const api::TokenSink& sink,
+                                            const CancellationToken& t) override {
         return fake.generate_stream(r, sink, t);
     }
 };
@@ -550,8 +621,10 @@ TEST(McpAudit, DeeplyNestedLinesOverStdioAreRejectedAndServerKeepsServing) {
     bool listed = false;
     while (std::getline(lines, l)) {
         auto j = json::parse(l);
-        if (j.contains("error")) ++errors;
-        if (j.contains("id") && j["id"] == 3 && j.contains("result")) listed = true;
+        if (j.contains("error"))
+            ++errors;
+        if (j.contains("id") && j["id"] == 3 && j.contains("result"))
+            listed = true;
     }
     EXPECT_EQ(errors, 3);
     EXPECT_TRUE(listed);
@@ -578,14 +651,18 @@ TEST(McpAudit, DuplicateInFlightRequestIdIsRejected) {
     ASSERT_TRUE(dup.contains("error")) << dup.dump();
     EXPECT_EQ(dup["error"]["code"], -32600);
     // The original call is still cancellable by its id.
-    pipe.feed(json({{"jsonrpc", "2.0"}, {"method", "notifications/cancelled"}, {"params", {{"requestId", 5}}}}).dump() + "\n");
-    ASSERT_TRUE(wait_for([&] { return !m.fx.engine.generating.load(); })) << "cancel did not reach the first call";
+    pipe.feed(
+        json({{"jsonrpc", "2.0"}, {"method", "notifications/cancelled"}, {"params", {{"requestId", 5}}}})
+            .dump() +
+        "\n");
+    ASSERT_TRUE(wait_for([&] { return !m.fx.engine.generating.load(); }))
+        << "cancel did not reach the first call";
     pipe.close();
     srv.join();
 }
 
-// C2: cancelling a running model load must release the MCP call promptly (its response is suppressed) instead of
-// holding a call slot until the load finishes or the call timeout expires.
+// C2: cancelling a running model load must release the MCP call promptly (its response is suppressed) instead
+// of holding a call slot until the load finishes or the call timeout expires.
 TEST(McpAudit, CancelDuringModelLoadReleasesTheCallSlotPromptly) {
     McpOptions o;
     o.max_concurrent_calls = 1;
@@ -604,17 +681,22 @@ TEST(McpAudit, CancelDuringModelLoadReleasesTheCallSlotPromptly) {
         auto st = m.cp->job_status(JobId{1});
         return st && st.value().state == JobState::Running;
     }));
-    pipe.feed(json({{"jsonrpc", "2.0"}, {"method", "notifications/cancelled"}, {"params", {{"requestId", 4}}}}).dump() + "\n");
+    pipe.feed(
+        json({{"jsonrpc", "2.0"}, {"method", "notifications/cancelled"}, {"params", {{"requestId", 4}}}})
+            .dump() +
+        "\n");
     std::this_thread::sleep_for(std::chrono::milliseconds(400));  // far below the 1.5 s the load still needs
     pipe.feed(call_req(6, "hcs.models.list").dump() + "\n");
     ASSERT_TRUE(wait_for([&] { return !outbuf.lines().empty(); }, 1000));
     auto second = json::parse(outbuf.lines().front());
     EXPECT_EQ(second["id"], 6);
     ASSERT_TRUE(second.contains("result")) << second.dump();
-    EXPECT_FALSE(second["result"]["isError"]) << "call slot was still held by the cancelled load: " << second.dump();
+    EXPECT_FALSE(second["result"]["isError"])
+        << "call slot was still held by the cancelled load: " << second.dump();
     pipe.close();
     srv.join();
-    for (const auto& l : outbuf.lines()) EXPECT_NE(json::parse(l)["id"], 4) << "response sent for a cancelled call";
+    for (const auto& l : outbuf.lines())
+        EXPECT_NE(json::parse(l)["id"], 4) << "response sent for a cancelled call";
 }
 
 // D6: engine/load errors reach MCP clients without absolute local paths.
@@ -622,7 +704,8 @@ TEST(McpAudit, ErrorsDoNotLeakAbsoluteLocalPaths) {
     CustomMcp m;
     m.engine.load_hook = [](const LoadRequest&) {
         return make_error(ErrorCode::ModelError,
-                          "failed to load model from C:\\Users\\bob smith\\AppData\\Local\\Temp\\bad_f.gguf: invalid magic");
+                          "failed to load model from C:\\Users\\bob smith\\AppData\\Local\\Temp\\bad_f.gguf: "
+                          "invalid magic");
     };
     auto r = json::parse(m.server->handle_line(call_req(1, "hcs.models.load", {{"id", "tiny"}}).dump()));
     const std::string text = r.dump();

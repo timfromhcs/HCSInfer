@@ -33,7 +33,8 @@ class FileSource final : public ByteSource {
 public:
     // Opens read-only (shared read). Never writes, never creates. `sequential_hint` adds
     // FILE_FLAG_SEQUENTIAL_SCAN (an experimental hint; benchmark before enabling by default).
-    static Result<std::unique_ptr<FileSource>> open(const std::filesystem::path& path, bool sequential_hint = false);
+    static Result<std::unique_ptr<FileSource>> open(const std::filesystem::path& path,
+                                                    bool sequential_hint = false);
     ~FileSource() override;
     FileSource(const FileSource&) = delete;
     FileSource& operator=(const FileSource&) = delete;

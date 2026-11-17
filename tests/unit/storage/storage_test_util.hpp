@@ -36,19 +36,21 @@ inline std::vector<std::uint8_t> random_bytes(std::size_t n, std::uint64_t seed)
 inline std::vector<std::uint8_t> compressible_bytes(std::size_t n, std::uint64_t seed) {
     Rng r(seed);
     std::vector<std::uint8_t> v(n);
-    for (std::size_t i = 0; i < n; ++i) v[i] = static_cast<std::uint8_t>((i % 61) + ((r.next() >> 40) % 97 == 0 ? 1 : 0));
+    for (std::size_t i = 0; i < n; ++i)
+        v[i] = static_cast<std::uint8_t>((i % 61) + ((r.next() >> 40) % 97 == 0 ? 1 : 0));
     return v;
 }
 
 struct Parts {
     HcsHeader h;
     std::vector<ChunkEntry> e;
-    std::vector<std::uint8_t> payload;       // bytes after the header
+    std::vector<std::uint8_t> payload;           // bytes after the header
     std::vector<std::vector<std::uint8_t>> raw;  // original raw chunks
 };
 
 // Builds `n` chunks of `chunk` bytes each with the given codec (Raw chunks stay Raw).
-inline Parts make_parts(std::size_t n, std::size_t chunk, Codec codec, bool compressible = true, std::uint64_t seed = 1) {
+inline Parts make_parts(std::size_t n, std::size_t chunk, Codec codec, bool compressible = true,
+                        std::uint64_t seed = 1) {
     Parts p;
     p.h.nominal_chunk_size = static_cast<std::uint32_t>(chunk);
     p.h.model_id = "unit-test";
@@ -87,8 +89,10 @@ inline Parts make_parts(std::size_t n, std::size_t chunk, Codec codec, bool comp
 // Serializes parts into a full image. fix_* recompute derived fields so a test can corrupt exactly one thing.
 inline std::vector<std::uint8_t> assemble(Parts p, bool fix_table_offset = true, bool fix_table_hash = true) {
     const auto table = serialize_chunk_table(p.e);
-    if (fix_table_offset) p.h.chunk_table_offset = kHeaderSize + p.payload.size();
-    if (fix_table_hash) p.h.chunk_table_hash = sha256(table);
+    if (fix_table_offset)
+        p.h.chunk_table_offset = kHeaderSize + p.payload.size();
+    if (fix_table_hash)
+        p.h.chunk_table_hash = sha256(table);
     auto img = serialize_header(p.h);
     img.insert(img.end(), p.payload.begin(), p.payload.end());
     img.insert(img.end(), table.begin(), table.end());
@@ -108,9 +112,16 @@ inline std::vector<std::uint8_t> read_bytes(const std::filesystem::path& path) {
 // ---- GGUF builder ---------------------------------------------------------------------------
 struct GgufBuilder {
     std::vector<std::uint8_t> b;
-    void u32(std::uint32_t v) { for (int i = 0; i < 4; ++i) b.push_back(static_cast<std::uint8_t>(v >> (8 * i))); }
-    void u64(std::uint64_t v) { for (int i = 0; i < 8; ++i) b.push_back(static_cast<std::uint8_t>(v >> (8 * i))); }
-    void str(const std::string& s) { u64(s.size()); b.insert(b.end(), s.begin(), s.end()); }
+    void u32(std::uint32_t v) {
+        for (int i = 0; i < 4; ++i) b.push_back(static_cast<std::uint8_t>(v >> (8 * i)));
+    }
+    void u64(std::uint64_t v) {
+        for (int i = 0; i < 8; ++i) b.push_back(static_cast<std::uint8_t>(v >> (8 * i)));
+    }
+    void str(const std::string& s) {
+        u64(s.size());
+        b.insert(b.end(), s.begin(), s.end());
+    }
     void raw(const char* s, std::size_t n) { b.insert(b.end(), s, s + n); }
 };
 
@@ -121,12 +132,31 @@ inline std::vector<std::uint8_t> make_gguf(std::uint32_t version = 3) {
     g.u32(version);
     g.u64(2);  // tensors
     g.u64(3);  // kv
-    g.str("general.architecture"); g.u32(8); g.str("testarch");
-    g.str("general.name"); g.u32(8); g.str("tiny");
-    g.str("tokenizer.tokens"); g.u32(9); g.u32(8); g.u64(3); g.str("a"); g.str("bb"); g.str("ccc");
+    g.str("general.architecture");
+    g.u32(8);
+    g.str("testarch");
+    g.str("general.name");
+    g.u32(8);
+    g.str("tiny");
+    g.str("tokenizer.tokens");
+    g.u32(9);
+    g.u32(8);
+    g.u64(3);
+    g.str("a");
+    g.str("bb");
+    g.str("ccc");
     // tensor infos
-    g.str("t0"); g.u32(1); g.u64(8); g.u32(0); g.u64(0);          // F32 x8  = 32 bytes @0
-    g.str("t1"); g.u32(2); g.u64(64); g.u64(2); g.u32(8); g.u64(32);  // Q8_0 [64,2] = 2*2*34 = 136 bytes @32 (aligned to 32)
+    g.str("t0");
+    g.u32(1);
+    g.u64(8);
+    g.u32(0);
+    g.u64(0);  // F32 x8  = 32 bytes @0
+    g.str("t1");
+    g.u32(2);
+    g.u64(64);
+    g.u64(2);
+    g.u32(8);
+    g.u64(32);  // Q8_0 [64,2] = 2*2*34 = 136 bytes @32 (aligned to 32)
     while (g.b.size() % 32) g.b.push_back(0);
     const std::size_t data = g.b.size();
     g.b.resize(data + 32 + 136, 0xAB);

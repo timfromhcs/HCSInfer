@@ -75,7 +75,8 @@ struct Gguf {
 };
 
 GgufProbeResult probe(const std::string& s) {
-    return probe_gguf(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(s.data()), s.size()));
+    return probe_gguf(
+        std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(s.data()), s.size()));
 }
 
 }  // namespace
@@ -225,9 +226,9 @@ TEST(GgufProbe, UnknownMetadataTypeIsRejected) {
 TEST(GgufProbe, NameCapStopsWalking) {
     Gguf g(3, 3, 0);
     g.tensor("blk.0.weight").tensor("blk.1.weight").tensor("blk.2.weight");
-    const auto r = probe_gguf(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(g.bytes.data()),
-                                                            g.bytes.size()),
-                              2);
+    const auto r = probe_gguf(
+        std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(g.bytes.data()), g.bytes.size()),
+        2);
     EXPECT_EQ(r.tensor_names_read, 2u);
     EXPECT_FALSE(r.complete);
     EXPECT_EQ(r.kind, ModelKind::Text);
@@ -256,4 +257,5 @@ TEST(GgufProbe, FileProbeHonoursTheByteLimit) {
     write_file(t / "model.gguf", g.bytes);
     const auto r = probe_gguf_file(t / "model.gguf", 24);
     EXPECT_FALSE(r.complete);
-    EXPECT_EQ(r.tensor_names_read, 0u);}
+    EXPECT_EQ(r.tensor_names_read, 0u);
+}

@@ -7,16 +7,20 @@
 namespace hcs {
 
 constexpr std::optional<std::uint64_t> checked_add(std::uint64_t a, std::uint64_t b) noexcept {
-    if (a > std::numeric_limits<std::uint64_t>::max() - b) return std::nullopt;
+    if (a > std::numeric_limits<std::uint64_t>::max() - b)
+        return std::nullopt;
     return a + b;
 }
 
 constexpr std::optional<std::uint64_t> checked_mul(std::uint64_t a, std::uint64_t b) noexcept {
-    if (a != 0 && b > std::numeric_limits<std::uint64_t>::max() / a) return std::nullopt;
+    if (a != 0 && b > std::numeric_limits<std::uint64_t>::max() / a)
+        return std::nullopt;
     return a * b;
 }
 
-constexpr std::uint64_t saturating_sub(std::uint64_t a, std::uint64_t b) noexcept { return a > b ? a - b : 0; }
+constexpr std::uint64_t saturating_sub(std::uint64_t a, std::uint64_t b) noexcept {
+    return a > b ? a - b : 0;
+}
 
 // True iff [offset, offset+size) lies inside [0, limit) with no overflow.
 constexpr bool range_within(std::uint64_t offset, std::uint64_t size, std::uint64_t limit) noexcept {

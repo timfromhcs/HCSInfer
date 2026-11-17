@@ -8,7 +8,9 @@ namespace hcs::hardware {
 
 using json = nlohmann::json;
 
-inline json unknown() { return "unknown"; }
+inline json unknown() {
+    return "unknown";
+}
 
 // --- cpu_info.cpp -------------------------------------------------------------------------
 struct CpuidRegs {
@@ -31,10 +33,10 @@ CpuRaw read_cpu_raw();
 json cpu_report();
 
 // --- system_info.cpp ----------------------------------------------------------------------
-json system_report();   // {"os":{...}, "memory":{...}}
+json system_report();  // {"os":{...}, "memory":{...}}
 
 // --- gpu_info.cpp -------------------------------------------------------------------------
-json gpu_report();      // DXGI adapters + display-class driver registry entries
+json gpu_report();  // DXGI adapters + display-class driver registry entries
 
 // --- vulkan_info.cpp ----------------------------------------------------------------------
 json vulkan_report(bool skip);
