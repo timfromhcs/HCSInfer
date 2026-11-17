@@ -1,0 +1,72 @@
+Running main() from D:\HCSInfer\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = PathGuard.*:Settings.*
+[==========] Running 29 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 14 tests from PathGuard
+[ RUN      ] PathGuard.AcceptsPathsInsideRoot
+[       OK ] PathGuard.AcceptsPathsInsideRoot (5 ms)
+[ RUN      ] PathGuard.RejectsDotDotTraversal
+[       OK ] PathGuard.RejectsDotDotTraversal (3 ms)
+[ RUN      ] PathGuard.RejectsAbsolutePathOutside
+[       OK ] PathGuard.RejectsAbsolutePathOutside (3 ms)
+[ RUN      ] PathGuard.RejectsSiblingWithSharedPrefix
+[       OK ] PathGuard.RejectsSiblingWithSharedPrefix (5 ms)
+[ RUN      ] PathGuard.RejectsEmptyAndNul
+[       OK ] PathGuard.RejectsEmptyAndNul (3 ms)
+[ RUN      ] PathGuard.EmptyGuardRejectsEverything
+[       OK ] PathGuard.EmptyGuardRejectsEverything (0 ms)
+[ RUN      ] PathGuard.AddRootValidation
+[       OK ] PathGuard.AddRootValidation (1 ms)
+[ RUN      ] PathGuard.LinkInsideRootPointingOutsideIsRejected
+[       OK ] PathGuard.LinkInsideRootPointingOutsideIsRejected (34 ms)
+[ RUN      ] PathGuard.LinkInsideRootPointingInsideIsAccepted
+[       OK ] PathGuard.LinkInsideRootPointingInsideIsAccepted (34 ms)
+[ RUN      ] PathGuard.WindowsCaseInsensitiveRootMatch
+[       OK ] PathGuard.WindowsCaseInsensitiveRootMatch (4 ms)
+[ RUN      ] PathGuard.WindowsRejectsDeviceNamespaceAndStreams
+[       OK ] PathGuard.WindowsRejectsDeviceNamespaceAndStreams (4 ms)
+[ RUN      ] PathGuard.WindowsRejectsDosDeviceNamesInsideRoot
+[       OK ] PathGuard.WindowsRejectsDosDeviceNamesInsideRoot (4 ms)
+[ RUN      ] PathGuard.WindowsRejectsWildcardsAndTrailingDotsInsideRoot
+[       OK ] PathGuard.WindowsRejectsWildcardsAndTrailingDotsInsideRoot (4 ms)
+[ RUN      ] PathGuard.WindowsStillAcceptsLookalikeLegitimateNames
+[       OK ] PathGuard.WindowsStillAcceptsLookalikeLegitimateNames (12 ms)
+[----------] 14 tests from PathGuard (123 ms total)
+
+[----------] 15 tests from Settings
+[ RUN      ] Settings.DefaultsAreSafeAndValid
+[       OK ] Settings.DefaultsAreSafeAndValid (0 ms)
+[ RUN      ] Settings.RoundTripThroughFile
+[       OK ] Settings.RoundTripThroughFile (2 ms)
+[ RUN      ] Settings.MissingFileYieldsDefaults
+[       OK ] Settings.MissingFileYieldsDefaults (0 ms)
+[ RUN      ] Settings.AtomicWriteReplacesAndLeavesNoTempFiles
+[       OK ] Settings.AtomicWriteReplacesAndLeavesNoTempFiles (2 ms)
+[ RUN      ] Settings.FailedSaveKeepsPreviousFile
+[       OK ] Settings.FailedSaveKeepsPreviousFile (2 ms)
+[ RUN      ] Settings.MigratesLegacyV0
+[       OK ] Settings.MigratesLegacyV0 (0 ms)
+[ RUN      ] Settings.MigratedFileIsRewrittenAtCurrentVersion
+[       OK ] Settings.MigratedFileIsRewrittenAtCurrentVersion (2 ms)
+[ RUN      ] Settings.NewerSchemaIsRejectedNotDowngraded
+[       OK ] Settings.NewerSchemaIsRejectedNotDowngraded (0 ms)
+[ RUN      ] Settings.RejectsCorruptAndMistypedInput
+[       OK ] Settings.RejectsCorruptAndMistypedInput (0 ms)
+[ RUN      ] Settings.IgnoresUnknownKeys
+[       OK ] Settings.IgnoresUnknownKeys (0 ms)
+[ RUN      ] Settings.ValidationBounds
+[       OK ] Settings.ValidationBounds (0 ms)
+[ RUN      ] Settings.NonLoopbackBindNeedsExplicitLanOptIn
+[       OK ] Settings.NonLoopbackBindNeedsExplicitLanOptIn (0 ms)
+[ RUN      ] Settings.LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch
+[       OK ] Settings.LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch (0 ms)
+[ RUN      ] Settings.ContextTokenCapMatchesEngineCap
+[       OK ] Settings.ContextTokenCapMatchesEngineCap (0 ms)
+[ RUN      ] Settings.ProfileNames
+[       OK ] Settings.ProfileNames (0 ms)
+[----------] 15 tests from Settings (11 ms total)
+
+[----------] Global test environment tear-down
+[==========] 29 tests from 2 test suites ran. (135 ms total)
+[  PASSED  ] 29 tests.
+exit=0

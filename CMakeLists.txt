@@ -16,6 +16,29 @@ option(HCS_BUILD_TESTS "Build HCSInfer tests" ON)
 option(HCS_WARNINGS_AS_ERRORS "Treat warnings in HCS-owned targets as errors" ON)
 option(HCS_ENABLE_VULKAN "Enable Vulkan-dependent HCS modules (modules must honour this)" OFF)
 
+# Provenance for benchmark JSON (AGENTS.md 21.1): commit at configure time, "+dirty" when the tree has changes.
+set(HCS_GIT_COMMIT "unknown")
+find_package(Git QUIET)
+if(GIT_FOUND)
+  execute_process(COMMAND "${GIT_EXECUTABLE}" rev-parse --short=12 HEAD
+                  WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE _hcs_head
+                  OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET RESULT_VARIABLE _hcs_head_rc)
+  if(_hcs_head_rc EQUAL 0 AND _hcs_head)
+    set(HCS_GIT_COMMIT "${_hcs_head}")
+    execute_process(COMMAND "${GIT_EXECUTABLE}" status --porcelain --untracked-files=no
+                    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" OUTPUT_VARIABLE _hcs_dirty
+                    OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+    if(_hcs_dirty)
+      set(HCS_GIT_COMMIT "${HCS_GIT_COMMIT}+dirty")
+    endif()
+  endif()
+endif()
+if(CMAKE_BUILD_TYPE)
+  set(HCS_BUILD_TYPE_LABEL "${CMAKE_BUILD_TYPE}")
+else()
+  set(HCS_BUILD_TYPE_LABEL "multi-config")
+endif()
+
 # Generated header (version) lives in the build tree.
 configure_file("${CMAKE_SOURCE_DIR}/cmake/version.hpp.in"
                "${CMAKE_BINARY_DIR}/generated/hcs/version.hpp" @ONLY)
@@ -36,7 +59,7 @@ endif()
 set(HCS_MODULE_DIRS
   core hardware storage memory scheduler telemetry
   engines/llama engines/diffusion
-  api mcp gui
+  gui api mcp
   cli app)
 set(HCS_EXCLUDE_MODULES "" CACHE STRING "Semicolon list of src/<module> dirs to skip (isolated builds)")
 foreach(_m IN LISTS HCS_MODULE_DIRS)

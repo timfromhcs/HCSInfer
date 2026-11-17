@@ -1,5 +1,5 @@
 hcs_add_library(cli
-  SOURCES cli.cpp chat_cmd.cpp image_cmd.cpp vision_cmd.cpp
+  SOURCES cli.cpp chat_cmd.cpp image_cmd.cpp vision_cmd.cpp benchmark_cmd.cpp
   PUBLIC_LINK hcs_core
   PRIVATE_LINK nlohmann_json::nlohmann_json)
 
@@ -8,6 +8,14 @@ hcs_add_library(cli
 if(TARGET hcs_hardware)
   target_link_libraries(hcs_cli PRIVATE hcs_hardware)
   target_compile_definitions(hcs_cli PRIVATE HCS_HAVE_HARDWARE=1)
+endif()
+
+if(TARGET hcs_storage)
+  target_link_libraries(hcs_cli PRIVATE hcs_storage)
+  target_compile_definitions(hcs_cli PRIVATE HCS_HAVE_STORAGE=1)
+endif()
+if(WIN32)
+  target_link_libraries(hcs_cli PRIVATE psapi)
 endif()
 
 if(TARGET hcs_engine_llama)

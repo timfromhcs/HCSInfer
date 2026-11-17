@@ -123,3 +123,44 @@ TEST(PathGuard, WindowsRejectsDeviceNamespaceAndStreams) {
     EXPECT_EQ(f.guard.resolve(fs::path(stream)).error().code, ErrorCode::SecurityViolation);
 }
 #endif
+
+#ifdef _WIN32
+// M10 audit D5: Win32 maps <dir>\NUL, <dir>\CON.txt, <dir>\COM1 ... to DOS devices even inside an approved
+// root, and silently strips trailing dots/spaces. The guard must reject them as SecurityViolation.
+TEST(PathGuard, WindowsRejectsDosDeviceNamesInsideRoot) {
+    Fixture f;
+    const std::vector<std::wstring> bad = {
+        L"CON",       L"con",         L"NUL",        L"NUL.png",     L"nul.tar.gz",  L"COM1",
+        L"com9.txt",  L"LPT1",        L"lpt9.bin",   L"PRN",         L"AUX",         L"CONIN$",
+        L"CONOUT$",   L"CLOCK$",      L"nul .txt",   L"COM1  ",      L"con.",        L"aux ...",
+        L"COM¹", L"LPT².x", L"COM³"};
+    for (const auto& name : bad) {
+        auto r = f.guard.resolve((f.root / "models" / name));
+        ASSERT_FALSE(r) << "accepted reserved name";
+        EXPECT_EQ(r.error().code, ErrorCode::SecurityViolation) << r.error().message;
+    }
+    // Reserved name as an intermediate directory component is just as dangerous.
+    EXPECT_EQ(f.guard.resolve(f.root / "NUL" / "x.gguf").error().code, ErrorCode::SecurityViolation);
+}
+
+TEST(PathGuard, WindowsRejectsWildcardsAndTrailingDotsInsideRoot) {
+    Fixture f;
+    const std::vector<std::wstring> bad = {L"*.png", L"a?.png", L"a<b", L"a>b", L"a|b", L"a\"b",
+                                           L"model.gguf.", L"model.gguf ", L"model.gguf. ", L"ctl\x01x"};
+    for (const auto& name : bad) {
+        auto r = f.guard.resolve(f.root / "models" / name);
+        ASSERT_FALSE(r) << "accepted unsafe name";
+        EXPECT_EQ(r.error().code, ErrorCode::SecurityViolation) << r.error().message;
+    }
+    EXPECT_EQ(f.guard.resolve(f.root / "models" / std::wstring(300, L'a')).error().code, ErrorCode::SecurityViolation);
+}
+
+TEST(PathGuard, WindowsStillAcceptsLookalikeLegitimateNames) {
+    Fixture f;
+    for (const wchar_t* name : {L"console.gguf", L"comet.png", L"nullable.bin", L"COM10.txt", L"LPT0", L"a.b.gguf",
+                                L"con-sole", L"auxiliary", L"prn_2", L".hidden", L"model (1).gguf"}) {
+        auto r = f.guard.resolve(f.root / "models" / name);
+        EXPECT_TRUE(r) << "rejected a legitimate name: " << r.error().message;
+    }
+}
+#endif

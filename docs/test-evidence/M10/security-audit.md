@@ -20,16 +20,55 @@ not reproduced end to end; SUSPECTED = plausible, not proven.
 | Host / DNS rebinding | PASS (evil host, `localhost.evil.com`, `127.0.0.1.nip.io`, missing Host all 403) |
 | Origin validation | PASS (evil, `null`, other-port origins all 403; also on health and OPTIONS) |
 | Body size limit | PASS (1 MiB+ -> 413, chunked 1.5 MiB -> 413) |
-| JSON depth (HTTP) | PASS (100 and 200000 nesting -> 400); FAIL for MCP (see D1) |
+| JSON depth (HTTP) | PASS (100 and 200000 nesting -> 400); MCP was FAIL (D1), now FIXED, see "Fix status" |
 | Schema / type / range checks | PASS (n=2, max_tokens overflow, temperature 5, bad roles) |
 | Job-id / model-id validation | PASS (job-0, overflow, `%00`, `..`, uppercase, 100 chars, double slash) |
 | Path guard: outside root, `..`, junction escape, ADS, `\\?\`, UNC, NUL byte, sibling prefix, case variants | PASS |
-| Path guard: DOS device names | FAIL (D5) |
+| Path guard: DOS device names | was FAIL (D5), now FIXED, see "Fix status" |
 | No prompt/token in logs | PASS (marker prompt and token absent from stderr in API and MCP runs) |
 | MCP stdout cleanliness | PASS for CPU build (load + chat + errors: every stdout line valid JSON); Vulkan NOT RUN |
 | Malformed GGUF through load (10 crafted files) | PASS (all rejected cleanly by llama.cpp, no crash) |
 | Existing unit suites (storage 59, fuzz 3, api 36, api_http 9, mcp 22, schema 7) | PASS (re-run, no rebuild) |
 | Concurrent chat/load/unload/cancel storm (25 s) | PASS (no crash or deadlock; server answers afterwards) |
+
+## Fix status (M10-fixes pass, 2026-11-17)
+
+Every fix was written test-first: a regression test (or a reproduction against the previously built binary) was
+run RED against the unfixed sources, then the fix was made, then the same test was run GREEN. Evidence:
+`docs/test-evidence/M10-fixes/` (`red-*.txt` = before, `green-*.txt` = after, `repro-binary-before.txt` /
+`repro-binary-after.txt` = black-box runs of `HCSInfer.exe`, `ctest-release-full.txt` = full suite,
+`e2e-*-after-fix.json` = real-model end-to-end). Build under test: `build/audit-fix` (Release, CPU-only, MSVC 19.44,
+llama.cpp engine linked). Full suite: 368 tests, 363 pass, 5 skipped (4 Vulkan tests: NOT RUN on the CPU build;
+`e2e_gui_real`: another owner), 0 fail. Real-model `e2e_api_mcp_real` and `e2e_vision_real`: PASS.
+
+| ID | Status | Fix | Verified by (RED before / GREEN after) |
+|---|---|---|---|
+| D1 MCP deep JSON crash | FIXED, VERIFIED | `json_depth_ok` (cap 64) before parse in `McpServer::run` and `handle_line` (shared `hcs/api/json_guard.hpp`); `params`/`arguments` taken by reference; worker lambda moves the message | `McpAudit.DeeplyNestedParamsAreRejectedNotACrash`, `McpAudit.DeeplyNestedLinesOverStdioAreRejectedAndServerKeepsServing`: RED = test process died (stack overflow). Binary: `mcp stdio` depth 10000 exit `0xC00000FD` -> exit 0 and error `-32600 JSON nesting too deep` |
+| D2 thread pool / idle sockets | FIXED (bounded), VERIFIED; residual below | `ThreadPool(threads, threads, queued)` (bounded queue, no dynamic threads): connections beyond `threads + max_queued` are closed at accept; new `TransportOptions::idle_timeout_s` (default 2 s) drives httplib's first-byte/keep-alive wait (that, not `read_timeout`, was what held the workers: 5 s), `read_timeout_s` default 30 -> 5 | `ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded` (RED: 0 refused, health after 71.8 s), `ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout`. Binary, 120 idle sockets: health latency 6.67 s -> 1.91 s, 94 of 120 sockets closed immediately |
+| D3 non-stream disconnect keeps generating | FIXED, VERIFIED | `HttpRequest::peer_closed` (httplib `is_connection_closed`) polled every 150 ms (rate limited) in the first-output wait, the non-stream collect loop and the SSE loop; job is cancelled and an unsent `499` is returned | `ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob` (RED: "engine kept generating"), `ApiAudit.NonStreamingChatCancelsTheJobWhenThePeerDisconnects`, `ApiAudit.StreamingChatCancelsWhenThePeerDisconnectsBeforeAnyOutput` (RED: hang). Binary, real qwen3-0.6b: before = job `running`, events 81 -> 348 after the client left; after = job `cancelled`, events frozen at 19 |
+| D4 no memory budget | FIXED, VERIFIED; limits below | New `hcs::hardware::measure_memory()` (GlobalMemoryStatusEx / `/proc/meminfo`: available RAM, reserve `max(1 GiB, 10 %)`, margin 512 MiB). `ControlPlane::refresh_budget()` re-measures on construction, on every load and in `/hcs/v1/memory`; loads are checked against weights + KV-cache estimate BEFORE the loaded model is evicted; KV is its own ledger entry (`kv:<id>`); settings context cap aligned with the engine (1048576). Also fixed: a load that failed budget reservation left the model stuck in `ReadyToLoad` | `ApiAudit.ModelLargerThanTheMeasuredBudget...`, `...KvCacheOfAHugeContext...`, `...BudgetIsRemeasuredOnEveryLoad`, `...WithoutAnyMeasurement...`, `...RuntimeBuildsItsBudgetFromInjectedMeasurements`, `...RuntimeDefaultsToTheLiveHardwareMeasurement`, `MemoryProbe.*`, `Settings.ContextTokenCapMatchesEngineCap`. Binary (real qwen3-0.6b, `context_tokens=1048576`): `/hcs/v1/memory` -> `budget_known:true`, 8.25 GB headroom of 10.9 GB free; load -> job `failed`, `out_of_memory`, "model needs about 145552612160 bytes (weights 484219712 + KV cache 145068392448 ...)", model stays `discovered` (retryable). Before: `budget_known:false`, no check |
+| D5 DOS device names | FIXED, VERIFIED | `check_component_win`: rejects CON/PRN/AUX/NUL/COM1-9/LPT1-9 (also `COM¹²³`, `CONIN$`, `CONOUT$`, `CLOCK$`) by stem before the first dot, wildcard/`<>"|` and control characters, trailing dot/space, components > 255 | `PathGuard.WindowsRejectsDosDeviceNamesInsideRoot`, `...WildcardsAndTrailingDots...` (RED), `...StillAcceptsLookalikeLegitimateNames` (GREEN both) |
+| D6 path leak in errors | FIXED at the API/MCP boundary, VERIFIED | `hcs/api/redact.hpp` `redact_paths()` -> `<path>/<file name>`; applied in `ApiHandler::error`, SSE error frames, `ControlPlane::job_json`, `McpServer::tool_err`. Engine/storage messages still contain full paths in the LOCAL log (intended) | `ApiAudit.RedactPathsScrubs...`, `ApiAudit.JobErrorsOverHttpDoNotLeakLocalPaths`, `McpAudit.ErrorsDoNotLeakAbsoluteLocalPaths` (RED: message returned verbatim) |
+| D7 `127.` prefix loopback | FIXED, VERIFIED | `is_loopback_host` parses an exact dotted-quad 127.0.0.0/8 literal (no leading zeros) or `localhost`/`::1`/`[::1]` | `Settings.LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch` (RED) |
+| C1 diffusion adapter | NOT FIXED here | not in this owner's files (`src/engines/diffusion`) | - |
+| C2 load not cancellable | PARTIAL, VERIFIED for what changed | `load_model(id, token)`: cancel checked before eviction and before the engine starts (budget/lifecycle rolled back); MCP `hcs.models.load` leaves its wait loop on `notifications/cancelled` and releases its call slot. A load already inside `llama_model_load_from_file` still cannot be interrupted (no abort hook in the adapter) | `McpAudit.CancelDuringModelLoadReleasesTheCallSlotPromptly` (RED: second call got `busy`) |
+| C3 special-token injection | PARTIAL | `neutralize_control_tokens()` in `submit_chat` (`<|`, `<s>`, `</s>`, `<start_of_turn>`, `<end_of_turn>`, `<bos>`, `<eos>` get a zero-width space). The engine still tokenizes with `parse_special=true` (`llama_engine.cpp`, not this owner's file): the engine-side fix is still open | `ApiAudit.ControlTokensInUserTextAreNeutralised` (RED) |
+| C4 invalid UTF-8 -> throw | FIXED, VERIFIED | `dump_safe` (error_handler replace) for every JSON response/SSE frame; stream lambda wrapped in try/catch (cancels the job) | `ApiAudit.InvalidUtf8ModelOutputDoesNotBreak{NonStreamingResponses,Streaming}` (RED: 500 / escaped exception) |
+| C5 parse_gguf before load | NOT CHANGED (informational) | - | - |
+| S1 duplicate in-flight ids | FIXED, VERIFIED | second `tools/call` with an id still in flight is rejected (`-32600`) | `McpAudit.DuplicateInFlightRequestIdIsRejected` (RED) |
+| S2 model-switch TOCTOU | FIXED for text chat; OPEN for vision chat | auto-load and generation now share one `engine_mutex_` critical section (`load_locked` inside `submit_chat`). `control_plane_vision.cpp` (not this owner's file) has the identical pattern | no deterministic test (race); reasoned by construction |
+| S3-S6 | NOT CHANGED | S3 (token in argv) / S4 (health unauthenticated) accepted; S5 (CLI bypasses PathGuard) and S6 (resolve/open TOCTOU) not in scope | - |
+
+Residual risks after this pass (honest limits):
+- D2: cpp-httplib has no total header deadline. A client that sends one byte every few seconds still holds one worker
+  for as long as it keeps the per-read timeout alive (`read_timeout_s`, 5 s). A flood of such clients is bounded to
+  `threads + max_queued` sockets, but can still occupy all workers (loopback by default; `--lan` needs a firewall).
+  Worst-case wait of a legitimate client behind a flood of silent sockets is about two `idle_timeout_s` (measured 1.9 s).
+- D4: the budget uses physical RAM only. Vulkan heap headroom (`vulkan_headroom_bytes`) is reported as `unknown` and
+  not yet part of the minimum; the KV figure is a heuristic upper-ish estimate (96-512 KiB/token by model size) until
+  the engine reports its real size; the mmproj projector bytes of vision models are not counted. Image models are
+  checked by file size only.
+- C2/C3/S2-vision need follow-up in files outside this owner's set (llama adapter, vision control plane, diffusion).
 
 ## CONFIRMED defects (ranked)
 

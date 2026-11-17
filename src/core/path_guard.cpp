@@ -31,6 +31,43 @@ bool is_within(const fs::path& root, const fs::path& target) {
     return true;
 }
 
+#ifdef _WIN32
+// Win32 resolves these names to DOS devices in ANY directory (also with an extension or trailing dots/spaces):
+// "<approved root>/NUL.png" is the NUL device and "<root>/CON" blocks on console input. They are never model or
+// image files, so the guard rejects them (M10 audit D5).
+bool is_reserved_device_stem(std::wstring stem) {
+    for (auto& c : stem) c = static_cast<wchar_t>(std::towupper(c));
+    while (!stem.empty() && (stem.back() == L' ' || stem.back() == L'.')) stem.pop_back();
+    if (stem == L"CON" || stem == L"PRN" || stem == L"AUX" || stem == L"NUL" || stem == L"CONIN$" ||
+        stem == L"CONOUT$" || stem == L"CLOCK$")
+        return true;
+    if (stem.size() == 4 && (stem.compare(0, 3, L"COM") == 0 || stem.compare(0, 3, L"LPT") == 0)) {
+        const wchar_t d = stem[3];
+        // COM1-COM9, plus the superscript digits (U+00B9, U+00B2, U+00B3) that Windows also reserves.
+        return (d >= L'1' && d <= L'9') || d == 0x00B9 || d == 0x00B2 || d == 0x00B3;
+    }
+    return false;
+}
+
+Result<void> check_component_win(const fs::path::string_type& comp) {
+    if (comp.empty() || comp == L"." || comp == L"..") return {};
+    if (comp.size() > 255) return make_error(ErrorCode::SecurityViolation, "path component is too long");
+    for (wchar_t c : comp) {
+        if (c < 0x20 || c == L'<' || c == L'>' || c == L'"' || c == L'|' || c == L'*' || c == L'?')
+            return make_error(ErrorCode::SecurityViolation, "path component contains a reserved or wildcard character");
+    }
+    // Win32 silently strips trailing dots/spaces: "model.gguf." names "model.gguf" (and "con." names CON).
+    if (comp.back() == L'.' || comp.back() == L' ')
+        return make_error(ErrorCode::SecurityViolation, "path component ends with a dot or space");
+    // The device name is the part before the FIRST dot ("nul.tar.gz" is NUL), ignoring trailing spaces.
+    const auto dot = comp.find(L'.');
+    std::wstring stem = dot == std::wstring::npos ? comp : comp.substr(0, dot);
+    if (is_reserved_device_stem(std::move(stem)))
+        return make_error(ErrorCode::SecurityViolation, "reserved Windows device name in path");
+    return {};
+}
+#endif
+
 Result<void> check_raw(const fs::path& p) {
     if (p.empty()) return make_error(ErrorCode::InvalidArgument, "empty path");
     const auto& n = p.native();
@@ -49,6 +86,9 @@ Result<void> check_raw(const fs::path& p) {
         if (n[i] == L':' && !(i == 1 && std::iswalpha(n[0]))) {
             return make_error(ErrorCode::SecurityViolation, "alternate data streams / stray ':' not allowed");
         }
+    }
+    for (const auto& part : p.relative_path()) {
+        if (auto r = check_component_win(part.native()); !r) return r;
     }
 #endif
     return {};

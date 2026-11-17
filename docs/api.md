@@ -3,8 +3,10 @@
 Status: **Experimental (M3)**. Implemented in `src/api` (`ApiHandler` = all rules, `HttpServer` = socket
 transport on cpp-httplib v0.37.2). Inference requires an engine adapter that implements
 `hcs::api::ITextStreamEngine`; the llama.cpp adapter is wired in when the binary is built with
-`external/llama.cpp`. Image generation and image editing are **not implemented** here and return
-`501` with a reason.
+`external/llama.cpp`. Image generation/editing (`/v1/images/*`) needs an engine that implements
+`hcs::api::IImageStreamEngine`; the stable-diffusion.cpp adapter is wired in when the binary is built with
+`external/stable-diffusion.cpp` (otherwise those routes answer `501 unsupported` with the reason). The embedded web UI
+(`GET /`, `/ui/*`, see `docs/gui.md`) is served by the same listener.
 
 ## Starting the server
 
@@ -114,7 +116,42 @@ token are normal HTTP errors; later failures are sent as a `data: {"error":...}`
 **Client disconnect cancels the generation job.**
 
 ### `POST /v1/images/generations`, `POST /v1/images/edits`
-Authenticated; always `501 unsupported` ("no image engine adapter ... implemented in this build").
+
+Authenticated, **Experimental**. Real stable-diffusion.cpp output (tested with SD1.5 Q8_0 only,
+`docs/test-evidence/M3-image/`). The request is a JSON body (`Content-Type: application/json`); `multipart/form-data`
+(what OpenAI's edit endpoint uses) is **not** supported and answers `415` with that hint.
+
+`POST /v1/images/generations`
+
+| Field | Meaning |
+|---|---|
+| `prompt` (required) | text prompt (<= `max_prompt_bytes`) |
+| `model` | image model id (kind `image`); loaded first if it is not the loaded model. Omit to use the loaded image model (none loaded -> `409 invalid_state`) |
+| `size` | `"<W>x<H>"`, default `512x512`; each in 64..2048 and a multiple of 8, W*H <= 1 Mpixel (`ControlPlaneOptions::max_generate_pixels`) |
+| `steps` | 1..150, default 20 |
+| `seed`, `negative_prompt`, `cfg_scale` (0..30, 0 = model default) | HCS extensions |
+| `n` | only `1` |
+| `response_format` | only `b64_json` (the default here, unlike OpenAI); `url` -> `501` (nothing is hosted) |
+
+Response `200`: `{"created", "data":[{"b64_json":"<PNG>"}], "hcs":{"job_id","request_id","model","format","width","height","steps","generation_ms","seed?"}}`.
+
+`POST /v1/images/edits` takes the same fields plus `image` (required): a `data:image/{png,jpeg};base64,...` URI or bare
+base64 of a PNG/JPEG, and `strength` (0..1, default 0.75). `size` defaults to the input image's size. `mask`
+(inpainting) -> `501`. Remote URLs and `file:` URLs are rejected (`400`): the server never fetches a URL or reads a
+path named by a request. The decoded input is limited to 32 MiB / 16 Mpixel and is header-probed before any decoder
+runs. The whole request body is bounded by `--max-body-bytes` (default 1 MiB: raise it for large edit inputs).
+
+Behaviour shared by both routes:
+
+- The request runs as a job (`image.generate` / `image.edit`) on the single engine worker; the response is sent when the
+  render finishes. The engine cannot report intermediate images or percentages, so there is no streaming and no
+  progress. `GET /hcs/v1/jobs/{id}` (id from `hcs.job_id` in the response) shows the result summary.
+- **Client disconnect cancels the render** (the handler probes the connection every 150 ms), the request timeout
+  (`--timeout-s`) cancels it and answers `504`; `POST /hcs/v1/jobs/{id}/cancel` stops a job started elsewhere (e.g. MCP).
+- Errors: invalid sizes/steps/images `400`, unknown model `404`, text model named for an image request `400`, no image model
+  loaded `409`, out of memory `503`, engine failure `422`/`502`, no image engine linked `501`.
+- Generating loads/unloads models through the control plane: using a text model afterwards unloads the image model
+  (and vice versa), one model resident at a time.
 
 ## HCS-native routes
 
@@ -129,7 +166,7 @@ Authenticated; always `501 unsupported` ("no image engine adapter ... implemente
 | `POST /hcs/v1/models/{id}/unload` | `200`; cancels a running generation first; `409` if that model is not loaded |
 | `GET /hcs/v1/jobs/{id}` | `{id,name,state,error,event_count,result?}`; states `queued running succeeded failed cancelled` |
 | `POST /hcs/v1/jobs/{id}/cancel` | cancels (queued: immediately; running: cooperatively); returns the job |
-| `POST /hcs/v1/benchmarks` | `501` (not implemented) |
+| `POST /hcs/v1/benchmarks` | `501` (not implemented; use `HCSInfer benchmark --suite quick`, see README) |
 
 Model states: `discovered validating ready_to_load loading loaded running unloading unloaded failed`.
 

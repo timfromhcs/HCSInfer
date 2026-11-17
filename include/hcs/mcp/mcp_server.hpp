@@ -64,6 +64,7 @@ private:
     nlohmann::json tool_err(const Error& e) const;
     void cancel_request(const nlohmann::json& request_id);
     nlohmann::json wait_chat(const api::Submitted& sub, const std::string& req_key);
+    nlohmann::json wait_image(const api::Submitted& sub, const std::string& req_key);
 
     api::ControlPlane& cp_;
     McpOptions opt_;

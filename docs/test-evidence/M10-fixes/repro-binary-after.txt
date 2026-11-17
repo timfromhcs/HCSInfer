@@ -1,0 +1,6 @@
+[after-fix] D1 mcp depth=10000: exit=0x0 alive_after_send=True stdout=b'{"error":{"code":-32600,"message":"JSON nesting too deep"},"id":null,"jsonrpc":"2.0"}\r\n'
+[after-fix] D2 120 idle sockets: closed_by_server_within_0.3s=94, health_ok=True, health_latency=1.91s
+[after-fix] D3 non-stream disconnect: events_at_close=6; +1s state=cancelled events=19; +5s state=cancelled events=19
+[after-fix] D4 /hcs/v1/memory: budget_known=True total_bytes=8249090048 remaining_bytes=8249090048 measured={'application_headroom_bytes': 8249090048, 'available_physical_bytes': 10910556160, 'os_reserve_bytes': 2124595200, 'safety_margin_bytes': 536870912, 'vulkan_headroom_bytes': 'unknown'}
+[after-fix] D4 load qwen3-0.6b with context_tokens=1048576: state=failed error={'code': 'out_of_memory', 'message': 'model needs about 145552612160 bytes (weights 484219712 + KV cache 145068392448 for 1048576 context tokens) but only 8249024512 are available: unload other models, pick a smaller quantization, reduce the context size or use CPU mode'}
+[after-fix] D4 model state after refusal: discovered

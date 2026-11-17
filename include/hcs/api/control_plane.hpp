@@ -102,8 +102,16 @@ struct ControlPlaneOptions {
     std::size_t max_image_bytes = 32u << 20;      // encoded prompt/init image
     std::uint64_t max_image_pixels = 16u << 20;   // decoded init image
     std::uint32_t max_image_steps = 150;
+    // Output bounds for generated images (a request above them is rejected before the engine runs).
+    std::uint32_t max_generate_dimension = 2048;
+    std::uint64_t max_generate_pixels = 1u << 20;  // 1 MP: SD1.5-class models on an iGPU/APU
     // Optional: device/driver report (e.g. from hcs_hardware). Called lazily, cached.
     std::function<nlohmann::json()> devices_provider;
+    // Optional live memory measurement (e.g. hcs::hardware::measure_memory). When set, the memory budget is
+    // re-derived from it before every model load (total = measured headroom + what this process has reserved) so
+    // loads are checked against the machine as it is NOW, not as it was at start-up (M10 audit D4; AGENTS.md 10.1).
+    // Returning nullopt keeps the previous budget.
+    std::function<std::optional<MemoryMeasurements>()> memory_probe;
 };
 
 class ControlPlane {
@@ -119,7 +127,10 @@ public:
     Result<ModelView> model(const std::string& id) const;
     std::optional<std::string> loaded_model() const;
     Result<JobId> submit_load(const std::string& id);  // async job "model.load"
-    Result<void> load_model(const std::string& id);    // synchronous (used inside jobs / MCP)
+    // Synchronous (used inside jobs / MCP). `token` is checked between validation, budget and engine start: a cancelled
+    // load never evicts the loaded model and rolls its lifecycle/budget back (an engine load already running cannot be
+    // interrupted - the adapters expose no abort hook yet).
+    Result<void> load_model(const std::string& id, const CancellationToken& token = {});
     Result<void> unload_model();                       // cancels active generation first
     bool has_engine() const noexcept { return engine_ != nullptr; }
     bool has_stream_engine() const noexcept { return stream_ != nullptr; }
@@ -166,7 +177,12 @@ public:
 private:
     Result<void> validate_vision_chat(const ChatParams& p) const;
     Result<Submitted> submit_vision_chat(const ChatParams& p);
-    Result<void> load_locked(const std::string& id);
+    Result<void> load_locked(const std::string& id, const CancellationToken& token = {});
+    // Re-derives the budget total from opt_.memory_probe: measured headroom + what this process has reserved.
+    void refresh_budget() const;
+    // Heuristic KV-cache size for a text model (the engine reports no figure before load): per-token bytes scale with
+    // the model size, clamped to 96..512 KiB, times the context. Deliberately an upper-ish estimate.
+    static std::uint64_t kv_cache_estimate(std::uint64_t model_bytes, std::uint32_t context_tokens) noexcept;
     Result<void> unload_locked();
     Result<Submitted> submit_with_channel(const std::string& name, JobFn fn);
     void note_result(JobId id, const TextResult& r);
@@ -184,6 +200,7 @@ private:
     ControlPlaneOptions opt_;
 
     std::mutex engine_mutex_;  // serialises engine load/unload/generate
+    mutable std::mutex budget_mutex_;  // makes "re-measure + check + reserve" one step w.r.t. memory_json()
     mutable std::mutex state_mutex_;
     std::optional<std::string> loaded_;
     std::optional<std::uint64_t> loaded_bytes_;

@@ -253,7 +253,9 @@ void progress_cb(const sd_generation_progress_t* p, void* data) {
         sd_cancel_generation(st->ctx, SD_CANCEL_ALL);
         return;
     }
-    if (!st->sink || !p) return;
+    // The pointer is non-null even when the caller passed an empty std::function (the blocking entry points do):
+    // calling that throws std::bad_function_call out of the C callback and failed every blocking generation.
+    if (!st->sink || !*st->sink || !p) return;
     double frac = 0.0;
     if (p->total > 0) frac = static_cast<double>(p->completed) / static_cast<double>(p->total);
     std::string msg = p->stage ? p->stage : "generating";

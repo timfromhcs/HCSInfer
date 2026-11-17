@@ -2,6 +2,7 @@
 // warnings: it is third-party code); everything security-relevant lives in ApiHandler.
 #include <httplib.h>
 
+#include <algorithm>
 #include <atomic>
 #include <cctype>
 #include <thread>
@@ -43,6 +44,9 @@ HttpRequest convert(const httplib::Request& r) {
     }
     out.body = r.body;
     out.remote_addr = r.remote_addr;
+    // Lets the handler notice an abandoned request while it waits for a long job (M10 audit D3). The probe is only
+    // called on the connection's own worker thread while the request is being served.
+    if (r.is_connection_closed) out.peer_closed = r.is_connection_closed;
     return out;
 }
 
@@ -73,14 +77,20 @@ HttpServer::~HttpServer() { stop(); }
 Result<int> HttpServer::start() {
     auto& s = *impl_;
     if (s.running.load()) return make_error(ErrorCode::InvalidState, "server already running");
-    const auto threads = s.opt.threads;
-    const auto queued = s.opt.max_queued;
-    s.svr.new_task_queue = [threads, queued] { return new httplib::ThreadPool(threads, queued); };
+    const auto threads = std::max<std::size_t>(1, s.opt.threads);
+    const auto queued = std::max<std::size_t>(1, s.opt.max_queued);
+    // httplib::ThreadPool(n, max_n, mqr): n fixed workers, max_n == n (no dynamic threads) and a bounded queue of
+    // `mqr` waiting connections. A connection that finds the queue full is closed immediately, so the socket
+    // backlog can no longer grow without limit and idle sockets cannot starve the server (M10 audit D2: the old
+    // call ThreadPool(threads, queued) put `queued` into max_n and left the queue unbounded).
+    s.svr.new_task_queue = [threads, queued] { return new httplib::ThreadPool(threads, threads, queued); };
     s.svr.set_payload_max_length(s.opt.max_body_bytes);
     s.svr.set_read_timeout(s.opt.read_timeout_s, 0);
     s.svr.set_write_timeout(s.opt.write_timeout_s, 0);
     s.svr.set_keep_alive_max_count(16);
-    s.svr.set_keep_alive_timeout(5);
+    // httplib waits for the first byte of every request (also the first one) under this timeout, not under the
+    // read timeout: a socket that connects and says nothing is dropped after idle_timeout_s.
+    s.svr.set_keep_alive_timeout(std::max(1, s.opt.idle_timeout_s));
 
     auto handler = [&s](const httplib::Request& req, httplib::Response& res) {
         apply(s.handler.handle(convert(req)), res);

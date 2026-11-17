@@ -124,7 +124,13 @@ def http_phase(exe, model_dir, model_stem, state_dir, evidence):
         code, j = c.jreq("POST", "/hcs/v1/models/..%2f..%2fwindows/load")
         check("path traversal in model id rejected (400/404)", code in (400, 404), (code, j))
         code, j = c.jreq("POST", "/v1/images/generations", {"prompt": "x"})
-        check("images endpoint -> 501 with reason", code == 501 and j and j["error"]["code"] == "unsupported", (code, j))
+        # The image route is no longer a stub. A build without a diffusion engine must answer 501/unsupported; a
+        # build with one must not render without a model: it answers 409/invalid_state (this test registers only the
+        # text model). A 200 without a model, a 404 or any other code would be a defect. The full render path is
+        # covered by e2e_image_real.
+        check("images endpoint is real, not a stub (501 without engine / 409 without image model)",
+              (code == 501 and j and j["error"]["code"] == "unsupported") or
+              (code == 409 and j and j["error"]["code"] == "invalid_state"), (code, j))
 
         code, j = c.jreq("GET", "/v1/models")
         check("GET /v1/models", code == 200 and j and j["object"] == "list", (code, j))

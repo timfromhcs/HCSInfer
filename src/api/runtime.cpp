@@ -15,12 +15,16 @@
 
 #ifdef HCS_HAVE_HARDWARE
 #include "hcs/hardware/doctor.hpp"
+#include "hcs/hardware/memory_probe.hpp"
 #endif
 
 namespace hcs::api {
 
 #ifndef HCS_HAVE_LLAMA_ENGINE
 std::unique_ptr<ITextEngine> make_default_text_engine(JobQueue&) { return nullptr; }
+#endif
+#ifndef HCS_HAVE_DIFFUSION_ENGINE
+std::unique_ptr<IImageEngine> make_default_image_engine(JobQueue&) { return nullptr; }
 #endif
 
 Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger& logger) {
@@ -50,6 +54,8 @@ Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger&
     eq.workers = 1;
     rt->engine_queue = std::make_unique<JobQueue>(eq);
     rt->engine = options.engine ? std::move(options.engine) : make_default_text_engine(*rt->engine_queue);
+    rt->image_engine =
+        options.image_engine ? std::move(options.image_engine) : make_default_image_engine(*rt->engine_queue);
 
     ControlPlaneOptions co = options.control;
     co.version = HCS_VERSION_STRING;
@@ -59,6 +65,12 @@ Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger&
         case AccelProfile::Vulkan: co.backend = Backend::Vulkan; break;
         case AccelProfile::Auto: co.backend = Backend::Auto; break;
     }
+    // Live memory budget (AGENTS.md 10.1, M10 audit D4): an injected probe wins, else the OS measurement from the
+    // hardware module. Without either, the budget stays unknown and /hcs/v1/memory says so.
+    if (options.memory_probe) co.memory_probe = options.memory_probe;
+#ifdef HCS_HAVE_HARDWARE
+    if (!co.memory_probe) co.memory_probe = [] { return hcs::hardware::measure_memory(); };
+#endif
 #ifdef HCS_HAVE_HARDWARE
     if (!co.devices_provider) {
         co.devices_provider = [] {
@@ -72,7 +84,7 @@ Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger&
     }
 #endif
     rt->control = std::make_unique<ControlPlane>(rt->registry, rt->guard, rt->budget, *rt->queue, rt->engine.get(),
-                                                 logger, co);
+                                                 logger, co, rt->image_engine.get());
     return rt;
 }
 
@@ -85,7 +97,8 @@ const char* kServeHelp =
     "\n"
     "Starts the local HTTP API (see docs/api.md). Binds 127.0.0.1 only unless --lan is given.\n"
     "A random bearer token is generated per run and printed to stderr (or pass --token / set\n"
-    "HCS_API_TOKEN). Every route except GET /hcs/v1/health requires it.\n"
+    "HCS_API_TOKEN). Every route except GET /hcs/v1/health requires it. The embedded web UI\n"
+    "(GET / and /ui/*, no token needed for the static page) is served on the same address.\n"
     "\n"
     "Options:\n"
     "  --host <addr>            Bind address (default 127.0.0.1; non-loopback requires --lan)\n"
@@ -193,6 +206,7 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     to.port = static_cast<int>(port);
     to.max_body_bytes = ao.max_body_bytes;
     to.threads = std::max<std::size_t>(4, ao.max_inflight + 2);
+    to.max_queued = 16;  // connections beyond threads + 16 are refused at accept time (M10 audit D2)
     HttpServer server(handler, to, log);
     auto bound = server.start();
     if (!bound) {
@@ -203,6 +217,8 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     std::signal(SIGTERM, on_signal);
     err << "HCSInfer API listening on http://" << host << ":" << bound.value() << "\n";
     if (!token_given) err << "HCSInfer API token: " << token << "\n";
+    err << "HCSInfer web UI: http://" << (host == "0.0.0.0" ? std::string("127.0.0.1") : host) << ":" << bound.value()
+        << "/  (enter the token on the page, or open it with #token=<token> appended; the fragment is never sent to the server)\n";
     if (lan) err << "warning: --lan exposes the API to your network; keep the token secret\n";
     if (!rt.value()->control->has_engine())
         err << "note: no inference engine is linked into this build; chat and model loading report 'unsupported'\n";

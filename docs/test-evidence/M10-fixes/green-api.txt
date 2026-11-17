@@ -1,0 +1,37 @@
+Running main() from D:\HCSInfer\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = ApiAudit.*
+[==========] Running 13 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 13 tests from ApiAudit
+[ RUN      ] ApiAudit.InvalidUtf8ModelOutputDoesNotBreakNonStreamingResponses
+[       OK ] ApiAudit.InvalidUtf8ModelOutputDoesNotBreakNonStreamingResponses (6 ms)
+[ RUN      ] ApiAudit.InvalidUtf8ModelOutputDoesNotBreakStreaming
+[       OK ] ApiAudit.InvalidUtf8ModelOutputDoesNotBreakStreaming (5 ms)
+[ RUN      ] ApiAudit.NonStreamingChatCancelsTheJobWhenThePeerDisconnects
+[       OK ] ApiAudit.NonStreamingChatCancelsTheJobWhenThePeerDisconnects (27 ms)
+[ RUN      ] ApiAudit.StreamingChatCancelsWhenThePeerDisconnectsBeforeAnyOutput
+[       OK ] ApiAudit.StreamingChatCancelsWhenThePeerDisconnectsBeforeAnyOutput (31 ms)
+[ RUN      ] ApiAudit.ModelLargerThanTheMeasuredBudgetIsRefusedBeforeAnythingIsEvicted
+[       OK ] ApiAudit.ModelLargerThanTheMeasuredBudgetIsRefusedBeforeAnythingIsEvicted (16 ms)
+[ RUN      ] ApiAudit.KvCacheOfAHugeContextCountsAgainstTheBudget
+[       OK ] ApiAudit.KvCacheOfAHugeContextCountsAgainstTheBudget (7 ms)
+[ RUN      ] ApiAudit.BudgetIsRemeasuredOnEveryLoad
+[       OK ] ApiAudit.BudgetIsRemeasuredOnEveryLoad (4 ms)
+[ RUN      ] ApiAudit.WithoutAnyMeasurementLoadsStayPermissiveAndMemoryEndpointSaysSo
+[       OK ] ApiAudit.WithoutAnyMeasurementLoadsStayPermissiveAndMemoryEndpointSaysSo (3 ms)
+[ RUN      ] ApiAudit.RuntimeBuildsItsBudgetFromInjectedMeasurements
+[       OK ] ApiAudit.RuntimeBuildsItsBudgetFromInjectedMeasurements (1 ms)
+[ RUN      ] ApiAudit.RuntimeDefaultsToTheLiveHardwareMeasurement
+[       OK ] ApiAudit.RuntimeDefaultsToTheLiveHardwareMeasurement (1 ms)
+[ RUN      ] ApiAudit.RedactPathsScrubsDirectoriesButKeepsFileNames
+[       OK ] ApiAudit.RedactPathsScrubsDirectoriesButKeepsFileNames (0 ms)
+[ RUN      ] ApiAudit.JobErrorsOverHttpDoNotLeakLocalPaths
+[       OK ] ApiAudit.JobErrorsOverHttpDoNotLeakLocalPaths (14 ms)
+[ RUN      ] ApiAudit.ControlTokensInUserTextAreNeutralised
+[       OK ] ApiAudit.ControlTokensInUserTextAreNeutralised (6 ms)
+[----------] 13 tests from ApiAudit (126 ms total)
+
+[----------] Global test environment tear-down
+[==========] 13 tests from 1 test suite ran. (126 ms total)
+[  PASSED  ] 13 tests.
+exit=0

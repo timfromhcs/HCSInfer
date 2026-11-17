@@ -1,0 +1,30 @@
+Test project D:/HCSInfer/build/gui
+      Start  1: GuiAssets.RootServesIndexHtmlWithStrictCsp
+ 1/11 Test  #1: GuiAssets.RootServesIndexHtmlWithStrictCsp .........   Passed    0.03 sec
+      Start  2: GuiAssets.EveryAssetIsServedWithCspAndRightType
+ 2/11 Test  #2: GuiAssets.EveryAssetIsServedWithCspAndRightType ....   Passed    0.03 sec
+      Start  3: GuiAssets.EmbeddedBytesMatchExpectedMarkers
+ 3/11 Test  #3: GuiAssets.EmbeddedBytesMatchExpectedMarkers ........   Passed    0.03 sec
+      Start  4: GuiAssets.NoExternalUrlsOrInlineCode
+ 4/11 Test  #4: GuiAssets.NoExternalUrlsOrInlineCode ...............   Passed    0.06 sec
+      Start  5: GuiAssets.TokenComesFromFragmentNeverQueryString
+ 5/11 Test  #5: GuiAssets.TokenComesFromFragmentNeverQueryString ...   Passed    0.03 sec
+      Start  6: GuiAssets.TraversalAndMalformedPathsAreRejected
+ 6/11 Test  #6: GuiAssets.TraversalAndMalformedPathsAreRejected ....   Passed    0.03 sec
+      Start  7: GuiAssets.UnknownAssetIs404AndNamespaceEdges
+ 7/11 Test  #7: GuiAssets.UnknownAssetIs404AndNamespaceEdges .......   Passed    0.03 sec
+      Start  8: GuiAssets.OtherPathsAreNotHandled
+ 8/11 Test  #8: GuiAssets.OtherPathsAreNotHandled ..................   Passed    0.03 sec
+      Start  9: GuiAssets.MethodHandling
+ 9/11 Test  #9: GuiAssets.MethodHandling ...........................   Passed    0.03 sec
+      Start 10: GuiAssets.NoSecretsEmbedded
+10/11 Test #10: GuiAssets.NoSecretsEmbedded ........................   Passed    0.03 sec
+      Start 11: GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles
+11/11 Test #11: GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles ...   Passed    0.04 sec
+
+100% tests passed out of 11
+
+Label Time Summary:
+unit    =   0.39 sec*proc (11 tests)
+
+Total Test time (real) =   0.52 sec

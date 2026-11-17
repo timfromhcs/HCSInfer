@@ -150,6 +150,32 @@ TEST(Settings, NonLoopbackBindNeedsExplicitLanOptIn) {
     for (const char* h : {"0.0.0.0", "192.168.1.5", "::", "example.com"}) EXPECT_FALSE(is_loopback_host(h)) << h;
 }
 
+// M10 audit D7: "127." is a prefix of many DNS names; only real 127.0.0.0/8 literals are loopback.
+TEST(Settings, LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch) {
+    for (const char* h : {"127.foo.invalid", "127.example.net", "127.0.0.1.evil.com", "127.", "127.1", "127.1.2",
+                          "127.0.0.256", "127.0.0.1.1", "127.0.0.1 ", " 127.0.0.1", "127.0.0.01x", "127..0.1", "0127.0.0.1", "127.0.0.01",
+                          "127.0.0.-1", "::ffff:8.8.8.8", "[::2]", "localhost.evil.com", ""})
+        EXPECT_FALSE(is_loopback_host(h)) << h;
+    EXPECT_FALSE(is_loopback_host(std::string_view("127.0.0.1\0evil", 14)));
+    for (const char* h : {"127.0.0.1", "127.255.255.254", "127.0.0.0", "localhost", "::1", "[::1]"})
+        EXPECT_TRUE(is_loopback_host(h)) << h;
+    Settings s;
+    s.bind_host = "127.example.net";
+    ASSERT_FALSE(validate(s));
+    EXPECT_EQ(validate(s).error().code, ErrorCode::SecurityViolation);
+}
+
+// M10 audit D4 (part): the settings cap must equal the engine cap (1048576), not twice that.
+TEST(Settings, ContextTokenCapMatchesEngineCap) {
+    Settings s;
+    s.context_tokens = 1u << 20;
+    EXPECT_TRUE(validate(s));
+    s.context_tokens = (1u << 20) + 1;
+    EXPECT_FALSE(validate(s));
+    s.context_tokens = 1u << 21;
+    EXPECT_FALSE(validate(s));
+}
+
 TEST(Settings, ProfileNames) {
     EXPECT_EQ(to_string(AccelProfile::CpuOnly), "cpu");
     EXPECT_EQ(to_string(MemoryProfile::LowMemory), "low_memory");

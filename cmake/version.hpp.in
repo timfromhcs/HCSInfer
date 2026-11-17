@@ -1,2 +1,6 @@
 #pragma once
 #define HCS_VERSION_STRING "@PROJECT_VERSION@"
+// Recorded at CMake configure time (re-run configure to refresh): benchmark JSON provenance.
+#define HCS_GIT_COMMIT "@HCS_GIT_COMMIT@"
+#define HCS_CMAKE_VERSION "@CMAKE_VERSION@"
+#define HCS_BUILD_TYPE "@HCS_BUILD_TYPE_LABEL@"

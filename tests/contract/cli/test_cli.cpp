@@ -64,13 +64,28 @@ TEST(Cli, UnknownCommandIsInvalidArgument) {
 }
 
 TEST(Cli, PlannedCommandsReturnUnsupported) {
-    for (const char* c : {"benchmark", "tune", "cache"}) {
+    for (const char* c : {"tune", "cache"}) {
         auto r = run({c});
         EXPECT_EQ(r.code, 10) << c;
         EXPECT_TRUE(contains(r.err, "planned")) << c;
     }
     EXPECT_EQ(run({"models", "load", "x"}).code, 10);
     EXPECT_EQ(run({"models", "unload"}).code, 10);
+}
+
+TEST(Cli, BenchmarkHelpAndArgumentValidationBeforeLoadingAnything) {
+    EXPECT_EQ(run({"benchmark", "--help"}).code, 0);
+    EXPECT_TRUE(contains(run({"benchmark", "--help"}).out, "schema_version 1"));
+    EXPECT_EQ(run({"benchmark"}).code, 2);                                          // --suite required
+    EXPECT_EQ(run({"benchmark", "--suite", "bogus", "--model", "x"}).code, 2);
+    EXPECT_EQ(run({"benchmark", "--suite", "quick"}).code, 2);                      // --model required
+    EXPECT_EQ(run({"benchmark", "--suite", "full", "--model", "x"}).code, 10);      // planned, not faked
+    EXPECT_TRUE(contains(run({"benchmark", "--suite", "full", "--model", "x"}).err, "planned"));
+    EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", "x", "--iterations", "0"}).code, 2);
+    EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", "x", "--backend", "gpu"}).code, 2);
+    EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model"}).code, 2);
+    const auto missing = run({"benchmark", "--suite", "quick", "--model", "does-not-exist"});
+    EXPECT_TRUE(missing.code == 7 || missing.code == 10) << missing.code;           // not_found / no engine
 }
 
 TEST(Cli, ImplementedTransportsHaveHelpAndValidateArguments) {

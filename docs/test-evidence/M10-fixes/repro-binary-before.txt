@@ -1,0 +1,3 @@
+[before-fix] D1 mcp depth=10000: exit=0xC00000FD alive_after_send=False stdout=b''
+[before-fix] D2 120 idle sockets: closed_by_server_within_0.3s=0, health_ok=True, health_latency=6.67s
+[before-fix] D3 non-stream disconnect: events_at_close=6; +1s state=running events=81; +5s state=running events=348

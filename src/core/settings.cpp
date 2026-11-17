@@ -10,8 +10,38 @@ namespace hcs {
 using nlohmann::json;
 namespace fs = std::filesystem;
 
+namespace {
+// Strict dotted-quad parse: exactly four decimal octets 0..255, no signs, spaces or leading junk. Returns the
+// first octet through `first` so the caller can test the 127.0.0.0/8 range.
+bool parse_ipv4_literal(std::string_view h, int& first) noexcept {
+    int octets = 0;
+    std::size_t i = 0;
+    while (i <= h.size() && octets < 4) {
+        const std::size_t start = i;
+        int v = 0;
+        while (i < h.size() && h[i] >= '0' && h[i] <= '9') {
+            v = v * 10 + (h[i] - '0');
+            if (v > 255) return false;
+            ++i;
+        }
+        if (i == start || i - start > 3) return false;
+        if (i - start > 1 && h[start] == '0') return false;  // "0127" is octal for some resolvers: refuse the ambiguity
+        if (octets == 0) first = v;
+        ++octets;
+        if (octets == 4) return i == h.size();
+        if (i >= h.size() || h[i] != '.') return false;
+        ++i;
+    }
+    return false;
+}
+}  // namespace
+
+// Only real loopback literals qualify: "127.foo.invalid" or "127.example.net" are DNS names that may resolve to a LAN
+// address, so a prefix match would bind a non-loopback interface without --lan (M10 audit D7).
 bool is_loopback_host(std::string_view h) noexcept {
-    return h == "127.0.0.1" || h == "localhost" || h == "::1" || h == "[::1]" || h.rfind("127.", 0) == 0;
+    if (h == "localhost" || h == "::1" || h == "[::1]") return true;
+    int first = -1;
+    return parse_ipv4_literal(h, first) && first == 127;
 }
 
 std::string_view to_string(AccelProfile p) noexcept {
@@ -70,8 +100,9 @@ Result<void> validate(const Settings& s) {
                           "non-loopback bind_host requires explicit allow_lan=true (and authentication)");
     }
     if (!parse_log_level(s.log_level)) return make_error(ErrorCode::InvalidArgument, "unknown log_level");
-    if (s.context_tokens < 128 || s.context_tokens > (1u << 21)) {
-        return make_error(ErrorCode::InvalidArgument, "context_tokens must be 128..2097152");
+    // Upper bound equals the llama adapter's own cap (1 Mi tokens); a larger value could only fail later at load.
+    if (s.context_tokens < 128 || s.context_tokens > (1u << 20)) {
+        return make_error(ErrorCode::InvalidArgument, "context_tokens must be 128..1048576");
     }
     for (const auto& r : s.model_roots) {
         if (r.empty()) return make_error(ErrorCode::InvalidArgument, "empty model root");

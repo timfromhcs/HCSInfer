@@ -1,0 +1,17 @@
+Running main() from D:\HCSInfer\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = MemoryProbe.*
+[==========] Running 3 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 3 tests from MemoryProbe
+[ RUN      ] MemoryProbe.PolicyReservesTenPercentWithAOneGiBFloorAndHalfGiBMargin
+[       OK ] MemoryProbe.PolicyReservesTenPercentWithAOneGiBFloorAndHalfGiBMargin (0 ms)
+[ RUN      ] MemoryProbe.BudgetNeverUnderflowsWhenTheMachineIsAlmostFull
+[       OK ] MemoryProbe.BudgetNeverUnderflowsWhenTheMachineIsAlmostFull (0 ms)
+[ RUN      ] MemoryProbe.LiveMeasurementIsPlausible
+[       OK ] MemoryProbe.LiveMeasurementIsPlausible (0 ms)
+[----------] 3 tests from MemoryProbe (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 3 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 3 tests.
+exit=0

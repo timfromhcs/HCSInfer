@@ -14,7 +14,7 @@ FetchContent_MakeAvailable(vulkan_headers)
 
 hcs_add_library(hardware
   SOURCES doctor.cpp cpu_info.cpp system_info.cpp gpu_info.cpp vulkan_info.cpp storage_info.cpp
-          report_format.cpp
+          report_format.cpp memory_probe.cpp
   PUBLIC_LINK hcs_core
   PRIVATE_LINK nlohmann_json::nlohmann_json Vulkan::Headers)
 target_compile_definitions(hcs_hardware PRIVATE VK_NO_PROTOTYPES)

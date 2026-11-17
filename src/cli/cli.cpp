@@ -1,5 +1,6 @@
 #include "hcs/cli/cli.hpp"
 
+#include "benchmark_cmd.hpp"
 #include "chat_cmd.hpp"
 #include "image_cmd.hpp"
 #include "vision_cmd.hpp"
@@ -40,7 +41,7 @@ using nlohmann::json;
 
 namespace {
 
-constexpr const char* kPlanned[] = {"benchmark", "tune", "cache"};
+constexpr const char* kPlanned[] = {"tune", "cache"};
 
 const char* kRootHelp =
     "HCSInfer - local-first AI runtime (control-plane scaffold)\n"
@@ -60,8 +61,9 @@ const char* kRootHelp =
     "  mcp stdio                     MCP server over stdio\n"
     "  vision --model <path-or-id> --image <file> --prompt ... [--mmproj <file>] [--json]\n"
     "                                Image analysis via llama.cpp libmtmd (see `vision --help`)\n"
-    "  benchmark|tune|cache\n"
-    "                                Planned - not implemented yet (exit code 10)\n"
+    "  benchmark --suite quick --model <path-or-id> [--export file]\n"
+    "                                Real text-model benchmark, JSON per AGENTS.md 21.1 (see `benchmark --help`)\n"
+    "  tune|cache                    Planned - not implemented yet (exit code 10)\n"
     "\n"
     "Global options:\n"
     "  --state-dir <dir>   State directory (default: $HCS_STATE_DIR, %LOCALAPPDATA%\\HCSInfer or ~/.hcsinfer)\n"
@@ -304,6 +306,7 @@ int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostrea
 
     if (cmd == "doctor") return cmd_doctor(std::move(args), out, err);
     if (cmd == "chat") return run_chat(std::move(args), state_override, out, err);
+    if (cmd == "benchmark") return run_benchmark(std::move(args), state_override, out, err);
     if (cmd == "vision") return run_vision(std::move(args), state_override, out, err);
     if (cmd == "image") return run_image(std::move(args), state_override, out, err);
     if (cmd == "models") return cmd_models(std::move(args), state_override, out, err);

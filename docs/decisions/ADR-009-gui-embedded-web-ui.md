@@ -1,7 +1,7 @@
 # ADR-009: GUI toolkit - embedded local web UI served by the loopback API
 
-- Status: PROPOSED (2026-11-17). Nothing is implemented; `src/gui` does not exist.
-- Date: 2026-11-17
+- Status: ACCEPTED (2026-11-17, implemented). Accepted on implementation evidence; the open items are listed below.
+- Date: 2026-11-17 (proposed and implemented on the same day)
 
 ## Context
 AGENTS.md M4 requires Chat, Vision, Image Studio, Models, Performance Center and Settings, Simple/Advanced modes, with
@@ -28,7 +28,17 @@ exercises the same auth, path guard and limits as any other client. Requirements
 - progress, device, backend and memory come from `/hcs/v1/*`, not invented by the UI;
 - Simple/Advanced split and reset-to-default for every advanced option;
 - works with Vulkan failed (CPU-only), shows load/busy/error/OOM states, cancels via `/hcs/v1/jobs/{id}/cancel`.
-Prerequisites that must land first: chat image input, `/v1/images/*` and the benchmark route (all `501` today).
+Prerequisites that must land first: chat image input, `/v1/images/*` and the benchmark route. All three landed
+(vision input on chat, image routes and the `benchmark` command); the UI is implemented in `src/gui` and served by
+`ApiHandler::handle()` before bearer auth (after the Host/Origin checks). See `docs/gui.md`.
+
+### Implementation status (2026-11-17)
+
+Implemented: `src/gui` (`hcs_gui`, assets embedded by `embed_assets.cmake`), hook in `src/api/http_api.cpp`, CLI
+`mcp`/`serve` unchanged, unit tests `tests/unit/gui`, contract tests `tests/contract/api_image` (`ApiUi.*`) and the
+e2e `tests/e2e/gui_real/e2e_gui.py`. Open/not yet done: no `HCSInfer ui` launcher command (the URL is printed by
+`serve`); GUI not yet run on the Vulkan build; `playwright` interaction phase NOT RUN on this machine; image edit is
+not in the UI (route and MCP tool exist).
 
 ## Rejected
 Native toolkit for V1 (dependency weight, unproven static link); a UI that talks to engines directly.

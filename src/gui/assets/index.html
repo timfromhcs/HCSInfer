@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>HCSInfer</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/ui/app.css">
+<script src="/ui/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <h1>HCSInfer</h1>
+  <nav aria-label="Sections">
+    <div role="tablist" id="tabs" aria-label="Sections">
+      <button role="tab" id="tab-chat" data-panel="chat" aria-controls="panel-chat" aria-selected="true">Chat</button>
+      <button role="tab" id="tab-vision" data-panel="vision" aria-controls="panel-vision" aria-selected="false" tabindex="-1">Vision</button>
+      <button role="tab" id="tab-image" data-panel="image" aria-controls="panel-image" aria-selected="false" tabindex="-1">Image Studio</button>
+      <button role="tab" id="tab-models" data-panel="models" aria-controls="panel-models" aria-selected="false" tabindex="-1">Models</button>
+      <button role="tab" id="tab-perf" data-panel="perf" aria-controls="panel-perf" aria-selected="false" tabindex="-1">Performance</button>
+      <button role="tab" id="tab-settings" data-panel="settings" aria-controls="panel-settings" aria-selected="false" tabindex="-1">Settings</button>
+    </div>
+  </nav>
+  <div class="status" role="status" aria-live="polite">
+    <span id="conn" class="pill pill-unknown">connecting</span>
+    <span id="loaded" class="pill pill-unknown">no model loaded</span>
+  </div>
+</header>
+
+<main id="main">
+  <div id="authbar" class="banner banner-error" hidden>
+    <form id="auth-form" autocomplete="off">
+      <label for="auth-token">API token (printed by <code>HCSInfer serve</code> on stderr)</label>
+      <input id="auth-token" type="password" autocomplete="off" spellcheck="false" required>
+      <button type="submit">Use token</button>
+    </form>
+    <p id="auth-note" class="note">The token is kept only in this tab (memory and session storage). It is never put in a URL query string.</p>
+  </div>
+
+  <section role="tabpanel" id="panel-chat" aria-labelledby="tab-chat" tabindex="0">
+    <h2>Chat</h2>
+    <div class="banner" id="chat-state" role="status" aria-live="polite" hidden></div>
+    <div id="chat-log" class="log" aria-live="polite" aria-label="Conversation"></div>
+    <form id="chat-form">
+      <label>Model <select id="chat-model"></select></label>
+      <div class="adv" data-advanced hidden>
+        <label>System prompt <textarea id="chat-system" rows="2" maxlength="8000"></textarea></label>
+        <label>Temperature <input id="chat-temp" type="number" min="0" max="2" step="0.1" value="0.7"></label>
+        <label>Max tokens <input id="chat-max" type="number" min="1" max="4096" step="1" value="256"></label>
+        <label>Seed <input id="chat-seed" type="number" min="0" step="1" placeholder="random"></label>
+        <button type="button" class="ghost" data-reset="chat">Reset to defaults</button>
+      </div>
+      <label for="chat-input" class="vh">Message</label>
+      <textarea id="chat-input" rows="3" placeholder="Type a message. Enter sends, Shift+Enter adds a line." maxlength="60000"></textarea>
+      <div class="row">
+        <button type="submit" id="chat-send">Send</button>
+        <button type="button" id="chat-stop" class="danger" hidden>Stop</button>
+        <button type="button" id="chat-clear" class="ghost">Clear</button>
+        <span id="chat-meta" class="note"></span>
+      </div>
+    </form>
+  </section>
+
+  <section role="tabpanel" id="panel-vision" aria-labelledby="tab-vision" tabindex="0" hidden>
+    <h2>Vision</h2>
+    <p class="note">Needs a multimodal model whose projector (mmproj) file is in the same folder. One image per request (PNG, JPEG, GIF or BMP). The server body limit applies (default 1 MiB; start the server with a larger <code>--max-body-bytes</code> for photos).</p>
+    <div class="banner" id="vision-state" role="status" aria-live="polite" hidden></div>
+    <form id="vision-form">
+      <label>Model <select id="vision-model"></select></label>
+      <label>Image <input id="vision-file" type="file" accept="image/png,image/jpeg,image/gif,image/bmp"></label>
+      <img id="vision-preview" alt="Selected image preview" hidden>
+      <label>Question <textarea id="vision-prompt" rows="2" maxlength="8000">Describe this image.</textarea></label>
+      <div class="adv" data-advanced hidden>
+        <label>Max tokens <input id="vision-max" type="number" min="1" max="4096" value="256"></label>
+        <label>Temperature <input id="vision-temp" type="number" min="0" max="2" step="0.1" value="0"></label>
+        <button type="button" class="ghost" data-reset="vision">Reset to defaults</button>
+      </div>
+      <div class="row">
+        <button type="submit" id="vision-send">Analyze</button>
+        <button type="button" id="vision-stop" class="danger" hidden>Stop</button>
+      </div>
+    </form>
+    <pre id="vision-out" class="out" aria-live="polite"></pre>
+  </section>
+
+  <section role="tabpanel" id="panel-image" aria-labelledby="tab-image" tabindex="0" hidden>
+    <h2>Image Studio</h2>
+    <div class="banner" id="image-state" role="status" aria-live="polite" hidden></div>
+    <form id="image-form">
+      <label>Model <select id="image-model"></select></label>
+      <label>Prompt <textarea id="image-prompt" rows="2" maxlength="4000"></textarea></label>
+      <label>Size
+        <select id="image-size"><option>256x256</option><option>384x384</option><option selected>512x512</option></select>
+      </label>
+      <div class="adv" data-advanced hidden>
+        <label>Steps <input id="image-steps" type="number" min="1" max="100" value="20"></label>
+        <label>Seed <input id="image-seed" type="number" min="0" placeholder="random"></label>
+        <button type="button" class="ghost" data-reset="image">Reset to defaults</button>
+      </div>
+      <div class="row">
+        <button type="submit" id="image-send">Generate</button>
+        <button type="button" id="image-stop" class="danger" hidden>Cancel</button>
+      </div>
+    </form>
+    <img id="image-out" alt="Generated image" hidden>
+  </section>
+
+  <section role="tabpanel" id="panel-models" aria-labelledby="tab-models" tabindex="0" hidden>
+    <h2>Models</h2>
+    <div class="banner" id="models-state" role="status" aria-live="polite" hidden></div>
+    <div class="row"><button type="button" id="models-refresh">Refresh</button></div>
+    <div class="scroll">
+      <table id="models-table">
+        <thead><tr><th scope="col">Model</th><th scope="col">Kind</th><th scope="col">Quantization</th><th scope="col">Size</th><th scope="col">State</th><th scope="col">Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="note">Models come from the server registry (<code>HCSInfer models scan &lt;dir&gt;</code>). Loading is asynchronous; the state shown here is the real job state.</p>
+  </section>
+
+  <section role="tabpanel" id="panel-perf" aria-labelledby="tab-perf" tabindex="0" hidden>
+    <h2>Performance</h2>
+    <div class="banner" id="perf-state" role="status" aria-live="polite" hidden></div>
+    <label class="inline"><input type="checkbox" id="perf-auto" checked> Auto-refresh</label>
+    <button type="button" id="perf-refresh">Refresh now</button>
+    <div class="grid">
+      <div><h3>Runtime</h3><dl id="perf-runtime"></dl></div>
+      <div><h3>Memory</h3><dl id="perf-memory"></dl></div>
+      <div><h3>Jobs started from this page</h3><dl id="perf-jobs"></dl></div>
+    </div>
+    <h3>Devices</h3>
+    <pre id="perf-devices" class="out" tabindex="0"></pre>
+  </section>
+
+  <section role="tabpanel" id="panel-settings" aria-labelledby="tab-settings" tabindex="0" hidden>
+    <h2>Settings</h2>
+    <fieldset>
+      <legend>Mode</legend>
+      <label class="inline"><input type="radio" name="mode" value="simple" checked> Simple</label>
+      <label class="inline"><input type="radio" name="mode" value="advanced"> Advanced</label>
+      <p class="note">Advanced shows sampling and image options. Every advanced option has a reset button.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Connection</legend>
+      <p class="note">Server: <code id="set-origin"></code></p>
+      <button type="button" id="set-forget">Forget token in this tab</button>
+    </fieldset>
+    <fieldset>
+      <legend>Performance refresh</legend>
+      <label>Interval (seconds) <input id="set-interval" type="number" min="1" max="60" value="3"></label>
+      <button type="button" class="ghost" id="set-interval-reset">Reset to default</button>
+    </fieldset>
+    <p class="note">Model folders, memory profile and backend selection are server-side settings (<code>settings.json</code> and <code>serve</code> options); this page does not change them.</p>
+  </section>
+</main>
+<footer><span id="ver">HCSInfer local UI</span> &middot; local only, talks to this server and nothing else</footer>
+</body>
+</html>

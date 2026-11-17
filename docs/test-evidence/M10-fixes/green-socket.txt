@@ -1,0 +1,17 @@
+Running main() from D:\HCSInfer\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = ApiSocketAudit.*
+[==========] Running 3 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 3 tests from ApiSocketAudit
+[ RUN      ] ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob
+[       OK ] ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob (219 ms)
+[ RUN      ] ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded
+[       OK ] ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded (2058 ms)
+[ RUN      ] ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout
+[       OK ] ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout (1028 ms)
+[----------] 3 tests from ApiSocketAudit (3306 ms total)
+
+[----------] Global test environment tear-down
+[==========] 3 tests from 1 test suite ran. (3306 ms total)
+[  PASSED  ] 3 tests.
+exit=0

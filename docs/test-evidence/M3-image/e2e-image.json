@@ -1,0 +1,301 @@
+{
+  "schema_version": 1,
+  "exe": "HCSInfer.exe",
+  "version": "HCSInfer 0.1.0",
+  "model_file": "sd15-q8_0.gguf",
+  "model_size_bytes": 1763578176,
+  "size": 256,
+  "steps": 2,
+  "http": {
+    "load_wall_s": 1.05,
+    "generate_wall_s": 9.21,
+    "generation": {
+      "hcs": {
+        "format": "png",
+        "generation_ms": 9187.9819,
+        "height": 256,
+        "job_id": "job-3",
+        "model": "sd15-q8_0",
+        "request_id": "req-24022dc9c57b2213",
+        "seed": 7,
+        "steps": 2,
+        "width": 256
+      },
+      "png_bytes": 175472,
+      "png_info": [
+        256,
+        256,
+        235
+      ]
+    },
+    "generate_again_wall_s": 8.74,
+    "same_seed_identical_bytes": true,
+    "edit_wall_s": 10.89,
+    "after_disconnect_wall_s": 13.42,
+    "runtime_image_engine": {
+      "available": true,
+      "metrics": {
+        "backend": "cpu",
+        "device": "AMD Ryzen 7 7735HS with Radeon Graphics         (CPU)",
+        "image_generation_ms": 8974.1442,
+        "image_steps": 2,
+        "load_ms": 149.9864,
+        "resident_bytes": 1763578176
+      },
+      "streaming": true
+    }
+  },
+  "mcp": {
+    "generate_wall_s": 9.94,
+    "generation": {
+      "bytes": 175472,
+      "format": "png",
+      "generation_ms": 9793.8567,
+      "height": 256,
+      "job_id": "job-1",
+      "model": "sd15-q8_0",
+      "steps": 2,
+      "width": 256
+    },
+    "edit_wall_s": 11.28,
+    "after_cancel_wall_s": 13.5
+  },
+  "checks": [
+    {
+      "check": "serve prints port and token",
+      "pass": true,
+      "detail": "(51878, True)"
+    },
+    {
+      "check": "UI: GET / without token -> 200 html",
+      "pass": true,
+      "detail": "(200, '<!doctype html>\\n<html lang=\"en\">\\n<head>\\n<meta charset=\"utf-8\">\\n<meta name=\"viewp')"
+    },
+    {
+      "check": "UI: CSP header present",
+      "pass": true,
+      "detail": "HTTP/1.1 200 OK\nContent-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; font-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'\nX-F"
+    },
+    {
+      "check": "UI: page does not contain the API token",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "UI: /ui/app.js served",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "check": "UI: app.js does not contain the API token",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "UI: DNS-rebinding Host -> 403",
+      "pass": true,
+      "detail": "403"
+    },
+    {
+      "check": "UI: foreign Origin -> 403",
+      "pass": true,
+      "detail": "403"
+    },
+    {
+      "check": "UI: POST / -> 405",
+      "pass": true,
+      "detail": "405"
+    },
+    {
+      "check": "UI: HEAD / -> 200",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "check": "API still needs the token next to the UI",
+      "pass": true,
+      "detail": "401"
+    },
+    {
+      "check": "registry lists the diffusion model with kind=image",
+      "pass": true,
+      "detail": "{'architecture': 'stable-diffusion', 'display_name': 'sd15-q8_0', 'format': 'gguf', 'id': 'sd15-q8_0', 'kind': 'image', 'license': 'unknown', 'quantization': 'unknown', 'sha256': 'unknown', 'size_bytes': 1763578176, 'state': 'discovered'}"
+    },
+    {
+      "check": "runtime reports an available image engine",
+      "pass": true,
+      "detail": "{'available': True, 'metrics': {'backend': 'unknown', 'device': 'unknown', 'image_generation_ms': 0.0, 'image_steps': 0, 'load_ms': 0.0, 'resident_bytes': 0}, 'streaming': True}"
+    },
+    {
+      "check": "size not multiple of 8 -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_argument', 'message': 'width/height must be multiples of 8', 'param': None, 'request_id': 'req-da9c4accca184ae9', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "steps over cap -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_request', 'message': '/steps: must be <= 150', 'param': None, 'request_id': 'req-edfc580f6be1c5c7', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "oversized image -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_argument', 'message': 'width/height must be in 64..2048', 'param': None, 'request_id': 'req-a540b03a2f02f864', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "no model loaded and none requested -> 409",
+      "pass": true,
+      "detail": "(409, {'error': {'code': 'invalid_state', 'message': 'no model is loaded: load an image model first or pass a model id', 'param': None, 'request_id': 'req-8812a14e9c4e1c81', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "images route needs the token -> 401",
+      "pass": true,
+      "detail": "401"
+    },
+    {
+      "check": "load accepted as a job (202)",
+      "pass": true,
+      "detail": "(202, {'job_id': 'job-2', 'status_url': '/hcs/v1/jobs/job-2'})"
+    },
+    {
+      "check": "model load job succeeded",
+      "pass": true,
+      "detail": "('succeeded', {'error': None, 'event_count': 3, 'id': 'job-2', 'name': 'model.load', 'state': 'succeeded'})"
+    },
+    {
+      "check": "POST /v1/images/generations -> 200",
+      "pass": true,
+      "detail": "(200, \"{'created': 1794924282, 'data': [{'b64_json': 'iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAKtN0lEQVR4XmP8f/MaAwMrw28uBkYmhu9/GRh+M3z9y8DMyvCXieHHbwZmZobvXxi+/2T494/h73+G/38Zfv9m+Pyd4c8vhn8MDH8YGL7/Y\")"
+    },
+    {
+      "check": "generated image is a PNG of the requested size",
+      "pass": true,
+      "detail": "(256, 256, 235)"
+    },
+    {
+      "check": "generated image is not blank (pixel data has variety)",
+      "pass": true,
+      "detail": "(256, 256, 235)"
+    },
+    {
+      "check": "response reports job id, steps and timing",
+      "pass": true,
+      "detail": "{'format': 'png', 'generation_ms': 9187.9819, 'height': 256, 'job_id': 'job-3', 'model': 'sd15-q8_0', 'request_id': 'req-24022dc9c57b2213', 'seed': 7, 'steps': 2, 'width': 256}"
+    },
+    {
+      "check": "job status reports the image result",
+      "pass": true,
+      "detail": "{'error': None, 'event_count': 3, 'id': 'job-3', 'name': 'image.generate', 'result': {'bytes': 175472, 'format': 'png', 'generation_ms': 9187.9819, 'height': 256, 'kind': 'image', 'steps': 2, 'width': 256}, 'state': 'succeeded'}"
+    },
+    {
+      "check": "POST /v1/images/edits -> 200",
+      "pass": true,
+      "detail": "(200, \"{'created': 1794924302, 'data': [{'b64_json': 'iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAJQ+ElEQVR4XmOUZ2D+y8DHxsD2l+EfEwP7fwZGRgam/wx/GBl+MzD8YWZg+A8SB4r8Y2NgYmRgYAHJMjCCIOMfhj8MTEx/Gf7++f/v//9/D\")"
+    },
+    {
+      "check": "edited image is a PNG of the input size",
+      "pass": true,
+      "detail": "(256, 256, 222)"
+    },
+    {
+      "check": "edited image differs from the input",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "edit with a non-image -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_argument', 'message': 'the input image must be a png or jpeg (or its header is truncated)', 'param': None, 'request_id': 'req-eae200800aa91022', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "edit with a file URL -> 400 (no server paths)",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_image', 'message': 'malformed base64 payload', 'param': None, 'request_id': 'req-941b9581be36f6d1', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "edit with multipart -> 415",
+      "pass": true,
+      "detail": "415"
+    },
+    {
+      "check": "client gives up on a long render (curl timeout)",
+      "pass": true,
+      "detail": "(0, 'curl: (28) Operation timed out after 4015 milliseconds with 0 bytes received')"
+    },
+    {
+      "check": "next request completes promptly after the disconnect (abandoned job cancelled)",
+      "pass": true,
+      "detail": "(200, 13.42)"
+    },
+    {
+      "check": "unload image model",
+      "pass": true,
+      "detail": "(200, {'id': 'sd15-q8_0', 'state': 'unloaded'})"
+    },
+    {
+      "check": "MCP tools/list includes the image tools",
+      "pass": true,
+      "detail": "['hcs.models.list', 'hcs.models.inspect', 'hcs.models.load', 'hcs.models.unload', 'hcs.chat.generate', 'hcs.vision.analyze', 'hcs.image.generate', 'hcs.image.edit', 'hcs.runtime.status', 'hcs.jobs.status', 'hcs.jobs.cancel']"
+    },
+    {
+      "check": "MCP models.list finds the diffusion model",
+      "pass": true,
+      "detail": "['sd15-q8_0']"
+    },
+    {
+      "check": "MCP generate with a bad size -> invalid_argument",
+      "pass": true,
+      "detail": "{'id': 3, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': 'invalid_argument: width/height must be multiples of 8', 'type': 'text'}], 'isError': True, 'resultType': 'complete', 'structuredContent': {'error': {'code': 'invalid_argument', 'message': 'width/height must be multiples of 8'}}}}"
+    },
+    {
+      "check": "MCP hcs.image.generate (real) succeeds",
+      "pass": true,
+      "detail": "{'id': 4, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'data': 'iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAKtN0lEQVR4XmP8f/MaAwMrw28uBkYmhu9/GRh+M3z9y8DMyvCXieHHbwZmZobvXxi+/2T494/h73+G/38Zfv9m+Pyd4c8vhn8MDH8Y"
+    },
+    {
+      "check": "MCP result carries an image content block",
+      "pass": true,
+      "detail": "image"
+    },
+    {
+      "check": "MCP image is a PNG of the requested size",
+      "pass": true,
+      "detail": "(256, 256, 235)"
+    },
+    {
+      "check": "MCP image is not blank",
+      "pass": true,
+      "detail": "(256, 256, 235)"
+    },
+    {
+      "check": "MCP structuredContent has metadata only",
+      "pass": true,
+      "detail": "{'bytes': 175472, 'format': 'png', 'generation_ms': 9793.8567, 'height': 256, 'job_id': 'job-1', 'model': 'sd15-q8_0', 'steps': 2, 'width': 256}"
+    },
+    {
+      "check": "MCP hcs.image.edit (real) succeeds",
+      "pass": true,
+      "detail": "{'id': 5, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'data': 'iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAJQ+ElEQVR4XmOUZ2D+y8DHxsD2l+EfEwP7fwZGRgam/wx/GBl+MzD8YWZg+A8SB4r8Y2NgYmRgYAHJMjCCIOMfhj8MTEx/Gf7++f/v"
+    },
+    {
+      "check": "MCP edited image is a PNG of the input size",
+      "pass": true,
+      "detail": "(256, 256, 222)"
+    },
+    {
+      "check": "MCP edit input outside approved roots -> security_violation",
+      "pass": true,
+      "detail": "{'id': 6, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': 'security_violation: path is outside approved roots: <path>/hcs-e2e-outside.png', 'type': 'text'}], 'isError': True, 'resultType': 'complete', 'structuredContent': {'error': {'code': 'security_violation', 'message': 'path is outside approved roots: "
+    },
+    {
+      "check": "MCP edit input with .. -> security_violation",
+      "pass": true,
+      "detail": "{'id': 7, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': \"security_violation: path contains '..' component\", 'type': 'text'}], 'isError': True, 'resultType': 'complete', 'structuredContent': {'error': {'code': 'security_violation', 'message': \"path contains '..' component\"}}}}"
+    },
+    {
+      "check": "MCP: next render completes promptly after cancelling the long one",
+      "pass": true,
+      "detail": "(13.5, \"{'id': 9, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'data': 'iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAKG\")"
+    }
+  ],
+  "result_status": "PASS"
+}

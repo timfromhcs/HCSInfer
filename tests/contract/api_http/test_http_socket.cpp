@@ -208,3 +208,145 @@ TEST(ApiSocket, ServerStopsCleanly) {
     c.set_connection_timeout(0, 300000);
     EXPECT_FALSE(c.Get("/hcs/v1/health"));
 }
+
+// ---- M10 audit regressions (real sockets) -----------------------------------------------------------------
+namespace {
+
+#ifdef _WIN32
+using RawSock = SOCKET;
+const RawSock kNoSock = INVALID_SOCKET;
+RawSock raw_connect(int port) {
+    RawSock s = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (s == kNoSock) return kNoSock;
+    sockaddr_in a{};
+    a.sin_family = AF_INET;
+    a.sin_port = htons(static_cast<unsigned short>(port));
+    a.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    if (::connect(s, reinterpret_cast<sockaddr*>(&a), sizeof(a)) != 0) {
+        ::closesocket(s);
+        return kNoSock;
+    }
+    return s;
+}
+bool raw_send(RawSock s, const std::string& d) {
+    return ::send(s, d.data(), static_cast<int>(d.size()), 0) == static_cast<int>(d.size());
+}
+void raw_close(RawSock s) { ::closesocket(s); }
+// True when the server closed the connection (orderly or reset) within `ms`.
+bool raw_peer_closed_within(RawSock s, int ms) {
+    fd_set rd;
+    FD_ZERO(&rd);
+    FD_SET(s, &rd);
+    timeval tv{ms / 1000, (ms % 1000) * 1000};
+    if (::select(0, &rd, nullptr, nullptr, &tv) <= 0) return false;
+    char b[256];
+    const int n = ::recv(s, b, sizeof(b), 0);
+    return n <= 0;
+}
+#endif
+
+}  // namespace
+
+// D3: a non-streaming chat whose client disconnects must cancel the job instead of generating to max_tokens.
+TEST(ApiSocketAudit, NonStreamingClientDisconnectCancelsTheJob) {
+#ifndef _WIN32
+    GTEST_SKIP() << "raw socket helper is Windows-only";
+#else
+    Server s;
+    s.fx.engine.run_until_cancel = true;
+    s.fx.engine.delay_ms = 2;
+    const std::string body = chat_body(false).dump();
+    RawSock c = raw_connect(s.port);
+    ASSERT_NE(c, kNoSock);
+    ASSERT_TRUE(raw_send(c, "POST /v1/chat/completions HTTP/1.1\r\nHost: 127.0.0.1:" + std::to_string(s.port) +
+                                "\r\nAuthorization: Bearer " + kToken + "\r\nContent-Type: application/json\r\nContent-Length: " +
+                                std::to_string(body.size()) + "\r\nConnection: close\r\n\r\n" + body));
+    bool started = false;
+    for (int i = 0; i < 300 && !started; ++i) {
+        started = s.fx.engine.generating.load();
+        if (!started) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    ASSERT_TRUE(started) << "generation never started";
+    raw_close(c);  // the client goes away without reading the (non-streaming) response
+    bool stopped = false;
+    for (int i = 0; i < 300 && !stopped; ++i) {
+        stopped = !s.fx.engine.generating.load();
+        if (!stopped) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    EXPECT_TRUE(stopped) << "engine kept generating for a client that disconnected";
+    EXPECT_TRUE(s.fx.cp->wait_job(JobId{1}, std::chrono::milliseconds(3000)));
+    EXPECT_EQ(s.fx.cp->job_status(JobId{1}).value().state, JobState::Cancelled);
+#endif
+}
+
+// D2: idle sockets must not starve the server. Excess connections are refused immediately (bounded pool + bounded
+// queue) and sockets that never send a request are dropped after the read timeout.
+namespace {
+struct TinyServer {
+    test::ApiFixture fx;
+    ApiHandler handler;
+    HttpServer server;
+    int port = 0;
+    static TransportOptions topts() {
+        TransportOptions t;
+        t.host = "127.0.0.1";
+        t.port = 0;
+        t.threads = 2;
+        t.max_queued = 2;
+        t.idle_timeout_s = 1;
+        t.read_timeout_s = 1;
+        return t;
+    }
+    TinyServer() : handler(*fx.cp, Server::opts(), fx.logger), server(handler, topts(), fx.logger) {
+        auto p = server.start();
+        EXPECT_TRUE(p.ok());
+        if (p) port = p.value();
+    }
+    ~TinyServer() { server.stop(); }
+};
+}  // namespace
+
+TEST(ApiSocketAudit, IdleConnectionFloodDoesNotStarveHealthAndIsBounded) {
+#ifndef _WIN32
+    GTEST_SKIP() << "raw socket helper is Windows-only";
+#else
+    TinyServer s;
+    std::vector<RawSock> idle;
+    for (int i = 0; i < 30; ++i) {
+        RawSock c = raw_connect(s.port);
+        if (c != kNoSock) idle.push_back(c);
+    }
+    ASSERT_GE(idle.size(), 20u);
+    // At most threads + queue (= 4) idle connections are kept; the rest must be refused right away.
+    int refused_fast = 0;
+    for (auto c : idle)
+        if (raw_peer_closed_within(c, 100)) ++refused_fast;
+    EXPECT_GE(refused_fast, static_cast<int>(idle.size()) - 6) << "the connection queue is unbounded";
+    // The ones that were kept are dropped by the 1 s read timeout; then a normal request is served again.
+    const auto t0 = std::chrono::steady_clock::now();
+    httplib::Client c("127.0.0.1", s.port);
+    c.set_read_timeout(8, 0);
+    c.set_connection_timeout(8, 0);
+    httplib::Result r;
+    for (int i = 0; i < 40 && !(r && r->status == 200); ++i) {
+        r = c.Get("/hcs/v1/health");
+        if (!(r && r->status == 200)) std::this_thread::sleep_for(std::chrono::milliseconds(150));
+    }
+    const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - t0).count();
+    ASSERT_TRUE(r && r->status == 200) << "health never answered";
+    EXPECT_LT(ms, 4000) << "idle sockets starved the server for " << ms << " ms";
+    for (auto c2 : idle) raw_close(c2);
+#endif
+}
+
+TEST(ApiSocketAudit, SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout) {
+#ifndef _WIN32
+    GTEST_SKIP() << "raw socket helper is Windows-only";
+#else
+    TinyServer s;
+    RawSock c = raw_connect(s.port);
+    ASSERT_NE(c, kNoSock);
+    EXPECT_TRUE(raw_peer_closed_within(c, 3500)) << "an idle socket kept a worker for more than 3.5 s (read timeout is 1 s)";
+    raw_close(c);
+#endif
+}

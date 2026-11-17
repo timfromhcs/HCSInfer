@@ -7,13 +7,24 @@
 #include <random>
 #include <sstream>
 
+#include "hcs/api/base64.hpp"
 #include "hcs/api/data_uri.hpp"
+#include "hcs/api/image_probe.hpp"
+#include "hcs/api/json_guard.hpp"
 #include "hcs/api/json_schema.hpp"
+#include "hcs/api/redact.hpp"
+#ifdef HCS_HAVE_GUI
+#include "hcs/gui/gui_assets.hpp"
+#endif
 
 namespace hcs::api {
 namespace {
 
 using json = nlohmann::json;
+
+// Model output is not guaranteed to be valid UTF-8 (a stray continuation byte, a flushed partial sequence): never let
+// serialisation throw and turn a successful generation into a 500 (M10 audit C4).
+std::string dump_safe(const json& j) { return j.dump(-1, ' ', false, json::error_handler_t::replace); }
 
 std::string lower(std::string s) {
     for (auto& c : s) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
@@ -55,27 +66,6 @@ std::string type_for(int status) {
     if (status == 429) return "rate_limit_error";
     if (status >= 500) return "server_error";
     return "invalid_request_error";
-}
-
-// Maximum bracket nesting outside of strings. Cheap guard against pathological bodies.
-bool json_depth_ok(const std::string& s, int max_depth) {
-    int depth = 0;
-    bool in_str = false, esc = false;
-    for (char c : s) {
-        if (in_str) {
-            if (esc) esc = false;
-            else if (c == '\\') esc = true;
-            else if (c == '"') in_str = false;
-            continue;
-        }
-        if (c == '"') in_str = true;
-        else if (c == '{' || c == '[') {
-            if (++depth > max_depth) return false;
-        } else if (c == '}' || c == ']') {
-            --depth;
-        }
-    }
-    return true;
 }
 
 std::vector<std::string> split_path(const std::string& p) {
@@ -229,8 +219,8 @@ HttpResponse ApiHandler::error(int status, const std::string& type, const std::s
                                const std::string& rid) const {
     HttpResponse r;
     r.status = status;
-    json j = {{"error", {{"message", msg}, {"type", type}, {"code", code}, {"param", nullptr}, {"request_id", rid}}}};
-    r.body = j.dump();
+    json j = {{"error", {{"message", redact_paths(msg)}, {"type", type}, {"code", code}, {"param", nullptr}, {"request_id", rid}}}};
+    r.body = dump_safe(j);
     return r;
 }
 
@@ -244,7 +234,7 @@ HttpResponse ApiHandler::from_error(const Error& e, const std::string& rid) cons
 HttpResponse ApiHandler::json_ok(const json& j, int status) const {
     HttpResponse r;
     r.status = status;
-    r.body = j.dump();
+    r.body = dump_safe(j);
     return r;
 }
 
@@ -261,6 +251,16 @@ HttpResponse ApiHandler::handle(const HttpRequest& req) {
             resp = error(403, "permission_error", "host_not_allowed", "Host header is not allowed", rid);
         } else if (req.headers.count("origin") && !origin_allowed(get("origin"))) {
             resp = error(403, "permission_error", "origin_not_allowed", "Origin is not allowed", rid);
+#ifdef HCS_HAVE_GUI
+        } else if (auto g = hcs::gui::serve(req.method, req.path)) {
+            // Embedded web UI (ADR-009): static assets, no secret inside, reachable only after the Host/Origin checks
+            // above and before bearer auth (the page itself carries no token; the user supplies it in the URL
+            // fragment, which is never sent to the server). Not counted as an in-flight API request.
+            resp.status = g->status;
+            resp.content_type = g->content_type;
+            resp.headers = g->headers;
+            resp.body = std::string(g->body);
+#endif
         } else if (!is_health && [&] {
                        const std::string a = get("authorization");
                        if (a.size() < 8 || lower(a.substr(0, 7)) != "bearer ") return true;
@@ -326,10 +326,7 @@ HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid
     }
     if (req.path == "/v1/images/generations" || req.path == "/v1/images/edits") {
         if (!is_post) return not_allowed("POST");
-        return error(501, "server_error", "unsupported",
-                     "image generation/editing is not available: no image engine adapter (stable-diffusion.cpp) is "
-                     "implemented in this build",
-                     rid);
+        return images(req, rid, guard, req.path == "/v1/images/edits");
     }
 
     // --- HCS native ---
@@ -402,7 +399,7 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
         return error(415, "invalid_request_error", "unsupported_media_type", "Content-Type must be application/json", rid);
     if (req.body.size() > opt_.max_body_bytes)
         return error(413, "invalid_request_error", "payload_too_large", "request body exceeds the configured limit", rid);
-    if (!json_depth_ok(req.body, 64))
+    if (!json_depth_ok(req.body, kMaxJsonDepth))
         return error(400, "invalid_request_error", "invalid_json", "JSON nesting too deep", rid);
     json body = json::parse(req.body, nullptr, false);
     if (body.is_discarded()) return error(400, "invalid_request_error", "invalid_json", "malformed JSON body", rid);
@@ -469,6 +466,23 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
     const JobId job = sub.value().id;
     auto channel = sub.value().channel;
     const auto deadline = clock::now() + opt_.request_timeout;
+    // A request whose client is gone must not keep the single engine worker busy (M10 audit D3). The transport's
+    // probe is polled in short slices while we wait for output.
+    const auto peer_closed = req.peer_closed;
+    constexpr auto kPoll = std::chrono::milliseconds(150);
+    auto next_probe = clock::now();
+    auto peer_gone = [&peer_closed, &next_probe, kPoll] {
+        if (!peer_closed) return false;
+        const auto now = clock::now();
+        if (now < next_probe) return false;  // one cheap socket probe per poll interval, not one per token
+        next_probe = now + kPoll;
+        return peer_closed();
+    };
+    auto abandoned = [&]() {
+        (void)cp_.cancel_job(job);
+        (void)cp_.wait_job(job, std::chrono::milliseconds(2000));
+        return error(499, "invalid_request_error", "client_closed_request", "client closed the connection", rid);
+    };
     const std::string cid = "chatcmpl-" + std::to_string(job.value);
     const std::int64_t created = static_cast<std::int64_t>(std::time(nullptr));
     auto model_name = [this, p]() {
@@ -482,17 +496,22 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
     bool got_first = false, finished = false;
     while (!got_first && !finished) {
         JobEvent ev;
-        switch (channel->pop(ev, deadline)) {
+        switch (channel->pop(ev, std::min(deadline, clock::now() + kPoll))) {
             case JobChannel::Pop::Event:
                 if (ev.kind == JobEventKind::Output) { first = std::move(ev.text); got_first = true; }
                 break;
             case JobChannel::Pop::Done: finished = true; break;
             case JobChannel::Pop::Timeout:
-                (void)cp_.cancel_job(job);
-                (void)cp_.wait_job(job, std::chrono::milliseconds(2000));
-                return error(504, "server_error", "timeout", "request timed out", rid);
+                if (clock::now() >= deadline) {
+                    (void)cp_.cancel_job(job);
+                    (void)cp_.wait_job(job, std::chrono::milliseconds(2000));
+                    return error(504, "server_error", "timeout", "request timed out", rid);
+                }
+                if (peer_gone()) return abandoned();
+                break;
         }
     }
+    if (!finished && peer_gone()) return abandoned();
     if (finished && !got_first) {
         auto st = cp_.job_status(job);
         if (st && (st.value().state == JobState::Failed || st.value().state == JobState::Cancelled)) {
@@ -517,16 +536,21 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
         std::string text = std::move(first);
         while (!finished) {
             JobEvent ev;
-            switch (channel->pop(ev, deadline)) {
+            switch (channel->pop(ev, std::min(deadline, clock::now() + kPoll))) {
                 case JobChannel::Pop::Event:
                     if (ev.kind == JobEventKind::Output) text += ev.text;
                     break;
                 case JobChannel::Pop::Done: finished = true; break;
                 case JobChannel::Pop::Timeout:
-                    (void)cp_.cancel_job(job);
-                    (void)cp_.wait_job(job, std::chrono::milliseconds(2000));
-                    return error(504, "server_error", "timeout", "request timed out", rid);
+                    if (clock::now() >= deadline) {
+                        (void)cp_.cancel_job(job);
+                        (void)cp_.wait_job(job, std::chrono::milliseconds(2000));
+                        return error(504, "server_error", "timeout", "request timed out", rid);
+                    }
+                    break;
             }
+            // Events keep flowing while a generation runs, so poll the peer on every iteration, not only on idle.
+            if (!finished && peer_gone()) return abandoned();
         }
         auto st = cp_.job_status(job);
         if (st && st.value().state != JobState::Succeeded) {
@@ -549,8 +573,9 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
     r.content_type = "text/event-stream";
     r.headers.emplace_back("X-Accel-Buffering", "no");
     r.stream = [this, guard, channel, job, cid, created, model_name, first = std::move(first), got_first, finished,
-                deadline, usage_json, finish_reason, rid](const StreamWriter& write) {
+                deadline, usage_json, finish_reason, rid, peer_closed](const StreamWriter& write) {
         (void)guard;  // keeps the in-flight slot until streaming ends
+        try {
         auto chunk = [&](const json& delta, const json& fr, const json* usage) {
             json j = {{"id", cid},
                       {"object", "chat.completion.chunk"},
@@ -558,7 +583,7 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
                       {"model", model_name()},
                       {"choices", json::array({json{{"index", 0}, {"delta", delta}, {"finish_reason", fr}}})}};
             if (usage) j["usage"] = *usage;
-            return "data: " + j.dump() + "\n\n";
+            return "data: " + dump_safe(j) + "\n\n";
         };
         if (!write(chunk({{"role", "assistant"}, {"content", ""}}, nullptr, nullptr))) {
             (void)cp_.cancel_job(job);
@@ -573,7 +598,7 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
         std::string fail_msg;
         while (!done) {
             JobEvent ev;
-            switch (channel->pop(ev, deadline)) {
+            switch (channel->pop(ev, std::min(deadline, std::chrono::steady_clock::now() + std::chrono::milliseconds(150)))) {
                 case JobChannel::Pop::Event:
                     if (ev.kind == JobEventKind::Output && !write(chunk({{"content", ev.text}}, nullptr, nullptr))) {
                         (void)cp_.cancel_job(job);  // client disconnected: stop the real work
@@ -582,10 +607,15 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
                     break;
                 case JobChannel::Pop::Done: done = true; break;
                 case JobChannel::Pop::Timeout:
-                    (void)cp_.cancel_job(job);
-                    failed = true;
-                    fail_msg = "request timed out";
-                    done = true;
+                    if (std::chrono::steady_clock::now() >= deadline) {
+                        (void)cp_.cancel_job(job);
+                        failed = true;
+                        fail_msg = "request timed out";
+                        done = true;
+                    } else if (peer_closed && peer_closed()) {  // no token to write yet, but the client is gone
+                        (void)cp_.cancel_job(job);
+                        return;
+                    }
                     break;
             }
         }
@@ -597,15 +627,166 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid, co
             }
         }
         if (failed) {
-            json e = {{"error", {{"message", fail_msg}, {"type", "server_error"}, {"code", "stream_aborted"}, {"request_id", rid}}}};
-            (void)write("data: " + e.dump() + "\n\n");
+            json e = {{"error", {{"message", redact_paths(fail_msg)}, {"type", "server_error"}, {"code", "stream_aborted"}, {"request_id", rid}}}};
+            (void)write("data: " + dump_safe(e) + "\n\n");
         } else {
             const json u = usage_json();
             (void)write(chunk(json::object(), finish_reason(), u.is_null() ? nullptr : &u));
         }
         (void)write("data: [DONE]\n\n");
+        } catch (const std::exception& e) {
+            // Nothing may escape into the transport thread: stop the real work and end the stream.
+            log_.error("api", "stream threw", {{"what", e.what()}});
+            (void)cp_.cancel_job(job);
+        }
     };
     return r;
+}
+
+namespace {
+
+json image_request_schema(bool edit, std::size_t max_prompt, std::uint32_t max_steps) {
+    json s = {{"type", "object"},
+              {"required", edit ? json::array({"prompt", "image"}) : json::array({"prompt"})},
+              {"properties",
+               {{"model", {{"type", "string"}, {"maxLength", 64}}},
+                {"prompt", {{"type", "string"}, {"minLength", 1}, {"maxLength", max_prompt}}},
+                {"negative_prompt", {{"type", "string"}, {"maxLength", max_prompt}}},
+                {"n", {{"type", "integer"}, {"enum", json::array({1})}}},
+                {"size", {{"type", "string"}, {"maxLength", 16}}},
+                {"response_format", {{"type", "string"}, {"enum", json::array({"b64_json", "url"})}}},
+                {"steps", {{"type", "integer"}, {"minimum", 1}, {"maximum", max_steps}}},
+                {"seed", {{"type", "integer"}, {"minimum", 0}}},
+                {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}},
+                {"strength", {{"type", "number"}, {"minimum", 0}, {"maximum", 1}}},
+                {"image", {{"type", "string"}}}}}};
+    return s;
+}
+
+// "WIDTHxHEIGHT" (digits only, at most 5 each).
+bool parse_size(const std::string& t, std::uint32_t& w, std::uint32_t& h) {
+    const auto x = t.find('x');
+    if (x == std::string::npos || x == 0 || x + 1 >= t.size()) return false;
+    auto num = [](const std::string& d, std::uint32_t& out) {
+        if (d.empty() || d.size() > 5) return false;
+        std::uint32_t v = 0;
+        for (char c : d) {
+            if (c < '0' || c > '9') return false;
+            v = v * 10 + static_cast<std::uint32_t>(c - '0');
+        }
+        out = v;
+        return true;
+    };
+    return num(t.substr(0, x), w) && num(t.substr(x + 1), h);
+}
+
+}  // namespace
+
+HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid, const std::shared_ptr<Inflight>& guard,
+                                bool edit) {
+    using clock = std::chrono::steady_clock;
+    (void)guard;  // holds the in-flight slot for the whole (blocking) request
+    if (!cp_.has_image_stream_engine())
+        return error(501, "server_error", "unsupported",
+                     "image generation/editing is not available: no image engine (stable-diffusion.cpp) is linked into "
+                     "this build",
+                     rid);
+    auto ct = req.headers.find("content-type");
+    if (ct != req.headers.end() && lower(ct->second).rfind("multipart/", 0) == 0)
+        return error(415, "invalid_request_error", "unsupported_media_type",
+                     "multipart/form-data is not supported: send application/json (the input image as a data URI in "
+                     "'image')",
+                     rid);
+    if (ct == req.headers.end() || lower(ct->second).rfind("application/json", 0) != 0)
+        return error(415, "invalid_request_error", "unsupported_media_type", "Content-Type must be application/json", rid);
+    if (req.body.size() > opt_.max_body_bytes)
+        return error(413, "invalid_request_error", "payload_too_large", "request body exceeds the configured limit", rid);
+    if (!json_depth_ok(req.body, kMaxJsonDepth))
+        return error(400, "invalid_request_error", "invalid_json", "JSON nesting too deep", rid);
+    json body = json::parse(req.body, nullptr, false);
+    if (body.is_discarded()) return error(400, "invalid_request_error", "invalid_json", "malformed JSON body", rid);
+    if (auto v = validate_json(image_request_schema(edit, cp_.options().max_prompt_bytes, cp_.options().max_image_steps), body);
+        !v)
+        return error(400, "invalid_request_error", "invalid_request", v.error().message, rid);
+    if (body.contains("mask"))
+        return error(501, "server_error", "unsupported", "'mask' (inpainting) is not supported", rid);
+    if (body.value("response_format", std::string("b64_json")) != "b64_json")
+        return error(501, "server_error", "unsupported",
+                     "response_format 'url' is not supported: images are returned inline as b64_json", rid);
+
+    ImageParams p;
+    p.model = body.value("model", "");
+    p.prompt = body["prompt"].get<std::string>();
+    p.negative_prompt = body.value("negative_prompt", "");
+    if (body.contains("steps")) p.steps = body["steps"].get<std::uint32_t>();
+    if (body.contains("seed")) p.seed = body["seed"].get<std::uint64_t>();
+    if (body.contains("cfg_scale")) p.cfg_scale = body["cfg_scale"].get<float>();
+    if (body.contains("strength")) p.strength = body["strength"].get<float>();
+    bool size_given = false;
+    if (body.contains("size")) {
+        if (!parse_size(body["size"].get<std::string>(), p.width, p.height))
+            return error(400, "invalid_request_error", "invalid_request", "size must look like \"256x256\"", rid);
+        size_given = true;
+    }
+    if (edit) {
+        std::string uri = body["image"].get<std::string>();
+        if (uri.rfind("data:", 0) != 0) uri = "data:image/png;base64," + uri;  // bare base64 is accepted too
+        auto img = decode_image_data_uri(uri, cp_.options().max_image_bytes);
+        if (!img) return error(400, "invalid_request_error", "invalid_image", img.error().message, rid);
+        if (!size_given) {  // default: keep the input image's size
+            if (auto pr = probe_image(img.value().bytes.data(), img.value().bytes.size())) {
+                p.width = pr->width;
+                p.height = pr->height;
+            }
+        }
+        p.init_image = std::move(img.value());
+    }
+
+    auto sub = cp_.submit_image(p, edit);
+    if (!sub) return from_error(sub.error(), rid);
+    const JobId job = sub.value().id;
+    auto channel = sub.value().channel;
+    const auto deadline = clock::now() + opt_.request_timeout;
+    const auto peer_closed = req.peer_closed;
+    constexpr auto kPoll = std::chrono::milliseconds(150);
+    bool finished = false;
+    while (!finished) {
+        JobEvent ev;
+        switch (channel->pop(ev, std::min(deadline, clock::now() + kPoll))) {
+            case JobChannel::Pop::Event: break;
+            case JobChannel::Pop::Done: finished = true; break;
+            case JobChannel::Pop::Timeout:
+                if (clock::now() >= deadline) {
+                    (void)cp_.cancel_job(job);
+                    (void)cp_.wait_job(job, std::chrono::milliseconds(5000));
+                    return error(504, "server_error", "timeout", "request timed out", rid);
+                }
+                // A request whose client is gone must not keep the single engine worker rendering (audit D3).
+                if (peer_closed && peer_closed()) {
+                    (void)cp_.cancel_job(job);
+                    (void)cp_.wait_job(job, std::chrono::milliseconds(5000));
+                    return error(499, "invalid_request_error", "client_closed_request", "client closed the connection", rid);
+                }
+                break;
+        }
+    }
+    auto st = cp_.job_status(job);
+    if (!st) return from_error(st.error(), rid);
+    if (st.value().state != JobState::Succeeded) {
+        if (st.value().error) return from_error(*st.value().error, rid);
+        return error(409, "invalid_request_error", "cancelled", "job was cancelled", rid);
+    }
+    auto img = cp_.image_result(job);
+    if (!img) return from_error(img.error(), rid);
+    const ImageResult& r = img.value();
+    json hcs = {{"job_id", to_string(job)}, {"request_id", rid}, {"format", r.format}, {"width", r.width},
+                {"height", r.height},       {"steps", r.steps},  {"generation_ms", r.generation_ms}};
+    if (auto lm = cp_.loaded_model()) hcs["model"] = *lm;
+    if (p.seed) hcs["seed"] = *p.seed;
+    json j = {{"created", static_cast<std::int64_t>(std::time(nullptr))},
+              {"data", json::array({json{{"b64_json", base64_encode(r.bytes.data(), r.bytes.size())}}})},
+              {"hcs", std::move(hcs)}};
+    return json_ok(j);
 }
 
 }  // namespace hcs::api

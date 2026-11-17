@@ -1,0 +1,30 @@
+Running main() from D:\HCSInfer\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = ApiAudit.*
+[==========] Running 13 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 13 tests from ApiAudit
+[ RUN      ] ApiAudit.InvalidUtf8ModelOutputDoesNotBreakNonStreamingResponses
+D:\HCSInfer\tests\contract\api\test_http_handler.cpp(657): error: Expected equality of these values:
+  r.status
+    Which is: 500
+  200
+{"error":{"code":"internal","message":"internal error","param":null,"request_id":"req-90cd256afa5c22b4","type":"server_error"}}
+
+[  FAILED  ] ApiAudit.InvalidUtf8ModelOutputDoesNotBreakNonStreamingResponses (8 ms)
+[ RUN      ] ApiAudit.InvalidUtf8ModelOutputDoesNotBreakStreaming
+D:\HCSInfer\tests\contract\api\test_http_handler.cpp(671): error: Expected: all = collect_stream(r) doesn't throw an exception.
+  Actual: it throws nlohmann::json_abi_v3_12_0::detail::type_error with description "[json.exception.type_error.316] invalid UTF-8 byte at index 0: 0xFF".
+
+D:\HCSInfer\tests\contract\api\test_http_handler.cpp(672): error: Expected: (all.find("data: [DONE]")) != (std::string::npos), actual: 18446744073709551615 vs 18446744073709551615
+
+[  FAILED  ] ApiAudit.InvalidUtf8ModelOutputDoesNotBreakStreaming (40 ms)
+[ RUN      ] ApiAudit.NonStreamingChatCancelsTheJobWhenThePeerDisconnects
+D:\HCSInfer\tests\contract\api\test_http_handler.cpp(683): error: Expected equality of these values:
+  fut.wait_for(std::chrono::seconds(5))
+    Which is: 4-byte object <01-00 00-00>
+  std::future_status::ready
+    Which is: 4-byte object <00-00 00-00>
+handler kept waiting for a dead peer
+
+exit=124
+(NonStreamingChatCancelsTheJobWhenThePeerDisconnects / StreamingChatCancelsWhenThePeerDisconnectsBeforeAnyOutput: hang (timeout 124) in the unfixed build: handler waits forever for the dead peer's job)

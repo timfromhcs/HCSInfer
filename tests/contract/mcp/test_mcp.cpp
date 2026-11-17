@@ -459,3 +459,176 @@ TEST(McpStdio, EofCancelsStragglersAfterGraceAndExits) {
     m.server.run(in, out);
     EXPECT_NE(out.str().find("\"id\":1"), std::string::npos);
 }
+
+// ---- M10 audit regressions ---------------------------------------------------------------------------------
+namespace {
+
+std::string nested(int depth) {
+    return std::string(static_cast<std::size_t>(depth), '[') + std::string(static_cast<std::size_t>(depth), ']');
+}
+
+// One request line whose params carry a pathologically deep array next to a valid _meta.
+std::string deep_params_line(const std::string& method, int depth, bool in_arguments) {
+    std::string line = std::string("{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"") + method +
+                       "\",\"params\":{\"_meta\":" + meta().dump();
+    if (in_arguments)
+        line += ",\"name\":\"hcs.models.inspect\",\"arguments\":{\"id\":\"tiny\",\"x\":" + nested(depth) + "}}}";
+    else
+        line += ",\"x\":" + nested(depth) + "}}";
+    return line;
+}
+
+// FakeTextEngine is final: wrap it so a test can hook load().
+class HookEngine final : public api::ITextStreamEngine {
+public:
+    test::FakeTextEngine fake;
+    std::function<Result<void>(const LoadRequest&)> load_hook;
+    Result<void> load(const LoadRequest& r) override { return load_hook ? load_hook(r) : fake.load(r); }
+    Result<void> unload() override { return fake.unload(); }
+    Result<JobId> generate(const TextRequest& r) override { return fake.generate(r); }
+    Result<JobId> analyze_image(const VisionRequest& r) override { return fake.analyze_image(r); }
+    EngineMetrics metrics() const override { return fake.metrics(); }
+    Result<api::TextResult> generate_stream(const TextRequest& r, const api::TokenSink& sink, const CancellationToken& t) override {
+        return fake.generate_stream(r, sink, t);
+    }
+};
+
+// Control plane assembled by hand so a test can hook the engine.
+struct CustomMcp {
+    test::TempDir dir;
+    ModelRegistry registry;
+    PathGuard guard;
+    MemoryBudget budget{0};
+    std::ostringstream sink;
+    Logger logger{&sink, LogLevel::Debug};
+    JobQueue queue;
+    HookEngine engine;
+    std::unique_ptr<api::ControlPlane> cp;
+    std::unique_ptr<McpServer> server;
+    explicit CustomMcp(McpOptions o = {}) {
+        const auto root = dir.path() / "models";
+        test::write_file(root / "tiny.gguf", test::fake_gguf());
+        (void)guard.add_root(root);
+        (void)registry.scan(root, guard);
+        cp = std::make_unique<api::ControlPlane>(registry, guard, budget, queue, &engine, logger);
+        server = std::make_unique<McpServer>(*cp, o, logger);
+    }
+    ~CustomMcp() { queue.shutdown(); }
+};
+
+}  // namespace
+
+// D1: a deeply nested document used to overflow the stack through a recursive deep copy of `params`.
+TEST(McpAudit, DeeplyNestedParamsAreRejectedNotACrash) {
+    Mcp m;
+    for (int depth : {10000, 60000}) {
+        for (bool in_args : {false, true}) {
+            const std::string out =
+                m.server.handle_line(deep_params_line(in_args ? "tools/call" : "tools/list", depth, in_args));
+            ASSERT_FALSE(out.empty()) << "depth " << depth;
+            auto j = json::parse(out);
+            ASSERT_TRUE(j.contains("error")) << out.substr(0, 200);
+            EXPECT_EQ(j["error"]["code"], -32600);
+        }
+    }
+    auto ok = m.rpc(modern_req(2, "tools/list"));  // reasonable nesting is still served
+    EXPECT_TRUE(ok.contains("result"));
+}
+
+TEST(McpAudit, DeeplyNestedLinesOverStdioAreRejectedAndServerKeepsServing) {
+    Mcp m;
+    std::stringstream in;
+    in << deep_params_line("tools/list", 10000, false) << "\n"
+       << deep_params_line("tools/call", 10000, true) << "\n"
+       << "{\"jsonrpc\":\"2.0\",\"id\":9,\"method\":\"x\",\"params\":" << nested(200000) << "}\n"
+       << modern_req(3, "tools/list").dump() << "\n";
+    std::ostringstream out;
+    m.server.run(in, out);
+    std::istringstream lines(out.str());
+    std::string l;
+    int errors = 0;
+    bool listed = false;
+    while (std::getline(lines, l)) {
+        auto j = json::parse(l);
+        if (j.contains("error")) ++errors;
+        if (j.contains("id") && j["id"] == 3 && j.contains("result")) listed = true;
+    }
+    EXPECT_EQ(errors, 3);
+    EXPECT_TRUE(listed);
+}
+
+// S1: a second in-flight tools/call with the same id must not hijack the cancellation slot of the first.
+TEST(McpAudit, DuplicateInFlightRequestIdIsRejected) {
+    Mcp m;
+    m.fx.engine.run_until_cancel = true;
+    m.fx.engine.delay_ms = 2;
+    PipeBuf pipe;
+    std::istream in(&pipe);
+    OutBuf outbuf;
+    std::ostream out(&outbuf);
+    std::thread srv([&] { m.server.run(in, out); });
+    pipe.feed(call_req(1, "hcs.models.load", {{"id", "tiny"}}).dump() + "\n");
+    ASSERT_TRUE(wait_for([&] { return outbuf.lines().size() >= 1; }));
+    pipe.feed(call_req(5, "hcs.chat.generate", {{"prompt", "go"}, {"max_tokens", 100}}).dump() + "\n");
+    ASSERT_TRUE(wait_for([&] { return m.fx.engine.generating.load(); }));
+    pipe.feed(call_req(5, "hcs.models.list").dump() + "\n");
+    ASSERT_TRUE(wait_for([&] { return outbuf.lines().size() >= 2; }));
+    auto dup = json::parse(outbuf.lines()[1]);
+    EXPECT_EQ(dup["id"], 5);
+    ASSERT_TRUE(dup.contains("error")) << dup.dump();
+    EXPECT_EQ(dup["error"]["code"], -32600);
+    // The original call is still cancellable by its id.
+    pipe.feed(json({{"jsonrpc", "2.0"}, {"method", "notifications/cancelled"}, {"params", {{"requestId", 5}}}}).dump() + "\n");
+    ASSERT_TRUE(wait_for([&] { return !m.fx.engine.generating.load(); })) << "cancel did not reach the first call";
+    pipe.close();
+    srv.join();
+}
+
+// C2: cancelling a running model load must release the MCP call promptly (its response is suppressed) instead of
+// holding a call slot until the load finishes or the call timeout expires.
+TEST(McpAudit, CancelDuringModelLoadReleasesTheCallSlotPromptly) {
+    McpOptions o;
+    o.max_concurrent_calls = 1;
+    CustomMcp m(o);
+    m.engine.load_hook = [&m](const LoadRequest& r) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1500));
+        return m.engine.fake.load(r);
+    };
+    PipeBuf pipe;
+    std::istream in(&pipe);
+    OutBuf outbuf;
+    std::ostream out(&outbuf);
+    std::thread srv([&] { m.server->run(in, out); });
+    pipe.feed(call_req(4, "hcs.models.load", {{"id", "tiny"}}).dump() + "\n");
+    ASSERT_TRUE(wait_for([&] {
+        auto st = m.cp->job_status(JobId{1});
+        return st && st.value().state == JobState::Running;
+    }));
+    pipe.feed(json({{"jsonrpc", "2.0"}, {"method", "notifications/cancelled"}, {"params", {{"requestId", 4}}}}).dump() + "\n");
+    std::this_thread::sleep_for(std::chrono::milliseconds(400));  // far below the 1.5 s the load still needs
+    pipe.feed(call_req(6, "hcs.models.list").dump() + "\n");
+    ASSERT_TRUE(wait_for([&] { return !outbuf.lines().empty(); }, 1000));
+    auto second = json::parse(outbuf.lines().front());
+    EXPECT_EQ(second["id"], 6);
+    ASSERT_TRUE(second.contains("result")) << second.dump();
+    EXPECT_FALSE(second["result"]["isError"]) << "call slot was still held by the cancelled load: " << second.dump();
+    pipe.close();
+    srv.join();
+    for (const auto& l : outbuf.lines()) EXPECT_NE(json::parse(l)["id"], 4) << "response sent for a cancelled call";
+}
+
+// D6: engine/load errors reach MCP clients without absolute local paths.
+TEST(McpAudit, ErrorsDoNotLeakAbsoluteLocalPaths) {
+    CustomMcp m;
+    m.engine.load_hook = [](const LoadRequest&) {
+        return make_error(ErrorCode::ModelError,
+                          "failed to load model from C:\\Users\\bob smith\\AppData\\Local\\Temp\\bad_f.gguf: invalid magic");
+    };
+    auto r = json::parse(m.server->handle_line(call_req(1, "hcs.models.load", {{"id", "tiny"}}).dump()));
+    const std::string text = r.dump();
+    EXPECT_EQ(text.find("bob smith"), std::string::npos) << text;
+    EXPECT_EQ(text.find("AppData"), std::string::npos) << text;
+    EXPECT_EQ(text.find("Users"), std::string::npos) << text;
+    EXPECT_NE(text.find("bad_f.gguf"), std::string::npos) << "the file name is kept for diagnosis: " << text;
+    EXPECT_TRUE(r["result"]["isError"]);
+}
