@@ -1,0 +1,11 @@
+{
+  "name": "HCSInfer-0.1.0-img-api-portable",
+  "version": "0.1.0",
+  "preset": "img-api",
+  "git_commit": "9f03d74134728caa20abcde1771124f37fd6218d",
+  "created_utc": "2026-11-17T15:44:57Z",
+  "single_exe": false,
+  "crt": "dynamic (/MD, default)",
+  "signed": false,
+  "source_exe_sha256": "35a9c44437ca5c2c8832d8f465d253b95af55470d9a422c0c05090ec1940064c"
+}

@@ -16,8 +16,10 @@ next to it.
 | `M4-gui/` | embedded web UI: unit + contract + socket + headless-browser checks |
 | `M6-storage/` | HCSMODEL container, chunk codecs, parser mutation tests, storage benchmark |
 | `M10/` | security audit report |
-| `M10-fixes/` | the audit defects D1-D7, red/green test pairs and the final full-suite log |
-| `benchmark/` | real `HCSInfer benchmark --suite quick` runs (AGENTS.md 21.1 JSON) |
+| `M10-fixes/` | the audit defects D1-D7, red/green test pairs and the full-suite logs |
+| `benchmark/` | real `HCSInfer benchmark --suite quick` runs (B0 CPU + B1 Vulkan, AGENTS.md 21.1 JSON) |
+| `static-analysis/` | first clang-tidy run, its triage, the clean default-gate run and the CI job's result |
+| `package/` | first real `scripts/package.ps1` run: portable folder + ZIP, SBOM, SHA-256, licence texts, standalone run |
 | `ci/` | what the CI gates check and which tool versions they were verified with (clang-format pinning) |
 
 ## Redaction policy
