@@ -2304,3 +2304,16 @@ are recorded in `docs/research/v1.1-model-selection.md`; nothing here overrides 
   `docs/roadmap/STATUS.md`. A wave is "green" only with the full CTest suite plus its own new tests.
 - Model downloads are multi-GB and gated: obtain explicit user approval for each file (name, source, size) first.
 - BLOCKED and NOT RUN stay visible; no gate is marked PASS from a mock.
+
+### 26.7 Web demo ("HCS Studio Web", WebGPU/WASM on Vercel)
+- Separate deliverable under `web/` (not part of the native EXE): static site, all inference in the user's browser via
+  WebGPU with WASM fallback (transformers.js / wllama / WebLLM-class runtimes; choose by measured support, ADR-013).
+  No prompt, image or model data leaves the browser; no server inference; no analytics on content; strict CSP.
+- Model selection from Hugging Face in the browser (search + file pick, browser-cached via OPFS/Cache API, size and
+  licence shown, gated models require the user's own token kept only in memory/session).
+- Feature parity target with the local backend: Chat, Vision, Image Studio (t2i/i2i where a WebGPU-runnable model
+  exists), Models, Performance, Settings; features that cannot run in a browser (large models, Vulkan kernels,
+  Train, coding Agent with shell) are shown as "Local only" with the reason, never faked. The local app keeps the
+  superset.
+- Deploy to Vercel only after build + browser tests pass; record URL and commit in STATUS.md. Real WebGPU is not
+  available in headless CI: those checks are NOT RUN unless done in a real WebGPU browser.

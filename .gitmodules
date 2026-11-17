@@ -4,3 +4,6 @@
 [submodule "external/stable-diffusion.cpp"]
 	path = external/stable-diffusion.cpp
 	url = https://github.com/leejet/stable-diffusion.cpp
+[submodule "external/prime-agent"]
+	path = external/prime-agent
+	url = https://github.com/PrimeIntellect-ai/prime-agent

@@ -124,3 +124,9 @@ Next: push to a remote (CI has never run), then M5 Model Vault in the engine loa
 - [x] `.github/workflows/pr.yml`: windows-latest configure/build/ctest + format check (created; never executed, repo has no commits or remote)
 - [x] `.github/workflows/hardware.yml`: self-hosted Radeon runner, manual dispatch / trusted branch only (created; never executed)
 - [ ] First green hosted run; first hardware run on the self-hosted runner
+
+## M11 V1.1 (2026-11-17 addendum, see AGENTS.md section 26)
+- [ ] Wave 1 (running): FLUX.3 Klein engine + step presets, LFM3-Omni Q8 default LLM + tool calls + agentic eval, HCS Studio UI, prime-agent/train foundations
+- [ ] Wave 2: `web/` WebGPU/WASM demo on Vercel with HF model selection and local-parity features (ADR-013); HCS Agent adapter; HCS Train LoRA pipeline + eval gate
+- [ ] Wave 3: RSI loop, single-EXE/packaging, soak + hardening, V1 stable release candidate
+- Merge to `main` after each green wave.
