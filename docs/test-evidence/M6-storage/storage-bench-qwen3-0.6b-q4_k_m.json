@@ -1,0 +1,200 @@
+{
+  "backend": "CPU",
+  "build_type": "Release",
+  "chunk_bytes": 16777216,
+  "cmake_version": "4.4.0",
+  "cold_or_warm": "uncontrolled (Windows file cache not flushed; see unbuffered_* fields for device speed)",
+  "compiler": "MSVC 1944",
+  "context_tokens": null,
+  "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics        ",
+  "created_files_removed": true,
+  "decode_tokens_per_second_median": null,
+  "decompression_mib_s_median": null,
+  "driver_version": "n/a",
+  "gguf_architecture": "qwen3",
+  "gguf_tensor_count": 311,
+  "git_commit": "unknown",
+  "gpu": "n/a (storage benchmark, no GPU used)",
+  "gpu_device_id": "n/a",
+  "gpu_vendor_id": "n/a",
+  "hdd_read_mib_s_median": 65.44865895572515,
+  "lz4_version": "1.10.0",
+  "measured_iterations": 3,
+  "model_file": "qwen3-0.6b-q4_k_m.gguf",
+  "model_format": "GGUF",
+  "model_sha256": "4ea794120a3b2244a6e8a36354f1aa53e7f0c52b2f1f280dde0d7f522f37ae7c",
+  "model_size_bytes": 484219712,
+  "os_build": "Windows 10.0.26200",
+  "peak_ram_bytes": 990863360,
+  "pipeline_buffers": 4,
+  "pipeline_workers": "auto",
+  "prompt_tokens_per_second_median": null,
+  "quantization": "Q4_K_M",
+  "ram_bytes": 21245952000,
+  "result_status": "PASS",
+  "runs": [
+    {
+      "bit_exact_vs_source": true,
+      "codec": "raw",
+      "codec_level": "default",
+      "decode_from_ram_single_thread": {
+        "codec_only_mib_s_median": 15191.740806980595,
+        "codec_plus_sha256_mib_s_median": 1436.8213084253864
+      },
+      "decompression_mib_s_median": 15191.740806980595,
+      "hdd_read_mib_s_median": 2090.7498999738364,
+      "manifest_matches_source": true,
+      "peak_ram_bytes": 990863360,
+      "peak_ram_note": "process-lifetime peak working set after this codec; includes the benchmark's own RAM destination buffer",
+      "pipeline_load": {
+        "buffer_bytes_allocated": 67108864,
+        "cache_state": "warm/uncontrolled (container was just written)",
+        "consumer_wait_seconds_median": 0.1742605,
+        "logical_mib_s_median": 2090.7498999738364,
+        "seconds_median": 0.2208719,
+        "seconds_p90": 0.22821126,
+        "seconds_samples": [
+          0.2190655,
+          0.2300461,
+          0.2208719
+        ],
+        "stored_mib_s_median": 2090.7498999738364
+      },
+      "result_status": "PASS",
+      "scratch_unbuffered_seq_mib_s": 85.49880947459249,
+      "write": {
+        "chunks": 29,
+        "chunks_lz4": 0,
+        "chunks_raw": 29,
+        "chunks_zstd": 0,
+        "compress_cpu_seconds": 0.31092109999999995,
+        "container_bytes": 484222320,
+        "min_savings_threshold": 0.05,
+        "payload_bytes": 484219712,
+        "ratio_container_over_raw": 1.000005385984782,
+        "seconds": 5.7879642,
+        "source_read_seconds": 0.4467678
+      }
+    },
+    {
+      "bit_exact_vs_source": true,
+      "codec": "lz4",
+      "codec_level": "default",
+      "decode_from_ram_single_thread": {
+        "codec_only_mib_s_median": 14261.076027053867,
+        "codec_plus_sha256_mib_s_median": 1415.5138708422596
+      },
+      "decompression_mib_s_median": 14261.076027053867,
+      "hdd_read_mib_s_median": 2057.315817120548,
+      "manifest_matches_source": true,
+      "peak_ram_bytes": 990863360,
+      "peak_ram_note": "process-lifetime peak working set after this codec; includes the benchmark's own RAM destination buffer",
+      "pipeline_load": {
+        "buffer_bytes_allocated": 134217728,
+        "cache_state": "warm/uncontrolled (container was just written)",
+        "consumer_wait_seconds_median": 0.17391259999999997,
+        "logical_mib_s_median": 2075.36357040211,
+        "seconds_median": 0.2225094,
+        "seconds_p90": 0.2235194,
+        "seconds_samples": [
+          0.2152087,
+          0.2237719,
+          0.2225094
+        ],
+        "stored_mib_s_median": 2057.315817120548
+      },
+      "result_status": "PASS",
+      "scratch_unbuffered_seq_mib_s": 68.9553546029508,
+      "write": {
+        "chunks": 29,
+        "chunks_lz4": 2,
+        "chunks_raw": 27,
+        "chunks_zstd": 0,
+        "compress_cpu_seconds": 0.5543185999999999,
+        "container_bytes": 480011454,
+        "min_savings_threshold": 0.05,
+        "payload_bytes": 480008846,
+        "ratio_container_over_raw": 0.991309197259611,
+        "seconds": 7.1293043,
+        "source_read_seconds": 0.4475644999999999
+      }
+    },
+    {
+      "bit_exact_vs_source": true,
+      "codec": "zstd",
+      "codec_level": 3,
+      "decode_from_ram_single_thread": {
+        "codec_only_mib_s_median": 8766.354821375264,
+        "codec_plus_sha256_mib_s_median": 1354.6493376683381
+      },
+      "decompression_mib_s_median": 8766.354821375264,
+      "hdd_read_mib_s_median": 1894.62194399887,
+      "manifest_matches_source": true,
+      "peak_ram_bytes": 990863360,
+      "peak_ram_note": "process-lifetime peak working set after this codec; includes the benchmark's own RAM destination buffer",
+      "pipeline_load": {
+        "buffer_bytes_allocated": 134217728,
+        "cache_state": "warm/uncontrolled (container was just written)",
+        "consumer_wait_seconds_median": 0.1929719,
+        "logical_mib_s_median": 1921.192047404643,
+        "seconds_median": 0.2403653,
+        "seconds_p90": 0.24609098000000001,
+        "seconds_samples": [
+          0.2403653,
+          0.2399592,
+          0.2475224
+        ],
+        "stored_mib_s_median": 1894.62194399887
+      },
+      "result_status": "PASS",
+      "scratch_unbuffered_seq_mib_s": 58.39016314084729,
+      "write": {
+        "chunks": 29,
+        "chunks_lz4": 0,
+        "chunks_raw": 26,
+        "chunks_zstd": 3,
+        "compress_cpu_seconds": 1.8242495,
+        "container_bytes": 477525557,
+        "min_savings_threshold": 0.05,
+        "payload_bytes": 477522949,
+        "ratio_container_over_raw": 0.9861753769330234,
+        "seconds": 8.6558872,
+        "source_read_seconds": 0.44337059999999995
+      }
+    }
+  ],
+  "schema_version": 1,
+  "scratch_storage": "D: USB-attached disk (IB-1232CL-U3, MediaType unspecified; build scratch)",
+  "sha256_implementation": "sha-ni",
+  "sha256_mib_s": {
+    "portable": 311.88719040323116,
+    "selected": 1556.405093335668,
+    "selected_impl": "sha-ni"
+  },
+  "sink": "ram-copy",
+  "source_first_pass": {
+    "mib_s": 1481.6836667915807,
+    "note": "first pass in this process; includes SHA-256; cache state uncontrolled",
+    "seconds": 0.3116643
+  },
+  "source_plain_stream": {
+    "buffer_bytes_allocated": 67108864,
+    "consumer_wait_seconds_last": 0.07683750000000002,
+    "mib_s_median": 3848.678328840018,
+    "seconds_median": 0.1199861,
+    "seconds_p90": 0.12191922,
+    "seconds_samples": [
+      0.1174544,
+      0.1199861,
+      0.1224025
+    ]
+  },
+  "source_unbuffered_seq_mib_s": 65.44865895572515,
+  "storage_source": "E: USB-attached disk (IB-1232CL-U3, MediaType unspecified, HDD vs SSD unknown)",
+  "suite": "storage",
+  "timestamp_utc": "2026-11-17T07:48:06Z",
+  "ttft_ms_median": null,
+  "vulkan_api_version": "n/a",
+  "warmup_iterations": 1,
+  "zstd_version": "1.5.7"
+}

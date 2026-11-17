@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "exe": "HCSInfer.exe",
+  "version": "HCSInfer 0.1.0",
+  "vlm_file": "SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
+  "vlm_bytes": 436808704,
+  "http": {
+    "nonstream_ms": 1240,
+    "answer": " Red.",
+    "usage": {
+      "completion_tokens": 1,
+      "prompt_tokens": 160,
+      "total_tokens": 161
+    },
+    "runtime_backend": "vulkan",
+    "runtime_device": "AMD Radeon(TM) Graphics (Vulkan0)",
+    "cancel_after_disconnect_s": 0.03
+  },
+  "mcp": {
+    "answer": " Red."
+  },
+  "checks": [
+    {
+      "check": "scan registers the VLM",
+      "pass": true,
+      "detail": "{\n  \"models\": [\n    {\n      \"architecture\": \"clip\",\n      \"display_name\": \"mmproj-SmolVLM2-500M-Video-Instruct-Q8_0\",\n      \"format\": \"gguf\",\n      \"id\": \"mmproj-smolvlm2-500m-video-instruct-q8_0\",\n      \"kind\": \"text\",\n      \"license\": \"unknown\",\n      \"path\": \"D:\\\\HCSModels\\\\vision\\\\mmproj-SmolVLM"
+    },
+    {
+      "check": "serve prints port and token",
+      "pass": true,
+      "detail": "['{\"ts\":\"2026-11-17T12:54:04.988Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"listening\",\"host\":\"127.0.0.1\",\"port\":\"62692\"}', 'HCSInfer API listening on http://127.0.0.1:62692', 'HCSInfer API token: 0f6d9ce430397b47f2e2cbd547c45999eb8654bcd84f96a77fc956a080360cb7']"
+    },
+    {
+      "check": "image_url data URI -> 200 with an answer",
+      "pass": true,
+      "detail": "(200, {'choices': [{'finish_reason': 'stop', 'index': 0, 'message': {'content': ' Red.', 'role': 'assistant'}}], 'created': 1794920045, 'hcs': {'job_id': 'job-1', 'request_id': 'req-89fa8f1e1af64ce7'}, 'id': 'chatcmpl-1', 'model': 'smolvlm2-500m-video-instruct-q8_0', 'object': 'chat.completion', 'usage': {'completion_tokens': 1, 'prompt_tokens': 160, 'total_tokens': 161}})"
+    },
+    {
+      "check": "answer mentions the red square",
+      "pass": true,
+      "detail": " Red."
+    },
+    {
+      "check": "usage.prompt_tokens shows the image was consumed (>60)",
+      "pass": true,
+      "detail": "{'completion_tokens': 1, 'prompt_tokens': 160, 'total_tokens': 161}"
+    },
+    {
+      "check": "runtime reports the backend that served the image request",
+      "pass": true,
+      "detail": "{'chat_template': 'auto', 'image_engine': {'available': False, 'reason': 'no image engine adapter is implemented yet'}, 'jobs_pending': 0, 'loaded_model': 'smolvlm2-500m-video-instruct-q8_0', 'text_engine': {'available': True, 'metrics': {'backend': 'vulkan', 'device': 'AMD Radeon(TM) Graphics (Vulkan0)', 'load_ms': 465.7533, 'resident_bytes': 435014400, 'tokens_per_second': 53.430220132506946, 't"
+    },
+    {
+      "check": "greedy answer is deterministic across requests",
+      "pass": true,
+      "detail": "{'choices': [{'finish_reason': 'stop', 'index': 0, 'message': {'content': ' Red.', 'role': 'assistant'}}], 'created': 1794920046, 'hcs': {'job_id': 'job-2', 'request_id': 'req-e2b29a5bb81c185f'}, 'id': 'chatcmpl-2', 'model': 'smolvlm2-500m-video-instruct-q8_0', 'object': 'chat.completion', 'usage': {'completion_tokens': 1, 'prompt_tokens': 160, 'total_tokens': 161}}"
+    },
+    {
+      "check": "SSE stream: 200, text/event-stream, [DONE]",
+      "pass": true,
+      "detail": "(200, '\"object\":\"chat.completion.chunk\",\"usage\":{\"completion_tokens\":1,\"prompt_tokens\":160,\"total_tokens\":161}}\\n\\ndata: [DONE]\\n\\n')"
+    },
+    {
+      "check": "SSE stream text equals non-stream text",
+      "pass": true,
+      "detail": "(' Red.', ' Red.')"
+    },
+    {
+      "check": "rejected: remote https URL -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_image', 'message': 'image_url must be a data:image/...;base64,... URI (remote URLs are not fetched)', 'param': None, 'request_id': 'req-47a3c7d0dcbfa1df', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "rejected: file:// URL -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_image', 'message': 'image_url must be a data:image/...;base64,... URI (remote URLs are not fetched)', 'param': None, 'request_id': 'req-531a454eda7601f6', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "rejected: local path -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_image', 'message': 'image_url must be a data:image/...;base64,... URI (remote URLs are not fetched)', 'param': None, 'request_id': 'req-0ea31fa59b53524c', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "rejected: bad base64 -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_image', 'message': 'malformed base64 payload (bad character)', 'param': None, 'request_id': 'req-caa8b8bca9f1beaa', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "rejected: non-image media type -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_image', 'message': 'image_url must be a data:image/...;base64,... URI (remote URLs are not fetched)', 'param': None, 'request_id': 'req-ead1d853dbf6a2a1', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "rejected: bytes that are not an image -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_argument', 'message': 'the image is not a recognised png/jpeg/gif/bmp (or its header is truncated)', 'param': None, 'request_id': 'req-8c3215d028048130', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "rejected: huge declared dimensions -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_argument', 'message': 'image dimensions 100000x100000 exceed the 16777216 pixel limit', 'param': None, 'request_id': 'req-c9869b10eea21938', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "rejected: two images -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_argument', 'message': 'exactly one image per request is supported (got 2)', 'param': None, 'request_id': 'req-a25f752ac3335647', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "rejected: oversize body -> 413",
+      "pass": true,
+      "detail": "(413,)"
+    },
+    {
+      "check": "image request without token -> 401",
+      "pass": true,
+      "detail": "(401,)"
+    },
+    {
+      "check": "client disconnect during streaming cancels the work (no job pending)",
+      "pass": true,
+      "detail": "(True, 0.0)"
+    },
+    {
+      "check": "engine healthy after cancellation",
+      "pass": true,
+      "detail": "(200, {'choices': [{'finish_reason': 'stop', 'index': 0, 'message': {'content': ' Red.', 'role': 'assistant'}}], 'created': 1794920048, 'hcs': {'job_id': 'job-5', 'request_id': 'req-7e8f4b44fd2a8008'}, 'id': 'chatcmpl-5', 'model': 'smolvlm2-500m-video-instruct-q8_0', 'object': 'chat.completion', 'usage': {'completion_tokens': 1, 'prompt_tokens': 160, 'total_tokens': 161}})"
+    },
+    {
+      "check": "MCP vision.analyze returns an answer",
+      "pass": true,
+      "detail": "{'id': 1, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': '{\"finish_reason\":\"stop\",\"job_id\":\"job-1\",\"model\":\"smolvlm2-500m-video-instruct-q8_0\",\"text\":\" Red.\",\"usage\":{\"completion_tokens\":1,\"prompt_tokens\":155}}', 'type': 'text'}], 'isError': False, 'resultType': 'complete', 'structuredContent': {'finish_r"
+    },
+    {
+      "check": "MCP answer mentions red",
+      "pass": true,
+      "detail": " Red."
+    },
+    {
+      "check": "MCP: path outside approved roots -> security_violation",
+      "pass": true,
+      "detail": "{'id': 2, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': 'security_violation: path is outside approved roots: C:\\\\Windows\\\\win.ini', 'type': 'text'}], 'isError': True, 'resultType': 'complete', 'structuredContent': {'error': {'code': 'security_violation', 'message': 'path is outside approved roots: C:\\\\Wi"
+    },
+    {
+      "check": "MCP: '..' traversal -> security_violation",
+      "pass": true,
+      "detail": "{'id': 3, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': \"security_violation: path contains '..' component\", 'type': 'text'}], 'isError': True, 'resultType': 'complete', 'structuredContent': {'error': {'code': 'security_violation', 'message': \"path contains '..' component\"}}}}"
+    },
+    {
+      "check": "MCP: non-image file -> invalid_argument",
+      "pass": true,
+      "detail": "{'id': 4, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': 'invalid_argument: the image is not a recognised png/jpeg/gif/bmp (or its header is truncated)', 'type': 'text'}], 'isError': True, 'resultType': 'complete', 'structuredContent': {'error': {'code': 'invalid_argument', 'message': 'the image is not a "
+    },
+    {
+      "check": "MCP still responsive afterwards",
+      "pass": true,
+      "detail": "{'id': 5, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': '{\"memory\":{\"budget_known\":false,\"entries\":[],\"note\":\"no live memory measurement is wired into the control plane yet; model-size budget checks are skipped\",\"remaining_bytes\":\"unknown\",\"reserved_bytes\":0,\"total_bytes\":\"unknown\"},\"runtime\":{\"chat_temp"
+    }
+  ],
+  "result_status": "PASS"
+}

@@ -1,0 +1,13 @@
+build/
+out/
+cmake-build-*/
+artifacts/
+*.gguf
+*.safetensors
+*.hcsmodel
+*.spv
+.vs/
+*.user
+*.log
+.claude/
+/*.png

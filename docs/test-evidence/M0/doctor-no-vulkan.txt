@@ -1,0 +1,44 @@
+HCSInfer doctor  (schema 1, hcsinfer 0.1.0, 2026-11-17T07:35:53Z)
+Values reported as 'unknown' could not be detected; nothing is guessed.
+
+System
+  os:                        windows 10.0 build 10.0.26200.9974 (25H2)
+  cpu:                       AMD Ryzen 7 7735HS with Radeon Graphics
+  cpu vendor/family/model:   AuthenticAMD / 25 / 68 (stepping 1)
+  cores / threads:           8 / 16
+  nominal clock:             3194 MHz
+  cpu features (usable):     aes, avx, avx2, bmi1, bmi2, f16c, fma3, popcnt, sha, sse4_2
+  ram total:                 19.79 GiB
+  ram installed:             24.00 GiB
+  ram available:             8.78 GiB
+  commit limit:              40.41 GiB
+  channels / BIOS UMA:       unknown / unknown
+
+Graphics (DXGI / driver registry)
+  adapter 0:                 AMD Radeon(TM) Graphics [0x1002:0x1681]
+    dedicated / shared mem:    3.97 GiB / 9.89 GiB
+    umd version:               32.0.21043.12001
+    local budget / usage:      13.12 GiB / 0 B
+    non-local budget:          0 B
+  adapter 1:                 AMD Radeon(TM) Graphics [0x1002:0x1681]
+    dedicated / shared mem:    3.97 GiB / 9.89 GiB
+    umd version:               32.0.21043.12001
+    local budget / usage:      13.12 GiB / 0 B
+    non-local budget:          0 B
+  adapter 2:                 Microsoft Basic Render Driver [0x1414:0x008C] (software)
+    dedicated / shared mem:    0 B / 9.89 GiB
+    umd version:               10.0.26100.9818
+    local budget / usage:      9.15 GiB / 0 B
+    non-local budget:          0 B
+  driver:                    AMD Radeon(TM) Graphics 32.0.21043.12001 (5-29-2026, Advanced Micro Devices, Inc.)
+  driver:                    Parsec Virtual Display Adapter 0.45.0.0 (1-25-2024, Parsec Cloud, Inc.)
+
+Vulkan
+  status:                    skipped
+  reason:                    --no-vulkan (CPU-only mode; vulkan-1.dll was not loaded)
+
+Storage
+  requested volume:          none (use --storage-root <path> or --read-file <file>)
+  C:\                        fixed, NTFS, bus nvme, rotational no, 930.23 GiB total
+  D:\                        fixed, NTFS, bus usb, rotational unknown, 465.76 GiB total
+  E:\                        fixed, NTFS, bus usb, rotational unknown, 465.76 GiB total

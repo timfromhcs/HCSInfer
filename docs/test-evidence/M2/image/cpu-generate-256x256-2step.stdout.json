@@ -1,0 +1,15 @@
+{
+  "backend": "cpu",
+  "bytes": 115863,
+  "device": "AMD Ryzen 7 7735HS with Radeon Graphics         (CPU)",
+  "generation_ms": 9048.2188,
+  "height": 256,
+  "load_ms": 145.1763,
+  "mode": "generate",
+  "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf",
+  "output": "hcsinfer-image-20261117-123542.png",
+  "schema_version": 1,
+  "steps": 2,
+  "total_ms": 9050.2801,
+  "width": 256
+}

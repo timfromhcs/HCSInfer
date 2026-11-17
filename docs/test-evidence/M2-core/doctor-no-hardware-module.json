@@ -1,0 +1,17 @@
+{
+  "cpu": "unknown",
+  "cpu_features": "unknown",
+  "driver_version": "unknown",
+  "gpu": "unknown",
+  "gpu_device_id": "unknown",
+  "gpu_vendor_id": "unknown",
+  "hardware_module": "absent",
+  "hcsinfer_version": "0.1.0",
+  "model_vault_drive": "unknown",
+  "os": "windows",
+  "os_build": "unknown",
+  "ram_bytes": "unknown",
+  "schema_version": 1,
+  "uma_reservation": "unknown",
+  "vulkan_api_version": "unknown"
+}

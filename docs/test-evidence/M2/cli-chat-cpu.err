@@ -1,0 +1,2 @@
+[hcsinfer] backend=cpu device=CPU load_ms=526 offloaded_layers=0/28
+[hcsinfer] ttft_ms=74 prompt_tps=294.662 decode_tps=69.6713

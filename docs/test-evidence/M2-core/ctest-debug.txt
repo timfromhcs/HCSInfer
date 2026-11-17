@@ -1,0 +1,212 @@
+Test project D:/HCSInfer/build/windows-msvc-debug
+        Start   1: Result.ValueAndError
+  1/101 Test   #1: Result.ValueAndError .........................................   Passed    0.09 sec
+        Start   2: Result.VoidSpecialisation
+  2/101 Test   #2: Result.VoidSpecialisation ....................................   Passed    0.04 sec
+        Start   3: Result.MoveOnlyAndString
+  3/101 Test   #3: Result.MoveOnlyAndString .....................................   Passed    0.04 sec
+        Start   4: ErrorTaxonomy.ExitCodesAreStable
+  4/101 Test   #4: ErrorTaxonomy.ExitCodesAreStable .............................   Passed    0.04 sec
+        Start   5: ErrorTaxonomy.NamesAreUniqueAndKnown
+  5/101 Test   #5: ErrorTaxonomy.NamesAreUniqueAndKnown .........................   Passed    0.04 sec
+        Start   6: CheckedMath.Add
+  6/101 Test   #6: CheckedMath.Add ..............................................   Passed    0.04 sec
+        Start   7: CheckedMath.Mul
+  7/101 Test   #7: CheckedMath.Mul ..............................................   Passed    0.04 sec
+        Start   8: CheckedMath.SaturatingSub
+  8/101 Test   #8: CheckedMath.SaturatingSub ....................................   Passed    0.04 sec
+        Start   9: CheckedMath.RangeWithin
+  9/101 Test   #9: CheckedMath.RangeWithin ......................................   Passed    0.05 sec
+        Start  10: Lifecycle.StaticTableMatchesSpecification
+ 10/101 Test  #10: Lifecycle.StaticTableMatchesSpecification ....................   Passed    0.08 sec
+        Start  11: Lifecycle.EveryPairBehavesAccordingToTable
+ 11/101 Test  #11: Lifecycle.EveryPairBehavesAccordingToTable ...................   Passed    0.05 sec
+        Start  12: Lifecycle.FullHappyPathAndReload
+ 12/101 Test  #12: Lifecycle.FullHappyPathAndReload .............................   Passed    0.05 sec
+        Start  13: Lifecycle.TransitionToFailedRequiresFail
+ 13/101 Test  #13: Lifecycle.TransitionToFailedRequiresFail .....................   Passed    0.04 sec
+        Start  14: Lifecycle.RecoverableFailureCanRevalidate
+ 14/101 Test  #14: Lifecycle.RecoverableFailureCanRevalidate ....................   Passed    0.04 sec
+        Start  15: Lifecycle.NonRecoverableFailureOnlyAllowsUnloading
+ 15/101 Test  #15: Lifecycle.NonRecoverableFailureOnlyAllowsUnloading ...........   Passed    0.04 sec
+        Start  16: Lifecycle.CannotFailFromIdleStates
+ 16/101 Test  #16: Lifecycle.CannotFailFromIdleStates ...........................   Passed    0.04 sec
+        Start  17: Lifecycle.CompareAndTransition
+ 17/101 Test  #17: Lifecycle.CompareAndTransition ...............................   Passed    0.04 sec
+        Start  18: Lifecycle.ExactlyOneConcurrentOwnerWinsTheLoad
+ 18/101 Test  #18: Lifecycle.ExactlyOneConcurrentOwnerWinsTheLoad ...............   Passed    0.11 sec
+        Start  19: Lifecycle.NamesAreDistinct
+ 19/101 Test  #19: Lifecycle.NamesAreDistinct ...................................   Passed    0.05 sec
+        Start  20: MemoryBudgetMath.PhysicalOnly
+ 20/101 Test  #20: MemoryBudgetMath.PhysicalOnly ................................   Passed    0.07 sec
+        Start  21: MemoryBudgetMath.VulkanHeadroomCapsBudget
+ 21/101 Test  #21: MemoryBudgetMath.VulkanHeadroomCapsBudget ....................   Passed    0.04 sec
+        Start  22: MemoryBudgetMath.SaturatesInsteadOfUnderflowing
+ 22/101 Test  #22: MemoryBudgetMath.SaturatesInsteadOfUnderflowing ..............   Passed    0.04 sec
+        Start  23: MemoryBudget.ReserveAndRelease
+ 23/101 Test  #23: MemoryBudget.ReserveAndRelease ...............................   Passed    0.06 sec
+        Start  24: MemoryBudget.ExceedingBudgetFailsAndLeavesStateUntouched
+ 24/101 Test  #24: MemoryBudget.ExceedingBudgetFailsAndLeavesStateUntouched .....   Passed    0.04 sec
+        Start  25: MemoryBudget.OverflowIsOutOfMemoryNotWraparound
+ 25/101 Test  #25: MemoryBudget.OverflowIsOutOfMemoryNotWraparound ..............   Passed    0.04 sec
+        Start  26: MemoryBudget.NoDoubleCountingOfSharedRegion
+ 26/101 Test  #26: MemoryBudget.NoDoubleCountingOfSharedRegion ..................   Passed    0.04 sec
+        Start  27: MemoryBudget.InvalidArguments
+ 27/101 Test  #27: MemoryBudget.InvalidArguments ................................   Passed    0.04 sec
+        Start  28: MemoryBudget.Resize
+ 28/101 Test  #28: MemoryBudget.Resize ..........................................   Passed    0.04 sec
+        Start  29: MemoryBudget.RemeasureCanOvercommit
+ 29/101 Test  #29: MemoryBudget.RemeasureCanOvercommit ..........................   Passed    0.05 sec
+        Start  30: MemoryBudget.ConstructFromMeasurements
+ 30/101 Test  #30: MemoryBudget.ConstructFromMeasurements .......................   Passed    0.04 sec
+        Start  31: PathGuard.AcceptsPathsInsideRoot
+ 31/101 Test  #31: PathGuard.AcceptsPathsInsideRoot .............................   Passed    0.10 sec
+        Start  32: PathGuard.RejectsDotDotTraversal
+ 32/101 Test  #32: PathGuard.RejectsDotDotTraversal .............................   Passed    0.05 sec
+        Start  33: PathGuard.RejectsAbsolutePathOutside
+ 33/101 Test  #33: PathGuard.RejectsAbsolutePathOutside .........................   Passed    0.05 sec
+        Start  34: PathGuard.RejectsSiblingWithSharedPrefix
+ 34/101 Test  #34: PathGuard.RejectsSiblingWithSharedPrefix .....................   Passed    0.05 sec
+        Start  35: PathGuard.RejectsEmptyAndNul
+ 35/101 Test  #35: PathGuard.RejectsEmptyAndNul .................................   Passed    0.05 sec
+        Start  36: PathGuard.EmptyGuardRejectsEverything
+ 36/101 Test  #36: PathGuard.EmptyGuardRejectsEverything ........................   Passed    0.04 sec
+        Start  37: PathGuard.AddRootValidation
+ 37/101 Test  #37: PathGuard.AddRootValidation ..................................   Passed    0.05 sec
+        Start  38: PathGuard.LinkInsideRootPointingOutsideIsRejected
+ 38/101 Test  #38: PathGuard.LinkInsideRootPointingOutsideIsRejected ............   Passed    0.12 sec
+        Start  39: PathGuard.LinkInsideRootPointingInsideIsAccepted
+ 39/101 Test  #39: PathGuard.LinkInsideRootPointingInsideIsAccepted .............   Passed    0.08 sec
+        Start  40: PathGuard.WindowsCaseInsensitiveRootMatch
+ 40/101 Test  #40: PathGuard.WindowsCaseInsensitiveRootMatch ....................   Passed    0.05 sec
+        Start  41: PathGuard.WindowsRejectsDeviceNamespaceAndStreams
+ 41/101 Test  #41: PathGuard.WindowsRejectsDeviceNamespaceAndStreams ............   Passed    0.05 sec
+        Start  42: JobQueue.RunsJobToSuccessWithEvents
+ 42/101 Test  #42: JobQueue.RunsJobToSuccessWithEvents ..........................   Passed    0.37 sec
+        Start  43: JobQueue.FailureCarriesError
+ 43/101 Test  #43: JobQueue.FailureCarriesError .................................   Passed    0.04 sec
+        Start  44: JobQueue.ThrowingJobBecomesInternalFailureAndQueueSurvives
+ 44/101 Test  #44: JobQueue.ThrowingJobBecomesInternalFailureAndQueueSurvives ...   Passed    0.22 sec
+        Start  45: JobQueue.CancelRunningJobIsCooperative
+ 45/101 Test  #45: JobQueue.CancelRunningJobIsCooperative .......................   Passed    0.05 sec
+        Start  46: JobQueue.CancelQueuedJobNeverRuns
+ 46/101 Test  #46: JobQueue.CancelQueuedJobNeverRuns ............................   Passed    0.06 sec
+        Start  47: JobQueue.CancelFinishedIsNoOpAndUnknownIsNotFound
+ 47/101 Test  #47: JobQueue.CancelFinishedIsNoOpAndUnknownIsNotFound ............   Passed    0.03 sec
+        Start  48: JobQueue.FullQueueRejectsWithBusy
+ 48/101 Test  #48: JobQueue.FullQueueRejectsWithBusy ............................   Passed    0.04 sec
+        Start  49: JobQueue.JobsRunInSubmissionOrderOnOneWorker
+ 49/101 Test  #49: JobQueue.JobsRunInSubmissionOrderOnOneWorker .................   Passed    0.03 sec
+        Start  50: JobQueue.MultipleWorkersRunConcurrently
+ 50/101 Test  #50: JobQueue.MultipleWorkersRunConcurrently ......................   Passed    0.11 sec
+        Start  51: JobQueue.EventCallbackReceivesStreamAndMayThrow
+ 51/101 Test  #51: JobQueue.EventCallbackReceivesStreamAndMayThrow ..............   Passed    0.22 sec
+        Start  52: JobQueue.ProgressEventsAreBoundedButOutputIsNot
+ 52/101 Test  #52: JobQueue.ProgressEventsAreBoundedButOutputIsNot ..............   Passed    0.06 sec
+        Start  53: JobQueue.ShutdownCancelsRunningAndQueuedAndRejectsNewWork
+ 53/101 Test  #53: JobQueue.ShutdownCancelsRunningAndQueuedAndRejectsNewWork ....   Passed    0.05 sec
+        Start  54: JobQueue.DestructorCancelsWithoutHanging
+ 54/101 Test  #54: JobQueue.DestructorCancelsWithoutHanging .....................   Passed    0.10 sec
+        Start  55: JobQueue.RetainsBoundedNumberOfFinishedJobs
+ 55/101 Test  #55: JobQueue.RetainsBoundedNumberOfFinishedJobs ..................   Passed    0.03 sec
+        Start  56: JobQueue.RejectsEmptyFunction
+ 56/101 Test  #56: JobQueue.RejectsEmptyFunction ................................   Passed    0.03 sec
+        Start  57: CancellationToken.SourceAndToken
+ 57/101 Test  #57: CancellationToken.SourceAndToken .............................   Passed    0.03 sec
+        Start  58: Settings.DefaultsAreSafeAndValid
+ 58/101 Test  #58: Settings.DefaultsAreSafeAndValid .............................   Passed    0.20 sec
+        Start  59: Settings.RoundTripThroughFile
+ 59/101 Test  #59: Settings.RoundTripThroughFile ................................   Passed    0.43 sec
+        Start  60: Settings.MissingFileYieldsDefaults
+ 60/101 Test  #60: Settings.MissingFileYieldsDefaults ...........................   Passed    0.04 sec
+        Start  61: Settings.AtomicWriteReplacesAndLeavesNoTempFiles
+ 61/101 Test  #61: Settings.AtomicWriteReplacesAndLeavesNoTempFiles .............   Passed    0.04 sec
+        Start  62: Settings.FailedSaveKeepsPreviousFile
+ 62/101 Test  #62: Settings.FailedSaveKeepsPreviousFile .........................   Passed    0.04 sec
+        Start  63: Settings.MigratesLegacyV0
+ 63/101 Test  #63: Settings.MigratesLegacyV0 ....................................   Passed    0.03 sec
+        Start  64: Settings.MigratedFileIsRewrittenAtCurrentVersion
+ 64/101 Test  #64: Settings.MigratedFileIsRewrittenAtCurrentVersion .............   Passed    0.79 sec
+        Start  65: Settings.NewerSchemaIsRejectedNotDowngraded
+ 65/101 Test  #65: Settings.NewerSchemaIsRejectedNotDowngraded ..................   Passed    0.03 sec
+        Start  66: Settings.RejectsCorruptAndMistypedInput
+ 66/101 Test  #66: Settings.RejectsCorruptAndMistypedInput ......................   Passed    0.07 sec
+        Start  67: Settings.IgnoresUnknownKeys
+ 67/101 Test  #67: Settings.IgnoresUnknownKeys ..................................   Passed    0.03 sec
+        Start  68: Settings.ValidationBounds
+ 68/101 Test  #68: Settings.ValidationBounds ....................................   Passed    0.08 sec
+        Start  69: Settings.NonLoopbackBindNeedsExplicitLanOptIn
+ 69/101 Test  #69: Settings.NonLoopbackBindNeedsExplicitLanOptIn ................   Passed    0.06 sec
+        Start  70: Settings.ProfileNames
+ 70/101 Test  #70: Settings.ProfileNames ........................................   Passed    0.03 sec
+        Start  71: ModelId.Validation
+ 71/101 Test  #71: ModelId.Validation ...........................................   Passed    0.19 sec
+        Start  72: ModelId.MakeIdSanitises
+ 72/101 Test  #72: ModelId.MakeIdSanitises ......................................   Passed    0.04 sec
+        Start  73: ModelRegistry.AddGetListRemove
+ 73/101 Test  #73: ModelRegistry.AddGetListRemove ...............................   Passed    0.57 sec
+        Start  74: ModelRegistry.RejectsBadAndDuplicateIds
+ 74/101 Test  #74: ModelRegistry.RejectsBadAndDuplicateIds ......................   Passed    0.03 sec
+        Start  75: ModelRegistry.LifecycleThroughRegistryAndRemovalGuard
+ 75/101 Test  #75: ModelRegistry.LifecycleThroughRegistryAndRemovalGuard ........   Passed    0.03 sec
+        Start  76: ModelRegistry.FailMarksFailed
+ 76/101 Test  #76: ModelRegistry.FailMarksFailed ................................   Passed    0.04 sec
+        Start  77: ModelRegistry.JsonRoundTrip
+ 77/101 Test  #77: ModelRegistry.JsonRoundTrip ..................................   Passed    0.04 sec
+        Start  78: ModelRegistry.LoadJsonRejectsGarbage
+ 78/101 Test  #78: ModelRegistry.LoadJsonRejectsGarbage .........................   Passed    0.16 sec
+        Start  79: ModelRegistryScan.FindsValidatesAndIsIdempotent
+ 79/101 Test  #79: ModelRegistryScan.FindsValidatesAndIsIdempotent ..............   Passed    0.08 sec
+        Start  80: ModelRegistryScan.DuplicateStemsGetSuffixedIds
+ 80/101 Test  #80: ModelRegistryScan.DuplicateStemsGetSuffixedIds ...............   Passed    0.13 sec
+        Start  81: ModelRegistryScan.SafetensorsHeaderChecked
+ 81/101 Test  #81: ModelRegistryScan.SafetensorsHeaderChecked ...................   Passed    0.04 sec
+        Start  82: ModelRegistryScan.DoesNotFollowLinksOutOfRoot
+ 82/101 Test  #82: ModelRegistryScan.DoesNotFollowLinksOutOfRoot ................   Passed    0.07 sec
+        Start  83: ModelRegistryScan.RootOutsideGuardIsRejected
+ 83/101 Test  #83: ModelRegistryScan.RootOutsideGuardIsRejected .................   Passed    0.04 sec
+        Start  84: ModelRegistryScan.NeverModifiesScannedFiles
+ 84/101 Test  #84: ModelRegistryScan.NeverModifiesScannedFiles ..................   Passed    0.04 sec
+        Start  85: Logger.WritesOneJsonObjectPerLine
+ 85/101 Test  #85: Logger.WritesOneJsonObjectPerLine ............................   Passed    0.07 sec
+        Start  86: Logger.LevelFiltering
+ 86/101 Test  #86: Logger.LevelFiltering ........................................   Passed    0.09 sec
+        Start  87: Logger.EscapesControlCharacters
+ 87/101 Test  #87: Logger.EscapesControlCharacters ..............................   Passed    0.03 sec
+        Start  88: Logger.ParseLevel
+ 88/101 Test  #88: Logger.ParseLevel ............................................   Passed    0.04 sec
+        Start  89: Logger.DefaultGlobalLoggerExists
+ 89/101 Test  #89: Logger.DefaultGlobalLoggerExists .............................   Passed    0.03 sec
+        Start  90: EngineInterface.TextAdapterContract
+ 90/101 Test  #90: EngineInterface.TextAdapterContract ..........................   Passed    0.03 sec
+        Start  91: EngineInterface.ImageAdapterContract
+ 91/101 Test  #91: EngineInterface.ImageAdapterContract .........................   Passed    0.03 sec
+        Start  92: EngineInterface.DefaultsAreConservative
+ 92/101 Test  #92: EngineInterface.DefaultsAreConservative ......................   Passed    0.03 sec
+        Start  93: Cli.HelpWorksAtEveryLevel
+ 93/101 Test  #93: Cli.HelpWorksAtEveryLevel ....................................   Passed    0.03 sec
+        Start  94: Cli.VersionAndNoArgs
+ 94/101 Test  #94: Cli.VersionAndNoArgs .........................................   Passed    0.03 sec
+        Start  95: Cli.UnknownCommandIsInvalidArgument
+ 95/101 Test  #95: Cli.UnknownCommandIsInvalidArgument ..........................   Passed    0.03 sec
+        Start  96: Cli.PlannedCommandsReturnUnsupported
+ 96/101 Test  #96: Cli.PlannedCommandsReturnUnsupported .........................   Passed    0.03 sec
+        Start  97: Cli.DoctorJsonIsValidAndNeverGuesses
+ 97/101 Test  #97: Cli.DoctorJsonIsValidAndNeverGuesses .........................   Passed    0.03 sec
+        Start  98: Cli.DoctorTextWorks
+ 98/101 Test  #98: Cli.DoctorTextWorks ..........................................   Passed    0.03 sec
+        Start  99: Cli.ModelsScanListInspectRoundTrip
+ 99/101 Test  #99: Cli.ModelsScanListInspectRoundTrip ...........................   Passed    0.05 sec
+        Start 100: Cli.ScanErrors
+100/101 Test #100: Cli.ScanErrors ...............................................   Passed    0.04 sec
+        Start 101: Cli.CorruptRegistryIsReportedNotCrashed
+101/101 Test #101: Cli.CorruptRegistryIsReportedNotCrashed ......................   Passed    0.04 sec
+
+100% tests passed out of 101
+
+Label Time Summary:
+contract    =   0.31 sec*proc (9 tests)
+unit        =   7.34 sec*proc (92 tests)
+
+Total Test time (real) =  17.37 sec
+ctest log: D:\HCSInfer\artifacts\test-logs\ctest-windows-msvc-debug-20261117-082021.log

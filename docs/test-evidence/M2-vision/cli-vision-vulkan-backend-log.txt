@@ -1,0 +1,6 @@
+load_tensors: offloaded 33/33 layers to GPU
+mtmd_backends: using Vulkan0 backend
+image slice encoded in 247 ms
+image decoded (batch 1/1) in 12 ms
+image slice encoded in 228 ms
+image decoded (batch 1/1) in 5 ms

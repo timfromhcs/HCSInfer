@@ -1,0 +1,124 @@
+# PR quick gate (AGENTS.md section 18.3) on GitHub-hosted Windows.
+#
+# What this proves: the CPU preset configures, builds and passes every test that needs no model.
+# What it does NOT prove (they are NOT RUN here, see hardware.yml): Vulkan/Radeon 680M execution, real-model
+# inference, soak, packaging on a clean machine. Tests that need HCS_TEST_GGUF report "Skipped" and must be read as
+# NOT RUN, not PASS.
+#
+# Status: written but never executed (the repository had no commits or remote when this was created).
+# Hardening TODO: pin actions/* to full commit SHAs once the repository is hosted and the SHAs can be verified.
+name: pr-quick-gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-quick-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  build-test:
+    name: build + ctest (${{ matrix.preset }})
+    runs-on: windows-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [windows-msvc-release, windows-msvc-debug]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Tool versions
+        run: |
+          New-Item -ItemType Directory -Force artifacts | Out-Null
+          . .\scripts\common.ps1
+          Initialize-MsvcEnvironment
+          $v = @(
+            "cmake: $((cmake --version | Select-Object -First 1))",
+            "ninja: $(ninja --version)",
+            "git: $(git --version)",
+            "cl: $((cl 2>&1 | Select-Object -First 1))",
+            "submodules:", (git submodule status)
+          )
+          $v | Tee-Object artifacts/environment.txt
+
+      - name: Configure + build (${{ matrix.preset }})
+        run: .\scripts\build.ps1 -Preset ${{ matrix.preset }} -Parallel 4
+
+      - name: List discovered tests
+        run: |
+          . .\scripts\common.ps1
+          Initialize-MsvcEnvironment
+          ctest --preset ${{ matrix.preset }} -N | Tee-Object artifacts/ctest-list-${{ matrix.preset }}.txt
+
+      - name: ctest (no models available)
+        run: |
+          . .\scripts\common.ps1
+          Initialize-MsvcEnvironment
+          ctest --preset ${{ matrix.preset }} --output-on-failure --no-tests=error 2>&1 |
+            Tee-Object artifacts/ctest-${{ matrix.preset }}.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Report skipped (NOT RUN) tests
+        if: always()
+        run: |
+          $f = "artifacts/ctest-${{ matrix.preset }}.txt"
+          if (Test-Path $f) {
+            $skipped = Select-String -Path $f -Pattern '\(Skipped\)'
+            "NOT RUN (skipped, need HCS_TEST_GGUF or a GPU build): $(@($skipped).Count)" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ci-evidence-${{ matrix.preset }}
+          path: artifacts/*.txt
+          if-no-files-found: warn
+
+  format:
+    name: clang-format check
+    runs-on: windows-latest
+    timeout-minutes: 15
+    # The tree was not clang-formatted when this gate was added (scripts/format.ps1 reported 89 of 111 C++ files
+    # differing, measured locally with a ROCm clang-format). It is reported but does not block until a dedicated
+    # formatting change lands (scripts\format.ps1 -Fix) and this flag is removed. Not a silent downgrade: the
+    # result is visible in the job summary.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check formatting
+        run: .\scripts\format.ps1
+
+  supply-chain:
+    name: SBOM generation + schema sanity
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Generate SBOM
+        run: .\scripts\sbom.ps1 -OutFile artifacts\sbom\hcsinfer.cdx.json
+      - name: Sanity-check SBOM
+        run: |
+          $b = Get-Content artifacts\sbom\hcsinfer.cdx.json -Raw | ConvertFrom-Json
+          if ($b.bomFormat -ne 'CycloneDX' -or @($b.components).Count -lt 1) { throw 'SBOM malformed' }
+          "SBOM components: $(@($b.components).Count)" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: artifacts/sbom/hcsinfer.cdx.json

@@ -1,0 +1,194 @@
+#include <gtest/gtest.h>
+
+#include <nlohmann/json.hpp>
+#include <sstream>
+
+#include "hcs/cli/cli.hpp"
+#include "hcs/result.hpp"
+#include "temp_dir.hpp"
+
+using namespace hcs;
+using hcs::test::TempDir;
+
+namespace {
+struct Run {
+    int code;
+    std::string out, err;
+};
+Run run(std::vector<std::string> args) {
+    std::ostringstream o, e;
+    int c = cli::run(args, o, e);
+    return {c, o.str(), e.str()};
+}
+bool contains(const std::string& s, const std::string& what) { return s.find(what) != std::string::npos; }
+}  // namespace
+
+TEST(Cli, HelpWorksAtEveryLevel) {
+    const std::vector<std::vector<std::string>> levels = {
+        {"--help"},
+        {"-h"},
+        {"help"},
+        {"doctor", "--help"},
+        {"models", "--help"},
+        {"models", "list", "--help"},
+        {"models", "scan", "--help"},
+        {"models", "inspect", "--help"},
+        {"chat", "--help"},
+        {"vision", "--help"},
+        {"image", "-h"},
+    };
+    for (const auto& l : levels) {
+        auto r = run(l);
+        EXPECT_EQ(r.code, 0) << l.front();
+        EXPECT_TRUE(contains(r.out, "Usage") || contains(r.out, "HCSInfer")) << l.front();
+        EXPECT_TRUE(r.err.empty());
+    }
+}
+
+TEST(Cli, VersionAndNoArgs) {
+    auto v = run({"--version"});
+    EXPECT_EQ(v.code, 0);
+    EXPECT_TRUE(contains(v.out, "HCSInfer 0."));
+    auto none = run({});
+    EXPECT_EQ(none.code, exit_code(ErrorCode::InvalidArgument));
+    EXPECT_TRUE(contains(none.err, "Usage"));
+}
+
+TEST(Cli, UnknownCommandIsInvalidArgument) {
+    auto r = run({"frobnicate"});
+    EXPECT_EQ(r.code, 2);
+    EXPECT_TRUE(contains(r.err, "unknown command"));
+    EXPECT_EQ(run({"models", "frob"}).code, 2);
+    EXPECT_EQ(run({"doctor", "--bogus"}).code, 2);
+    EXPECT_EQ(run({"--state-dir"}).code, 2);
+}
+
+TEST(Cli, PlannedCommandsReturnUnsupported) {
+    for (const char* c : {"benchmark", "tune", "cache"}) {
+        auto r = run({c});
+        EXPECT_EQ(r.code, 10) << c;
+        EXPECT_TRUE(contains(r.err, "planned")) << c;
+    }
+    EXPECT_EQ(run({"models", "load", "x"}).code, 10);
+    EXPECT_EQ(run({"models", "unload"}).code, 10);
+}
+
+TEST(Cli, ImplementedTransportsHaveHelpAndValidateArguments) {
+    EXPECT_EQ(run({"serve", "--help"}).code, 0);
+    EXPECT_EQ(run({"mcp"}).code, 2);  // missing transport is invalid, not "planned"
+    EXPECT_EQ(run({"mcp", "frob"}).code, 2);
+    EXPECT_EQ(run({"image"}).code, 2);
+    EXPECT_TRUE(contains(run({"image"}).err, "Usage"));
+    EXPECT_EQ(run({"image", "frob"}).code, 2);
+    EXPECT_EQ(run({"image", "generate"}).code, 2);  // --model required
+    EXPECT_EQ(run({"image", "generate", "--model", "m", "--prompt", "p", "--width", "abc"}).code, 2);
+    EXPECT_EQ(run({"image", "generate", "--model", "m"}).code, 2);            // --prompt required
+    EXPECT_EQ(run({"image", "edit", "--model", "m", "--prompt", "p"}).code, 2);  // --input required
+    const auto missing = run({"image", "generate", "--model", "does-not-exist", "--prompt", "p"});
+    EXPECT_TRUE(missing.code == 7 || missing.code == 10) << missing.code;
+}
+
+TEST(Cli, ChatValidatesArgumentsBeforeLoadingAnything) {
+    EXPECT_EQ(run({"chat"}).code, 2);                                  // --model required
+    EXPECT_EQ(run({"chat", "--model", "x", "--backend", "gpu"}).code, 2);
+    EXPECT_EQ(run({"chat", "--model", "x", "--ctx", "abc"}).code, 2);
+    EXPECT_EQ(run({"chat", "--model"}).code, 2);
+    auto r = run({"chat", "--model", "does-not-exist", "--prompt", "hi"});
+    EXPECT_TRUE(r.code == 7 || r.code == 10) << r.code;  // not_found (llama build) / unsupported (no engine)
+}
+
+TEST(Cli, VisionHelpAndArgumentValidationBeforeLoadingAnything) {
+    auto h = run({"vision", "--help"});
+    EXPECT_EQ(h.code, 0);
+    EXPECT_TRUE(contains(h.out, "--mmproj"));
+    EXPECT_TRUE(contains(h.out, "--image"));
+    const int no_args = run({"vision"}).code;  // --model required (2) / no llama engine in this build (10)
+    EXPECT_TRUE(no_args == 2 || no_args == 10) << no_args;
+    const int no_image = run({"vision", "--model", "x"}).code;
+    EXPECT_TRUE(no_image == 2 || no_image == 10) << no_image;
+    TempDir d;
+    test::write_file(d / "pic.png", "not really a png");
+    // missing/invalid pieces are reported as errors, never "planned"
+    const auto missing_image = run({"vision", "--model", "x", "--image", (d / "nope.png").string(), "--prompt", "p"});
+    EXPECT_TRUE(missing_image.code == 7 || missing_image.code == 10) << missing_image.code;
+    EXPECT_FALSE(contains(missing_image.err, "planned"));
+    const auto traversal = run({"vision", "--model", "x", "--image", (d / ".." / "pic.png").string(), "--prompt", "p"});
+    EXPECT_TRUE(traversal.code == 9 || traversal.code == 10) << traversal.code;
+    const auto no_model = run({"vision", "--model", "does-not-exist", "--image", (d / "pic.png").string(), "--prompt", "p"});
+    EXPECT_TRUE(no_model.code == 7 || no_model.code == 10) << no_model.code;
+}
+
+TEST(Cli, DoctorJsonIsValidAndNeverGuesses) {
+    auto r = run({"doctor", "--json"});
+    ASSERT_EQ(r.code, 0) << r.err;
+    auto j = nlohmann::json::parse(r.out, nullptr, false);
+    ASSERT_FALSE(j.is_discarded()) << r.out;
+    EXPECT_EQ(j["schema_version"], 1);
+#ifndef HCS_HAVE_HARDWARE
+    EXPECT_EQ(j["hardware_module"], "absent");
+    EXPECT_EQ(j["cpu"], "unknown");
+    EXPECT_EQ(j["gpu"], "unknown");
+    EXPECT_EQ(j["ram_bytes"], "unknown");
+#endif
+}
+
+TEST(Cli, DoctorTextWorks) {
+    auto r = run({"doctor"});
+    EXPECT_EQ(r.code, 0) << r.err;
+    EXPECT_FALSE(r.out.empty());
+}
+
+TEST(Cli, ModelsScanListInspectRoundTrip) {
+    TempDir t;
+    hcs::test::write_file(t / "models" / "tiny-model.gguf", hcs::test::fake_gguf());
+    hcs::test::write_file(t / "models" / "broken.gguf", "garbage");
+    const std::string state = (t / "state").string();
+    const std::string dir = (t / "models").string();
+
+    auto empty = run({"--state-dir", state, "models", "list"});
+    EXPECT_EQ(empty.code, 0);
+    EXPECT_TRUE(contains(empty.out, "No models registered"));
+
+    auto scan = run({"--state-dir", state, "models", "scan", dir, "--json"});
+    ASSERT_EQ(scan.code, 0) << scan.err;
+    auto sj = nlohmann::json::parse(scan.out);
+    EXPECT_EQ(sj["added"], 1);
+    EXPECT_EQ(sj["skipped"], 1);
+
+    auto list = run({"--state-dir", state, "models", "list"});
+    EXPECT_EQ(list.code, 0);
+    EXPECT_TRUE(contains(list.out, "tiny-model"));
+    EXPECT_TRUE(contains(list.out, "gguf"));
+
+    auto lj = run({"--state-dir", state, "models", "list", "--json"});
+    auto arr = nlohmann::json::parse(lj.out);
+    ASSERT_EQ(arr["models"].size(), 1u);
+    EXPECT_EQ(arr["models"][0]["id"], "tiny-model");
+
+    auto ins = run({"--state-dir", state, "models", "inspect", "tiny-model"});
+    EXPECT_EQ(ins.code, 0);
+    EXPECT_EQ(nlohmann::json::parse(ins.out)["format"], "gguf");
+
+    EXPECT_EQ(run({"--state-dir", state, "models", "inspect", "nope"}).code, 7);
+
+    auto again = run({"--state-dir", state, "models", "scan", dir, "--json"});
+    ASSERT_EQ(again.code, 0);
+    EXPECT_EQ(nlohmann::json::parse(again.out)["added"], 0);
+    EXPECT_EQ(nlohmann::json::parse(again.out)["updated"], 1);
+}
+
+TEST(Cli, ScanErrors) {
+    TempDir t;
+    const std::string state = (t / "state").string();
+    EXPECT_EQ(run({"--state-dir", state, "models", "scan"}).code, 2);
+    EXPECT_EQ(run({"--state-dir", state, "models", "scan", (t / "missing").string()}).code, 7);
+    EXPECT_EQ(run({"--state-dir", state, "models", "scan", (t / "a" / ".." / "b").string()}).code, 9);
+}
+
+TEST(Cli, CorruptRegistryIsReportedNotCrashed) {
+    TempDir t;
+    hcs::test::write_file(t / "state" / "registry.json", "{{{");
+    auto r = run({"--state-dir", (t / "state").string(), "models", "list"});
+    EXPECT_EQ(r.code, 2);
+    EXPECT_TRUE(contains(r.err, "error:"));
+}

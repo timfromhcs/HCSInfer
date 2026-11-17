@@ -1,0 +1,15 @@
+      Start 65: MutationFuzz.PureRandomGarbageIsRejected
+62/64 Test #65: MutationFuzz.PureRandomGarbageIsRejected ..........................................................   Passed    0.51 sec
+      Start 67: RealGguf.HeaderParsesAndTensorsLieInsideTheFile
+63/64 Test #67: RealGguf.HeaderParsesAndTensorsLieInsideTheFile ...................................................   Passed    0.40 sec
+      Start 68: RealGguf.StreamingDeliversEveryByteInOrder
+64/64 Test #68: RealGguf.StreamingDeliversEveryByteInOrder ........................................................   Passed    0.51 sec
+
+100% tests passed out of 64
+
+Label Time Summary:
+integration    =   0.91 sec*proc (2 tests)
+parser         =   2.84 sec*proc (3 tests)
+unit           =   9.94 sec*proc (59 tests)
+
+Total Test time (real) =  13.97 sec

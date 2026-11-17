@@ -1,0 +1,2168 @@
+{
+  "schema_version": 1,
+  "exe": "HCSInfer.exe",
+  "version": "HCSInfer 0.1.0",
+  "model_file": "qwen3-0.6b-q4_k_m.gguf",
+  "model_size_bytes": 484219712,
+  "http": {
+    "port_bound": 53639,
+    "token_len": 64,
+    "hcs_runtime": {
+      "chat_template": "auto",
+      "image_engine": {
+        "available": false,
+        "reason": "no image engine adapter is implemented yet"
+      },
+      "jobs_pending": 0,
+      "loaded_model": null,
+      "text_engine": {
+        "available": true,
+        "metrics": {
+          "backend": "unknown",
+          "device": "unknown",
+          "load_ms": 0.0,
+          "resident_bytes": 0,
+          "tokens_per_second": 0.0,
+          "ttft_ms": 0.0
+        },
+        "streaming": true
+      },
+      "uptime_s": 0.1797144,
+      "version": "0.1.0"
+    },
+    "hcs_devices": {
+      "cpu": {
+        "family": 25,
+        "features": {
+          "aes": true,
+          "avx": true,
+          "avx2": true,
+          "avx512_vnni": false,
+          "avx512bw": false,
+          "avx512f": false,
+          "avx512vl": false,
+          "avx_vnni": false,
+          "bmi1": true,
+          "bmi2": true,
+          "f16c": true,
+          "fma3": true,
+          "os_ymm_state_enabled": true,
+          "os_zmm_state_enabled": false,
+          "popcnt": true,
+          "sha": true,
+          "sse4_2": true
+        },
+        "logical_processors": 16,
+        "model": 68,
+        "name": "AMD Ryzen 7 7735HS with Radeon Graphics",
+        "nominal_mhz": 3194,
+        "physical_cores": 8,
+        "stepping": 1,
+        "vendor": "AuthenticAMD"
+      },
+      "gpu": {
+        "adapters": [
+          {
+            "dedicated_system_memory_bytes": 0,
+            "dedicated_video_memory_bytes": 4267499520,
+            "device_id": "0x1681",
+            "index": 0,
+            "memory_local_segment": {
+              "available_for_reservation_bytes": 7176802304,
+              "budget_bytes": 14085169152,
+              "current_usage_bytes": 0
+            },
+            "memory_non_local_segment": {
+              "available_for_reservation_bytes": 0,
+              "budget_bytes": 0,
+              "current_usage_bytes": 0
+            },
+            "name": "AMD Radeon(TM) Graphics",
+            "revision": 6,
+            "shared_system_memory_bytes": 10622976000,
+            "software_adapter": false,
+            "subsystem_id": "0x1241002",
+            "umd_version": "32.0.21043.12001",
+            "vendor_id": "0x1002"
+          },
+          {
+            "dedicated_system_memory_bytes": 0,
+            "dedicated_video_memory_bytes": 4267499520,
+            "device_id": "0x1681",
+            "index": 1,
+            "memory_local_segment": {
+              "available_for_reservation_bytes": 7176802304,
+              "budget_bytes": 14085169152,
+              "current_usage_bytes": 0
+            },
+            "memory_non_local_segment": {
+              "available_for_reservation_bytes": 0,
+              "budget_bytes": 0,
+              "current_usage_bytes": 0
+            },
+            "name": "AMD Radeon(TM) Graphics",
+            "revision": 6,
+            "shared_system_memory_bytes": 10622976000,
+            "software_adapter": false,
+            "subsystem_id": "0x1241002",
+            "umd_version": "32.0.21043.12001",
+            "vendor_id": "0x1002"
+          },
+          {
+            "dedicated_system_memory_bytes": 0,
+            "dedicated_video_memory_bytes": 0,
+            "device_id": "0x008C",
+            "index": 2,
+            "memory_local_segment": {
+              "available_for_reservation_bytes": 5045913600,
+              "budget_bytes": 9823391744,
+              "current_usage_bytes": 0
+            },
+            "memory_non_local_segment": {
+              "available_for_reservation_bytes": 0,
+              "budget_bytes": 0,
+              "current_usage_bytes": 0
+            },
+            "name": "Microsoft Basic Render Driver",
+            "revision": 0,
+            "shared_system_memory_bytes": 10622976000,
+            "software_adapter": true,
+            "subsystem_id": "0x0000",
+            "umd_version": "10.0.26100.9818",
+            "vendor_id": "0x1414"
+          }
+        ],
+        "display_driver_registry": [
+          {
+            "description": "AMD Radeon(TM) Graphics",
+            "driver_date": "5-29-2026",
+            "driver_version": "32.0.21043.12001",
+            "matching_device_id": "PCI\\VEN_1002&DEV_1681&REV_06",
+            "provider": "Advanced Micro Devices, Inc."
+          },
+          {
+            "description": "Parsec Virtual Display Adapter",
+            "driver_date": "1-25-2024",
+            "driver_version": "0.45.0.0",
+            "matching_device_id": "Root\\Parsec\\VDA",
+            "provider": "Parsec Cloud, Inc."
+          }
+        ],
+        "dxgi_available": true
+      },
+      "hcsinfer_version": "0.1.0",
+      "memory": {
+        "available_physical_bytes": 13538701312,
+        "bios_uma_reservation": "unknown",
+        "channel_configuration": "unknown",
+        "commit_available_bytes": 26470633472,
+        "commit_limit_bytes": 43395268608,
+        "installed_physical_bytes": 25769803776,
+        "memory_load_percent": 36,
+        "total_physical_bytes": 21245952000
+      },
+      "options": {
+        "no_vulkan": false
+      },
+      "os": {
+        "architecture": "x64",
+        "build": 26200,
+        "display_version": "25H2",
+        "name": "windows",
+        "product_name_registry": "Windows 10 Pro",
+        "ubr": 9974,
+        "version": "10.0"
+      },
+      "schema_version": 1,
+      "storage": {
+        "requested_path": "unknown",
+        "requested_volume": "unknown",
+        "volumes": [
+          {
+            "bus_type": "nvme",
+            "device_product": "NVME SSD 1TB",
+            "device_vendor": "unknown",
+            "drive_type": "fixed",
+            "filesystem": "NTFS",
+            "free_bytes": 69125017600,
+            "removable_media": false,
+            "root": "C:\\",
+            "rotational": false,
+            "total_bytes": 998823161856
+          },
+          {
+            "bus_type": "usb",
+            "device_product": "IB-1232CL-U3",
+            "device_vendor": "unknown",
+            "drive_type": "fixed",
+            "filesystem": "NTFS",
+            "free_bytes": 392957374464,
+            "removable_media": false,
+            "root": "D:\\",
+            "rotational": "unknown",
+            "total_bytes": 500105736192
+          },
+          {
+            "bus_type": "usb",
+            "device_product": "IB-1232CL-U3",
+            "device_vendor": "unknown",
+            "drive_type": "fixed",
+            "filesystem": "NTFS",
+            "free_bytes": 95282356224,
+            "removable_media": false,
+            "root": "E:\\",
+            "rotational": "unknown",
+            "total_bytes": 500105736192
+          }
+        ]
+      },
+      "summary": {
+        "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+        "cpu_features": [
+          "aes",
+          "avx",
+          "avx2",
+          "bmi1",
+          "bmi2",
+          "f16c",
+          "fma3",
+          "popcnt",
+          "sha",
+          "sse4_2"
+        ],
+        "driver_version": "26.6.1 (AMD proprietary shader compiler)",
+        "gpu": "AMD Radeon(TM) Graphics",
+        "gpu_device_id": "0x1681",
+        "gpu_vendor_id": "0x1002",
+        "os_build": "10.0.26200.9974",
+        "ram_bytes": 21245952000,
+        "registry_driver_version": "32.0.21043.12001",
+        "uma_reservation_bytes": 4267499520,
+        "vulkan_api_version": "1.4.315",
+        "vulkan_status": "ok"
+      },
+      "timestamp_utc": "2026-11-17T08:05:53Z",
+      "vulkan": {
+        "device_count": 1,
+        "devices": [
+          {
+            "all_extensions": [
+              "VK_AMD_anti_lag",
+              "VK_AMD_buffer_marker",
+              "VK_AMD_device_coherent_memory",
+              "VK_AMD_display_native_hdr",
+              "VK_AMD_draw_indirect_count",
+              "VK_AMD_gcn_shader",
+              "VK_AMD_gpa_interface",
+              "VK_AMD_gpu_shader_half_float",
+              "VK_AMD_gpu_shader_int16",
+              "VK_AMD_memory_overallocation_behavior",
+              "VK_AMD_mixed_attachment_samples",
+              "VK_AMD_shader_ballot",
+              "VK_AMD_shader_core_properties",
+              "VK_AMD_shader_core_properties2",
+              "VK_AMD_shader_early_and_late_fragment_tests",
+              "VK_AMD_shader_explicit_vertex_parameter",
+              "VK_AMD_shader_fragment_mask",
+              "VK_AMD_shader_image_load_store_lod",
+              "VK_AMD_shader_info",
+              "VK_AMD_shader_trinary_minmax",
+              "VK_AMD_texture_gather_bias_lod",
+              "VK_EXT_4444_formats",
+              "VK_EXT_attachment_feedback_loop_layout",
+              "VK_EXT_border_color_swizzle",
+              "VK_EXT_calibrated_timestamps",
+              "VK_EXT_color_write_enable",
+              "VK_EXT_conditional_rendering",
+              "VK_EXT_conservative_rasterization",
+              "VK_EXT_custom_border_color",
+              "VK_EXT_depth_clamp_control",
+              "VK_EXT_depth_clamp_zero_one",
+              "VK_EXT_depth_clip_control",
+              "VK_EXT_depth_clip_enable",
+              "VK_EXT_depth_range_unrestricted",
+              "VK_EXT_descriptor_buffer",
+              "VK_EXT_descriptor_indexing",
+              "VK_EXT_device_address_binding_report",
+              "VK_EXT_device_fault",
+              "VK_EXT_device_generated_commands",
+              "VK_EXT_dynamic_rendering_unused_attachments",
+              "VK_EXT_extended_dynamic_state",
+              "VK_EXT_extended_dynamic_state2",
+              "VK_EXT_extended_dynamic_state3",
+              "VK_EXT_external_memory_host",
+              "VK_EXT_fragment_shader_interlock",
+              "VK_EXT_frame_boundary",
+              "VK_EXT_full_screen_exclusive",
+              "VK_EXT_global_priority",
+              "VK_EXT_global_priority_query",
+              "VK_EXT_graphics_pipeline_library",
+              "VK_EXT_hdr_metadata",
+              "VK_EXT_host_query_reset",
+              "VK_EXT_image_2d_view_of_3d",
+              "VK_EXT_image_robustness",
+              "VK_EXT_image_sliced_view_of_3d",
+              "VK_EXT_image_view_min_lod",
+              "VK_EXT_index_type_uint8",
+              "VK_EXT_inline_uniform_block",
+              "VK_EXT_line_rasterization",
+              "VK_EXT_load_store_op_none",
+              "VK_EXT_memory_budget",
+              "VK_EXT_memory_priority",
+              "VK_EXT_mutable_descriptor_type",
+              "VK_EXT_nested_command_buffer",
+              "VK_EXT_non_seamless_cube_map",
+              "VK_EXT_pageable_device_local_memory",
+              "VK_EXT_pipeline_creation_cache_control",
+              "VK_EXT_pipeline_creation_feedback",
+              "VK_EXT_pipeline_library_group_handles",
+              "VK_EXT_post_depth_coverage",
+              "VK_EXT_primitive_topology_list_restart",
+              "VK_EXT_private_data",
+              "VK_EXT_provoking_vertex",
+              "VK_EXT_queue_family_foreign",
+              "VK_EXT_robustness2",
+              "VK_EXT_sample_locations",
+              "VK_EXT_sampler_filter_minmax",
+              "VK_EXT_scalar_block_layout",
+              "VK_EXT_separate_stencil_usage",
+              "VK_EXT_shader_atomic_float",
+              "VK_EXT_shader_atomic_float2",
+              "VK_EXT_shader_demote_to_helper_invocation",
+              "VK_EXT_shader_image_atomic_int64",
+              "VK_EXT_shader_module_identifier",
+              "VK_EXT_shader_object",
+              "VK_EXT_shader_replicated_composites",
+              "VK_EXT_shader_stencil_export",
+              "VK_EXT_shader_subgroup_ballot",
+              "VK_EXT_shader_subgroup_vote",
+              "VK_EXT_shader_viewport_index_layer",
+              "VK_EXT_subgroup_size_control",
+              "VK_EXT_texel_buffer_alignment",
+              "VK_EXT_tooling_info",
+              "VK_EXT_transform_feedback",
+              "VK_EXT_vertex_attribute_divisor",
+              "VK_EXT_vertex_input_dynamic_state",
+              "VK_EXT_ycbcr_image_arrays",
+              "VK_GOOGLE_decorate_string",
+              "VK_GOOGLE_hlsl_functionality1",
+              "VK_GOOGLE_user_type",
+              "VK_KHR_16bit_storage",
+              "VK_KHR_8bit_storage",
+              "VK_KHR_acceleration_structure",
+              "VK_KHR_bind_memory2",
+              "VK_KHR_buffer_device_address",
+              "VK_KHR_calibrated_timestamps",
+              "VK_KHR_compute_shader_derivatives",
+              "VK_KHR_cooperative_matrix",
+              "VK_KHR_copy_commands2",
+              "VK_KHR_create_renderpass2",
+              "VK_KHR_dedicated_allocation",
+              "VK_KHR_deferred_host_operations",
+              "VK_KHR_depth_clamp_zero_one",
+              "VK_KHR_depth_stencil_resolve",
+              "VK_KHR_descriptor_update_template",
+              "VK_KHR_device_group",
+              "VK_KHR_draw_indirect_count",
+              "VK_KHR_driver_properties",
+              "VK_KHR_dynamic_rendering",
+              "VK_KHR_dynamic_rendering_local_read",
+              "VK_KHR_external_fence",
+              "VK_KHR_external_fence_win32",
+              "VK_KHR_external_memory",
+              "VK_KHR_external_memory_win32",
+              "VK_KHR_external_semaphore",
+              "VK_KHR_external_semaphore_win32",
+              "VK_KHR_format_feature_flags2",
+              "VK_KHR_fragment_shader_barycentric",
+              "VK_KHR_fragment_shading_rate",
+              "VK_KHR_get_memory_requirements2",
+              "VK_KHR_global_priority",
+              "VK_KHR_image_format_list",
+              "VK_KHR_imageless_framebuffer",
+              "VK_KHR_index_type_uint8",
+              "VK_KHR_line_rasterization",
+              "VK_KHR_load_store_op_none",
+              "VK_KHR_maintenance1",
+              "VK_KHR_maintenance2",
+              "VK_KHR_maintenance3",
+              "VK_KHR_maintenance4",
+              "VK_KHR_maintenance5",
+              "VK_KHR_maintenance6",
+              "VK_KHR_maintenance7",
+              "VK_KHR_maintenance8",
+              "VK_KHR_map_memory2",
+              "VK_KHR_multiview",
+              "VK_KHR_pipeline_binary",
+              "VK_KHR_pipeline_executable_properties",
+              "VK_KHR_pipeline_library",
+              "VK_KHR_push_descriptor",
+              "VK_KHR_ray_query",
+              "VK_KHR_ray_tracing_maintenance1",
+              "VK_KHR_ray_tracing_pipeline",
+              "VK_KHR_ray_tracing_position_fetch",
+              "VK_KHR_relaxed_block_layout",
+              "VK_KHR_robustness2",
+              "VK_KHR_sampler_mirror_clamp_to_edge",
+              "VK_KHR_sampler_ycbcr_conversion",
+              "VK_KHR_separate_depth_stencil_layouts",
+              "VK_KHR_shader_atomic_int64",
+              "VK_KHR_shader_clock",
+              "VK_KHR_shader_draw_parameters",
+              "VK_KHR_shader_expect_assume",
+              "VK_KHR_shader_float16_int8",
+              "VK_KHR_shader_float_controls",
+              "VK_KHR_shader_float_controls2",
+              "VK_KHR_shader_integer_dot_product",
+              "VK_KHR_shader_maximal_reconvergence",
+              "VK_KHR_shader_non_semantic_info",
+              "VK_KHR_shader_quad_control",
+              "VK_KHR_shader_subgroup_extended_types",
+              "VK_KHR_shader_subgroup_rotate",
+              "VK_KHR_shader_subgroup_uniform_control_flow",
+              "VK_KHR_shader_terminate_invocation",
+              "VK_KHR_spirv_1_4",
+              "VK_KHR_storage_buffer_storage_class",
+              "VK_KHR_swapchain",
+              "VK_KHR_swapchain_mutable_format",
+              "VK_KHR_synchronization2",
+              "VK_KHR_timeline_semaphore",
+              "VK_KHR_uniform_buffer_standard_layout",
+              "VK_KHR_variable_pointers",
+              "VK_KHR_vertex_attribute_divisor",
+              "VK_KHR_video_decode_av1",
+              "VK_KHR_video_decode_h264",
+              "VK_KHR_video_decode_h265",
+              "VK_KHR_video_decode_queue",
+              "VK_KHR_video_encode_h264",
+              "VK_KHR_video_encode_h265",
+              "VK_KHR_video_encode_queue",
+              "VK_KHR_video_maintenance1",
+              "VK_KHR_video_queue",
+              "VK_KHR_vulkan_memory_model",
+              "VK_KHR_win32_keyed_mutex",
+              "VK_KHR_workgroup_memory_explicit_layout",
+              "VK_KHR_zero_initialize_workgroup_memory",
+              "VK_VALVE_mutable_descriptor_type"
+            ],
+            "api_version": "1.4.315",
+            "cooperative_matrix_properties": [
+              {
+                "a": "f16",
+                "b": "f16",
+                "c": "f32",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "f32",
+                "scope": 3
+              },
+              {
+                "a": "f16",
+                "b": "f16",
+                "c": "f16",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "f16",
+                "scope": 3
+              },
+              {
+                "a": "f16",
+                "b": "f16",
+                "c": "f16",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "f16",
+                "scope": 3
+              },
+              {
+                "a": "u8",
+                "b": "u8",
+                "c": "s32",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "s32",
+                "scope": 3
+              },
+              {
+                "a": "u8",
+                "b": "u8",
+                "c": "s32",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "s32",
+                "scope": 3
+              },
+              {
+                "a": "u8",
+                "b": "s8",
+                "c": "s32",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "s32",
+                "scope": 3
+              },
+              {
+                "a": "u8",
+                "b": "s8",
+                "c": "s32",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "s32",
+                "scope": 3
+              },
+              {
+                "a": "s8",
+                "b": "u8",
+                "c": "s32",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "s32",
+                "scope": 3
+              },
+              {
+                "a": "s8",
+                "b": "u8",
+                "c": "s32",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "s32",
+                "scope": 3
+              },
+              {
+                "a": "s8",
+                "b": "s8",
+                "c": "s32",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "s32",
+                "scope": 3
+              },
+              {
+                "a": "s8",
+                "b": "s8",
+                "c": "s32",
+                "k": 16,
+                "m": 16,
+                "n": 16,
+                "result": "s32",
+                "scope": 3
+              }
+            ],
+            "device_id": "0x1681",
+            "device_type": "integrated_gpu",
+            "driver": {
+              "conformance_version": "1.4.0.0",
+              "id": 1,
+              "id_name": "amd_proprietary",
+              "info": "26.6.1 (AMD proprietary shader compiler)",
+              "name": "AMD proprietary driver"
+            },
+            "driver_version_raw": "0x00800161",
+            "extension_count": 197,
+            "features": {
+              "buffer_device_address": true,
+              "compute_full_subgroups": true,
+              "cooperative_matrix_khr": true,
+              "maintenance4": true,
+              "scalar_block_layout": true,
+              "shader_float16": true,
+              "shader_float64": true,
+              "shader_int16": true,
+              "shader_int64": true,
+              "shader_int8": true,
+              "shader_integer_dot_product": true,
+              "shader_subgroup_extended_types": true,
+              "storage_buffer_16bit_access": true,
+              "storage_buffer_8bit_access": true,
+              "subgroup_size_control": true,
+              "synchronization2": true,
+              "timeline_semaphore": true,
+              "uniform_and_storage_buffer_16bit_access": true,
+              "uniform_and_storage_buffer_8bit_access": true,
+              "vulkan_memory_model": true
+            },
+            "index": 0,
+            "limits": {
+              "max_bound_descriptor_sets": 32,
+              "max_compute_shared_memory_size": 32768,
+              "max_compute_work_group_count": [
+                4294967295,
+                65535,
+                65535
+              ],
+              "max_compute_work_group_invocations": 1024,
+              "max_compute_work_group_size": [
+                1024,
+                1024,
+                1024
+              ],
+              "max_memory_allocation_count": 4294967295,
+              "max_per_stage_descriptor_storage_buffers": 4294967295,
+              "max_push_constants_size": 256,
+              "max_storage_buffer_range": 4294967295,
+              "max_uniform_buffer_range": 4294967295,
+              "min_storage_buffer_offset_alignment": 4,
+              "non_coherent_atom_size": 128,
+              "timestamp_compute_and_graphics": true,
+              "timestamp_period_ns": 10.0
+            },
+            "max_buffer_size_bytes": 2147483648,
+            "max_memory_allocation_size_bytes": 2147483648,
+            "memory": {
+              "heaps": [
+                {
+                  "budget_bytes": 9277989888,
+                  "device_local": true,
+                  "index": 0,
+                  "size_bytes": 9766305792,
+                  "usage_bytes": 0
+                },
+                {
+                  "budget_bytes": 4638994944,
+                  "device_local": false,
+                  "index": 1,
+                  "size_bytes": 4883152896,
+                  "usage_bytes": 0
+                },
+                {
+                  "budget_bytes": 255013680,
+                  "device_local": true,
+                  "index": 2,
+                  "size_bytes": 268435456,
+                  "usage_bytes": 0
+                }
+              ],
+              "memory_budget_extension": true,
+              "types": [
+                {
+                  "heap_index": 0,
+                  "index": 0,
+                  "properties": [
+                    "device_local"
+                  ]
+                },
+                {
+                  "heap_index": 1,
+                  "index": 1,
+                  "properties": [
+                    "host_visible",
+                    "host_coherent"
+                  ]
+                },
+                {
+                  "heap_index": 2,
+                  "index": 2,
+                  "properties": [
+                    "device_local",
+                    "host_visible",
+                    "host_coherent"
+                  ]
+                },
+                {
+                  "heap_index": 1,
+                  "index": 3,
+                  "properties": [
+                    "host_visible",
+                    "host_coherent",
+                    "host_cached"
+                  ]
+                },
+                {
+                  "heap_index": 0,
+                  "index": 4,
+                  "properties": [
+                    "device_local"
+                  ]
+                },
+                {
+                  "heap_index": 1,
+                  "index": 5,
+                  "properties": [
+                    "host_visible",
+                    "host_coherent"
+                  ]
+                },
+                {
+                  "heap_index": 2,
+                  "index": 6,
+                  "properties": [
+                    "device_local",
+                    "host_visible",
+                    "host_coherent"
+                  ]
+                },
+                {
+                  "heap_index": 1,
+                  "index": 7,
+                  "properties": [
+                    "host_visible",
+                    "host_coherent",
+                    "host_cached"
+                  ]
+                },
+                {
+                  "heap_index": 0,
+                  "index": 8,
+                  "properties": [
+                    "device_local"
+                  ]
+                },
+                {
+                  "heap_index": 1,
+                  "index": 9,
+                  "properties": [
+                    "host_visible",
+                    "host_coherent"
+                  ]
+                },
+                {
+                  "heap_index": 2,
+                  "index": 10,
+                  "properties": [
+                    "device_local",
+                    "host_visible",
+                    "host_coherent"
+                  ]
+                },
+                {
+                  "heap_index": 1,
+                  "index": 11,
+                  "properties": [
+                    "host_visible",
+                    "host_coherent",
+                    "host_cached"
+                  ]
+                },
+                {
+                  "heap_index": 0,
+                  "index": 12,
+                  "properties": [
+                    "device_local"
+                  ]
+                },
+                {
+                  "heap_index": 1,
+                  "index": 13,
+                  "properties": [
+                    "host_visible",
+                    "host_coherent"
+                  ]
+                },
+                {
+                  "heap_index": 2,
+                  "index": 14,
+                  "properties": [
+                    "device_local",
+                    "host_visible",
+                    "host_coherent"
+                  ]
+                },
+                {
+                  "heap_index": 1,
+                  "index": 15,
+                  "properties": [
+                    "host_visible",
+                    "host_coherent",
+                    "host_cached"
+                  ]
+                }
+              ]
+            },
+            "name": "AMD Radeon(TM) Graphics",
+            "queue_families": [
+              {
+                "flags": [
+                  "graphics",
+                  "compute",
+                  "transfer",
+                  "sparse_binding"
+                ],
+                "index": 0,
+                "queue_count": 8,
+                "timestamp_valid_bits": 64
+              },
+              {
+                "flags": [
+                  "compute",
+                  "transfer",
+                  "sparse_binding"
+                ],
+                "index": 1,
+                "queue_count": 4,
+                "timestamp_valid_bits": 64
+              },
+              {
+                "flags": [
+                  "transfer",
+                  "sparse_binding"
+                ],
+                "index": 2,
+                "queue_count": 1,
+                "timestamp_valid_bits": 64
+              },
+              {
+                "flags": [],
+                "index": 3,
+                "queue_count": 1,
+                "timestamp_valid_bits": 0
+              },
+              {
+                "flags": [],
+                "index": 4,
+                "queue_count": 1,
+                "timestamp_valid_bits": 0
+              }
+            ],
+            "relevant_extensions": {
+              "VK_EXT_external_memory_host": true,
+              "VK_EXT_memory_budget": true,
+              "VK_EXT_pipeline_robustness": false,
+              "VK_EXT_shader_64bit_indexing": false,
+              "VK_EXT_subgroup_size_control": true,
+              "VK_KHR_16bit_storage": true,
+              "VK_KHR_8bit_storage": true,
+              "VK_KHR_buffer_device_address": true,
+              "VK_KHR_cooperative_matrix": true,
+              "VK_KHR_driver_properties": true,
+              "VK_KHR_maintenance4": true,
+              "VK_KHR_maintenance5": true,
+              "VK_KHR_push_descriptor": true,
+              "VK_KHR_shader_bfloat16": false,
+              "VK_KHR_shader_float16_int8": true,
+              "VK_KHR_shader_integer_dot_product": true,
+              "VK_KHR_shader_subgroup_extended_types": true,
+              "VK_KHR_shader_subgroup_rotate": true,
+              "VK_KHR_timeline_semaphore": true,
+              "VK_NV_cooperative_matrix": false
+            },
+            "subgroup": {
+              "max_compute_workgroup_subgroups": 4294967295,
+              "max_size": 64,
+              "min_size": 32,
+              "quad_operations_in_all_stages": true,
+              "required_size_stages": [
+                "compute"
+              ],
+              "size": 64,
+              "supported_operations": [
+                "basic",
+                "vote",
+                "arithmetic",
+                "ballot",
+                "shuffle",
+                "shuffle_relative",
+                "clustered",
+                "quad",
+                "rotate",
+                "rotate_clustered"
+              ],
+              "supported_stages": [
+                "vertex",
+                "fragment",
+                "compute",
+                "geometry"
+              ]
+            },
+            "vendor_id": "0x1002"
+          }
+        ],
+        "instance_version": "1.4.357",
+        "loader_path": "C:\\WINDOWS\\SYSTEM32\\vulkan-1.dll",
+        "status": "ok"
+      }
+    },
+    "hcs_memory": {
+      "budget_known": false,
+      "entries": [],
+      "note": "no live memory measurement is available (hardware module not built); budget checks are skipped",
+      "remaining_bytes": "unknown",
+      "reserved_bytes": 0,
+      "total_bytes": "unknown"
+    },
+    "hcs_models": {
+      "models": [
+        {
+          "architecture": "unknown",
+          "display_name": "qwen3-0.6b-f16",
+          "format": "gguf",
+          "id": "qwen3-0.6b-f16",
+          "kind": "text",
+          "license": "unknown",
+          "quantization": "unknown",
+          "sha256": "unknown",
+          "size_bytes": 1509347136,
+          "state": "discovered"
+        },
+        {
+          "architecture": "unknown",
+          "display_name": "qwen3-0.6b-q4_k_m",
+          "format": "gguf",
+          "id": "qwen3-0.6b-q4_k_m",
+          "kind": "text",
+          "license": "unknown",
+          "quantization": "unknown",
+          "sha256": "unknown",
+          "size_bytes": 484219712,
+          "state": "discovered"
+        },
+        {
+          "architecture": "unknown",
+          "display_name": "v5-int4-merged-f16",
+          "format": "gguf",
+          "id": "v5-int4-merged-f16",
+          "kind": "text",
+          "license": "unknown",
+          "quantization": "unknown",
+          "sha256": "unknown",
+          "size_bytes": 1509347104,
+          "state": "discovered"
+        },
+        {
+          "architecture": "unknown",
+          "display_name": "v5-int4-merged-Q4_K_M",
+          "format": "gguf",
+          "id": "v5-int4-merged-q4_k_m",
+          "kind": "text",
+          "license": "unknown",
+          "quantization": "unknown",
+          "sha256": "unknown",
+          "size_bytes": 484219680,
+          "state": "discovered"
+        },
+        {
+          "architecture": "unknown",
+          "display_name": "v6-2b-f16",
+          "format": "gguf",
+          "id": "v6-2b-f16",
+          "kind": "text",
+          "license": "unknown",
+          "quantization": "unknown",
+          "sha256": "unknown",
+          "size_bytes": 4069678880,
+          "state": "discovered"
+        },
+        {
+          "architecture": "unknown",
+          "display_name": "v6-2b-Q4_K_M",
+          "format": "gguf",
+          "id": "v6-2b-q4_k_m",
+          "kind": "text",
+          "license": "unknown",
+          "quantization": "unknown",
+          "sha256": "unknown",
+          "size_bytes": 1282438944,
+          "state": "discovered"
+        },
+        {
+          "architecture": "unknown",
+          "display_name": "v6-4b-f16",
+          "format": "gguf",
+          "id": "v6-4b-f16",
+          "kind": "text",
+          "license": "unknown",
+          "quantization": "unknown",
+          "sha256": "unknown",
+          "size_bytes": 8665619776,
+          "state": "discovered"
+        },
+        {
+          "architecture": "unknown",
+          "display_name": "v6-4b-Q4_K_M",
+          "format": "gguf",
+          "id": "v6-4b-q4_k_m",
+          "kind": "text",
+          "license": "unknown",
+          "quantization": "unknown",
+          "sha256": "unknown",
+          "size_bytes": 2783446336,
+          "state": "discovered"
+        }
+      ]
+    },
+    "load_wall_s": 0.55,
+    "runtime_after_load": {
+      "chat_template": "auto",
+      "image_engine": {
+        "available": false,
+        "reason": "no image engine adapter is implemented yet"
+      },
+      "jobs_pending": 0,
+      "loaded_model": "qwen3-0.6b-q4_k_m",
+      "text_engine": {
+        "available": true,
+        "metrics": {
+          "backend": "cpu",
+          "device": "CPU",
+          "load_ms": 489.7388,
+          "resident_bytes": 478268416,
+          "tokens_per_second": 0.0,
+          "ttft_ms": 0.0
+        },
+        "streaming": true
+      },
+      "uptime_s": 0.8877063,
+      "version": "0.1.0"
+    },
+    "chat_nonstream_wall_s": 0.71,
+    "chat_nonstream": {
+      "status": 200,
+      "text_preview": "<think>\nOkay, the user wants me to reply with exactly \"HCSInfer API test\". Let me check the context. They mentioned a te",
+      "usage": {
+        "completion_tokens": 47,
+        "prompt_tokens": 18,
+        "total_tokens": 65
+      },
+      "finish_reason": "stop"
+    },
+    "chat_stream": {
+      "events": 51,
+      "text_preview": "<think>\nOkay, the user wants me to reply with exactly \"HCSInfer API test\". Let me check the context. They mentioned a te"
+    },
+    "cancel": {
+      "job": "job-4",
+      "final_state": "cancelled",
+      "seconds_to_cancel": 0.15
+    }
+  },
+  "mcp": {
+    "load_wall_s": 0.53,
+    "chat_wall_s": 0.72,
+    "chat": {
+      "text_preview": "<think>\nOkay, the user wants me to reply with exactly \"HCSInfer MCP test\". Let me check the context. They mentioned a te",
+      "usage": {
+        "completion_tokens": 47,
+        "prompt_tokens": 18
+      },
+      "finish_reason": "stop"
+    },
+    "runtime_status": {
+      "devices": {
+        "cpu": {
+          "family": 25,
+          "features": {
+            "aes": true,
+            "avx": true,
+            "avx2": true,
+            "avx512_vnni": false,
+            "avx512bw": false,
+            "avx512f": false,
+            "avx512vl": false,
+            "avx_vnni": false,
+            "bmi1": true,
+            "bmi2": true,
+            "f16c": true,
+            "fma3": true,
+            "os_ymm_state_enabled": true,
+            "os_zmm_state_enabled": false,
+            "popcnt": true,
+            "sha": true,
+            "sse4_2": true
+          },
+          "logical_processors": 16,
+          "model": 68,
+          "name": "AMD Ryzen 7 7735HS with Radeon Graphics",
+          "nominal_mhz": 3194,
+          "physical_cores": 8,
+          "stepping": 1,
+          "vendor": "AuthenticAMD"
+        },
+        "gpu": {
+          "adapters": [
+            {
+              "dedicated_system_memory_bytes": 0,
+              "dedicated_video_memory_bytes": 4267499520,
+              "device_id": "0x1681",
+              "index": 0,
+              "memory_local_segment": {
+                "available_for_reservation_bytes": 7176802304,
+                "budget_bytes": 14085169152,
+                "current_usage_bytes": 0
+              },
+              "memory_non_local_segment": {
+                "available_for_reservation_bytes": 0,
+                "budget_bytes": 0,
+                "current_usage_bytes": 0
+              },
+              "name": "AMD Radeon(TM) Graphics",
+              "revision": 6,
+              "shared_system_memory_bytes": 10622976000,
+              "software_adapter": false,
+              "subsystem_id": "0x1241002",
+              "umd_version": "32.0.21043.12001",
+              "vendor_id": "0x1002"
+            },
+            {
+              "dedicated_system_memory_bytes": 0,
+              "dedicated_video_memory_bytes": 4267499520,
+              "device_id": "0x1681",
+              "index": 1,
+              "memory_local_segment": {
+                "available_for_reservation_bytes": 7176802304,
+                "budget_bytes": 14085169152,
+                "current_usage_bytes": 0
+              },
+              "memory_non_local_segment": {
+                "available_for_reservation_bytes": 0,
+                "budget_bytes": 0,
+                "current_usage_bytes": 0
+              },
+              "name": "AMD Radeon(TM) Graphics",
+              "revision": 6,
+              "shared_system_memory_bytes": 10622976000,
+              "software_adapter": false,
+              "subsystem_id": "0x1241002",
+              "umd_version": "32.0.21043.12001",
+              "vendor_id": "0x1002"
+            },
+            {
+              "dedicated_system_memory_bytes": 0,
+              "dedicated_video_memory_bytes": 0,
+              "device_id": "0x008C",
+              "index": 2,
+              "memory_local_segment": {
+                "available_for_reservation_bytes": 5045913600,
+                "budget_bytes": 9823391744,
+                "current_usage_bytes": 0
+              },
+              "memory_non_local_segment": {
+                "available_for_reservation_bytes": 0,
+                "budget_bytes": 0,
+                "current_usage_bytes": 0
+              },
+              "name": "Microsoft Basic Render Driver",
+              "revision": 0,
+              "shared_system_memory_bytes": 10622976000,
+              "software_adapter": true,
+              "subsystem_id": "0x0000",
+              "umd_version": "10.0.26100.9818",
+              "vendor_id": "0x1414"
+            }
+          ],
+          "display_driver_registry": [
+            {
+              "description": "AMD Radeon(TM) Graphics",
+              "driver_date": "5-29-2026",
+              "driver_version": "32.0.21043.12001",
+              "matching_device_id": "PCI\\VEN_1002&DEV_1681&REV_06",
+              "provider": "Advanced Micro Devices, Inc."
+            },
+            {
+              "description": "Parsec Virtual Display Adapter",
+              "driver_date": "1-25-2024",
+              "driver_version": "0.45.0.0",
+              "matching_device_id": "Root\\Parsec\\VDA",
+              "provider": "Parsec Cloud, Inc."
+            }
+          ],
+          "dxgi_available": true
+        },
+        "hcsinfer_version": "0.1.0",
+        "memory": {
+          "available_physical_bytes": 12416720896,
+          "bios_uma_reservation": "unknown",
+          "channel_configuration": "unknown",
+          "commit_available_bytes": 25362931712,
+          "commit_limit_bytes": 43395268608,
+          "installed_physical_bytes": 25769803776,
+          "memory_load_percent": 41,
+          "total_physical_bytes": 21245952000
+        },
+        "options": {
+          "no_vulkan": false
+        },
+        "os": {
+          "architecture": "x64",
+          "build": 26200,
+          "display_version": "25H2",
+          "name": "windows",
+          "product_name_registry": "Windows 10 Pro",
+          "ubr": 9974,
+          "version": "10.0"
+        },
+        "schema_version": 1,
+        "storage": {
+          "requested_path": "unknown",
+          "requested_volume": "unknown",
+          "volumes": [
+            {
+              "bus_type": "nvme",
+              "device_product": "NVME SSD 1TB",
+              "device_vendor": "unknown",
+              "drive_type": "fixed",
+              "filesystem": "NTFS",
+              "free_bytes": 69124960256,
+              "removable_media": false,
+              "root": "C:\\",
+              "rotational": false,
+              "total_bytes": 998823161856
+            },
+            {
+              "bus_type": "usb",
+              "device_product": "IB-1232CL-U3",
+              "device_vendor": "unknown",
+              "drive_type": "fixed",
+              "filesystem": "NTFS",
+              "free_bytes": 392957374464,
+              "removable_media": false,
+              "root": "D:\\",
+              "rotational": "unknown",
+              "total_bytes": 500105736192
+            },
+            {
+              "bus_type": "usb",
+              "device_product": "IB-1232CL-U3",
+              "device_vendor": "unknown",
+              "drive_type": "fixed",
+              "filesystem": "NTFS",
+              "free_bytes": 95282356224,
+              "removable_media": false,
+              "root": "E:\\",
+              "rotational": "unknown",
+              "total_bytes": 500105736192
+            }
+          ]
+        },
+        "summary": {
+          "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+          "cpu_features": [
+            "aes",
+            "avx",
+            "avx2",
+            "bmi1",
+            "bmi2",
+            "f16c",
+            "fma3",
+            "popcnt",
+            "sha",
+            "sse4_2"
+          ],
+          "driver_version": "26.6.1 (AMD proprietary shader compiler)",
+          "gpu": "AMD Radeon(TM) Graphics",
+          "gpu_device_id": "0x1681",
+          "gpu_vendor_id": "0x1002",
+          "os_build": "10.0.26200.9974",
+          "ram_bytes": 21245952000,
+          "registry_driver_version": "32.0.21043.12001",
+          "uma_reservation_bytes": 4267499520,
+          "vulkan_api_version": "1.4.315",
+          "vulkan_status": "ok"
+        },
+        "timestamp_utc": "2026-11-17T08:05:57Z",
+        "vulkan": {
+          "device_count": 1,
+          "devices": [
+            {
+              "all_extensions": [
+                "VK_AMD_anti_lag",
+                "VK_AMD_buffer_marker",
+                "VK_AMD_device_coherent_memory",
+                "VK_AMD_display_native_hdr",
+                "VK_AMD_draw_indirect_count",
+                "VK_AMD_gcn_shader",
+                "VK_AMD_gpa_interface",
+                "VK_AMD_gpu_shader_half_float",
+                "VK_AMD_gpu_shader_int16",
+                "VK_AMD_memory_overallocation_behavior",
+                "VK_AMD_mixed_attachment_samples",
+                "VK_AMD_shader_ballot",
+                "VK_AMD_shader_core_properties",
+                "VK_AMD_shader_core_properties2",
+                "VK_AMD_shader_early_and_late_fragment_tests",
+                "VK_AMD_shader_explicit_vertex_parameter",
+                "VK_AMD_shader_fragment_mask",
+                "VK_AMD_shader_image_load_store_lod",
+                "VK_AMD_shader_info",
+                "VK_AMD_shader_trinary_minmax",
+                "VK_AMD_texture_gather_bias_lod",
+                "VK_EXT_4444_formats",
+                "VK_EXT_attachment_feedback_loop_layout",
+                "VK_EXT_border_color_swizzle",
+                "VK_EXT_calibrated_timestamps",
+                "VK_EXT_color_write_enable",
+                "VK_EXT_conditional_rendering",
+                "VK_EXT_conservative_rasterization",
+                "VK_EXT_custom_border_color",
+                "VK_EXT_depth_clamp_control",
+                "VK_EXT_depth_clamp_zero_one",
+                "VK_EXT_depth_clip_control",
+                "VK_EXT_depth_clip_enable",
+                "VK_EXT_depth_range_unrestricted",
+                "VK_EXT_descriptor_buffer",
+                "VK_EXT_descriptor_indexing",
+                "VK_EXT_device_address_binding_report",
+                "VK_EXT_device_fault",
+                "VK_EXT_device_generated_commands",
+                "VK_EXT_dynamic_rendering_unused_attachments",
+                "VK_EXT_extended_dynamic_state",
+                "VK_EXT_extended_dynamic_state2",
+                "VK_EXT_extended_dynamic_state3",
+                "VK_EXT_external_memory_host",
+                "VK_EXT_fragment_shader_interlock",
+                "VK_EXT_frame_boundary",
+                "VK_EXT_full_screen_exclusive",
+                "VK_EXT_global_priority",
+                "VK_EXT_global_priority_query",
+                "VK_EXT_graphics_pipeline_library",
+                "VK_EXT_hdr_metadata",
+                "VK_EXT_host_query_reset",
+                "VK_EXT_image_2d_view_of_3d",
+                "VK_EXT_image_robustness",
+                "VK_EXT_image_sliced_view_of_3d",
+                "VK_EXT_image_view_min_lod",
+                "VK_EXT_index_type_uint8",
+                "VK_EXT_inline_uniform_block",
+                "VK_EXT_line_rasterization",
+                "VK_EXT_load_store_op_none",
+                "VK_EXT_memory_budget",
+                "VK_EXT_memory_priority",
+                "VK_EXT_mutable_descriptor_type",
+                "VK_EXT_nested_command_buffer",
+                "VK_EXT_non_seamless_cube_map",
+                "VK_EXT_pageable_device_local_memory",
+                "VK_EXT_pipeline_creation_cache_control",
+                "VK_EXT_pipeline_creation_feedback",
+                "VK_EXT_pipeline_library_group_handles",
+                "VK_EXT_post_depth_coverage",
+                "VK_EXT_primitive_topology_list_restart",
+                "VK_EXT_private_data",
+                "VK_EXT_provoking_vertex",
+                "VK_EXT_queue_family_foreign",
+                "VK_EXT_robustness2",
+                "VK_EXT_sample_locations",
+                "VK_EXT_sampler_filter_minmax",
+                "VK_EXT_scalar_block_layout",
+                "VK_EXT_separate_stencil_usage",
+                "VK_EXT_shader_atomic_float",
+                "VK_EXT_shader_atomic_float2",
+                "VK_EXT_shader_demote_to_helper_invocation",
+                "VK_EXT_shader_image_atomic_int64",
+                "VK_EXT_shader_module_identifier",
+                "VK_EXT_shader_object",
+                "VK_EXT_shader_replicated_composites",
+                "VK_EXT_shader_stencil_export",
+                "VK_EXT_shader_subgroup_ballot",
+                "VK_EXT_shader_subgroup_vote",
+                "VK_EXT_shader_viewport_index_layer",
+                "VK_EXT_subgroup_size_control",
+                "VK_EXT_texel_buffer_alignment",
+                "VK_EXT_tooling_info",
+                "VK_EXT_transform_feedback",
+                "VK_EXT_vertex_attribute_divisor",
+                "VK_EXT_vertex_input_dynamic_state",
+                "VK_EXT_ycbcr_image_arrays",
+                "VK_GOOGLE_decorate_string",
+                "VK_GOOGLE_hlsl_functionality1",
+                "VK_GOOGLE_user_type",
+                "VK_KHR_16bit_storage",
+                "VK_KHR_8bit_storage",
+                "VK_KHR_acceleration_structure",
+                "VK_KHR_bind_memory2",
+                "VK_KHR_buffer_device_address",
+                "VK_KHR_calibrated_timestamps",
+                "VK_KHR_compute_shader_derivatives",
+                "VK_KHR_cooperative_matrix",
+                "VK_KHR_copy_commands2",
+                "VK_KHR_create_renderpass2",
+                "VK_KHR_dedicated_allocation",
+                "VK_KHR_deferred_host_operations",
+                "VK_KHR_depth_clamp_zero_one",
+                "VK_KHR_depth_stencil_resolve",
+                "VK_KHR_descriptor_update_template",
+                "VK_KHR_device_group",
+                "VK_KHR_draw_indirect_count",
+                "VK_KHR_driver_properties",
+                "VK_KHR_dynamic_rendering",
+                "VK_KHR_dynamic_rendering_local_read",
+                "VK_KHR_external_fence",
+                "VK_KHR_external_fence_win32",
+                "VK_KHR_external_memory",
+                "VK_KHR_external_memory_win32",
+                "VK_KHR_external_semaphore",
+                "VK_KHR_external_semaphore_win32",
+                "VK_KHR_format_feature_flags2",
+                "VK_KHR_fragment_shader_barycentric",
+                "VK_KHR_fragment_shading_rate",
+                "VK_KHR_get_memory_requirements2",
+                "VK_KHR_global_priority",
+                "VK_KHR_image_format_list",
+                "VK_KHR_imageless_framebuffer",
+                "VK_KHR_index_type_uint8",
+                "VK_KHR_line_rasterization",
+                "VK_KHR_load_store_op_none",
+                "VK_KHR_maintenance1",
+                "VK_KHR_maintenance2",
+                "VK_KHR_maintenance3",
+                "VK_KHR_maintenance4",
+                "VK_KHR_maintenance5",
+                "VK_KHR_maintenance6",
+                "VK_KHR_maintenance7",
+                "VK_KHR_maintenance8",
+                "VK_KHR_map_memory2",
+                "VK_KHR_multiview",
+                "VK_KHR_pipeline_binary",
+                "VK_KHR_pipeline_executable_properties",
+                "VK_KHR_pipeline_library",
+                "VK_KHR_push_descriptor",
+                "VK_KHR_ray_query",
+                "VK_KHR_ray_tracing_maintenance1",
+                "VK_KHR_ray_tracing_pipeline",
+                "VK_KHR_ray_tracing_position_fetch",
+                "VK_KHR_relaxed_block_layout",
+                "VK_KHR_robustness2",
+                "VK_KHR_sampler_mirror_clamp_to_edge",
+                "VK_KHR_sampler_ycbcr_conversion",
+                "VK_KHR_separate_depth_stencil_layouts",
+                "VK_KHR_shader_atomic_int64",
+                "VK_KHR_shader_clock",
+                "VK_KHR_shader_draw_parameters",
+                "VK_KHR_shader_expect_assume",
+                "VK_KHR_shader_float16_int8",
+                "VK_KHR_shader_float_controls",
+                "VK_KHR_shader_float_controls2",
+                "VK_KHR_shader_integer_dot_product",
+                "VK_KHR_shader_maximal_reconvergence",
+                "VK_KHR_shader_non_semantic_info",
+                "VK_KHR_shader_quad_control",
+                "VK_KHR_shader_subgroup_extended_types",
+                "VK_KHR_shader_subgroup_rotate",
+                "VK_KHR_shader_subgroup_uniform_control_flow",
+                "VK_KHR_shader_terminate_invocation",
+                "VK_KHR_spirv_1_4",
+                "VK_KHR_storage_buffer_storage_class",
+                "VK_KHR_swapchain",
+                "VK_KHR_swapchain_mutable_format",
+                "VK_KHR_synchronization2",
+                "VK_KHR_timeline_semaphore",
+                "VK_KHR_uniform_buffer_standard_layout",
+                "VK_KHR_variable_pointers",
+                "VK_KHR_vertex_attribute_divisor",
+                "VK_KHR_video_decode_av1",
+                "VK_KHR_video_decode_h264",
+                "VK_KHR_video_decode_h265",
+                "VK_KHR_video_decode_queue",
+                "VK_KHR_video_encode_h264",
+                "VK_KHR_video_encode_h265",
+                "VK_KHR_video_encode_queue",
+                "VK_KHR_video_maintenance1",
+                "VK_KHR_video_queue",
+                "VK_KHR_vulkan_memory_model",
+                "VK_KHR_win32_keyed_mutex",
+                "VK_KHR_workgroup_memory_explicit_layout",
+                "VK_KHR_zero_initialize_workgroup_memory",
+                "VK_VALVE_mutable_descriptor_type"
+              ],
+              "api_version": "1.4.315",
+              "cooperative_matrix_properties": [
+                {
+                  "a": "f16",
+                  "b": "f16",
+                  "c": "f32",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "f32",
+                  "scope": 3
+                },
+                {
+                  "a": "f16",
+                  "b": "f16",
+                  "c": "f16",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "f16",
+                  "scope": 3
+                },
+                {
+                  "a": "f16",
+                  "b": "f16",
+                  "c": "f16",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "f16",
+                  "scope": 3
+                },
+                {
+                  "a": "u8",
+                  "b": "u8",
+                  "c": "s32",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "s32",
+                  "scope": 3
+                },
+                {
+                  "a": "u8",
+                  "b": "u8",
+                  "c": "s32",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "s32",
+                  "scope": 3
+                },
+                {
+                  "a": "u8",
+                  "b": "s8",
+                  "c": "s32",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "s32",
+                  "scope": 3
+                },
+                {
+                  "a": "u8",
+                  "b": "s8",
+                  "c": "s32",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "s32",
+                  "scope": 3
+                },
+                {
+                  "a": "s8",
+                  "b": "u8",
+                  "c": "s32",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "s32",
+                  "scope": 3
+                },
+                {
+                  "a": "s8",
+                  "b": "u8",
+                  "c": "s32",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "s32",
+                  "scope": 3
+                },
+                {
+                  "a": "s8",
+                  "b": "s8",
+                  "c": "s32",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "s32",
+                  "scope": 3
+                },
+                {
+                  "a": "s8",
+                  "b": "s8",
+                  "c": "s32",
+                  "k": 16,
+                  "m": 16,
+                  "n": 16,
+                  "result": "s32",
+                  "scope": 3
+                }
+              ],
+              "device_id": "0x1681",
+              "device_type": "integrated_gpu",
+              "driver": {
+                "conformance_version": "1.4.0.0",
+                "id": 1,
+                "id_name": "amd_proprietary",
+                "info": "26.6.1 (AMD proprietary shader compiler)",
+                "name": "AMD proprietary driver"
+              },
+              "driver_version_raw": "0x00800161",
+              "extension_count": 197,
+              "features": {
+                "buffer_device_address": true,
+                "compute_full_subgroups": true,
+                "cooperative_matrix_khr": true,
+                "maintenance4": true,
+                "scalar_block_layout": true,
+                "shader_float16": true,
+                "shader_float64": true,
+                "shader_int16": true,
+                "shader_int64": true,
+                "shader_int8": true,
+                "shader_integer_dot_product": true,
+                "shader_subgroup_extended_types": true,
+                "storage_buffer_16bit_access": true,
+                "storage_buffer_8bit_access": true,
+                "subgroup_size_control": true,
+                "synchronization2": true,
+                "timeline_semaphore": true,
+                "uniform_and_storage_buffer_16bit_access": true,
+                "uniform_and_storage_buffer_8bit_access": true,
+                "vulkan_memory_model": true
+              },
+              "index": 0,
+              "limits": {
+                "max_bound_descriptor_sets": 32,
+                "max_compute_shared_memory_size": 32768,
+                "max_compute_work_group_count": [
+                  4294967295,
+                  65535,
+                  65535
+                ],
+                "max_compute_work_group_invocations": 1024,
+                "max_compute_work_group_size": [
+                  1024,
+                  1024,
+                  1024
+                ],
+                "max_memory_allocation_count": 4294967295,
+                "max_per_stage_descriptor_storage_buffers": 4294967295,
+                "max_push_constants_size": 256,
+                "max_storage_buffer_range": 4294967295,
+                "max_uniform_buffer_range": 4294967295,
+                "min_storage_buffer_offset_alignment": 4,
+                "non_coherent_atom_size": 128,
+                "timestamp_compute_and_graphics": true,
+                "timestamp_period_ns": 10.0
+              },
+              "max_buffer_size_bytes": 2147483648,
+              "max_memory_allocation_size_bytes": 2147483648,
+              "memory": {
+                "heaps": [
+                  {
+                    "budget_bytes": 9277989888,
+                    "device_local": true,
+                    "index": 0,
+                    "size_bytes": 9766305792,
+                    "usage_bytes": 0
+                  },
+                  {
+                    "budget_bytes": 4638994944,
+                    "device_local": false,
+                    "index": 1,
+                    "size_bytes": 4883152896,
+                    "usage_bytes": 0
+                  },
+                  {
+                    "budget_bytes": 255013680,
+                    "device_local": true,
+                    "index": 2,
+                    "size_bytes": 268435456,
+                    "usage_bytes": 0
+                  }
+                ],
+                "memory_budget_extension": true,
+                "types": [
+                  {
+                    "heap_index": 0,
+                    "index": 0,
+                    "properties": [
+                      "device_local"
+                    ]
+                  },
+                  {
+                    "heap_index": 1,
+                    "index": 1,
+                    "properties": [
+                      "host_visible",
+                      "host_coherent"
+                    ]
+                  },
+                  {
+                    "heap_index": 2,
+                    "index": 2,
+                    "properties": [
+                      "device_local",
+                      "host_visible",
+                      "host_coherent"
+                    ]
+                  },
+                  {
+                    "heap_index": 1,
+                    "index": 3,
+                    "properties": [
+                      "host_visible",
+                      "host_coherent",
+                      "host_cached"
+                    ]
+                  },
+                  {
+                    "heap_index": 0,
+                    "index": 4,
+                    "properties": [
+                      "device_local"
+                    ]
+                  },
+                  {
+                    "heap_index": 1,
+                    "index": 5,
+                    "properties": [
+                      "host_visible",
+                      "host_coherent"
+                    ]
+                  },
+                  {
+                    "heap_index": 2,
+                    "index": 6,
+                    "properties": [
+                      "device_local",
+                      "host_visible",
+                      "host_coherent"
+                    ]
+                  },
+                  {
+                    "heap_index": 1,
+                    "index": 7,
+                    "properties": [
+                      "host_visible",
+                      "host_coherent",
+                      "host_cached"
+                    ]
+                  },
+                  {
+                    "heap_index": 0,
+                    "index": 8,
+                    "properties": [
+                      "device_local"
+                    ]
+                  },
+                  {
+                    "heap_index": 1,
+                    "index": 9,
+                    "properties": [
+                      "host_visible",
+                      "host_coherent"
+                    ]
+                  },
+                  {
+                    "heap_index": 2,
+                    "index": 10,
+                    "properties": [
+                      "device_local",
+                      "host_visible",
+                      "host_coherent"
+                    ]
+                  },
+                  {
+                    "heap_index": 1,
+                    "index": 11,
+                    "properties": [
+                      "host_visible",
+                      "host_coherent",
+                      "host_cached"
+                    ]
+                  },
+                  {
+                    "heap_index": 0,
+                    "index": 12,
+                    "properties": [
+                      "device_local"
+                    ]
+                  },
+                  {
+                    "heap_index": 1,
+                    "index": 13,
+                    "properties": [
+                      "host_visible",
+                      "host_coherent"
+                    ]
+                  },
+                  {
+                    "heap_index": 2,
+                    "index": 14,
+                    "properties": [
+                      "device_local",
+                      "host_visible",
+                      "host_coherent"
+                    ]
+                  },
+                  {
+                    "heap_index": 1,
+                    "index": 15,
+                    "properties": [
+                      "host_visible",
+                      "host_coherent",
+                      "host_cached"
+                    ]
+                  }
+                ]
+              },
+              "name": "AMD Radeon(TM) Graphics",
+              "queue_families": [
+                {
+                  "flags": [
+                    "graphics",
+                    "compute",
+                    "transfer",
+                    "sparse_binding"
+                  ],
+                  "index": 0,
+                  "queue_count": 8,
+                  "timestamp_valid_bits": 64
+                },
+                {
+                  "flags": [
+                    "compute",
+                    "transfer",
+                    "sparse_binding"
+                  ],
+                  "index": 1,
+                  "queue_count": 4,
+                  "timestamp_valid_bits": 64
+                },
+                {
+                  "flags": [
+                    "transfer",
+                    "sparse_binding"
+                  ],
+                  "index": 2,
+                  "queue_count": 1,
+                  "timestamp_valid_bits": 64
+                },
+                {
+                  "flags": [],
+                  "index": 3,
+                  "queue_count": 1,
+                  "timestamp_valid_bits": 0
+                },
+                {
+                  "flags": [],
+                  "index": 4,
+                  "queue_count": 1,
+                  "timestamp_valid_bits": 0
+                }
+              ],
+              "relevant_extensions": {
+                "VK_EXT_external_memory_host": true,
+                "VK_EXT_memory_budget": true,
+                "VK_EXT_pipeline_robustness": false,
+                "VK_EXT_shader_64bit_indexing": false,
+                "VK_EXT_subgroup_size_control": true,
+                "VK_KHR_16bit_storage": true,
+                "VK_KHR_8bit_storage": true,
+                "VK_KHR_buffer_device_address": true,
+                "VK_KHR_cooperative_matrix": true,
+                "VK_KHR_driver_properties": true,
+                "VK_KHR_maintenance4": true,
+                "VK_KHR_maintenance5": true,
+                "VK_KHR_push_descriptor": true,
+                "VK_KHR_shader_bfloat16": false,
+                "VK_KHR_shader_float16_int8": true,
+                "VK_KHR_shader_integer_dot_product": true,
+                "VK_KHR_shader_subgroup_extended_types": true,
+                "VK_KHR_shader_subgroup_rotate": true,
+                "VK_KHR_timeline_semaphore": true,
+                "VK_NV_cooperative_matrix": false
+              },
+              "subgroup": {
+                "max_compute_workgroup_subgroups": 4294967295,
+                "max_size": 64,
+                "min_size": 32,
+                "quad_operations_in_all_stages": true,
+                "required_size_stages": [
+                  "compute"
+                ],
+                "size": 64,
+                "supported_operations": [
+                  "basic",
+                  "vote",
+                  "arithmetic",
+                  "ballot",
+                  "shuffle",
+                  "shuffle_relative",
+                  "clustered",
+                  "quad",
+                  "rotate",
+                  "rotate_clustered"
+                ],
+                "supported_stages": [
+                  "vertex",
+                  "fragment",
+                  "compute",
+                  "geometry"
+                ]
+              },
+              "vendor_id": "0x1002"
+            }
+          ],
+          "instance_version": "1.4.357",
+          "loader_path": "C:\\WINDOWS\\SYSTEM32\\vulkan-1.dll",
+          "status": "ok"
+        }
+      },
+      "memory": {
+        "budget_known": false,
+        "entries": [],
+        "note": "no live memory measurement is available (hardware module not built); budget checks are skipped",
+        "remaining_bytes": "unknown",
+        "reserved_bytes": 0,
+        "total_bytes": "unknown"
+      },
+      "runtime": {
+        "chat_template": "auto",
+        "image_engine": {
+          "available": false,
+          "reason": "no image engine adapter is implemented yet"
+        },
+        "jobs_pending": 0,
+        "loaded_model": "qwen3-0.6b-q4_k_m",
+        "text_engine": {
+          "available": true,
+          "metrics": {
+            "backend": "cpu",
+            "device": "CPU",
+            "load_ms": 524.4025,
+            "resident_bytes": 478268416,
+            "tokens_per_second": 73.04621198663472,
+            "ttft_ms": 79.3273
+          },
+          "streaming": true
+        },
+        "uptime_s": 1.2536944,
+        "version": "0.1.0"
+      }
+    },
+    "cancel_followup_s": 0.0,
+    "stdout_lines": 10
+  },
+  "checks": [
+    {
+      "check": "serve prints port and random token on stderr",
+      "pass": true,
+      "detail": "['{\"ts\":\"2026-11-17T08:05:52.851Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"listening\",\"host\":\"127.0.0.1\",\"port\":\"53639\"}', 'HCSInfer API listening on http://127.0.0.1:53639', 'HCSInfer API token: 00d44acca2ac4ced4bd758806db51c35cd7849877e29089405eb0e3496c787e0']"
+    },
+    {
+      "check": "health without token",
+      "pass": true,
+      "detail": "(200, {'status': 'ok', 'version': '0.1.0'})"
+    },
+    {
+      "check": "auth: missing token -> 401",
+      "pass": true,
+      "detail": "401"
+    },
+    {
+      "check": "auth: wrong token -> 401",
+      "pass": true,
+      "detail": "401"
+    },
+    {
+      "check": "DNS-rebinding Host -> 403",
+      "pass": true,
+      "detail": "(403, {'error': {'code': 'host_not_allowed', 'message': 'Host header is not allowed', 'param': None, 'request_id': 'req-c5f8476aae41f74d', 'type': 'permission_error'}})"
+    },
+    {
+      "check": "foreign Origin -> 403",
+      "pass": true,
+      "detail": "(403, {'error': {'code': 'origin_not_allowed', 'message': 'Origin is not allowed', 'param': None, 'request_id': 'req-ed962a7ac17de7c2', 'type': 'permission_error'}})"
+    },
+    {
+      "check": "malformed JSON -> 400",
+      "pass": true,
+      "detail": "(400, {'error': {'code': 'invalid_json', 'message': 'malformed JSON body', 'param': None, 'request_id': 'req-61b0f6064cbcc0b6', 'type': 'invalid_request_error'}})"
+    },
+    {
+      "check": "oversize body -> 413",
+      "pass": true,
+      "detail": "(413, {'error': {'message': 'request rejected by the HTTP layer', 'type': 'invalid_request_error', 'code': 'payload_too_large', 'param': None}})"
+    },
+    {
+      "check": "path traversal in model id rejected (400/404)",
+      "pass": true,
+      "detail": "(404, {'error': {'code': 'not_found', 'message': 'no such route', 'param': None, 'request_id': 'req-380f52219d0f7aea', 'type': 'not_found_error'}})"
+    },
+    {
+      "check": "images endpoint -> 501 with reason",
+      "pass": true,
+      "detail": "(501, {'error': {'code': 'unsupported', 'message': 'image generation/editing is not available: no image engine adapter (stable-diffusion.cpp) is implemented in this build', 'param': None, 'request_id': 'req-413792a652e22b62', 'type': 'server_error'}})"
+    },
+    {
+      "check": "GET /v1/models",
+      "pass": true,
+      "detail": "(200, {'data': [{'created': 0, 'hcs': {'quantization': 'unknown', 'state': 'Discovered'}, 'id': 'qwen3-0.6b-f16', 'object': 'model', 'owned_by': 'local'}, {'created': 0, 'hcs': {'quantization': 'unknown', 'state': 'Discovered'}, 'id': 'qwen3-0.6b-q4_k_m', 'object': 'model', 'owned_by': 'local'}, {'created': 0, 'hcs': {'quantization': 'unknown', 'state': 'Discovered'}, 'id': 'v5-int4-merged-f16', '"
+    },
+    {
+      "check": "model is registered",
+      "pass": true,
+      "detail": "['qwen3-0.6b-f16', 'qwen3-0.6b-q4_k_m', 'v5-int4-merged-f16', 'v5-int4-merged-q4_k_m', 'v6-2b-f16']"
+    },
+    {
+      "check": "GET /hcs/v1/runtime",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "check": "GET /hcs/v1/devices",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "check": "GET /hcs/v1/memory",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "check": "GET /hcs/v1/models",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "check": "model load returns 202 + job id",
+      "pass": true,
+      "detail": "(202, {'job_id': 'job-1', 'status_url': '/hcs/v1/jobs/job-1'})"
+    },
+    {
+      "check": "model load job succeeded",
+      "pass": true,
+      "detail": "{'error': None, 'event_count': 3, 'id': 'job-1', 'name': 'model.load', 'state': 'succeeded'}"
+    },
+    {
+      "check": "model state loaded",
+      "pass": true,
+      "detail": "{'architecture': 'unknown', 'display_name': 'qwen3-0.6b-q4_k_m', 'format': 'gguf', 'id': 'qwen3-0.6b-q4_k_m', 'kind': 'text', 'license': 'unknown', 'quantization': 'unknown', 'sha256': 'unknown', 'size_bytes': 484219712, 'state': 'loaded'}"
+    },
+    {
+      "check": "real chat completion (non-stream) returns text",
+      "pass": true,
+      "detail": "(200, {'choices': [{'finish_reason': 'stop', 'index': 0, 'message': {'content': '<think>\\nOkay, the user wants me to reply with exactly \"HCSInfer API test\". Let me check the context. They mentioned a test, so maybe they\\'re testing the API. I need to make sure I\\'m not adding', 'role': 'assistant'}}], 'created': 1794902753, 'hcs': {'job_id': 'job-2', 'request_id': 'req-9a0caf13b2d2b13b'}, 'id': 'c"
+    },
+    {
+      "check": "usage reports completion tokens",
+      "pass": true,
+      "detail": "{'completion_tokens': 47, 'prompt_tokens': 18, 'total_tokens': 65}"
+    },
+    {
+      "check": "SSE: multiple chunks and [DONE]",
+      "pass": true,
+      "detail": "51"
+    },
+    {
+      "check": "SSE: streamed text non-empty",
+      "pass": true,
+      "detail": "<think>\nOkay, the user wants me to reply with exactly \"HCSInfer API test\". Let m"
+    },
+    {
+      "check": "SSE: delivered incrementally",
+      "pass": true,
+      "detail": "0.6400291919708252"
+    },
+    {
+      "check": "long generation started streaming",
+      "pass": true,
+      "detail": "('job-4', 5)"
+    },
+    {
+      "check": "cancel endpoint accepted",
+      "pass": true,
+      "detail": "(200, {'error': None, 'event_count': 7, 'id': 'job-4', 'name': 'chat.generate', 'state': 'running'})"
+    },
+    {
+      "check": "cancelled job ends in state cancelled",
+      "pass": true,
+      "detail": "{'error': {'code': 'cancelled', 'message': 'generation cancelled'}, 'event_count': 8, 'id': 'job-4', 'name': 'chat.generate', 'result': {'completion_tokens': 47, 'finish_reason': 'cancelled', 'prompt_tokens': 18, 'tokens_per_second': 73.42949159607281, 'ttft_ms': 60.6876}, 'state': 'cancelled'}"
+    },
+    {
+      "check": "stream terminated after cancel (curl exited)",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "check": "chat works after a cancel",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "check": "unload",
+      "pass": true,
+      "detail": "(200, {'id': 'qwen3-0.6b-q4_k_m', 'state': 'unloaded'})"
+    },
+    {
+      "check": "MCP server/discover",
+      "pass": true,
+      "detail": "{'id': 1, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'capabilities': {'tools': {'listChanged': False}}, 'instructions': 'Local HCSInfer control plane. Tools operate on registered models inside approved roots.', 'resultType': 'complete', 'serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}, 'supportedVersions': ['2026-07"
+    },
+    {
+      "check": "MCP tools/list has required tools",
+      "pass": true,
+      "detail": "['hcs.models.list', 'hcs.models.inspect', 'hcs.models.load', 'hcs.models.unload', 'hcs.chat.generate', 'hcs.vision.analyze', 'hcs.image.generate', 'hcs.image.edit', 'hcs.runtime.status', 'hcs.jobs.status', 'hcs.jobs.cancel']"
+    },
+    {
+      "check": "MCP models.list finds the model",
+      "pass": true,
+      "detail": "['qwen3-0.6b-f16', 'qwen3-0.6b-q4_k_m', 'v5-int4-merged-f16', 'v5-int4-merged-q4_k_m', 'v6-2b-f16']"
+    },
+    {
+      "check": "MCP models.load (real)",
+      "pass": true,
+      "detail": "{'id': 4, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': '{\"id\":\"qwen3-0.6b-q4_k_m\",\"state\":\"loaded\"}', 'type': 'text'}], 'isError': False, 'resultType': 'complete', 'structuredContent': {'id': 'qwen3-0.6b-q4_k_m', 'state': 'loaded'}}}"
+    },
+    {
+      "check": "MCP chat.generate (real) returns text",
+      "pass": true,
+      "detail": "{'id': 5, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': '{\"finish_reason\":\"stop\",\"job_id\":\"job-2\",\"model\":\"qwen3-0.6b-q4_k_m\",\"text\":\"<think>\\\\nOkay, the user wants me to reply with exactly \\\\\"HCSInfer MCP test\\\\\". Let me check the context. They mentioned a test, so maybe they\\'re referring to a specific"
+    },
+    {
+      "check": "MCP runtime.status",
+      "pass": true,
+      "detail": "{'id': 6, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': '{\"devices\":{\"cpu\":{\"family\":25,\"features\":{\"aes\":true,\"avx\":true,\"avx2\":true,\"avx512_vnni\":false,\"avx512bw\":false,\"avx512f\":false,\"avx512vl\":false,\"avx_vnni\":false,\"bmi1\":true,\"bmi2\":true,\"f16c\":true,\"fma3\":true,\"os_ymm_state_enabled\":true,\"os_zmm_"
+    },
+    {
+      "check": "MCP path traversal id rejected",
+      "pass": true,
+      "detail": "{'id': 7, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': 'invalid_argument: invalid model id', 'type': 'text'}], 'isError': True, 'resultType': 'complete', 'structuredContent': {'error': {'code': 'invalid_argument', 'message': 'invalid model id'}}}}"
+    },
+    {
+      "check": "MCP image path outside approved roots -> security_violation",
+      "pass": true,
+      "detail": "{'id': 8, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': 'security_violation: path is outside approved roots: C:\\\\Windows\\\\win.ini', 'type': 'text'}], 'isError': True, 'resultType': 'complete', 'structuredContent': {'error': {'code': 'security_violation', 'message': 'path is outside approved roots: C:\\\\Wi"
+    },
+    {
+      "check": "MCP: server responsive after cancellation",
+      "pass": true,
+      "detail": "{'id': 10, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'cacheScope': 'public', 'resultType': 'complete', 'tools': [{'annotations': {'destructiveHint': False, 'openWorldHint': False, 'readOnlyHint': True}, 'description': 'List registered models and their lifecycle state.', 'inputSchema': {'additionalProperties': False, 'pro"
+    },
+    {
+      "check": "MCP: no response sent for the cancelled request",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "check": "MCP: chat works after cancel",
+      "pass": true,
+      "detail": "{'id': 11, 'jsonrpc': '2.0', 'result': {'_meta': {'io.modelcontextprotocol/serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}, 'content': [{'text': '{\"finish_reason\":\"stop\",\"job_id\":\"job-4\",\"model\":\"qwen3-0.6b-q4_k_m\",\"text\":\"<think>\\\\nOkay, the user just said \\\\\"say hi.\\\\\" I need to respond\",\"usage\":{\"completion_tokens\":15,\"prompt_tokens\":10}}', 'type': 'text'}], 'isError': False, 'resultType"
+    },
+    {
+      "check": "MCP: clean exit on stdin EOF",
+      "pass": true,
+      "detail": "0"
+    },
+    {
+      "check": "MCP: stdout carries only JSON-RPC (10 lines)",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "check": "MCP: logs went to stderr",
+      "pass": true,
+      "detail": "['{\"ts\":\"2026-11-17T08:05:56.211Z\",\"level\":\"info\",\"component\":\"mcp\",\"msg\":\"stdio server started\",\"protocol\":\"2026-07-28\"}', '{\"ts\":\"2026-11-17T08:05:56.740Z\",\"level\":\"info\",\"component\":\"control\",\"msg\":\"model loaded\",\"model\":\"qwen3-0.6b-q4_k_m\"}']"
+    },
+    {
+      "check": "MCP legacy initialize",
+      "pass": true,
+      "detail": "{'id': 1, 'jsonrpc': '2.0', 'result': {'capabilities': {'tools': {'listChanged': False}}, 'instructions': 'Local HCSInfer control plane. Tools operate on registered models inside approved roots.', 'protocolVersion': '2025-11-25', 'serverInfo': {'name': 'hcsinfer', 'version': '0.1.0'}}}"
+    },
+    {
+      "check": "MCP legacy tools/list",
+      "pass": true,
+      "detail": "{'id': 2, 'jsonrpc': '2.0', 'result': {'tools': [{'annotations': {'destructiveHint': False, 'openWorldHint': False, 'readOnlyHint': True}, 'description': 'List registered models and their lifecycle state.', 'inputSchema': {'additionalProperties': False, 'properties': {}, 'type': 'object'}, 'name': 'hcs.models.list', 'title': 'List models'}, {'annotations': {'destructiveHint': False, 'openWorldHint"
+    }
+  ],
+  "result_status": "PASS"
+}

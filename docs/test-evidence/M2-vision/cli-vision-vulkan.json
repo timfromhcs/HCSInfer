@@ -1,0 +1,18 @@
+{
+  "backend": "vulkan",
+  "device": "AMD Radeon(TM) Graphics (Vulkan0)",
+  "image_bytes": 1173,
+  "metrics": {
+    "decode_tokens": 1,
+    "decode_tokens_per_second": 28.62630929582142,
+    "load_ms": 931.7185,
+    "prompt_tokens": 160,
+    "prompt_tokens_per_second": 53.75839378520713,
+    "ttft_ms": 3015.7773
+  },
+  "model": "D:\\HCSModels\\vision\\SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
+  "prompt_chars": 76,
+  "schema_version": 1,
+  "state": "succeeded",
+  "text": " Red."
+}

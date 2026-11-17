@@ -1,0 +1,76 @@
+HCSInfer doctor  (schema 1, hcsinfer 0.1.0, 2026-11-17T07:35:53Z)
+Values reported as 'unknown' could not be detected; nothing is guessed.
+
+System
+  os:                        windows 10.0 build 10.0.26200.9974 (25H2)
+  cpu:                       AMD Ryzen 7 7735HS with Radeon Graphics
+  cpu vendor/family/model:   AuthenticAMD / 25 / 68 (stepping 1)
+  cores / threads:           8 / 16
+  nominal clock:             3194 MHz
+  cpu features (usable):     aes, avx, avx2, bmi1, bmi2, f16c, fma3, popcnt, sha, sse4_2
+  ram total:                 19.79 GiB
+  ram installed:             24.00 GiB
+  ram available:             8.92 GiB
+  commit limit:              40.41 GiB
+  channels / BIOS UMA:       unknown / unknown
+
+Graphics (DXGI / driver registry)
+  adapter 0:                 AMD Radeon(TM) Graphics [0x1002:0x1681]
+    dedicated / shared mem:    3.97 GiB / 9.89 GiB
+    umd version:               32.0.21043.12001
+    local budget / usage:      13.12 GiB / 0 B
+    non-local budget:          0 B
+  adapter 1:                 AMD Radeon(TM) Graphics [0x1002:0x1681]
+    dedicated / shared mem:    3.97 GiB / 9.89 GiB
+    umd version:               32.0.21043.12001
+    local budget / usage:      13.12 GiB / 0 B
+    non-local budget:          0 B
+  adapter 2:                 Microsoft Basic Render Driver [0x1414:0x008C] (software)
+    dedicated / shared mem:    0 B / 9.89 GiB
+    umd version:               10.0.26100.9818
+    local budget / usage:      9.15 GiB / 0 B
+    non-local budget:          0 B
+  driver:                    AMD Radeon(TM) Graphics 32.0.21043.12001 (5-29-2026, Advanced Micro Devices, Inc.)
+  driver:                    Parsec Virtual Display Adapter 0.45.0.0 (1-25-2024, Parsec Cloud, Inc.)
+
+Vulkan
+  status:                    ok
+  instance version:          1.4.357
+  device 0:                  AMD Radeon(TM) Graphics [0x1002:0x1681, integrated_gpu]
+    api version:               1.4.315
+    driver:                    AMD proprietary driver 26.6.1 (AMD proprietary shader compiler) (id amd_proprietary)
+    subgroup size:             64 (min 32, max 64)
+    subgroup ops:              basic, vote, arithmetic, ballot, shuffle, shuffle_relative, clustered, quad, rotate, rotate_clustered
+    fp16 / int8 / int16:       yes / yes / yes
+    16bit / 8bit storage:      yes / yes
+    int dot product:           yes
+    cooperative matrix:        yes
+    memory budget ext:         yes
+    shared mem / invocations:  32768 B / 1024
+    max alloc size:            2.00 GiB
+    heap 0:                    9.10 GiB device-local, budget 8.64 GiB, usage 0 B
+    heap 1:                    4.55 GiB host, budget 4.32 GiB, usage 0 B
+    heap 2:                    256.00 MiB device-local, budget 243.20 MiB, usage 0 B
+    queue family 0:            x8 graphics, compute, transfer, sparse_binding
+    queue family 1:            x4 compute, transfer, sparse_binding
+    queue family 2:            x1 transfer, sparse_binding
+    queue family 3:            x1 none
+    queue family 4:            x1 none
+
+Storage
+  path:                      E:/AILOCALTRAIN/data/gguf/qwen3-0.6b-q4_k_m.gguf
+  volume:                    E:\  fixed, NTFS
+  bus type:                  usb, rotational: unknown, removable: no
+  device:                    unknown IB-1232CL-U3
+  size / free:               465.76 GiB / 88.74 GiB
+  C:\                        fixed, NTFS, bus nvme, rotational no, 930.23 GiB total
+  D:\                        fixed, NTFS, bus usb, rotational unknown, 465.76 GiB total
+  E:\                        fixed, NTFS, bus usb, rotational unknown, 465.76 GiB total
+
+Read benchmark (read-only, sequential)
+  status:                    ok
+  buffer:                    4.00 MiB
+  sample 1:                  256.00 MiB in 65.719 ms = 3895.4 MiB/s
+  sample 2:                  256.00 MiB in 67.545 ms = 3790.0 MiB/s
+  median:                    3842.7 MiB/s
+  cold / warm:               unknown

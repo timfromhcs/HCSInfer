@@ -1,0 +1,49 @@
+Der Befehl "vswhere.exe" ist entweder falsch geschrieben oder
+konnte nicht gefunden werden.
+Test project D:/HCSInfer/build/hardware-Release
+      Start  93: HardwareFormat.Bytes
+ 1/19 Test  #93: HardwareFormat.Bytes .....................................   Passed    0.06 sec
+      Start  94: HardwareFormat.MibS
+ 2/19 Test  #94: HardwareFormat.MibS ......................................   Passed    0.04 sec
+      Start  95: HardwareFormat.BusAndDriveTypes
+ 3/19 Test  #95: HardwareFormat.BusAndDriveTypes ..........................   Passed    0.05 sec
+      Start  96: HardwareFormat.TimestampLooksLikeUtcIso
+ 4/19 Test  #96: HardwareFormat.TimestampLooksLikeUtcIso ..................   Passed    0.04 sec
+      Start  97: HardwareFormat.RenderTextHandlesEmptyReportWithUnknown
+ 5/19 Test  #97: HardwareFormat.RenderTextHandlesEmptyReportWithUnknown ...   Passed    0.04 sec
+      Start  98: HardwareFormat.RenderTextShowsSyntheticValues
+ 6/19 Test  #98: HardwareFormat.RenderTextShowsSyntheticValues ............   Passed    0.04 sec
+      Start  99: CpuDecode.IdentityFamilyModelStepping
+ 7/19 Test  #99: CpuDecode.IdentityFamilyModelStepping ....................   Passed    0.04 sec
+      Start 100: CpuDecode.FeaturesRequireOsSupport
+ 8/19 Test #100: CpuDecode.FeaturesRequireOsSupport .......................   Passed    0.04 sec
+      Start 101: CpuDecode.Avx512NeedsZmmState
+ 9/19 Test #101: CpuDecode.Avx512NeedsZmmState ............................   Passed    0.04 sec
+      Start 102: CpuDecode.NoCpuidReportsUnknownNotFalse
+10/19 Test #102: CpuDecode.NoCpuidReportsUnknownNotFalse ..................   Passed    0.04 sec
+      Start 103: DoctorLive.ReportStructureNoVulkan
+11/19 Test #103: DoctorLive.ReportStructureNoVulkan .......................   Passed    0.31 sec
+      Start 104: DoctorLive.CpuFeaturesPresent
+12/19 Test #104: DoctorLive.CpuFeaturesPresent ............................   Passed    0.08 sec
+      Start 105: DoctorLive.VulkanReportWhenAvailable
+13/19 Test #105: DoctorLive.VulkanReportWhenAvailable .....................   Passed    0.64 sec
+      Start 106: DoctorLive.ReadBenchmarkOnTempFile
+14/19 Test #106: DoctorLive.ReadBenchmarkOnTempFile .......................   Passed    0.07 sec
+      Start 107: DoctorLive.ReadBenchmarkMissingFileIsErrorNotCrash
+15/19 Test #107: DoctorLive.ReadBenchmarkMissingFileIsErrorNotCrash .......   Passed    0.07 sec
+      Start 108: DoctorLive.RejectsInvalidOptions
+16/19 Test #108: DoctorLive.RejectsInvalidOptions .........................   Passed    0.04 sec
+      Start 109: DoctorLive.TextAndJsonRunnersWork
+17/19 Test #109: DoctorLive.TextAndJsonRunnersWork ........................   Passed    0.08 sec
+      Start 115: Cli.DoctorJsonIsValidAndNeverGuesses
+18/19 Test #115: Cli.DoctorJsonIsValidAndNeverGuesses .....................   Passed    0.23 sec
+      Start 116: Cli.DoctorTextWorks
+19/19 Test #116: Cli.DoctorTextWorks ......................................   Passed    0.21 sec
+
+100% tests passed out of 19
+
+Label Time Summary:
+contract    =   0.43 sec*proc (2 tests)
+unit        =   1.73 sec*proc (17 tests)
+
+Total Test time (real) =   5.40 sec

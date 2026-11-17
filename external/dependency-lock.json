@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "host": "Windows 11 x64, MSVC 19.44.35207, CMake 4.4.0, Ninja 1.13.2",
+  "policy": "Exact commit pins. Upstream trees are never modified in place; every option the HCS build forces is listed below. A pin only changes in a dedicated compatibility change (AGENTS.md 7.2).",
+  "dependencies": [
+    {
+      "name": "llama.cpp",
+      "url": "https://github.com/ggml-org/llama.cpp",
+      "commit": "d3c3e242c16b8cbf51400fad410cd69b22d64f35",
+      "role": "text + vision engine adapter (hcs_engine_llama): GGUF text inference, tokenizer, chat templates, GGML CPU/Vulkan backends, libmtmd image understanding (mmproj projector)",
+      "licence": "MIT",
+      "licence_file": "external/llama.cpp/LICENSE",
+      "linked": true,
+      "source": "git submodule external/llama.cpp",
+      "cmake_options": {
+        "GGML_VULKAN": "OFF for windows-msvc-release, ON for windows-msvc-release-vulkan",
+        "LLAMA_BUILD_COMMON": "OFF",
+        "LLAMA_BUILD_TESTS": "OFF",
+        "LLAMA_BUILD_EXAMPLES": "OFF",
+        "LLAMA_BUILD_TOOLS": "OFF",
+        "LLAMA_BUILD_SERVER": "OFF",
+        "LLAMA_OPENSSL": "OFF",
+        "LLAMA_CURL": "OFF",
+        "GGML_BUILD_TESTS": "OFF",
+        "GGML_BUILD_EXAMPLES": "OFF",
+        "BUILD_SHARED_LIBS": "OFF",
+        "CMAKE_CXX_STANDARD": "17 (upstream requirement; HCS-owned targets stay C++20)",
+        "LLAMA_BUILD_MTMD": "ON (builds only tools/mtmd = libmtmd, which links ggml+llama; LLAMA_BUILD_TOOLS stays OFF so no mtmd-cli/server)",
+        "MTMD_VIDEO": "OFF (video needs a subprocess ffmpeg; V1 is images only)"
+      },
+      "patches": [],
+      "tested": "Real GGUF text generation via HCSInfer CLI/HTTP on the target machine (CPU and Vulkan), see docs/test-evidence/M1/llama and M2/llama-adapter-README.md; real VLM image analysis (SmolVLM2-500M-Video-Instruct Q8_0 + mmproj) via HCSInfer CLI/HTTP/MCP on the target machine, see docs/test-evidence/M2-vision",
+      "compile_definitions": {
+        "GGML_MAX_NAME": "160 (one GGML struct layout for llama, mtmd and stable-diffusion.cpp)",
+        "stbi_* -> hcs_mtmd_stbi_*": "applied PRIVATE to the mtmd target only (src/engines/llama/CMakeLists.txt, 48 public stb_image symbols). mtmd compiles its own vendor/stb copy with external linkage and stable-diffusion.cpp compiles another; renaming mtmd's copy by preprocessor avoids LNK2005 in the single process without touching either upstream tree."
+      }
+    },
+    {
+      "name": "stable-diffusion.cpp",
+      "url": "https://github.com/leejet/stable-diffusion.cpp",
+      "commit": "532d2c15c430a785a712b2d94281f04e733008a4",
+      "role": "image engine adapter (hcs_engine_diffusion): text-to-image and img2img through the pinned C API",
+      "licence": "MIT",
+      "licence_file": "external/stable-diffusion.cpp/LICENSE",
+      "linked": true,
+      "source": "git submodule external/stable-diffusion.cpp",
+      "cmake_options": {
+        "SD_VULKAN": "OFF for windows-msvc-release, ON for windows-msvc-release-vulkan",
+        "SD_BUILD_EXAMPLES": "OFF",
+        "SD_BUILD_SHARED_LIBS": "OFF",
+        "SD_BUILD_SHARED_GGML_LIB": "OFF",
+        "SD_SERVER_BUILD_FRONTEND": "OFF",
+        "BUILD_SHARED_LIBS": "OFF",
+        "SD_USE_UPSTREAM_GGML": "ON",
+        "SD_GGML_SOURCE_DIR": "external/llama.cpp/ggml (one GGML in the process, AGENTS.md 3.3)",
+        "CMAKE_CXX_STANDARD": "17 (upstream requirement)"
+      },
+      "patches": [],
+      "known_incompatibilities": "SD_USE_UPSTREAM_GGML=ON omits the patched-GGML INT8/FP8 code paths; SD1.5 Q8_0 output was byte-identical to the patched-GGML build in M1. Not yet tested with Flux/DiT/Qwen-Image models.",
+      "tested": "Real SD1.5 Q8_0 diffusion on the target machine (CPU and Vulkan, upstream CLI), see docs/test-evidence/M1/sd"
+    },
+    {
+      "name": "stable-diffusion.cpp bundled patched GGML",
+      "url": "https://github.com/leejet/stable-diffusion.cpp (submodule ggml)",
+      "commit": "eeda9ec48fc84a3df0bb9dcc19ae9053075a2539",
+      "role": "NOT linked in HCSInfer builds (SD_USE_UPSTREAM_GGML=ON). Recorded for provenance and for M7/M8 comparisons.",
+      "licence": "MIT",
+      "licence_file": "external/stable-diffusion.cpp/ggml/LICENSE",
+      "linked": false,
+      "source": "git submodule external/stable-diffusion.cpp/ggml"
+    },
+    {
+      "name": "stb_image / stb_image_write",
+      "url": "https://github.com/nothings/stb",
+      "version": "vendored in external/stable-diffusion.cpp/thirdparty",
+      "role": "PNG encode of generated images, PNG/JPEG decode of edit inputs (src/engines/diffusion only)",
+      "licence": "MIT or public domain (dual)",
+      "licence_file": "external/stable-diffusion.cpp/thirdparty/stb_image.h",
+      "linked": true,
+      "source": "header-only, compiled once in src/engines/diffusion/diffusion_engine.cpp"
+    },
+    {
+      "name": "libwebp",
+      "url": "https://chromium.googlesource.com/webm/libwebp",
+      "version": "vendored in external/stable-diffusion.cpp/thirdparty/libwebp",
+      "role": "transitive dependency of the stable-diffusion.cpp static library",
+      "licence": "BSD-3-Clause",
+      "licence_file": "external/stable-diffusion.cpp/thirdparty/libwebp/COPYING",
+      "linked": true
+    },
+    {
+      "name": "oniguruma",
+      "url": "https://github.com/kkos/oniguruma",
+      "version": "vendored in external/stable-diffusion.cpp/thirdparty/oniguruma",
+      "role": "transitive dependency of the stable-diffusion.cpp static library (tokenizer regex)",
+      "licence": "BSD-2-Clause",
+      "licence_file": "external/stable-diffusion.cpp/thirdparty/oniguruma/COPYING",
+      "linked": true
+    },
+    {
+      "name": "utf8proc",
+      "url": "https://github.com/JuliaStrings/utf8proc",
+      "version": "vendored in external/stable-diffusion.cpp/thirdparty/utf8proc",
+      "role": "transitive dependency of the stable-diffusion.cpp static library",
+      "licence": "MIT",
+      "licence_file": "external/stable-diffusion.cpp/thirdparty/utf8proc/LICENSE.md",
+      "linked": true
+    },
+    {
+      "name": "GoogleTest",
+      "url": "https://github.com/google/googletest",
+      "commit": "52eb8108c5bdec04579160ae17225d66034bd723",
+      "role": "tests only",
+      "licence": "BSD-3-Clause",
+      "linked": false,
+      "source": "FetchContent (pinned)"
+    },
+    {
+      "name": "nlohmann/json",
+      "url": "https://github.com/nlohmann/json",
+      "commit": "55f93686c01528224f448c19128836e7df245f72",
+      "role": "settings/registry/API JSON",
+      "licence": "MIT",
+      "linked": true,
+      "source": "FetchContent (pinned)"
+    },
+    {
+      "name": "cpp-httplib",
+      "url": "https://github.com/yhirose/cpp-httplib",
+      "commit": "4d7c9a788de136071ccf0dd4e96239151e2adadb",
+      "role": "local HTTP transport (loopback only)",
+      "licence": "MIT",
+      "linked": true,
+      "source": "FetchContent (header-only)"
+    },
+    {
+      "name": "LZ4",
+      "url": "https://github.com/lz4/lz4",
+      "commit": "ebb370ca83af193212df4dcbadcc5d87bc0de2f0",
+      "role": "HCSMODEL chunk codec (optional storage layer)",
+      "licence": "BSD-2-Clause (library); CLI programs are GPL-2.0+ and are not built",
+      "linked": true,
+      "source": "FetchContent (pinned, LZ4_BUILD_CLI=OFF)"
+    },
+    {
+      "name": "Zstandard",
+      "url": "https://github.com/facebook/zstd",
+      "commit": "f8745da6ff1ad1e7bab384bd1f9d742439278e99",
+      "role": "HCSMODEL chunk codec (optional storage layer)",
+      "licence": "BSD-3-Clause (HCSInfer selects the BSD option)",
+      "linked": true,
+      "source": "FetchContent (pinned)"
+    }
+  ]
+}

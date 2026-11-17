@@ -1,0 +1,18 @@
+{
+  "backend": "cpu",
+  "device": "CPU",
+  "image_bytes": 1173,
+  "metrics": {
+    "decode_tokens": 1,
+    "decode_tokens_per_second": 35.62420736138621,
+    "load_ms": 231.7553,
+    "prompt_tokens": 160,
+    "prompt_tokens_per_second": 85.77412082196268,
+    "ttft_ms": 1880.6736
+  },
+  "model": "D:\\HCSModels\\vision\\SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
+  "prompt_chars": 76,
+  "schema_version": 1,
+  "state": "succeeded",
+  "text": " Red."
+}

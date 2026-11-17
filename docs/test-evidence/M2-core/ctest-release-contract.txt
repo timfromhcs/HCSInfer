@@ -1,0 +1,27 @@
+Test project D:/HCSInfer/build/windows-msvc-release
+    Start  93: Cli.HelpWorksAtEveryLevel
+1/9 Test  #93: Cli.HelpWorksAtEveryLevel .................   Passed    0.04 sec
+    Start  94: Cli.VersionAndNoArgs
+2/9 Test  #94: Cli.VersionAndNoArgs ......................   Passed    0.04 sec
+    Start  95: Cli.UnknownCommandIsInvalidArgument
+3/9 Test  #95: Cli.UnknownCommandIsInvalidArgument .......   Passed    0.04 sec
+    Start  96: Cli.PlannedCommandsReturnUnsupported
+4/9 Test  #96: Cli.PlannedCommandsReturnUnsupported ......   Passed    0.04 sec
+    Start  97: Cli.DoctorJsonIsValidAndNeverGuesses
+5/9 Test  #97: Cli.DoctorJsonIsValidAndNeverGuesses ......   Passed    0.04 sec
+    Start  98: Cli.DoctorTextWorks
+6/9 Test  #98: Cli.DoctorTextWorks .......................   Passed    0.04 sec
+    Start  99: Cli.ModelsScanListInspectRoundTrip
+7/9 Test  #99: Cli.ModelsScanListInspectRoundTrip ........   Passed    0.05 sec
+    Start 100: Cli.ScanErrors
+8/9 Test #100: Cli.ScanErrors ............................   Passed    0.04 sec
+    Start 101: Cli.CorruptRegistryIsReportedNotCrashed
+9/9 Test #101: Cli.CorruptRegistryIsReportedNotCrashed ...   Passed    0.04 sec
+
+100% tests passed out of 9
+
+Label Time Summary:
+contract    =   0.35 sec*proc (9 tests)
+
+Total Test time (real) =   0.56 sec
+ctest log: D:\HCSInfer\artifacts\test-logs\ctest-windows-msvc-release-20261117-082042.log

@@ -1,0 +1,2 @@
+{'general.architecture': 'qwen35', 'general.name': 'Hf', 'general.size_label': '27B', 'qwen35.block_count': 64, 'qwen35.embedding_length': 5120}
+(27B text embedding_length=5120 vs mmproj projection_dim=4096 -> incompatible)

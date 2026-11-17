@@ -1,0 +1,85 @@
+#pragma once
+// Deterministic FakeTextEngine for CONTRACT tests only (AGENTS.md 16.2): it exercises the
+// API/MCP plumbing (auth, streaming, cancellation, lifecycle). It is NOT evidence of inference.
+#include <atomic>
+#include <chrono>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
+
+#include "hcs/api/text_stream.hpp"
+
+namespace hcs::test {
+
+class FakeTextEngine final : public api::ITextStreamEngine {
+public:
+    std::vector<std::string> pieces{"Hello", " from", " the", " fake", " engine"};
+    int delay_ms = 0;          // per piece
+    bool run_until_cancel = false;  // endless "tok" stream, only stops on cancel/sink==false
+    bool fail_load = false;
+    std::atomic<int> loads{0}, unloads{0};
+    std::atomic<bool> generating{false};
+    std::mutex mu;
+    std::string last_path, last_prompt, last_system;
+    bool last_apply_template = true;
+
+    Result<void> load(const LoadRequest& r) override {
+        if (fail_load) return make_error(ErrorCode::ModelError, "fake load failure");
+        std::lock_guard lk(mu);
+        last_path = r.model_path;
+        ++loads;
+        loaded_ = true;
+        return {};
+    }
+    Result<void> unload() override {
+        ++unloads;
+        loaded_ = false;
+        return {};
+    }
+    Result<JobId> generate(const TextRequest&) override { return make_error(ErrorCode::Unsupported, "fake: use generate_stream"); }
+    Result<JobId> analyze_image(const VisionRequest&) override { return make_error(ErrorCode::Unsupported, "fake: no vision"); }
+    EngineMetrics metrics() const override {
+        EngineMetrics m;
+        m.backend = "fake";
+        m.device = "none";
+        return m;
+    }
+
+    Result<api::TextResult> generate_stream(const TextRequest& req, const api::TokenSink& sink,
+                                            const CancellationToken& token) override {
+        {
+            std::lock_guard lk(mu);
+            last_prompt = req.prompt;
+            last_system = req.system_prompt;
+            last_apply_template = req.apply_chat_template;
+        }
+        generating = true;
+        api::TextResult r;
+        auto step = [&](const std::string& p) {
+            if (delay_ms > 0) std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+            if (token.cancelled()) return false;
+            if (!sink(p)) return false;
+            ++r.completion_tokens;
+            return true;
+        };
+        bool completed = true;
+        if (run_until_cancel) {
+            while (step("tok ")) {}
+            completed = false;
+        } else {
+            for (const auto& p : pieces) {
+                if (!step(p)) { completed = false; break; }
+            }
+        }
+        generating = false;
+        r.prompt_tokens = 7;
+        r.finish_reason = completed ? "stop" : "cancelled";
+        return r;
+    }
+
+private:
+    std::atomic<bool> loaded_{false};
+};
+
+}  // namespace hcs::test

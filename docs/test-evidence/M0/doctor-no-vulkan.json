@@ -1,0 +1,218 @@
+{
+  "cpu": {
+    "family": 25,
+    "features": {
+      "aes": true,
+      "avx": true,
+      "avx2": true,
+      "avx512_vnni": false,
+      "avx512bw": false,
+      "avx512f": false,
+      "avx512vl": false,
+      "avx_vnni": false,
+      "bmi1": true,
+      "bmi2": true,
+      "f16c": true,
+      "fma3": true,
+      "os_ymm_state_enabled": true,
+      "os_zmm_state_enabled": false,
+      "popcnt": true,
+      "sha": true,
+      "sse4_2": true
+    },
+    "logical_processors": 16,
+    "model": 68,
+    "name": "AMD Ryzen 7 7735HS with Radeon Graphics",
+    "nominal_mhz": 3194,
+    "physical_cores": 8,
+    "stepping": 1,
+    "vendor": "AuthenticAMD"
+  },
+  "gpu": {
+    "adapters": [
+      {
+        "dedicated_system_memory_bytes": 0,
+        "dedicated_video_memory_bytes": 4267499520,
+        "device_id": "0x1681",
+        "index": 0,
+        "memory_local_segment": {
+          "available_for_reservation_bytes": 7176802304,
+          "budget_bytes": 14085169152,
+          "current_usage_bytes": 0
+        },
+        "memory_non_local_segment": {
+          "available_for_reservation_bytes": 0,
+          "budget_bytes": 0,
+          "current_usage_bytes": 0
+        },
+        "name": "AMD Radeon(TM) Graphics",
+        "revision": 6,
+        "shared_system_memory_bytes": 10622976000,
+        "software_adapter": false,
+        "subsystem_id": "0x1241002",
+        "umd_version": "32.0.21043.12001",
+        "vendor_id": "0x1002"
+      },
+      {
+        "dedicated_system_memory_bytes": 0,
+        "dedicated_video_memory_bytes": 4267499520,
+        "device_id": "0x1681",
+        "index": 1,
+        "memory_local_segment": {
+          "available_for_reservation_bytes": 7176802304,
+          "budget_bytes": 14085169152,
+          "current_usage_bytes": 0
+        },
+        "memory_non_local_segment": {
+          "available_for_reservation_bytes": 0,
+          "budget_bytes": 0,
+          "current_usage_bytes": 0
+        },
+        "name": "AMD Radeon(TM) Graphics",
+        "revision": 6,
+        "shared_system_memory_bytes": 10622976000,
+        "software_adapter": false,
+        "subsystem_id": "0x1241002",
+        "umd_version": "32.0.21043.12001",
+        "vendor_id": "0x1002"
+      },
+      {
+        "dedicated_system_memory_bytes": 0,
+        "dedicated_video_memory_bytes": 0,
+        "device_id": "0x008C",
+        "index": 2,
+        "memory_local_segment": {
+          "available_for_reservation_bytes": 5045913600,
+          "budget_bytes": 9823391744,
+          "current_usage_bytes": 0
+        },
+        "memory_non_local_segment": {
+          "available_for_reservation_bytes": 0,
+          "budget_bytes": 0,
+          "current_usage_bytes": 0
+        },
+        "name": "Microsoft Basic Render Driver",
+        "revision": 0,
+        "shared_system_memory_bytes": 10622976000,
+        "software_adapter": true,
+        "subsystem_id": "0x0000",
+        "umd_version": "10.0.26100.9818",
+        "vendor_id": "0x1414"
+      }
+    ],
+    "display_driver_registry": [
+      {
+        "description": "AMD Radeon(TM) Graphics",
+        "driver_date": "5-29-2026",
+        "driver_version": "32.0.21043.12001",
+        "matching_device_id": "PCI\\VEN_1002&DEV_1681&REV_06",
+        "provider": "Advanced Micro Devices, Inc."
+      },
+      {
+        "description": "Parsec Virtual Display Adapter",
+        "driver_date": "1-25-2024",
+        "driver_version": "0.45.0.0",
+        "matching_device_id": "Root\\Parsec\\VDA",
+        "provider": "Parsec Cloud, Inc."
+      }
+    ],
+    "dxgi_available": true
+  },
+  "hcsinfer_version": "0.1.0",
+  "memory": {
+    "available_physical_bytes": 9457192960,
+    "bios_uma_reservation": "unknown",
+    "channel_configuration": "unknown",
+    "commit_available_bytes": 22924398592,
+    "commit_limit_bytes": 43395268608,
+    "installed_physical_bytes": 25769803776,
+    "memory_load_percent": 55,
+    "total_physical_bytes": 21245952000
+  },
+  "options": {
+    "no_vulkan": true
+  },
+  "os": {
+    "architecture": "x64",
+    "build": 26200,
+    "display_version": "25H2",
+    "name": "windows",
+    "product_name_registry": "Windows 10 Pro",
+    "ubr": 9974,
+    "version": "10.0"
+  },
+  "schema_version": 1,
+  "storage": {
+    "requested_path": "unknown",
+    "requested_volume": "unknown",
+    "volumes": [
+      {
+        "bus_type": "nvme",
+        "device_product": "NVME SSD 1TB",
+        "device_vendor": "unknown",
+        "drive_type": "fixed",
+        "filesystem": "NTFS",
+        "free_bytes": 69150932992,
+        "removable_media": false,
+        "root": "C:\\",
+        "rotational": false,
+        "total_bytes": 998823161856
+      },
+      {
+        "bus_type": "usb",
+        "device_product": "IB-1232CL-U3",
+        "device_vendor": "unknown",
+        "drive_type": "fixed",
+        "filesystem": "NTFS",
+        "free_bytes": 396498886656,
+        "removable_media": false,
+        "root": "D:\\",
+        "rotational": "unknown",
+        "total_bytes": 500105736192
+      },
+      {
+        "bus_type": "usb",
+        "device_product": "IB-1232CL-U3",
+        "device_vendor": "unknown",
+        "drive_type": "fixed",
+        "filesystem": "NTFS",
+        "free_bytes": 95282356224,
+        "removable_media": false,
+        "root": "E:\\",
+        "rotational": "unknown",
+        "total_bytes": 500105736192
+      }
+    ]
+  },
+  "summary": {
+    "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+    "cpu_features": [
+      "aes",
+      "avx",
+      "avx2",
+      "bmi1",
+      "bmi2",
+      "f16c",
+      "fma3",
+      "popcnt",
+      "sha",
+      "sse4_2"
+    ],
+    "driver_version": "32.0.21043.12001",
+    "gpu": "AMD Radeon(TM) Graphics",
+    "gpu_device_id": "0x1681",
+    "gpu_vendor_id": "0x1002",
+    "os_build": "10.0.26200.9974",
+    "ram_bytes": 21245952000,
+    "registry_driver_version": "32.0.21043.12001",
+    "uma_reservation_bytes": 4267499520,
+    "vulkan_api_version": "unknown",
+    "vulkan_status": "skipped"
+  },
+  "timestamp_utc": "2026-11-17T07:35:53Z",
+  "vulkan": {
+    "devices": [],
+    "reason": "--no-vulkan (CPU-only mode; vulkan-1.dll was not loaded)",
+    "status": "skipped"
+  }
+}

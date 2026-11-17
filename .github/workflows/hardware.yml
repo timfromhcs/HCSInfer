@@ -1,0 +1,155 @@
+# Nightly / release gate on the dedicated self-hosted Windows machine with the Radeon 680M (AGENTS.md 18.1-18.3).
+#
+# SECURITY (AGENTS.md 18.2): this workflow is deliberately NOT triggered by pull_request or pull_request_target, so
+# code from forks or unreviewed branches never runs on the persistent runner. It runs only on
+#   - schedule (default branch only, GitHub semantics),
+#   - workflow_dispatch, and only when the selected ref is main or a v* tag (checked in the first step),
+#   - pushed v* tags (release candidates).
+# The runner must be a dedicated machine/account with no personal credentials. No repository secrets are used.
+# Model paths are non-secret repository VARIABLES (Settings > Variables), never committed.
+#
+# Status: written but never executed. Every gate below prints PASS / FAIL / NOT RUN honestly; a missing model or
+# missing GPU is NOT RUN, never PASS.
+name: hardware-nightly-release
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+    inputs:
+      run_soak:
+        description: 'Run soak-labelled tests (long)'
+        type: boolean
+        default: false
+      package:
+        description: 'Build the portable package + SHA-256 + SBOM'
+        type: boolean
+        default: true
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hardware-runner
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  radeon-680m:
+    name: Radeon 680M real-hardware gates
+    runs-on: [self-hosted, windows, x64, radeon-680m]
+    timeout-minutes: 360
+    env:
+      EVIDENCE: artifacts\ci-evidence
+    steps:
+      - name: Trusted ref check
+        run: |
+          $ref = '${{ github.ref }}'
+          if ($ref -ne 'refs/heads/main' -and $ref -notlike 'refs/tags/v*') {
+            throw "Refusing to run on the hardware runner for untrusted ref $ref"
+          }
+          if ('${{ github.event_name }}' -eq 'pull_request' -or '${{ github.event_name }}' -eq 'pull_request_target') {
+            throw 'Pull-request events must never reach the self-hosted runner.'
+          }
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Environment + hardware identity
+        run: |
+          New-Item -ItemType Directory -Force $env:EVIDENCE | Out-Null
+          . .\scripts\common.ps1
+          Initialize-MsvcEnvironment
+          @("cmake: $((cmake --version | Select-Object -First 1))", "ninja: $(ninja --version)",
+            "commit: $(git rev-parse HEAD)", "VULKAN_SDK: $env:VULKAN_SDK",
+            "os: $([System.Environment]::OSVersion.VersionString)") | Set-Content "$env:EVIDENCE\environment.txt"
+          $vi = Get-Command vulkaninfo -ErrorAction SilentlyContinue
+          if (-not $vi -and $env:VULKAN_SDK) { $vi = Get-Command "$env:VULKAN_SDK\Bin\vulkaninfo.exe" -ErrorAction SilentlyContinue }
+          if ($vi) { & $vi.Source --summary *> "$env:EVIDENCE\vulkaninfo-summary.txt" }
+          else { 'NOT RUN: vulkaninfo not found' | Set-Content "$env:EVIDENCE\vulkaninfo-summary.txt" }
+          # Model paths come from non-secret repository variables and are exported only when set, so an unset
+          # variable is never seen by the tests as an empty (but defined) path. HCS_TEST_GGUF is read by the real-model
+          # tests today; the VLM/diffusion names are reserved for tests that do not exist yet.
+          $map = @{
+            HCS_TEST_GGUF = '${{ vars.HCS_TEST_GGUF }}'
+            HCS_TEST_VLM_GGUF = '${{ vars.HCS_TEST_VLM_GGUF }}'
+            HCS_TEST_VLM_MMPROJ = '${{ vars.HCS_TEST_VLM_MMPROJ }}'
+            HCS_TEST_DIFFUSION_MODEL = '${{ vars.HCS_TEST_DIFFUSION_MODEL }}' }
+          foreach ($v in $map.Keys) {
+            $p = $map[$v]
+            if ($p) { "$v=$p" | Add-Content -Path $env:GITHUB_ENV }
+            $state = if ($p -and (Test-Path -LiteralPath $p)) { 'present' } else { 'MISSING -> dependent gates are NOT RUN' }
+            "$v : $state" | Tee-Object -Append "$env:EVIDENCE\models.txt"
+          }
+
+      - name: Build CPU preset
+        run: .\scripts\build.ps1 -Preset windows-msvc-release -Parallel 4
+
+      - name: Build Vulkan preset
+        run: .\scripts\build.ps1 -Preset windows-msvc-release-vulkan -Parallel 4
+
+      - name: Doctor (CPU build and Vulkan build)
+        run: |
+          .\build\windows-msvc-release-vulkan\bin\HCSInfer.exe doctor --json | Set-Content "$env:EVIDENCE\doctor-vulkan.json"
+          .\build\windows-msvc-release\bin\HCSInfer.exe doctor --json | Set-Content "$env:EVIDENCE\doctor-cpu.json"
+
+      - name: ctest CPU preset (real CPU tests when HCS_TEST_GGUF is present)
+        run: |
+          . .\scripts\common.ps1
+          Initialize-MsvcEnvironment
+          ctest --preset windows-msvc-release --output-on-failure --no-tests=error *>&1 | Tee-Object "$env:EVIDENCE\ctest-cpu.txt"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: ctest Vulkan preset (real Vulkan tests when HCS_TEST_GGUF is present)
+        run: |
+          . .\scripts\common.ps1
+          Initialize-MsvcEnvironment
+          ctest --preset windows-msvc-release-vulkan --output-on-failure --no-tests=error *>&1 | Tee-Object "$env:EVIDENCE\ctest-vulkan.txt"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Soak tests (opt-in)
+        if: ${{ inputs.run_soak == true }}
+        run: |
+          . .\scripts\common.ps1
+          Initialize-MsvcEnvironment
+          ctest --preset windows-msvc-release-vulkan -L soak --output-on-failure *>&1 | Tee-Object "$env:EVIDENCE\ctest-soak.txt"
+          # No soak-labelled tests exist yet: ctest exits 0 with "No tests were found".
+          if (Select-String -Path "$env:EVIDENCE\ctest-soak.txt" -Pattern 'No tests were found' -Quiet) {
+            'SOAK: NOT RUN (no tests carry the soak label yet)' | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          }
+
+      - name: Gate summary (PASS / FAIL / NOT RUN)
+        if: always()
+        run: |
+          $lines = @('## Hardware gate summary')
+          foreach ($pair in @(@('cpu','ctest-cpu.txt'), @('vulkan','ctest-vulkan.txt'))) {
+            $f = Join-Path $env:EVIDENCE $pair[1]
+            if (Test-Path $f) {
+              $sk = @(Select-String -Path $f -Pattern '\(Skipped\)').Count
+              $res = Select-String -Path $f -Pattern 'tests passed|tests failed' | Select-Object -First 1
+              $lines += "- ctest $($pair[0]): $($res.Line.Trim()); skipped (NOT RUN): $sk"
+            } else { $lines += "- ctest $($pair[0]): NOT RUN" }
+          }
+          $lines += '- VLM, kernels, soak, clean-machine single-EXE: NOT RUN unless a step above ran them'
+          $lines | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+
+      - name: Portable package + SHA-256 + SBOM
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.package == true }}
+        run: .\scripts\package.ps1 -Preset windows-msvc-release-vulkan -Zip
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hardware-evidence-${{ github.run_id }}
+          path: |
+            artifacts/ci-evidence/**
+            artifacts/package/*.zip
+            artifacts/package/*.zip.sha256
+          if-no-files-found: warn

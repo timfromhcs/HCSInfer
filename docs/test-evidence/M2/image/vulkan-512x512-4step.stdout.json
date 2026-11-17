@@ -1,0 +1,15 @@
+{
+  "backend": "vulkan",
+  "bytes": 657643,
+  "device": "AMD Radeon(TM) Graphics (Vulkan0)",
+  "generation_ms": 11992.2481,
+  "height": 512,
+  "load_ms": 288.68,
+  "mode": "generate",
+  "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf",
+  "output": "docs\\test-evidence\\M2\\image\\vulkan-512x512-4step.png",
+  "schema_version": 1,
+  "steps": 4,
+  "total_ms": 11997.0099,
+  "width": 512
+}

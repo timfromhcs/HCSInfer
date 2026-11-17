@@ -1,0 +1,2 @@
+4ea794120a3b2244a6e8a36354f1aa53e7f0c52b2f1f280dde0d7f522f37ae7c */e/AILOCALTRAIN/data/gguf/qwen3-0.6b-q4_k_m.gguf
+e0cb6f6988cea323ef798cd77d019bbb819af75582f034eaab0e7232314953db */e/Downloads/Ternary-Bonsai-2-9B-mmproj-Q8_0.gguf
