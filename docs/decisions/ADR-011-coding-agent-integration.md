@@ -1,7 +1,7 @@
 # ADR-011: Coding agent integration (prime-agent)
 
-Date: 2026-11-17 - Status: accepted (policy layer, provider document and launch plan implemented; the process
-supervisor and a real agent run are NOT RUN) - Owner: AGENT+TRAIN wave
+Date: 2026-11-17 - Status: accepted (policy layer, provider document, launch plan and the process supervisor
+implemented; a real `prime-agent` session is NOT RUN) - Owner: AGENT+TRAIN wave
 
 ## Context
 The V1.1 addendum wants a coding agent inside the HCS desktop app, driven by the local LFM3-Omni-2B model, in the
@@ -86,8 +86,10 @@ Facts established by reading the pinned tree and building it (not assumptions):
 
 ## Evidence
 `docs/test-evidence/agent/README.md` (submodule pin, cargo build log summary, unit test results).
-Implemented HCS-owned pieces: `hcs::agent::ToolSandbox` (policy) and `hcs::agent` provider document + launch
-plan (`include/hcs/agent/agent_config.hpp`, tests `tests/unit/agent`). The provider document is loopback-only and
-the launch plan resolves the workspace through the approved-root guard, so a caller cannot point the agent at a
-remote model or an unapproved directory. NOT RUN: the process supervisor (Windows Job Object) and any real
-`prime-agent` session.
+Implemented HCS-owned pieces: `hcs::agent::ToolSandbox` (policy), the `hcs::agent` provider document + launch
+plan (`include/hcs/agent/agent_config.hpp`) and the `hcs::process::ChildProcess` supervisor
+(`include/hcs/process/child_process.hpp`). The provider document is loopback-only, the launch plan resolves the
+workspace through the approved-root guard, and the supervisor starts the child without a shell, captures bounded
+output, times out and kills the whole tree through a kill-on-close Job Object. Tests: `tests/unit/agent`,
+`tests/unit/process` (proven against a real helper process, including a grandchild). NOT RUN: any real
+`prime-agent` session and the Python venv bootstrap. Details: `docs/agent.md`.

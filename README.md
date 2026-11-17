@@ -40,6 +40,7 @@ every row below.
 | Single `HCSInfer.exe` | Planned, unproven | dynamic CRT today, no clean-machine test (ADR-008) |
 | `benchmark` CLI (`--suite quick`): real text benchmark, AGENTS.md 21.1 JSON | Implemented | cold+warm phases, median/p90, real metrics from the engine; `--suite full` planned |
 | HCS Train: `train validate\|gate\|adapter\|pipeline` (dataset validation, eval gate, adapter bookkeeping) | Implemented (logic) | a trainer is external (ADR-012) and has not been run; promotion is refused unless the gate kept the adapter; `docs/train.md` |
+| HCS Agent foundations: tool-call policy, loopback provider document, launch plan, process supervisor (Job Object tree-kill) | Implemented (logic + supervision) | a real `prime-agent` sidecar session is NOT RUN; `docs/agent.md`, ADR-011 |
 | `tune`, `cache` CLI commands | Planned | exit code 10 |
 | Custom Vulkan kernels, scheduler, advanced research features | Planned | only with measured benefit |
 | CI (GitHub Actions) | Green | `.github/workflows/`; public repo `timfromhcs/HCSInfer`. `pr-quick-gate` green on `main` (format, SBOM, Release build+ctest, Debug build+ctest); model/GPU tests skip there and stay NOT RUN |
@@ -158,7 +159,8 @@ No performance claim is made beyond those files.
 ## Documentation
 
 `docs/architecture.md`, `docs/build.md`, `docs/api.md`, `docs/mcp.md`, `docs/model-vault.md`,
-`docs/hardware-support.md`, `docs/gui.md`, `docs/supported-models.md`, `docs/train.md`, `web/README.md`,
+`docs/hardware-support.md`, `docs/gui.md`, `docs/supported-models.md`, `docs/train.md`, `docs/agent.md`,
+`web/README.md`,
 `docs/roadmap/IMPLEMENTATION_PLAN.md`, `docs/roadmap/STATUS.md`, `docs/decisions/` (ADRs),
 `AGENTS.md` (binding engineering specification).
 

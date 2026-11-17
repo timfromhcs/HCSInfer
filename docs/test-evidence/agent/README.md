@@ -41,3 +41,23 @@ Nothing was committed by this wave. No model or dataset was downloaded; no train
 `docs/decisions/ADR-011-coding-agent-integration.md`, `ADR-012-train-rsi-loop.md`, `docs/research/prime-agent.md`,
 `docs/research/train-datasets.md` (licences read from Hub metadata; generator provenance of several datasets is marked
 UNVERIFIED there).
+
+## 4. Wave-2 additions: provider document, launch plan, process supervisor (2026-11-17)
+
+Implemented (details `docs/agent.md`):
+
+* `hcs_agent` `agent_config`: the prime-agent `models.json` provider document (loopback-only, `openai-completions`)
+  and the launch plan (`--offline`, the HCS provider only, workspace resolved through the approved-root
+  `PathGuard`). Tests `AgentConfig.*`.
+* New **`hcs_process`** module: `ChildProcess::spawn` (no shell, an explicit inherited-handle list, the process is
+  created suspended and then placed in a kill-on-close Job Object), bounded merged-output capture on a reader
+  thread, `wait_for` timeout, `terminate`, environment overrides. The whole tree dies when the object is
+  destroyed. Tests `ChildProcess.*` run against a real helper executable
+  (`tests/unit/process/child_probe.cpp`), including a **grandchild** proven dead after the object is destroyed.
+
+Gate results (Release build): full CTest **518/518, 0 failed**;
+`scripts/static-analysis.ps1 -Scope src -FailOnFindings` -> **0 diagnostics in 57 translation units**;
+`scripts/format.ps1` -> clean over 171 files; the build is warning-clean under `/W4 /WX`.
+
+NOT RUN: a real `prime-agent` session; the Python venv bootstrap; the `AgentSupervisor` composition (a thin
+start/stop/status wrapper over `LaunchPlan` + `ChildProcess`); the Studio "Agent" tab (still "Planned").
