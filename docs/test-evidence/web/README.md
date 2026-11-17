@@ -66,8 +66,9 @@ The non-blocking headless step in CI (run 44160553968, `web` job) reported 12/13
 updated the device pill ("detected: probing device"). Cause: the runner's headless Chrome **does** expose
 `navigator.gpu`, but `requestAdapter()` never settled, so the probe was still awaiting it when the DOM was dumped.
 Fix: `probeCapabilities` now races the adapter request against a 4 s timeout and falls back to WASM (unit test
-`probeCapabilities does not hang on a never-settling WebGPU adapter`). The step stays non-blocking until a green
-run is observed on the runner; the unit/static job is blocking and green.
+`probeCapabilities does not hang on a never-settling WebGPU adapter`). The next run (44164109317) reported the step
+**13/13, device pill `WebAssembly (CPU)`**, so the headless step is now a **blocking** gate (the unit/static job was
+already blocking).
 
 ## Files
 

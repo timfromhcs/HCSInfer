@@ -121,10 +121,12 @@ jobs:
           node-version: "22"
       - name: Unit + static security tests
         run: npm test 2>&1 | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
-      # Non-blocking for now: needs headless Chrome and network access to the CDN. Flip to blocking once it has
-      # been seen green on this runner (the same policy used for the clang-tidy gate).
+      # BLOCKING since 2026-11-17: green on this runner (run 44164109317, 13/13) - the page boots in headless Chrome
+      # and the capability probe resolves (it falls back to WASM when there is no WebGPU adapter). Boot needs no
+      # network: app.js only imports local modules, and the pinned CDN import happens lazily when a model is loaded.
+      # If a future runner image changes Chrome behaviour the step can fail; that is then a real change to handle
+      # deliberately, not a flake.
       - name: Headless boot check (page + capability probe)
-        continue-on-error: true
         run: node tests/e2e/boot.mjs 2>&1 | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
 
   static-analysis:
