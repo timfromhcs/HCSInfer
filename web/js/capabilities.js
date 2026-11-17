@@ -65,13 +65,46 @@ export function summariseAdapter(info) {
   };
 }
 
+const TIMED_OUT = Symbol("probe-timeout");
+
+/**
+ * Resolve `promise`, or `sentinel` if it does not settle within `ms`. A browser
+ * can expose `navigator.gpu` while `requestAdapter()` never settles (for example
+ * a headless browser started with --disable-gpu); that must degrade to the WASM
+ * path, not hang the probe forever.
+ */
+function withTimeout(promise, ms, sentinel) {
+  if (!Number.isFinite(ms) || ms <= 0) {
+    return promise;
+  }
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => resolve(sentinel), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
+
 /**
  * Probe the runtime. `deps` carries the browser globals so this is testable:
- *   { gpu, wasm, navigator, crossOriginIsolated }
+ *   { gpu, wasm, navigator, crossOriginIsolated, gpuTimeoutMs }
  * Returns a serialisable report; errors are captured, not thrown.
  */
 export async function probeCapabilities(deps = {}) {
-  const { gpu = null, wasm = null, navigator: nav = null, crossOriginIsolated = false } = deps;
+  const {
+    gpu = null,
+    wasm = null,
+    navigator: nav = null,
+    crossOriginIsolated = false,
+    gpuTimeoutMs = 4000,
+  } = deps;
 
   const report = {
     backend: BACKEND.none,
@@ -114,8 +147,12 @@ export async function probeCapabilities(deps = {}) {
 
   if (gpu && typeof gpu === "object" && typeof gpu.requestAdapter === "function") {
     try {
-      const adapter = await gpu.requestAdapter();
-      if (adapter) {
+      const adapter = await withTimeout(gpu.requestAdapter(), gpuTimeoutMs, TIMED_OUT);
+      if (adapter === TIMED_OUT) {
+        report.errors.push(
+          `WebGPU adapter probe did not settle within ${gpuTimeoutMs} ms; using ${report.wasm.available ? "WASM" : "no backend"}`,
+        );
+      } else if (adapter) {
         report.webgpu.available = true;
         if (typeof adapter.info === "object" && adapter.info) {
           report.webgpu.adapter = summariseAdapter(adapter.info);

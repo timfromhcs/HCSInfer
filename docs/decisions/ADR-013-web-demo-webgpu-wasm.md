@@ -59,6 +59,9 @@ web demo must do the inference itself and has no server.
 - **Real WebGPU inference is NOT RUN in this environment.** The headless browser has no WebGPU adapter, so the
   boot test only proves the shell and the capability probe (it selected the WASM path). A real run on a WebGPU
   browser is required before any "verified in browser" claim.
+- A browser can expose `navigator.gpu` while `requestAdapter()` never settles (observed on the CI runner's
+  headless Chrome, which left the device pill at "probing device"). The probe therefore has a 4 s timeout and
+  falls back to WASM instead of hanging; a test covers the never-settling case.
 - The `fast`/few-step or LoRA claims from V1.1 do not apply here; the demo inherits the native app's stance.
 - Model quality of small (0.36B-0.6B) models is not a claim of this deliverable.
 - If jsDelivr or the Hub changes availability, the pinned URL is the single point of update (in `js/config.js`,

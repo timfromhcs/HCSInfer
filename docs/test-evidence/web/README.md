@@ -7,7 +7,7 @@ Google Chrome (headless). Statuses: PASS / FAIL / BLOCKED / NOT RUN.
 
 | Gate | Status | Evidence |
 |---|---|---|
-| `npm test` - 45 unit + static security tests (Node's built-in runner, no dependencies) | **PASS 45/45** | this run; command below |
+| `npm test` - 46 unit + static security tests (Node's built-in runner, no dependencies) | **PASS 46/46** | this run; command below |
 | `node tests/e2e/boot.mjs` - real static server + real headless Chrome | **PASS 14/14** | `web-boot.txt`, `web-boot.json` |
 | Static server: CSP / `nosniff` / `frame-ancestors`, correct MIME, path-traversal containment | **PASS** | `web-boot.txt` (traversal -> HTTP 404) |
 | Page loads, ES modules execute, capability probe runs | **PASS** | headless Chrome `--dump-dom`; device pill resolved to `WebAssembly (CPU)` |
@@ -28,8 +28,8 @@ Results (this run):
 
 ```
 # npm test
-# tests 45
-# pass 45
+# tests 46
+# pass 46
 # fail 0
 
 # tests/e2e/boot.mjs
@@ -59,6 +59,15 @@ PASS: 14/14 checks
 * **Does not prove**: that a model actually loads and generates in a browser. That is WebGPU/WASM inference and it is
   **NOT RUN** here. Per AGENTS.md 26.7 it must be done in a real WebGPU browser before any "verified in browser"
   claim. The evidence JSON records `webgpu_inference: "NOT RUN"` explicitly.
+
+## CI observation (2026-11-17)
+
+The non-blocking headless step in CI (run 44160553968, `web` job) reported 12/13: the capability probe had not
+updated the device pill ("detected: probing device"). Cause: the runner's headless Chrome **does** expose
+`navigator.gpu`, but `requestAdapter()` never settled, so the probe was still awaiting it when the DOM was dumped.
+Fix: `probeCapabilities` now races the adapter request against a 4 s timeout and falls back to WASM (unit test
+`probeCapabilities does not hang on a never-settling WebGPU adapter`). The step stays non-blocking until a green
+run is observed on the runner; the unit/static job is blocking and green.
 
 ## Files
 

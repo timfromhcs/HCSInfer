@@ -76,6 +76,16 @@ test("probeCapabilities reads a WebGPU adapter", async () => {
   assert.equal(report.webgpu.limits.maxBufferSize, 2147483648);
 });
 
+test("probeCapabilities does not hang on a never-settling WebGPU adapter", async () => {
+  // A headless browser can expose navigator.gpu while requestAdapter() never
+  // settles; the probe must time out and fall back to WASM.
+  const fakeGpu = { requestAdapter: () => new Promise(() => {}) };
+  const report = await probeCapabilities({ gpu: fakeGpu, wasm: { validate: () => true }, gpuTimeoutMs: 20 });
+  assert.equal(report.webgpu.available, false);
+  assert.equal(report.backend, BACKEND.wasm);
+  assert.equal(report.errors.length, 1);
+});
+
 test("probeCapabilities captures a failing GPU probe instead of throwing", async () => {
   const fakeGpu = {
     requestAdapter: async () => {

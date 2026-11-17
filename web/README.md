@@ -49,7 +49,7 @@ runtime is `onnxruntime-web`. The web package itself has no npm dependencies.
 ## Tests
 
 ```powershell
-npm test                     # 45 unit + static security tests (Node's built-in runner)
+npm test                     # 46 unit + static security tests (Node's built-in runner)
 node tests/e2e/boot.mjs      # real static server + real headless Chrome (14 checks)
 node tests/e2e/boot.mjs --evidence ..\docs\test-evidence\web
 ```
