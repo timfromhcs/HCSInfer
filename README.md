@@ -38,7 +38,7 @@ path, the single-file EXE, `tune`/`cache` and Streamable HTTP are not implemente
 | `benchmark` CLI (`--suite quick`): real text benchmark, AGENTS.md 21.1 JSON | Implemented | cold+warm phases, median/p90, real metrics from the engine; `--suite full` planned |
 | `tune`, `cache` CLI commands | Planned | exit code 10 |
 | Custom Vulkan kernels, scheduler, advanced research features | Planned | only with measured benefit |
-| CI (GitHub Actions) | Running | `.github/workflows/`; public repo `timfromhcs/HCSInfer`. First run: format + SBOM gates green, build legs fixed (VS detection) and being re-run |
+| CI (GitHub Actions) | Green | `.github/workflows/`; public repo `timfromhcs/HCSInfer`. `pr-quick-gate` green on `main` (format, SBOM, Release build+ctest, Debug build+ctest); model/GPU tests skip there and stay NOT RUN |
 
 Legend: Implemented / Experimental / Planned / Unsupported.
 
