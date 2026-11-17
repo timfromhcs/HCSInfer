@@ -1,0 +1,53 @@
+[
+  {
+    "name": "compute-vulkan0_params-cpu",
+    "backend": "vulkan0",
+    "params_backend": "cpu",
+    "exit_code": 0,
+    "wall_ms": 5218,
+    "peak_working_set_bytes": 1858875392,
+    "peak_commit_bytes": 3745865728,
+    "png": "compute-vulkan0_params-cpu.png",
+    "png_sha256": "86560b78b4d848286bbc12684f4ca3f53d8de2aff24f99b6c3f238b8df1ca2fb",
+    "width": 256,
+    "height": 256,
+    "steps": 2,
+    "seed": 42,
+    "prompt_chars": 57,
+    "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf"
+  },
+  {
+    "name": "compute-vulkan0_params-disk",
+    "backend": "vulkan0",
+    "params_backend": "disk",
+    "exit_code": 0,
+    "wall_ms": 3288,
+    "peak_working_set_bytes": 655138816,
+    "peak_commit_bytes": 2364518400,
+    "png": "compute-vulkan0_params-disk.png",
+    "png_sha256": "0efaefb3000ab5684747bf0b3f083a272dd3d109df7708a8de21a2ec9871db27",
+    "width": 256,
+    "height": 256,
+    "steps": 2,
+    "seed": 42,
+    "prompt_chars": 57,
+    "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf"
+  },
+  {
+    "name": "compute-cpu_params-cpu",
+    "backend": "cpu",
+    "params_backend": "cpu",
+    "exit_code": 0,
+    "wall_ms": 9676,
+    "peak_working_set_bytes": 2327359488,
+    "peak_commit_bytes": 2527105024,
+    "png": "compute-cpu_params-cpu.png",
+    "png_sha256": "dfd02a6f566fd8e4c29d95a975a236516eb48846cba1a6919c4fc56bcd472d7d",
+    "width": 256,
+    "height": 256,
+    "steps": 2,
+    "seed": 42,
+    "prompt_chars": 57,
+    "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf"
+  }
+]

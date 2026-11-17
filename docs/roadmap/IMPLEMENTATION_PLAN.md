@@ -48,7 +48,7 @@ Next: push to a remote (CI has never run), then M5 Model Vault in the engine loa
 - [x] llama.cpp Vulkan build, device listing, real GGUF generation from the USB drive (`M1/llama`)
 - [~] Real multimodal image analysis: proven through the HCS adapter (SmolVLM2-500M Q8_0 + mmproj, CPU and Vulkan, `M2-vision/`); a standalone upstream `llama-mtmd-cli` run is NOT recorded and the model-file hashes are not in `dependency-lock.json`
 - [x] sdcpp Vulkan build, diffusion smoke (SD1.5 Q8_0) (`M1/sd`)
-- [ ] sdcpp CPU params vs `--params-backend disk` comparison (B7)
+- [x] sdcpp CPU params vs `--params-backend disk` comparison (B7) - `docs/test-evidence/B7-params/` (compute backend separate from parameter backend; disk placement uses ~1.1 GB less and was faster here, but the model is on NVMe, so the USB-HDD case is NOT RUN)
 - [x] CPU-only fallback verified for text and diffusion (not for vision)
 - [~] CPU/Vulkan baselines B0/B1 recorded but provisional (uncontrolled, 3-5 samples)
 - [~] Unsupported model/feature behaviour: clear `Unsupported` errors exist; no documented matrix yet
