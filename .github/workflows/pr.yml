@@ -91,18 +91,48 @@ jobs:
     name: clang-format check
     runs-on: windows-latest
     timeout-minutes: 15
-    # The whole tree is now clang-formatted (2026-11-17, 139 files, clang-format 19.1.5 - the version Visual
-    # Studio 2022 bundles on this runner, which scripts/format.ps1 prefers so local and CI agree). The flag is
-    # kept for one release cycle only as protection against the runner image updating its bundled LLVM, which can
-    # wrap differently; the job summary shows any such drift. Flip to blocking once a CI run has confirmed it is
-    # green on the runner. Not a silent downgrade: a failure is visible in the job summary.
-    continue-on-error: true
+    # BLOCKING since 2026-11-17: the job passed on this runner (run 44105659773) with the tree formatted by the
+    # Visual-Studio-bundled clang-format 19.1.5 that scripts/format.ps1 now prefers, so local and CI agree. If a
+    # future runner image updates its bundled LLVM the job can fail on pure re-wrapping; that is then a real
+    # formatter-version change to be handled deliberately, not a flake.
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Check formatting
         run: .\scripts\format.ps1
+
+  static-analysis:
+    name: clang-tidy (static analysis)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    # The gate is clean locally with the script's documented default check set (0 diagnostics in 42 translation
+    # units, docs/static-analysis.md). Kept non-blocking for one cycle because it has not run on this runner yet;
+    # flip to blocking once it has been seen green there. Only a configure is needed: compile_commands.json exists
+    # without building, which keeps the job cheap.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Configure (compile database only)
+        run: |
+          New-Item -ItemType Directory -Force artifacts | Out-Null
+          . .\scripts\common.ps1
+          Initialize-MsvcEnvironment
+          cmake --preset windows-msvc-release
+      - name: clang-tidy
+        run: |
+          .\scripts\static-analysis.ps1 -Preset windows-msvc-release -Scope src -Parallel 4 2>&1 |
+            Tee-Object artifacts/clang-tidy.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clang-tidy
+          path: artifacts/clang-tidy.txt
+          if-no-files-found: warn
 
   supply-chain:
     name: SBOM generation + schema sanity
