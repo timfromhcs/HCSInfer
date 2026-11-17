@@ -1,0 +1,78 @@
+[V] version: stable-diffusion.cpp version master-1106-532d2c1, commit 532d2c1 --- main.cpp:760
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | rebar: 0 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 32768 | int dot: 1 | matrix cores: none
+[V] System Info: 
+   SSE3 = 1 |    SSSE3 = 1 |    AVX = 1 |    AVX2 = 1 |    F16C = 1 |    FMA = 1 |    OPENMP = 1 |    REPACK = 1 |  --- main.cpp:761
+[V] using 8 threads for model loading --- model_loader.cpp:194
+[I] loading model from 'D:\HCSModels\diffusion\sd15-q8_0.gguf' --- diffusion_engine.cpp:690
+[I] load D:\HCSModels\diffusion\sd15-q8_0.gguf using gguf format --- model_loader.cpp:220
+[V] init from 'D:\HCSModels\diffusion\sd15-q8_0.gguf' --- model_loader.cpp:266
+[V] GGUF v3, tensor_count=1131, metadata_kv_count=0 --- gguf_reader_ext.h:225
+[I] Version: SD 1.x  --- diffusion_engine.cpp:982
+[V] Initializing backend: Vulkan0 --- ggml_extend_backend.cpp:421
+[V] Initializing backend: CPU --- ggml_extend_backend.cpp:421
+[V] using 8 threads for model loading --- model_loader.cpp:194
+[I] Weight type stat:                      f16: 176  |    q8_0: 955   --- diffusion_engine.cpp:1560
+[I] Conditioner weight type stat:         q8_0: 196   --- diffusion_engine.cpp:1561
+[I] Diffusion model weight type stat:      f16: 99   |    q8_0: 587   --- diffusion_engine.cpp:1562
+[I] VAE weight type stat:                  f16: 76   |    q8_0: 172   --- diffusion_engine.cpp:1563
+[V] using 8 threads for model loading --- model_loader.cpp:194
+[V] loading 1/1131 tensors from D:\HCSModels\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
+  |##################################################| 1/1 -   0.16MB/s[K
+[I] loading tensors completed, taking 0.01s (read: 0.00s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
+[V] loaded alphas_cumprod from model file --- diffusion_engine.cpp:676
+[V] unet: in_channels = 4, out_channels = 4, model_channels = 320, time_embed_dim = 1280, context_dim = 768, adm_in_channels = 2816, num_res_blocks = 2, tiny_unet = false --- unet.hpp:140
+[I] using VAE for encoding / decoding --- model_builders.cpp:226
+[I] vae decoder: ch = 128 --- auto_encoder_kl.hpp:529
+[I] flash attention auto: Vulkan0 -> off (probe: normal 3.869 ms, flash 8.788 ms) --- flash_attn.cpp:99
+[W] conv2d direct auto: Vulkan0 -> off (probe output check failed) --- conv_direct.cpp:79
+[W] conv3d direct auto: Vulkan0 -> off (probe output check failed) --- conv_direct.cpp:79
+[V] validating model metadata --- diffusion_engine.cpp:1314
+[V] model metadata validated; weights will be prepared lazily --- diffusion_engine.cpp:1384
+[I] total params memory size = 1683.69MB (VRAM 0.00MB, RAM 1683.69MB): text_encoders 125.20MB(RAM), diffusion_model 1398.81MB(RAM), vae 159.68MB(RAM), controlnet 0.00MB(N/A), extensions 0.00MB(N/A) --- diffusion_engine.cpp:1445
+[I] running in eps-prediction mode --- diffusion_engine.cpp:1474
+[I] generate_image 256x256 --- image.cpp:954
+[V] using 8 threads for model loading --- model_loader.cpp:194
+[I] get_sigmas with discrete scheduler --- denoiser.hpp:1132
+[I] sampling using Euler A method --- request.cpp:478
+[V] parse 'a simple red apple on a plain table' to [['a simple red apple on a plain table', 1], ] --- conditioner.hpp:412
+[V] split prompt "a simple red apple on a plain table" to 8 tokens ["a</w>", "simple</w>", "red</w>", "apple</w>", "on</w>", "a</w>", "plain</w>", "table</w>", ] --- bpe_tokenizer.cpp:245
+[I] clip build cached graph cut plan done (taking 0 ms) --- ggml_graph_cut.cpp:1034
+[V] loading 196/1131 tensors from D:\HCSModels\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
+  |##################################################| 196/196 - 585.42MB/s[K
+[I] loading tensors completed, taking 0.21s (read: 0.05s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
+[V] model manager prepared params backend buffers (125.20 MB, 196 tensors, 1 blocks, RAM) on Vulkan_Host --- model_manager.cpp:508
+[V] model manager staged compute params (125.20 MB, 196 tensors, 1 blocks) to Vulkan0, taking 0.03s --- model_manager.cpp:637
+[V] clip compute buffer size: 1.38 MB(VRAM) on Vulkan0 (peak across 1 segment) --- execution_engine.cpp:730
+[V] clip compute buffer size: 0.02 MB(RAM) on CPU (peak across 1 segment) --- execution_engine.cpp:730
+[V] computing condition graph completed, taking 292 ms --- conditioner.hpp:531
+[V] conditioning cache stored (1/4) --- conditioning_cache.h:118
+[I] get_learned_condition completed, taking 0.29s --- image.cpp:664
+[I] generating image: 1/1 - seed 42 --- image.cpp:1005
+[I] unet build cached graph cut plan done (taking 4 ms) --- ggml_graph_cut.cpp:1034
+[V] loading 686/1131 tensors from D:\HCSModels\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
+  |#############################                     | 390/686 -   2.49GB/s[K  |############################################      | 596/686 -   2.78GB/s[K  |##################################################| 686/686 -   2.21GB/s[K
+[I] loading tensors completed, taking 0.62s (read: 0.44s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
+[V] model manager prepared params backend buffers (1398.81 MB, 686 tensors, 2 blocks, RAM) on Vulkan_Host --- model_manager.cpp:508
+[V] model manager staged compute params (1398.81 MB, 686 tensors, 2 blocks) to Vulkan0, taking 0.17s --- model_manager.cpp:637
+[V] unet compute buffer size: 48.23 MB(VRAM) on Vulkan0 (peak across 1 segment) --- execution_engine.cpp:730
+[V] unet compute buffer size: 0.24 MB(RAM) on CPU (peak across 1 segment) --- execution_engine.cpp:730
+  |============>                                     | 1/4 -   1.12s/it[K  |=========================>                        | 2/4 -   4.22it/s[K  |=====================================>            | 3/4 -   5.33it/s[K  |==================================================| 4/4 -   5.06it/s[K
+[I] sampling completed, taking 1.75s --- image.cpp:1038
+[I] generating 1 latent images completed, taking 1.75s --- image.cpp:1052
+[I] decoding 1 latents --- image.cpp:689
+[I] vae build cached graph cut plan done (taking 0 ms) --- ggml_graph_cut.cpp:1034
+[V] loading 140/1131 tensors from D:\HCSModels\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
+  |##################################################| 140/140 - 438.89MB/s[K
+[I] loading tensors completed, taking 0.22s (read: 0.03s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
+[V] model manager prepared params backend buffers ( 94.47 MB, 140 tensors, 1 blocks, RAM) on Vulkan_Host --- model_manager.cpp:508
+[V] model manager staged compute params ( 94.47 MB, 140 tensors, 1 blocks) to Vulkan0, taking 0.02s --- model_manager.cpp:637
+[V] vae compute buffer size: 416.00 MB(VRAM) on Vulkan0 (peak across 1 segment) --- execution_engine.cpp:730
+[V] vae compute buffer size: 0.02 MB(RAM) on CPU (peak across 1 segment) --- execution_engine.cpp:730
+[V] computing vae decode graph completed, taking 1.10s --- vae.hpp:386
+[I] latent 1 decoded, taking 1.10s --- image.cpp:755
+[I] decode_first_stage completed, taking 1.10s --- image.cpp:759
+[I] generate_image completed in 3.16s --- image.cpp:1227
+[V] model manager released params backend buffers (1618.48 MB, 1022 tensors, 4 blocks, RAM) from Vulkan_Host --- model_manager.cpp:1316
+[I] save result image 0 to 'artifacts/sd-smoke/vk256b.png' (success) --- main.cpp:501
+[I] 1/1 images saved --- main.cpp:579

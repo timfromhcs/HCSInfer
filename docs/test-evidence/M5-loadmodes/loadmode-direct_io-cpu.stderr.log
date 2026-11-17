@@ -1,0 +1,5 @@
+[hcsinfer] cold: backend=cpu device=CPU load_ms=9538 ttft_ms=530
+[hcsinfer] warm 1/3: ttft_ms=577 prompt_tps=353.845 decode_tps=56.6636
+[hcsinfer] warm 2/3: ttft_ms=529 prompt_tps=386.332 decode_tps=59.0183
+[hcsinfer] warm 3/3: ttft_ms=493 prompt_tps=414.948 decode_tps=58.7861
+[hcsinfer] wrote loadmode-direct_io-cpu-qwen3-0.6b-q4_k_m.json

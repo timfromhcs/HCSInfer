@@ -9,5 +9,7 @@ artifacts/
 .vs/
 *.user
 *.log
+# ...but keep the test evidence logs: they are the record of a run, not build output.
+!docs/test-evidence/**/*.log
 .claude/
 /*.png

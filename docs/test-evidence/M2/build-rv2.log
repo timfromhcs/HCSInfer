@@ -1,0 +1,44 @@
+[0/2] Re-checking globbed directories...
+-- GLOB mismatch!
+The following files were added:
+  +D:/HCSInfer/tests/integration/storage
+[1/2] Re-running CMake...
+-- Using the multi-header code from D:/HCSInfer/build/llama-adapter-rv/_deps/nlohmann_json-src/include/
+-- llama.cpp version: 1.0.0-dev
+CMAKE_BUILD_TYPE=Release
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: AMD64
+-- CMAKE_GENERATOR_PLATFORM: 
+-- GGML_SYSTEM_ARCH: x86
+-- Including CPU backend
+-- x86 detected
+-- Adding CPU backend variant ggml-cpu: /arch:AVX2 GGML_AVX2;GGML_FMA;GGML_F16C
+-- Vulkan found
+-- GL_KHR_cooperative_matrix supported by glslc
+-- GL_NV_cooperative_matrix2 supported by glslc
+-- GL_NV_cooperative_matrix_decode_vector supported by glslc
+-- GL_EXT_integer_dot_product supported by glslc
+-- GL_EXT_bfloat16 supported by glslc
+-- GL_EXT_float_e2m1 supported by glslc
+-- GL_EXT_float_e4m3 supported by glslc
+-- Including Vulkan backend
+-- ggml version: 1.0.0
+-- ggml commit:  d3c3e24
+-- Configuring done (11.6s)
+-- Generating done (5.2s)
+-- Build files have been written to: D:/HCSInfer/build/llama-adapter-rv
+[0/4] Re-checking globbed directories...
+[1/14] Performing build step for 'vulkan-shaders-gen'
+ninja: no work to do.
+[2/14] Performing install step for 'vulkan-shaders-gen'
+-- Up-to-date: D:/HCSInfer/build/llama-adapter-rv/Release/vulkan-shaders-gen.exe
+[3/14] Completed 'vulkan-shaders-gen'
+[4/14] Building CXX object src\engines\llama\CMakeFiles\hcs_engine_llama.dir\llama_engine.cpp.obj
+[5/14] Linking CXX static library lib\hcs_engine_llama.lib
+[6/14] Building CXX object tests\integration\llama_engine\CMakeFiles\hcs_test_llama_engine.dir\test_llama_engine.cpp.obj
+[7/14] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\chat_cmd.cpp.obj
+[8/14] Linking CXX static library lib\hcs_cli.lib
+[9/14] Linking CXX executable bin\HCSInfer.exe
+[10/14] Linking CXX executable bin\hcs_test_llama_engine.exe
+[11/14] Linking CXX executable bin\hcs_test_cli.exe
+BUILD_EXIT=0 

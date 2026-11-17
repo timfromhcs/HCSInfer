@@ -1,0 +1,5 @@
+[hcsinfer] cold: backend=cpu device=CPU load_ms=674 ttft_ms=570
+[hcsinfer] warm 1/3: ttft_ms=516 prompt_tps=395.009 decode_tps=60.1995
+[hcsinfer] warm 2/3: ttft_ms=543 prompt_tps=375.427 decode_tps=60.3074
+[hcsinfer] warm 3/3: ttft_ms=535 prompt_tps=381.394 decode_tps=58.8148
+[hcsinfer] wrote loadmode-mmap-cpu-qwen3-0.6b-q4_k_m.json

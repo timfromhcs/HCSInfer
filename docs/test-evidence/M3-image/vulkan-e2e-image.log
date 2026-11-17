@@ -1,0 +1,52 @@
+scan complete: 1 added, 0 updated, 0 skipped
+== HTTP phase (serve + curl.exe) ==
+PASS  serve prints port and token
+PASS  UI: GET / without token -> 200 html
+PASS  UI: CSP header present
+PASS  UI: page does not contain the API token
+PASS  UI: /ui/app.js served
+PASS  UI: app.js does not contain the API token
+PASS  UI: DNS-rebinding Host -> 403
+PASS  UI: foreign Origin -> 403
+PASS  UI: POST / -> 405
+PASS  UI: HEAD / -> 200
+PASS  API still needs the token next to the UI
+PASS  registry lists the diffusion model with kind=image
+PASS  runtime reports an available image engine
+PASS  size not multiple of 8 -> 400
+PASS  steps over cap -> 400
+PASS  oversized image -> 400
+PASS  no model loaded and none requested -> 409
+PASS  images route needs the token -> 401
+PASS  load accepted as a job (202)
+PASS  model load job succeeded
+PASS  POST /v1/images/generations -> 200
+PASS  generated image is a PNG of the requested size
+PASS  generated image is not blank (pixel data has variety)
+PASS  response reports job id, steps and timing
+PASS  job status reports the image result
+PASS  POST /v1/images/edits -> 200
+PASS  edited image is a PNG of the input size
+PASS  edited image differs from the input
+PASS  edit with a non-image -> 400
+PASS  edit with a file URL -> 400 (no server paths)
+PASS  edit with multipart -> 415
+PASS  client gives up on a long render (curl timeout)
+PASS  next request completes promptly after the disconnect (abandoned job cancelled)
+PASS  unload image model
+== MCP phase (mcp stdio, scripted client) ==
+PASS  MCP tools/list includes the image tools
+PASS  MCP models.list finds the diffusion model
+PASS  MCP generate with a bad size -> invalid_argument
+PASS  MCP hcs.image.generate (real) succeeds
+PASS  MCP result carries an image content block
+PASS  MCP image is a PNG of the requested size
+PASS  MCP image is not blank
+PASS  MCP structuredContent has metadata only
+PASS  MCP hcs.image.edit (real) succeeds
+PASS  MCP edited image is a PNG of the input size
+PASS  MCP edit input outside approved roots -> security_violation
+PASS  MCP edit input with .. -> security_violation
+PASS  MCP: next render completes promptly after cancelling the long one
+
+SUMMARY: 47 checks, 0 failed

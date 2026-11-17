@@ -1,0 +1,704 @@
+[0/2] Re-checking globbed directories...
+[1/846] Creating directories for 'vulkan-shaders-gen'
+[2/846] No download step for 'vulkan-shaders-gen'
+[3/846] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-alloc.c.obj
+[4/846] No update step for 'vulkan-shaders-gen'
+[5/846] No patch step for 'vulkan-shaders-gen'
+[6/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-threading.cpp.obj
+[7/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml.cpp.obj
+[8/846] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml.c.obj
+[9/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-opt.cpp.obj
+[10/846] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ggml-cpu.c.obj
+[11/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\hbm.cpp.obj
+[12/846] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-quants.c.obj
+[13/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-backend.cpp.obj
+[14/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ggml-cpu.cpp.obj
+[15/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-backend-meta.cpp.obj
+[16/846] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\quants.c.obj
+[17/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\traits.cpp.obj
+[18/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\amx\amx.cpp.obj
+[19/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\amx\mmq.cpp.obj
+[20/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\repack.cpp.obj
+[21/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\tiled\tiled-kernel.cpp.obj
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(280): warning C4068: unknown pragma 'GCC'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(289): warning C4068: unknown pragma 'GCC'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(297): warning C4068: unknown pragma 'GCC'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(320): warning C4068: unknown pragma 'GCC'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(329): warning C4068: unknown pragma 'GCC'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(337): warning C4068: unknown pragma 'GCC'
+[22/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\binary-ops.cpp.obj
+[23/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\vec.cpp.obj
+[24/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\gguf.cpp.obj
+[25/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\unary-ops.cpp.obj
+[26/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\tiled\tiled.cpp.obj
+[27/846] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\arch\x86\quants.c.obj
+[28/846] Linking CXX static library lib\ggml-base.lib
+[29/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\llamafile\sgemm.cpp.obj
+[30/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\arch\x86\repack.cpp.obj
+[31/846] Building CXX object src\core\CMakeFiles\hcs_core.dir\lifecycle.cpp.obj
+[32/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ops.cpp.obj
+[33/846] Linking CXX static library lib\ggml-cpu.lib
+[34/846] Building CXX object src\core\CMakeFiles\hcs_core.dir\memory_budget.cpp.obj
+[35/846] Building CXX object src\core\CMakeFiles\hcs_core.dir\logger.cpp.obj
+[36/846] Building CXX object src\core\CMakeFiles\hcs_core.dir\fs_util.cpp.obj
+[37/846] Building CXX object src\core\CMakeFiles\hcs_core.dir\path_guard.cpp.obj
+[38/846] Performing configure step for 'vulkan-shaders-gen'
+-- The C compiler identification is MSVC 19.44.35228.0
+-- The CXX compiler identification is MSVC 19.44.35228.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Found Threads: TRUE
+-- Enabling coopmat glslc support
+-- Enabling coopmat2 glslc support
+-- Enabling coopmat2 decode_vector glslc support
+-- Enabling dot glslc support
+-- Enabling bfloat16 glslc support
+-- Enabling E2M1 glslc support
+-- Enabling E4M3 glslc support
+-- Configuring done (11.4s)
+-- Generating done (0.1s)
+-- Build files have been written to: D:/HCSInfer/build/llama-adapter-rv/external/llama.cpp/ggml/src/ggml-vulkan/vulkan-shaders-gen-prefix/src/vulkan-shaders-gen-build
+[39/846] Building CXX object src\core\CMakeFiles\hcs_core.dir\job_queue.cpp.obj
+[40/846] Building CXX object src\core\CMakeFiles\hcs_core.dir\settings.cpp.obj
+[41/846] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\cpu_info.cpp.obj
+[42/846] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\system_info.cpp.obj
+[43/846] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\doctor.cpp.obj
+[44/846] Building CXX object src\core\CMakeFiles\hcs_core.dir\model_registry.cpp.obj
+[45/846] Linking CXX static library lib\hcs_core.lib
+[46/846] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\gpu_info.cpp.obj
+[47/846] Building CXX object _deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.obj
+[48/846] Linking CXX static library lib\gtest.lib
+[49/846] Building CXX object _deps\googletest-build\googletest\CMakeFiles\gtest_main.dir\src\gtest_main.cc.obj
+[50/846] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock.dir\src\gmock-all.cc.obj
+[51/846] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\storage_info.cpp.obj
+[52/846] Linking CXX static library lib\gtest_main.lib
+[53/846] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\vulkan_info.cpp.obj
+[54/846] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock_main.dir\src\gmock-all.cc.obj
+[55/846] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock_main.dir\src\gmock_main.cc.obj
+[56/846] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\report_format.cpp.obj
+[57/846] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_result.cpp.obj
+[58/846] Linking CXX static library lib\hcs_hardware.lib
+[59/846] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_checked_math.cpp.obj
+[60/846] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock.dir\__\googletest\src\gtest-all.cc.obj
+[61/846] Linking CXX static library lib\gmock.lib
+[62/846] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_lifecycle.cpp.obj
+[63/846] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_memory_budget.cpp.obj
+[64/846] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_path_guard.cpp.obj
+[65/846] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock_main.dir\__\googletest\src\gtest-all.cc.obj
+[66/846] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_job_queue.cpp.obj
+[67/846] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_engine_interface.cpp.obj
+[68/846] Linking CXX static library lib\gmock_main.lib
+[69/846] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_model_registry.cpp.obj
+[70/846] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_settings.cpp.obj
+[71/846] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_logger.cpp.obj
+[72/846] Linking CXX executable bin\hcs_test_core.exe
+[73/846] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_formatting.cpp.obj
+[74/846] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_cpu_decode.cpp.obj
+[75/846] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_doctor_live.cpp.obj
+[76/846] Linking CXX executable bin\hcs_test_hardware.exe
+[77/846] Performing build step for 'vulkan-shaders-gen'
+[1/2] Building CXX object CMakeFiles\vulkan-shaders-gen.dir\vulkan-shaders-gen.cpp.obj
+[2/2] Linking CXX executable vulkan-shaders-gen.exe
+[78/846] Performing install step for 'vulkan-shaders-gen'
+-- Installing: D:/HCSInfer/build/llama-adapter-rv/Release/vulkan-shaders-gen.exe
+[79/846] Completed 'vulkan-shaders-gen'
+[80/846] Generate vulkan shaders header
+[81/846] Generate vulkan shaders for add1.comp
+[82/846] Generate vulkan shaders for add_id.comp
+[83/846] Generate vulkan shaders for acc.comp
+[84/846] Generate vulkan shaders for arange.comp
+[85/846] Generate vulkan shaders for argsort.comp
+[86/846] Generate vulkan shaders for add.comp
+[87/846] Generate vulkan shaders for argmax.comp
+[88/846] Generate vulkan shaders for argsort_large.comp
+[89/846] Generate vulkan shaders for col2im_1d.comp
+[90/846] Generate vulkan shaders for concat.comp
+[91/846] Generate vulkan shaders for concat_transpose.comp
+[92/846] Generate vulkan shaders for conv2d_dw.comp
+[93/846] Generate vulkan shaders for contig_copy.comp
+[94/846] Generate vulkan shaders for conv2d_mm.comp
+[95/846] Generate vulkan shaders for conv_transpose_1d.comp
+[96/846] Generate vulkan shaders for conv3d_mm.comp
+[97/846] Generate vulkan shaders for copy_transpose.comp
+[98/846] Generate vulkan shaders for copy.comp
+[99/846] Generate vulkan shaders for copy_from_quant.comp
+[100/846] Generate vulkan shaders for copy_transpose_02.comp
+[101/846] Generate vulkan shaders for count_equal.comp
+[102/846] Generate vulkan shaders for count_experts.comp
+[103/846] Generate vulkan shaders for cross_entropy_loss_back.comp
+[104/846] Generate vulkan shaders for cross_entropy_loss.comp
+[105/846] Generate vulkan shaders for cumsum.comp
+[106/846] Generate vulkan shaders for cumsum_multipass1.comp
+[107/846] Generate vulkan shaders for cumsum_multipass2.comp
+[108/846] Generate vulkan shaders for dequant_f32.comp
+[109/846] Generate vulkan shaders for dequant_iq1_m.comp
+[110/846] Generate vulkan shaders for dequant_iq1_s.comp
+[111/846] Generate vulkan shaders for dequant_iq2_s.comp
+[112/846] Generate vulkan shaders for dequant_iq2_xxs.comp
+[113/846] Generate vulkan shaders for dequant_iq2_xs.comp
+[114/846] Generate vulkan shaders for dequant_iq3_s.comp
+[115/846] Generate vulkan shaders for dequant_iq3_xxs.comp
+[116/846] Generate vulkan shaders for dequant_iq4_nl.comp
+[117/846] Generate vulkan shaders for dequant_nvfp4.comp
+[118/846] Generate vulkan shaders for dequant_iq4_xs.comp
+[119/846] Generate vulkan shaders for dequant_q1_0.comp
+[120/846] Generate vulkan shaders for dequant_mxfp4.comp
+[121/846] Generate vulkan shaders for dequant_q2_0.comp
+[122/846] Generate vulkan shaders for dequant_q2_k.comp
+[123/846] Generate vulkan shaders for dequant_q3_k.comp
+[124/846] Generate vulkan shaders for dequant_q4_k.comp
+[125/846] Generate vulkan shaders for dequant_q4_0.comp
+[126/846] Generate vulkan shaders for dequant_q4_1.comp
+[127/846] Generate vulkan shaders for dequant_q5_0.comp
+[128/846] Generate vulkan shaders for dequant_q5_k.comp
+[129/846] Generate vulkan shaders for dequant_q5_1.comp
+[130/846] Generate vulkan shaders for copy_to_quant.comp
+[131/846] Generate vulkan shaders for dequant_q6_k.comp
+[132/846] Generate vulkan shaders for dequant_tq2_0.comp
+[133/846] Generate vulkan shaders for dequant_q8_0.comp
+[134/846] Generate vulkan shaders for dequant_tq1_0.comp
+[135/846] Generate vulkan shaders for diag.comp
+[136/846] Generate vulkan shaders for dsv4_hc_pre.comp
+[137/846] Generate vulkan shaders for div.comp
+[138/846] Generate vulkan shaders for dsv4_hc_comb.comp
+[139/846] Generate vulkan shaders for dsv4_hc_post.comp
+[140/846] Generate vulkan shaders for fill.comp
+[141/846] Generate vulkan shaders for flash_attn_cm1.comp
+[142/846] Generate vulkan shaders for flash_attn_cm1_flip.comp
+[143/846] Generate vulkan shaders for flash_attn_decode_phase_1.comp
+[144/846] Generate vulkan shaders for flash_attn_decode_phase_2.comp
+[145/846] Generate vulkan shaders for flash_attn_mask_opt.comp
+[146/846] Generate vulkan shaders for flash_attn_prefill.comp
+[147/846] Generate vulkan shaders for flash_attn_split_k_reduce.comp
+[148/846] Generate vulkan shaders for flash_attn_sparse_compact.comp
+[149/846] Generate vulkan shaders for flash_attn_cm2.comp
+[150/846] Generate vulkan shaders for fwht.comp
+[151/846] Generate vulkan shaders for geglu.comp
+[152/846] Generate vulkan shaders for gated_delta_net.comp
+[153/846] Generate vulkan shaders for geglu_erf.comp
+[154/846] Generate vulkan shaders for geglu_quick.comp
+[155/846] Generate vulkan shaders for flash_attn.comp
+[156/846] Generate vulkan shaders for get_rows_back.comp
+[157/846] Generate vulkan shaders for get_rows.comp
+[158/846] Generate vulkan shaders for group_norm.comp
+[159/846] Generate vulkan shaders for im2col.comp
+[160/846] Generate vulkan shaders for gla.comp
+[161/846] Generate vulkan shaders for l2_norm.comp
+[162/846] Generate vulkan shaders for im2col_3d.comp
+[163/846] Generate vulkan shaders for log.comp
+[164/846] Generate vulkan shaders for lightning_indexer.comp
+[165/846] Generate vulkan shaders for mul_mat_split_k_reduce.comp
+[166/846] Generate vulkan shaders for mul.comp
+[167/846] Generate vulkan shaders for get_rows_quant.comp
+[168/846] Generate vulkan shaders for mul_mat_vec_iq1_m.comp
+[169/846] Generate vulkan shaders for mul_mat_vec_iq1_s.comp
+[170/846] Generate vulkan shaders for mul_mat_vec_iq2_xs.comp
+[171/846] Generate vulkan shaders for mul_mat_vec_iq2_s.comp
+[172/846] Generate vulkan shaders for mul_mat_vec_iq2_xxs.comp
+[173/846] Generate vulkan shaders for mul_mat_vec_iq3_s.comp
+[174/846] Generate vulkan shaders for mul_mat_vec_iq3_xxs.comp
+[175/846] Generate vulkan shaders for mul_mat_vec_nc.comp
+[176/846] Generate vulkan shaders for mul_mat_vec_p021.comp
+[177/846] Generate vulkan shaders for mul_mat_vec_iq4_xs.comp
+[178/846] Generate vulkan shaders for mul_mat_vec_q2_k.comp
+[179/846] Generate vulkan shaders for mul_mat_vec_q3_k.comp
+[180/846] Generate vulkan shaders for mul_mat_vec_q4_k.comp
+[181/846] Generate vulkan shaders for mul_mat_vec_q6_k.comp
+[182/846] Generate vulkan shaders for mul_mat_vec_q5_k.comp
+[183/846] Generate vulkan shaders for mul_mat_vec_tq1_0.comp
+[184/846] Generate vulkan shaders for mul_mat_vec_tq2_0.comp
+[185/846] Generate vulkan shaders for mul_mat_vec.comp
+[186/846] Generate vulkan shaders for multi_add.comp
+[187/846] Generate vulkan shaders for norm.comp
+[188/846] Generate vulkan shaders for mul_mmq_cm1.comp
+[189/846] Generate vulkan shaders for opt_step_adamw.comp
+[190/846] Generate vulkan shaders for opt_step_sgd.comp
+[191/846] Generate vulkan shaders for out_prod.comp
+[192/846] Generate vulkan shaders for pad.comp
+[193/846] Generate vulkan shaders for pad_reflect_1d.comp
+[194/846] Generate vulkan shaders for pool1d.comp
+[195/846] Generate vulkan shaders for mul_mm_cm2.comp
+[196/846] Generate vulkan shaders for pool2d.comp
+[197/846] Generate vulkan shaders for quantize_q8_1.comp
+[198/846] Generate vulkan shaders for repeat_back.comp
+[199/846] Generate vulkan shaders for repeat.comp
+[200/846] Generate vulkan shaders for reglu.comp
+[201/846] Generate vulkan shaders for mul_mmq.comp
+[202/846] Generate vulkan shaders for roll.comp
+[203/846] Generate vulkan shaders for mul_mat_vecq.comp
+[204/846] Generate vulkan shaders for rms_norm_partials.comp
+[205/846] Generate vulkan shaders for rms_norm_back.comp
+[206/846] Generate vulkan shaders for rope_multi.comp
+[207/846] Generate vulkan shaders for rope_neox.comp
+[208/846] Generate vulkan shaders for rms_norm.comp
+[209/846] Generate vulkan shaders for rope_norm.comp
+[210/846] Generate vulkan shaders for silu_back.comp
+[211/846] Generate vulkan shaders for scale.comp
+[212/846] Generate vulkan shaders for snake.comp
+[213/846] Generate vulkan shaders for rope_vision.comp
+[214/846] Generate vulkan shaders for soft_max_back.comp
+[215/846] Generate vulkan shaders for soft_max.comp
+[216/846] Generate vulkan shaders for soft_max_large3.comp
+[217/846] Generate vulkan shaders for soft_max_large2.comp
+[218/846] Generate vulkan shaders for soft_max_large1.comp
+[219/846] Generate vulkan shaders for ssm_conv.comp
+[220/846] Generate vulkan shaders for solve_tri.comp
+[221/846] Generate vulkan shaders for sum_rows.comp
+[222/846] Generate vulkan shaders for ssm_scan.comp
+[223/846] Generate vulkan shaders for sub.comp
+[224/846] Generate vulkan shaders for swiglu_clamp.comp
+[225/846] Generate vulkan shaders for swiglu.comp
+[226/846] Generate vulkan shaders for swiglu_oai.comp
+[227/846] Generate vulkan shaders for timestep_embedding.comp
+[228/846] Generate vulkan shaders for topk_argsort.comp
+[229/846] Generate vulkan shaders for topk_moe.comp
+[230/846] Generate vulkan shaders for top_k_mask.comp
+[231/846] Generate vulkan shaders for topk_nary_search.comp
+[232/846] Generate vulkan shaders for tri.comp
+[233/846] Generate vulkan shaders for topk_radix_select.comp
+[234/846] Generate vulkan shaders for upscale.comp
+[235/846] Generate vulkan shaders for wkv6.comp
+[236/846] Generate vulkan shaders for wkv7.comp
+[237/846] Generate vulkan shaders for unary.comp
+[238/846] Generate vulkan shaders for mul_mm.comp
+[239/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\acc.comp.cpp.obj
+[240/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\add_id.comp.cpp.obj
+[241/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\add.comp.cpp.obj
+[242/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\add1.comp.cpp.obj
+[243/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\arange.comp.cpp.obj
+[244/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\argsort.comp.cpp.obj
+[245/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\argmax.comp.cpp.obj
+[246/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\argsort_large.comp.cpp.obj
+[247/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\col2im_1d.comp.cpp.obj
+[248/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\concat.comp.cpp.obj
+[249/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\concat_transpose.comp.cpp.obj
+[250/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\contig_copy.comp.cpp.obj
+[251/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\conv2d_dw.comp.cpp.obj
+[252/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\conv_transpose_1d.comp.cpp.obj
+[253/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\conv3d_mm.comp.cpp.obj
+[254/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\copy.comp.cpp.obj
+[255/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\conv2d_mm.comp.cpp.obj
+[256/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\copy_from_quant.comp.cpp.obj
+[257/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\copy_transpose.comp.cpp.obj
+[258/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\copy_transpose_02.comp.cpp.obj
+[259/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\count_equal.comp.cpp.obj
+[260/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\count_experts.comp.cpp.obj
+[261/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\cross_entropy_loss.comp.cpp.obj
+[262/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\cross_entropy_loss_back.comp.cpp.obj
+[263/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\cumsum_multipass1.comp.cpp.obj
+[264/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\cumsum.comp.cpp.obj
+[265/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\cumsum_multipass2.comp.cpp.obj
+[266/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_f32.comp.cpp.obj
+[267/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq1_m.comp.cpp.obj
+[268/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq1_s.comp.cpp.obj
+[269/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq2_s.comp.cpp.obj
+[270/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq2_xs.comp.cpp.obj
+[271/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq2_xxs.comp.cpp.obj
+[272/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq3_s.comp.cpp.obj
+[273/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq4_nl.comp.cpp.obj
+[274/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq3_xxs.comp.cpp.obj
+[275/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq4_xs.comp.cpp.obj
+[276/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\copy_to_quant.comp.cpp.obj
+[277/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_mxfp4.comp.cpp.obj
+[278/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_nvfp4.comp.cpp.obj
+[279/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q1_0.comp.cpp.obj
+[280/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q2_0.comp.cpp.obj
+[281/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q2_k.comp.cpp.obj
+[282/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q3_k.comp.cpp.obj
+[283/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q4_0.comp.cpp.obj
+[284/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q4_1.comp.cpp.obj
+[285/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q4_k.comp.cpp.obj
+[286/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q5_0.comp.cpp.obj
+[287/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q5_k.comp.cpp.obj
+[288/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q5_1.comp.cpp.obj
+[289/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q6_k.comp.cpp.obj
+[290/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q8_0.comp.cpp.obj
+[291/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_tq1_0.comp.cpp.obj
+[292/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_tq2_0.comp.cpp.obj
+[293/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\diag.comp.cpp.obj
+[294/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\div.comp.cpp.obj
+[295/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dsv4_hc_comb.comp.cpp.obj
+[296/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dsv4_hc_post.comp.cpp.obj
+[297/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dsv4_hc_pre.comp.cpp.obj
+[298/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\fill.comp.cpp.obj
+[299/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_cm1_flip.comp.cpp.obj
+[300/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_cm1.comp.cpp.obj
+[301/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_decode_phase_1.comp.cpp.obj
+[302/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_cm2.comp.cpp.obj
+[303/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_mask_opt.comp.cpp.obj
+[304/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_decode_phase_2.comp.cpp.obj
+[305/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_prefill.comp.cpp.obj
+[306/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_sparse_compact.comp.cpp.obj
+[307/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_split_k_reduce.comp.cpp.obj
+[308/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\fwht.comp.cpp.obj
+[309/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\gated_delta_net.comp.cpp.obj
+[310/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\geglu.comp.cpp.obj
+[311/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn.comp.cpp.obj
+[312/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\geglu_erf.comp.cpp.obj
+[313/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\geglu_quick.comp.cpp.obj
+[314/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\get_rows_back.comp.cpp.obj
+[315/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\get_rows.comp.cpp.obj
+[316/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\gla.comp.cpp.obj
+[317/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\group_norm.comp.cpp.obj
+[318/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\im2col.comp.cpp.obj
+[319/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\l2_norm.comp.cpp.obj
+[320/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\im2col_3d.comp.cpp.obj
+[321/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\lightning_indexer.comp.cpp.obj
+[322/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\log.comp.cpp.obj
+[323/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul.comp.cpp.obj
+[324/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_split_k_reduce.comp.cpp.obj
+[325/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\get_rows_quant.comp.cpp.obj
+[326/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq1_s.comp.cpp.obj
+[327/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq1_m.comp.cpp.obj
+[328/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq2_s.comp.cpp.obj
+[329/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq2_xxs.comp.cpp.obj
+[330/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq2_xs.comp.cpp.obj
+[331/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq3_s.comp.cpp.obj
+[332/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_nc.comp.cpp.obj
+[333/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq4_xs.comp.cpp.obj
+[334/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq3_xxs.comp.cpp.obj
+[335/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_p021.comp.cpp.obj
+[336/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_q4_k.comp.cpp.obj
+[337/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_q2_k.comp.cpp.obj
+[338/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_q3_k.comp.cpp.obj
+[339/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_q5_k.comp.cpp.obj
+[340/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_tq1_0.comp.cpp.obj
+[341/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_q6_k.comp.cpp.obj
+[342/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_tq2_0.comp.cpp.obj
+[343/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec.comp.cpp.obj
+[344/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mm_cm2.comp.cpp.obj
+[345/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ggml-vulkan-comm.cpp.obj
+[346/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\multi_add.comp.cpp.obj
+[347/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ggml-vulkan-debug.cpp.obj
+[348/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\norm.comp.cpp.obj
+[349/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\opt_step_adamw.comp.cpp.obj
+[350/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\opt_step_sgd.comp.cpp.obj
+[351/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mmq_cm1.comp.cpp.obj
+[352/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mmq.comp.cpp.obj
+[353/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\out_prod.comp.cpp.obj
+[354/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\pad.comp.cpp.obj
+[355/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\pad_reflect_1d.comp.cpp.obj
+[356/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\pool1d.comp.cpp.obj
+[357/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\pool2d.comp.cpp.obj
+[358/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\reglu.comp.cpp.obj
+[359/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ggml-vulkan-buffers.cpp.obj
+[360/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\quantize_q8_1.comp.cpp.obj
+[361/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vecq.comp.cpp.obj
+[362/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\repeat.comp.cpp.obj
+[363/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\repeat_back.comp.cpp.obj
+[364/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rms_norm_back.comp.cpp.obj
+[365/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rms_norm_partials.comp.cpp.obj
+[366/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\roll.comp.cpp.obj
+[367/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rope_neox.comp.cpp.obj
+[368/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rope_multi.comp.cpp.obj
+[369/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rope_norm.comp.cpp.obj
+[370/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rope_vision.comp.cpp.obj
+[371/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\scale.comp.cpp.obj
+[372/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\silu_back.comp.cpp.obj
+[373/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\snake.comp.cpp.obj
+[374/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\soft_max_back.comp.cpp.obj
+[375/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\soft_max_large1.comp.cpp.obj
+[376/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\soft_max_large2.comp.cpp.obj
+[377/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\soft_max_large3.comp.cpp.obj
+[378/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\soft_max.comp.cpp.obj
+[379/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\solve_tri.comp.cpp.obj
+[380/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ssm_conv.comp.cpp.obj
+[381/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ssm_scan.comp.cpp.obj
+[382/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\sum_rows.comp.cpp.obj
+[383/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\sub.comp.cpp.obj
+[384/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\swiglu.comp.cpp.obj
+[385/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\swiglu_clamp.comp.cpp.obj
+[386/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\swiglu_oai.comp.cpp.obj
+[387/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\timestep_embedding.comp.cpp.obj
+[388/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\top_k_mask.comp.cpp.obj
+[389/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rms_norm.comp.cpp.obj
+[390/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\topk_argsort.comp.cpp.obj
+[391/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\topk_moe.comp.cpp.obj
+[392/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\topk_nary_search.comp.cpp.obj
+[393/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\tri.comp.cpp.obj
+[394/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\topk_radix_select.comp.cpp.obj
+[395/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\upscale.comp.cpp.obj
+[396/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\wkv6.comp.cpp.obj
+[397/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\wkv7.comp.cpp.obj
+[398/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\unary.comp.cpp.obj
+[399/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-chat.cpp for CXX dependencies
+[400/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-arch.cpp for CXX dependencies
+[401/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-adapter.cpp for CXX dependencies
+[402/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-batch.cpp for CXX dependencies
+[403/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-context.cpp for CXX dependencies
+[404/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama.cpp for CXX dependencies
+[405/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-cparams.cpp for CXX dependencies
+[406/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-io.cpp for CXX dependencies
+[407/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-hparams.cpp for CXX dependencies
+[408/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-impl.cpp for CXX dependencies
+[409/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-grammar.cpp for CXX dependencies
+[410/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-graph.cpp for CXX dependencies
+[411/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-kv-cache.cpp for CXX dependencies
+[412/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-kv-cache-dsa.cpp for CXX dependencies
+[413/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-kv-cache-iswa.cpp for CXX dependencies
+[414/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-kv-cache-dsa-iswa.cpp for CXX dependencies
+[415/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-kv-cache-msa.cpp for CXX dependencies
+[416/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-memory.cpp for CXX dependencies
+[417/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-kv-cache-dsv4.cpp for CXX dependencies
+[418/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-moe-cache.cpp for CXX dependencies
+[419/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-memory-hybrid-iswa.cpp for CXX dependencies
+[420/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-memory-hybrid.cpp for CXX dependencies
+[421/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-memory-hybrid-idx.cpp for CXX dependencies
+[422/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-memory-recurrent.cpp for CXX dependencies
+[423/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-model-loader.cpp for CXX dependencies
+[424/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-mmap.cpp for CXX dependencies
+[425/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-model-saver.cpp for CXX dependencies
+[426/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-quant.cpp for CXX dependencies
+[427/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-vocab.cpp for CXX dependencies
+[428/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-sampler.cpp for CXX dependencies
+[429/846] Scanning D:\HCSInfer\external\llama.cpp\src\llama-model.cpp for CXX dependencies
+[430/846] Scanning D:\HCSInfer\external\llama.cpp\src\unicode-data.cpp for CXX dependencies
+[431/846] Scanning D:\HCSInfer\external\llama.cpp\src\unicode.cpp for CXX dependencies
+[432/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\arcee.cpp for CXX dependencies
+[433/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\afmoe.cpp for CXX dependencies
+[434/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\apertus.cpp for CXX dependencies
+[435/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\arctic.cpp for CXX dependencies
+[436/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\arwkv7.cpp for CXX dependencies
+[437/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\bailingmoe.cpp for CXX dependencies
+[438/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\baichuan.cpp for CXX dependencies
+[439/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\bailingmoe3.cpp for CXX dependencies
+[440/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\beam.cpp for CXX dependencies
+[441/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\bailingmoe2.cpp for CXX dependencies
+[442/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\bert.cpp for CXX dependencies
+[443/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\chameleon.cpp for CXX dependencies
+[444/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\bitnet.cpp for CXX dependencies
+[445/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\bloom.cpp for CXX dependencies
+[446/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\chatglm.cpp for CXX dependencies
+[447/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\clef.cpp for CXX dependencies
+[448/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\clip.cpp for CXX dependencies
+[449/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\clover-moe.cpp for CXX dependencies
+[450/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\codeshell.cpp for CXX dependencies
+[451/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\cogvlm.cpp for CXX dependencies
+[452/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\cohere2.cpp for CXX dependencies
+[453/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\cohere2moe.cpp for CXX dependencies
+[454/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\command-r.cpp for CXX dependencies
+[455/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\dbrx.cpp for CXX dependencies
+[456/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\deci.cpp for CXX dependencies
+[457/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\deepseek.cpp for CXX dependencies
+[458/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\deepseek2.cpp for CXX dependencies
+[459/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\deepseek2ocr.cpp for CXX dependencies
+[460/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\deepseek32.cpp for CXX dependencies
+[461/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\deepseek4.cpp for CXX dependencies
+[462/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\deepseek41.cpp for CXX dependencies
+[463/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\dflash.cpp for CXX dependencies
+[464/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\delta-net-base.cpp for CXX dependencies
+[465/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\dflash2.cpp for CXX dependencies
+[466/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\dots1.cpp for CXX dependencies
+[467/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\dream.cpp for CXX dependencies
+[468/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\dots3note.cpp for CXX dependencies
+[469/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\eagle3.cpp for CXX dependencies
+[470/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\dspark.cpp for CXX dependencies
+[471/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\ernie4-5-moe.cpp for CXX dependencies
+[472/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\ernie4-5.cpp for CXX dependencies
+[473/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\eurobert.cpp for CXX dependencies
+[474/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\exaone-moe.cpp for CXX dependencies
+[475/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\exaone.cpp for CXX dependencies
+[476/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\exaone4.cpp for CXX dependencies
+[477/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\falcon-h1.cpp for CXX dependencies
+[478/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\flint.cpp for CXX dependencies
+[479/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\falcon.cpp for CXX dependencies
+[480/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\gemma-embedding.cpp for CXX dependencies
+[481/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\gemma-embedding2.cpp for CXX dependencies
+[482/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\gemma.cpp for CXX dependencies
+[483/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\gemma2.cpp for CXX dependencies
+[484/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\gemma3.cpp for CXX dependencies
+[485/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\gemma3n.cpp for CXX dependencies
+[486/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\gemma4-assistant.cpp for CXX dependencies
+[487/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\gemma4.cpp for CXX dependencies
+[488/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\glm4-moe.cpp for CXX dependencies
+[489/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\glm-dsa.cpp for CXX dependencies
+[490/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\glm4.cpp for CXX dependencies
+[491/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\gpt2.cpp for CXX dependencies
+[492/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\glm5-next.cpp for CXX dependencies
+[493/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\gptneox.cpp for CXX dependencies
+[494/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\granite-moe.cpp for CXX dependencies
+[495/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\granite-hybrid.cpp for CXX dependencies
+[496/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\granite-switch.cpp for CXX dependencies
+[497/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\granite-swa.cpp for CXX dependencies
+[498/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\granite.cpp for CXX dependencies
+[499/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\grok.cpp for CXX dependencies
+[500/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\grovemoe.cpp for CXX dependencies
+[501/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\hrm-text.cpp for CXX dependencies
+[502/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\hunyuan-dense.cpp for CXX dependencies
+[503/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\hunyuan-moe.cpp for CXX dependencies
+[504/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\hunyuan-vl.cpp for CXX dependencies
+[505/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\hy-v3.cpp for CXX dependencies
+[506/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\hy-v4.cpp for CXX dependencies
+[507/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\inkling2.cpp for CXX dependencies
+[508/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\internlm2.cpp for CXX dependencies
+[509/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\jais.cpp for CXX dependencies
+[510/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\jais2.cpp for CXX dependencies
+[511/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\jamba.cpp for CXX dependencies
+[512/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\jina-bert-v3.cpp for CXX dependencies
+[513/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\jina-bert-v2.cpp for CXX dependencies
+[514/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\k2-horizon.cpp for CXX dependencies
+[515/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\kimi-k3.cpp for CXX dependencies
+[516/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\kimi-k31.cpp for CXX dependencies
+[517/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\kimi-linear.cpp for CXX dependencies
+[518/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\laguna.cpp for CXX dependencies
+[519/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\kolibri1.cpp for CXX dependencies
+[520/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\lfm-base.cpp for CXX dependencies
+[521/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\lfm2.cpp for CXX dependencies
+[522/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\lfm2moe.cpp for CXX dependencies
+[523/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\lfm3.cpp for CXX dependencies
+[524/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\limite.cpp for CXX dependencies
+[525/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\lilicorr.cpp for CXX dependencies
+[526/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\llada-moe.cpp for CXX dependencies
+[527/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\llada.cpp for CXX dependencies
+[528/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\llama-embed.cpp for CXX dependencies
+[529/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\llama.cpp for CXX dependencies
+[530/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\llama4.cpp for CXX dependencies
+[531/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\maincoder.cpp for CXX dependencies
+[532/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\maion-coder.cpp for CXX dependencies
+[533/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\mamba-base.cpp for CXX dependencies
+[534/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\mamba.cpp for CXX dependencies
+[535/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\maple.cpp for CXX dependencies
+[536/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\mamba2.cpp for CXX dependencies
+[537/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\mellum.cpp for CXX dependencies
+[538/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\metis16.cpp for CXX dependencies
+[539/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\mimo2.cpp for CXX dependencies
+[540/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\minicpm.cpp for CXX dependencies
+[541/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\minicpm3.cpp for CXX dependencies
+[542/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\minimax-m2.cpp for CXX dependencies
+[543/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\minimax-01.cpp for CXX dependencies
+[544/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\minimax-m3.cpp for CXX dependencies
+[545/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\mistral3.cpp for CXX dependencies
+[546/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\mistral-large4.cpp for CXX dependencies
+[547/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\mistral4.cpp for CXX dependencies
+[548/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\modern-bert.cpp for CXX dependencies
+[549/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\mpt.cpp for CXX dependencies
+[550/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\muse-glimmer.cpp for CXX dependencies
+[551/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\muse-spark.cpp for CXX dependencies
+[552/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\nemotron-h-moe.cpp for CXX dependencies
+[553/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\nanbeige.cpp for CXX dependencies
+[554/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\nemotron-h.cpp for CXX dependencies
+[555/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\nemotron.cpp for CXX dependencies
+[556/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\neo-bert.cpp for CXX dependencies
+[557/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\nomic-bert-moe.cpp for CXX dependencies
+[558/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\olmo.cpp for CXX dependencies
+[559/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\nomic-bert.cpp for CXX dependencies
+[560/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\olmoe.cpp for CXX dependencies
+[561/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\olmo2.cpp for CXX dependencies
+[562/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\openelm.cpp for CXX dependencies
+[563/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\openai-moe.cpp for CXX dependencies
+[564/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\orion.cpp for CXX dependencies
+[565/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\paddleocr.cpp for CXX dependencies
+[566/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\pangu-embed.cpp for CXX dependencies
+[567/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\phi2.cpp for CXX dependencies
+[568/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\phi3.cpp for CXX dependencies
+[569/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\phimoe.cpp for CXX dependencies
+[570/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\plamo.cpp for CXX dependencies
+[571/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\plamo2.cpp for CXX dependencies
+[572/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\plamo3.cpp for CXX dependencies
+[573/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\plm.cpp for CXX dependencies
+[574/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\pockettts.cpp for CXX dependencies
+[575/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen.cpp for CXX dependencies
+[576/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen2moe.cpp for CXX dependencies
+[577/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen2.cpp for CXX dependencies
+[578/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen2vl.cpp for CXX dependencies
+[579/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen3.cpp for CXX dependencies
+[580/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen35moe.cpp for CXX dependencies
+[581/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen3moe.cpp for CXX dependencies
+[582/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen35.cpp for CXX dependencies
+[583/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen3next.cpp for CXX dependencies
+[584/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen3tts.cpp for CXX dependencies
+[585/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen3vl.cpp for CXX dependencies
+[586/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen3vlmoe.cpp for CXX dependencies
+[587/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\refact.cpp for CXX dependencies
+[588/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\qwen4exp.cpp for CXX dependencies
+[589/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\ricursive.cpp for CXX dependencies
+[590/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\rnd1.cpp for CXX dependencies
+[591/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\rwkv6-base.cpp for CXX dependencies
+[592/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\rwkv6.cpp for CXX dependencies
+[593/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\rwkv6qwen2.cpp for CXX dependencies
+[594/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\rwkv7.cpp for CXX dependencies
+[595/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\rwkv7-base.cpp for CXX dependencies
+[596/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\seed-oss.cpp for CXX dependencies
+[597/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\sensenova-u1.cpp for CXX dependencies
+[598/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\smallthinker.cpp for CXX dependencies
+[599/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\smollm3.cpp for CXX dependencies
+[600/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\stablelm.cpp for CXX dependencies
+[601/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\spark2-5.cpp for CXX dependencies
+[602/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\starcoder.cpp for CXX dependencies
+[603/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\starcoder2.cpp for CXX dependencies
+[604/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\step35.cpp for CXX dependencies
+[605/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\t5.cpp for CXX dependencies
+[606/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\t5encoder.cpp for CXX dependencies
+[607/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\talkie.cpp for CXX dependencies
+[608/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\vllm-decision2.cpp for CXX dependencies
+[609/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mm.comp.cpp.obj
+[610/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\wavtokenizer-dec.cpp for CXX dependencies
+[611/846] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ggml-vulkan.cpp.obj
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(3994): warning C4003: not enough arguments for function-like macro invocation 'IM2COL'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(4271): warning C4003: not enough arguments for function-like macro invocation 'CREATE_CONVS'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(6885): warning C4319: '~': zero extending '_Ty' to 'uint64_t' of greater size
+        with
+        [
+            _Ty=uint32_t
+        ]
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(11486): warning C4319: '~': zero extending 'uint32_t' to 'size_t' of greater size
+[612/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\xing4-0.cpp for CXX dependencies
+[613/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\zonos3.cpp for CXX dependencies
+[614/846] Scanning D:\HCSInfer\external\llama.cpp\src\models\xverse.cpp for CXX dependencies
+[615/846] Linking CXX static library lib\ggml-vulkan.lib
+[616/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml.dir\ggml-backend-dl.cpp.obj
+[617/846] Building CXX object src\app\CMakeFiles\hcsinfer.dir\main.cpp.obj
+[618/846] Generating CXX dyndep file external\llama.cpp\src\CMakeFiles\llama.dir\CXX.dd
+[619/846] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml.dir\ggml-backend-reg.cpp.obj
+[620/846] Linking CXX static library lib\ggml.lib
+[621/846] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\cli.cpp.obj
+FAILED: [code=2] src/cli/CMakeFiles/hcs_cli.dir/cli.cpp.obj 
+"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe"  /nologo /TP -DHCS_HAVE_HARDWARE=1 -DHCS_HAVE_LLAMA=1 -DNOMINMAX -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_WARNINGS -ID:\HCSInfer\include -ID:\HCSInfer\build\llama-adapter-rv\generated -ID:\HCSInfer\build\llama-adapter-rv\_deps\nlohmann_json-src\include /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD /W4 /permissive- /utf-8 /Zc:__cplusplus /WX /showIncludes /Fosrc\cli\CMakeFiles\hcs_cli.dir\cli.cpp.obj /Fdsrc\cli\CMakeFiles\hcs_cli.dir\hcs_cli.pdb /FS -c D:\HCSInfer\src\cli\cli.cpp
+D:\HCSInfer\src\cli\cli.cpp(61): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(62): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(63): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(64): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(65): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(66): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(67): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(68): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(69): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(70): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(71): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(72): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(73): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(74): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(75): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(76): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(77): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(78): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(79): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(80): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(81): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(82): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(83): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(84): error C2001: newline in constant
+D:\HCSInfer\src\cli\cli.cpp(86): error C2143: syntax error: missing ';' before 'const'
+[622/846] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama.cpp.obj
+[623/846] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-arch.cpp.obj
+[624/846] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-adapter.cpp.obj
+[625/846] Building CXX object src\engines\llama\CMakeFiles\hcs_engine_llama.dir\llama_engine.cpp.obj
+[626/846] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\chat_cmd.cpp.obj
+[627/846] Building CXX object tests\integration\llama_engine\CMakeFiles\hcs_test_llama_engine.dir\test_llama_engine.cpp.obj
+[628/846] Building CXX object tests\contract\cli\CMakeFiles\hcs_test_cli.dir\test_cli.cpp.obj
+ninja: build stopped: subcommand failed.
+BUILD_EXIT=2 
