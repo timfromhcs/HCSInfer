@@ -2249,3 +2249,58 @@ Use the official upstream documentation for the pinned revision. Pages under `ma
 The first priority is a real, reproducible CPU/Vulkan baseline on the target mini PC. Next unify the engines behind a reliable control plane; then deliver API/MCP and GUI; then implement bounded HDD-to-RAM loading; then prove shared GGML and single-EXE packaging; only then ship custom Vulkan kernels that are demonstrably correct and faster for measured workloads.
 
 HCSInfer V1 is not “done” because all planned files exist or because the compiler returned success. It is done when its real workloads, lifecycle, resource management, security boundaries, storage behaviour, packaging and documentation pass the gates above with traceable evidence.
+
+---
+
+## 26. V1.1 scope addendum (2026-11-17): FLUX.3 Klein, LFM3-Omni agent, HCS Studio
+
+This addendum narrows what "V1 stable" means after the V1 engine milestones. Verified facts (Hugging Face, 2026-11-17)
+are recorded in `docs/research/v1.1-model-selection.md`; nothing here overrides sections 0-25.
+
+### 26.1 Image: FLUX.3 Image Klein (5.6B, distilled, 16 steps) via stable-diffusion.cpp
+- Target checkpoint: `black-forest-labs/flux-3-image-klein` (gated; FLUX Kommunity licence = non-commercial plus a
+  qualifying-output exception). GGUF: `unsloth/flux-3-image-klein-GGUF` `UD-Q4_K_XL` (3.93 GB) default, `UD-Q2_K_XL`
+  low-memory, `Q8_0` reference; or `leejet/flux-3-image-klein-GGUF` (sd.cpp-native tensor names). Text encoder
+  Qwen3-VL-4B-Instruct and the VAE are separate files and count against the memory budget.
+- The distilled checkpoint is already few-step (16, no guidance). **A faster "fast LoRA" does not exist publicly**
+  (searched); training a step-distillation LoRA needs Klein Base plus a GPU class this machine lacks. Do not claim one.
+  Instead: measure steps 4/6/8/12/16 on this PC, ship the best quality/time point as a preset, and record LPIPS vs the
+  16-step reference. A user-supplied LoRA path is supported only after it is proven to load in the pinned sd.cpp.
+- `external/stable-diffusion.cpp` must move to a commit that supports FLUX.3 Klein. That is a separate compatibility
+  change (section 0.2), with `SD_USE_UPSTREAM_GGML=ON` re-validated (SD1.5 regression + Flux.3 smoke) before merge.
+- Image-to-image and multi-reference editing go through the existing `image edit` route; verify, do not assume.
+
+### 26.2 LLM: LFM3-Omni-2B Q8_0 (agent brain)
+- `LiquidAI/LFM3-Omni-2B-GGUF`: `LFM3-Omni-2B-Q8_0.gguf` (1.85 GB) + `mmproj-LFM3-Omni-2B-Q8_0.gguf` (0.51 GB).
+  Licence "lfm1.0" (`license: other`): read `LICENSE` before any redistribution; never bundle weights.
+- Requires a llama.cpp that supports the `lfm3` architecture; if the pinned commit does not, bump it as a separate
+  compatibility change. Audio in/out is NOT a V1.1 goal; text, tool calls and image input are.
+
+### 26.3 Fine-tuning and RSI ("HCS Train")
+- Local LoRA on a 2B model on this machine is small-scale (CPU/Vulkan, short runs). State the real tokens/s and
+  wall time; never present a toy run as a quality claim.
+- Training data must be legally usable. **Do not distil from Claude/Anthropic model outputs** (their usage terms
+  forbid training competing models). Use permissive open datasets (licence recorded per dataset), the project's own
+  tests/traces, and human-approved examples. "Agentic / tool-calling / coding" capability is measured on a fixed held-out
+  eval before and after; a LoRA is kept only if it improves that eval without regressing the base on the same set.
+- RSI loop = reflect on trajectories, propose a small prompt/skill/dataset change, evaluate, keep only on measured gain,
+  keep rollback snapshots. No unattended self-modification of binaries or of safety rules.
+
+### 26.4 Coding agent ("HCS Agent") based on Prime Agent (MIT)
+- Source: https://github.com/PrimeIntellect-ai/prime-agent (Rust, MIT, copyright Prime Intellect). Vendor as a pinned
+  submodule or fork with a recorded commit, keep the licence/NOTICE, build it from source. **Do not run its
+  `curl | sh` / `irm | iex` installers.**
+- Integrate it as an HCS-owned engine adapter that talks to the local OpenAI-compatible endpoint; tool execution is
+  confined to approved roots, no network by default, every shell/file tool call logged and cancellable (section 19).
+- "In one EXE" is a goal subject to the M7 single-EXE gate; until proven, it ships as a sidecar in the portable folder.
+
+### 26.5 UI: "HCS Studio" (HCSmedia branding)
+- Evolve the embedded web UI (ADR-009) toward an Unsloth-Desktop-style workbench: Chat, Agent, Image Studio, Train
+  (datasets, LoRA runs, eval), Models, Performance, Settings. Own branding, own assets, no copied Unsloth assets/code.
+- Every control is wired to a real endpoint; unfinished tabs are hidden or labelled Planned, never inert.
+
+### 26.6 Delivery rules for this addendum
+- Work in waves; at each big green step merge to `main` (fast-forward/merge commit, never force-push) and update
+  `docs/roadmap/STATUS.md`. A wave is "green" only with the full CTest suite plus its own new tests.
+- Model downloads are multi-GB and gated: obtain explicit user approval for each file (name, source, size) first.
+- BLOCKED and NOT RUN stay visible; no gate is marked PASS from a mock.
