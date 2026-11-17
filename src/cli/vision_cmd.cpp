@@ -325,9 +325,10 @@ int run_vision(std::vector<std::string> args, const std::string& state_override,
         j["prompt_chars"] = prompt.size();  // prompt content is never echoed or logged
         j["text"] = text;
         j["state"] = std::string(to_string(st.value().state));
-        if (st.value().error)
-            j["error"] = {{"code", std::string(to_string(st.value().error->code))},
-                          {"message", st.value().error->message}};
+        if (st.value().error) {
+            const Error& e = *st.value().error;  // bound explicitly: clang-tidy flags `opt->x` as unchecked
+            j["error"] = {{"code", std::string(to_string(e.code))}, {"message", e.message}};
+        }
         j["metrics"] = {{"load_ms", lm.load_ms},
                         {"ttft_ms", m.ttft_ms},
                         {"prompt_tokens", m.prompt_tokens},

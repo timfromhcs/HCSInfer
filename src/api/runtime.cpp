@@ -155,7 +155,7 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
         return exit_code(ErrorCode::InvalidArgument);
     };
     std::string host;
-    unsigned long long port = 8765, body_cap = 1024 * 1024, inflight = 8, timeout_s = 300;
+    unsigned long long port = 8765, body_cap = 1024ull * 1024, inflight = 8, timeout_s = 300;
     bool lan = false;
     std::string token, tmpl = "auto";
     std::vector<std::string> roots, hosts, origins;

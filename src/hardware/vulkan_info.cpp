@@ -309,7 +309,6 @@ json device_report(const Api& api, VkPhysicalDevice pd, std::uint32_t index) {
         }
         if (coop) {
             *tail = &fcm;
-            tail = &fcm.pNext;
         }
         api.get_feat2(pd, &ft2);
         json feat;

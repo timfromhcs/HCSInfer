@@ -10,10 +10,11 @@ constexpr std::array<std::int8_t, 256> make_table() {
     std::array<std::int8_t, 256> t{};
     for (auto& v : t) v = -1;
     for (int i = 0; i < 26; ++i) {
-        t[static_cast<std::size_t>('A' + i)] = static_cast<std::int8_t>(i);
-        t[static_cast<std::size_t>('a' + i)] = static_cast<std::int8_t>(26 + i);
+        t[static_cast<std::size_t>('A') + static_cast<std::size_t>(i)] = static_cast<std::int8_t>(i);
+        t[static_cast<std::size_t>('a') + static_cast<std::size_t>(i)] = static_cast<std::int8_t>(26 + i);
     }
-    for (int i = 0; i < 10; ++i) t[static_cast<std::size_t>('0' + i)] = static_cast<std::int8_t>(52 + i);
+    for (int i = 0; i < 10; ++i)
+        t[static_cast<std::size_t>('0') + static_cast<std::size_t>(i)] = static_cast<std::int8_t>(52 + i);
     t[static_cast<std::size_t>('+')] = 62;
     t[static_cast<std::size_t>('/')] = 63;
     return t;

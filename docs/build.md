@@ -85,6 +85,7 @@ The top-level `CMakeLists.txt` discovers modules; you normally do not edit it.
 
 ```powershell
 .\scripts\format.ps1            # check only (clang-format --dry-run --Werror); -Fix rewrites src/include/tests/tools
+.\scripts\static-analysis.ps1   # clang-tidy over src (clang-analyzer-*, bugprone-*); -Scope all, -FailOnFindings
 .\scripts\sbom.ps1              # CycloneDX JSON from external/dependency-lock.json -> artifacts\sbom\hcsinfer.cdx.json
 .\scripts\package.ps1 -Preset windows-msvc-release -Zip   # PORTABLE FOLDER (not single-EXE) + licenses + SBOM + SHA256SUMS.txt
 ```
@@ -92,10 +93,25 @@ The top-level `CMakeLists.txt` discovers modules; you normally do not edit it.
 `package.ps1` packages an existing build; it does not build, sign or test. Output goes to `artifacts\package\`
 (git-ignored). The package uses the dynamic MSVC runtime (ADR-008).
 
-Formatting status: as of 2026-11-17 the tree was not clang-formatted (89 of 111 C++ files differ under the
-clang-format found on the dev machine). The CI format job reports this without blocking until a dedicated
-`format.ps1 -Fix` change lands; then remove `continue-on-error` in `.github/workflows/pr.yml`.
+**Tool versions matter for both analysers.** `clang-format` and `clang-tidy` are version-dependent, so
+`Find-VsLlvmTool` (in `scripts/common.ps1`) prefers the tool bundled with **Visual Studio 2022** - the same source the
+`windows-latest` CI runner has - and only then falls back to PATH or `C:\Program Files\LLVM`. On this development
+machine PATH additionally has a ROCm 21.0.0git clang-format and an LLVM 22.1.8 install, either of which formats and
+reports differently.
+
+Formatting status: the whole tree is clang-formatted as of 2026-11-17 (139 files, clang-format **19.1.5**, the VS
+2022-bundled build; `format.ps1` reports OK). `.clang-format` sets `SortIncludes: Never` and `IncludeBlocks: Preserve`
+because several translation units depend on include order (`windows.h` before `psapi.h`; `NOMINMAX` before
+`windows.h`). The CI format job keeps `continue-on-error` for one release cycle as protection against the runner image
+updating its bundled LLVM; flip it to blocking once a CI run has confirmed the current state on the runner.
+
+clang-tidy: `static-analysis.ps1` loads the Visual Studio 2022 environment before analysing, because clang resolves the
+MSVC STL through the registry and would otherwise pick the newest Visual Studio on the machine - a VS 18 BuildTools STL
+requires Clang 20+ and fails with `STL1000` under the VS 2022-bundled clang-tidy. `/WX` from the HCS targets is
+neutralised with `-Wno-error` so the analysis always completes; only the checks named in `-Checks` are reported.
 
 CI (`.github/workflows/`): `pr.yml` = hosted Windows quick gate (CPU presets, no models: model tests are reported as
 skipped = NOT RUN); `hardware.yml` = self-hosted Radeon 680M runner for nightly/manual/tag runs only, never for
-pull requests. Neither workflow has run yet (no commits or remote existed when they were written).
+pull requests. First real run: 2026-11-17 on the public repository `timfromhcs/HCSInfer` - the format and SBOM jobs
+passed, both build legs failed before configuring because the runner's Visual Studio was not located, which is fixed in
+`fddc30d` (vswhere-based detection pinned to VS 2022).

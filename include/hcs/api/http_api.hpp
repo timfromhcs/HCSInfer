@@ -48,7 +48,7 @@ struct ApiOptions {
     std::string bind_host = "127.0.0.1";
     std::vector<std::string> allowed_hosts;    // extra Host names (hostname only, lower-case)
     std::vector<std::string> allowed_origins;  // extra full origins, e.g. "http://127.0.0.1:3000"
-    std::size_t max_body_bytes = 1 * 1024 * 1024;
+    std::size_t max_body_bytes = std::size_t{1} * 1024 * 1024;
     std::size_t max_inflight = 8;
     std::chrono::milliseconds request_timeout{300000};
 };
@@ -93,7 +93,7 @@ private:
 struct TransportOptions {
     std::string host = "127.0.0.1";
     int port = 8765;  // 0 => pick a free port
-    std::size_t max_body_bytes = 1 * 1024 * 1024;
+    std::size_t max_body_bytes = std::size_t{1} * 1024 * 1024;
     // Connection budget: at most `threads` connections are served and `max_queued` more wait for a worker;
     // any further connection is closed immediately (M10 audit D2). One idle socket therefore costs at most
     // `idle_timeout_s` of one worker, and a flood is bounded by (threads + max_queued) sockets, not by

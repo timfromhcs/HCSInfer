@@ -836,6 +836,8 @@ void McpServer::run(std::istream& in, std::ostream& out) {
             try {
                 cancel_request(json::parse(k));
             } catch (...) {
+                // A malformed key stored during shutdown must not stop the remaining cancellations.
+                (void)0;
             }
         }
         for (auto& w : workers) w.t.join();

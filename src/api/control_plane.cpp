@@ -650,7 +650,7 @@ json ControlPlane::memory_json() const {
                     {"vulkan_headroom_bytes",
                      m->vulkan_headroom_bytes ? json(*m->vulkan_headroom_bytes) : json("unknown")}};
             }
-        } catch (...) {
+        } catch (...) {  // NOLINT(bugprone-empty-catch) - the memory report must never fail the endpoint
         }
     }
     j["reserved_bytes"] = budget_.reserved();

@@ -1,0 +1,96 @@
+clang-tidy: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-tidy.exe (LLVM version 19.1.5)
+checks: -*,clang-analyzer-*,bugprone-*
+MSVC environment: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
+compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64
+translation units: 42 (src)
+
+== src/api/control_plane_vision.cpp
+D:\HCSInfer\src\api\control_plane_vision.cpp:156:50: warning: an exception may be thrown in function '(lambda at D:\HCSInfer\src\api\control_plane_vision.cpp:156:50)' which should not throw exceptions [bugprone-exception-escape]
+
+== src/api/control_plane.cpp
+D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+D:\HCSInfer\src\api\control_plane.cpp:109:47: warning: 2 adjacent parameters of 'kv_cache_estimate' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters]
+D:\HCSInfer\src\api\control_plane.cpp:356:40: warning: an exception may be thrown in function '(lambda at D:\HCSInfer\src\api\control_plane.cpp:356:40)' which should not throw exceptions [bugprone-exception-escape]
+
+== src/api/http_api.cpp
+D:\HCSInfer\src\api\http_api.cpp:697:16: warning: an exception may be thrown in function '(lambda at D:\HCSInfer\src\api\http_api.cpp:697:16)' which should not throw exceptions [bugprone-exception-escape]
+
+== src/api/http_server.cpp
+D:\HCSInfer\include\hcs/api/http_api.hpp:19:8: warning: an exception may be thrown in function 'HttpRequest' which should not throw exceptions [bugprone-exception-escape]
+
+== src/app/main.cpp
+D:\HCSInfer\src\app\main.cpp:7:5: warning: an exception may be thrown in function 'main' which should not throw exceptions [bugprone-exception-escape]
+
+== src/cli/chat_cmd.cpp
+D:\HCSInfer\src\cli\chat_cmd.cpp:119:35: warning: 2 adjacent parameters of 'resolve_model' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/cli/image_cmd.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xfilesystem_abi.h:132:1: warning: The value '9' provided to the cast expression is not in the valid range of values for '__std_fs_stats_flags' [clang-analyzer-optin.core.EnumCastOutOfRange]
+D:\HCSInfer\src\cli\image_cmd.cpp:127:35: warning: 2 adjacent parameters of 'resolve_model' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/cli/vision_cmd.cpp
+D:\HCSInfer\src\cli\vision_cmd.cpp:118:35: warning: 2 adjacent parameters of 'resolve_model' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/core/fs_util.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xfilesystem_abi.h:132:1: warning: The value '9' provided to the cast expression is not in the valid range of values for '__std_fs_stats_flags' [clang-analyzer-optin.core.EnumCastOutOfRange]
+
+== src/core/gguf_probe.cpp
+D:\HCSInfer\src\core\gguf_probe.cpp:153:28: warning: 2 adjacent parameters of 'skip_value' of similar type ('std::uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/core/lifecycle.cpp
+D:\HCSInfer\src\core\lifecycle.cpp:43:26: warning: 2 adjacent parameters of 'is_legal_transition' of similar type ('ModelState') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+D:\HCSInfer\src\core\lifecycle.cpp:115:46: warning: 2 adjacent parameters of 'transition_from' of similar type ('ModelState') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/core/memory_budget.cpp
+D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/core/model_registry.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xfilesystem_abi.h:132:1: warning: The value '9' provided to the cast expression is not in the valid range of values for '__std_fs_stats_flags' [clang-analyzer-optin.core.EnumCastOutOfRange]
+D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/engines/diffusion/diffusion_engine.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xfilesystem_abi.h:132:1: warning: The value '9' provided to the cast expression is not in the valid range of values for '__std_fs_stats_flags' [clang-analyzer-optin.core.EnumCastOutOfRange]
+D:\HCSInfer\src\engines\diffusion\diffusion_engine.cpp:265:15: warning: 2 adjacent parameters of 'png_sink' of similar type ('void *') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+D:\HCSInfer\src\engines\diffusion\diffusion_engine.cpp:624:9: warning: an exception may be thrown in function '(lambda at D:\HCSInfer\src\engines\diffusion\diffusion_engine.cpp:624:9)' which should not throw exceptions [bugprone-exception-escape]
+
+== src/engines/llama/llama_engine.cpp
+D:\HCSInfer\src\engines\llama\llama_engine.cpp:782:43: warning: 2 adjacent parameters of 'operator()' of similar type are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/hardware/doctor.cpp
+D:\HCSInfer\src\hardware\doctor.cpp:157:46: warning: 2 adjacent parameters of 'run_doctor' of similar type ('std::ostream &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/hardware/gpu_info.cpp
+D:\HCSInfer\src\hardware\gpu_info.cpp:45:36: warning: do not cast 'FARPROC' (aka 'long long (*)()') to 'CreateFn' (aka 'long (*)(const _GUID &, void **)') through 'void *' [bugprone-casting-through-void]
+
+== src/hardware/system_info.cpp
+D:\HCSInfer\src\hardware\system_info.cpp:28:17: warning: do not cast 'FARPROC' (aka 'long long (*)()') to 'RtlGetVersionFn' (aka 'long (*)(_OSVERSIONINFOW *)') through 'void *' [bugprone-casting-through-void]
+
+== src/hardware/vulkan_info.cpp
+D:\HCSInfer\src\hardware\vulkan_info.cpp:171:32: warning: do not cast 'PFN_vkVoidFunction' (aka 'void (*)()') to 'F' through 'void *' [bugprone-casting-through-void]
+D:\HCSInfer\src\hardware\vulkan_info.cpp:458:9: warning: do not cast 'FARPROC' (aka 'long long (*)()') to 'PFN_vkGetInstanceProcAddr' (aka 'void (*(*)(VkInstance_T *, const char *))()') through 'void *' [bugprone-casting-through-void]
+
+== src/mcp/mcp_server.cpp
+D:\HCSInfer\src\mcp\mcp_server.cpp:200:26: warning: 2 adjacent parameters of 'tool_err' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/storage/file_source.cpp
+D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/storage/gguf.cpp
+D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+D:\HCSInfer\src\storage\gguf.cpp:130:36: warning: 2 adjacent parameters of 'skip_value' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/storage/hcsmodel.cpp
+D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/storage/model_reader.cpp
+D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/storage/stream.cpp
+D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+== src/storage/writer.cpp
+D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+D:\HCSInfer\src\storage\writer.cpp:55:35: warning: 2 adjacent parameters of 'write_hcsmodel' of similar type ('const std::filesystem::path &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+
+STATIC ANALYSIS: 36 diagnostic(s) in 42 translation units.
+Report-only run (-FailOnFindings to make this an error).

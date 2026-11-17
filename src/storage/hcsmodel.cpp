@@ -54,7 +54,11 @@ Result<std::string> read_text(const std::uint8_t* p, std::size_t cap, const char
 }
 
 void write_text(std::uint8_t* p, std::size_t cap, const std::string& s) {
+    // memset zeroes the whole field first, so only cap-1 bytes are ever copied and the field stays
+    // NUL-terminated even when `s` is longer than the field (bugprone-not-null-terminated-result does not
+    // model the memset).
     std::memset(p, 0, cap);
+    // NOLINTNEXTLINE(bugprone-not-null-terminated-result) - the memset above guarantees the terminator
     std::memcpy(p, s.data(), std::min(s.size(), cap - 1));
 }
 

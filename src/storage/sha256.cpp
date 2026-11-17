@@ -29,10 +29,10 @@ constexpr std::uint32_t rotr(std::uint32_t x, int n) {
 void blocks_portable(std::uint32_t st[8], const std::uint8_t* p, std::size_t nblocks) {
     for (; nblocks; --nblocks, p += 64) {
         std::uint32_t w[64];
-        for (int i = 0; i < 16; ++i)
+        for (std::size_t i = 0; i < 16; ++i)
             w[i] = (std::uint32_t(p[4 * i]) << 24) | (std::uint32_t(p[4 * i + 1]) << 16) |
                    (std::uint32_t(p[4 * i + 2]) << 8) | std::uint32_t(p[4 * i + 3]);
-        for (int i = 16; i < 64; ++i) {
+        for (std::size_t i = 16; i < 64; ++i) {
             const std::uint32_t s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >> 3);
             const std::uint32_t s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >> 10);
             w[i] = w[i - 16] + s0 + w[i - 7] + s1;
@@ -91,7 +91,7 @@ void blocks_shani(std::uint32_t state[8], const std::uint8_t* data, std::size_t 
     for (; nblocks; --nblocks, data += 64) {
         const __m128i ABEF_SAVE = STATE0, CDGH_SAVE = STATE1;
         __m128i w[4];
-        for (int j = 0; j < 16; ++j) {
+        for (std::size_t j = 0; j < 16; ++j) {
             if (j < 4) {
                 w[j] =
                     _mm_shuffle_epi8(_mm_loadu_si128(reinterpret_cast<const __m128i*>(data + 16 * j)), MASK);
@@ -196,7 +196,7 @@ Digest Sha256::finalize() noexcept {
     update(lenbytes, 8);
     (void)saved_total;
     Digest out{};
-    for (int i = 0; i < 8; ++i) {
+    for (std::size_t i = 0; i < 8; ++i) {
         out[4 * i] = static_cast<std::uint8_t>(state_[i] >> 24);
         out[4 * i + 1] = static_cast<std::uint8_t>(state_[i] >> 16);
         out[4 * i + 2] = static_cast<std::uint8_t>(state_[i] >> 8);

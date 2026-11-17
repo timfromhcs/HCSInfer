@@ -63,9 +63,8 @@ int http_status_for(ErrorCode c) {
         case ErrorCode::Unsupported:
             return 501;
         case ErrorCode::InvalidState:
-            return 409;
         case ErrorCode::AlreadyExists:
-            return 409;
+            return 409;  // both are "the request conflicts with the current state"
         case ErrorCode::Busy:
             return 429;
         case ErrorCode::Timeout:

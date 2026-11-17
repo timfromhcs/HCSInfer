@@ -1,0 +1,2 @@
+clang-format: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-format.exe (clang-format version 19.1.5)
+FORMAT CHECK OK: 139 files.

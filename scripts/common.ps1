@@ -99,6 +99,35 @@ function Initialize-MsvcEnvironment {
     Write-Host "compiler: $((cl 2>&1 | Select-Object -First 1))"
 }
 
+# Locates a tool from the Visual Studio 2022 LLVM/Clang component ("C++ Clang tools"): clang-format, clang-tidy.
+#
+# The Visual-Studio-bundled build is preferred over whatever happens to be first on PATH so that local development and
+# the CI runner (windows-latest, which has Visual Studio 2022 with that component) use the same version: clang-format
+# and clang-tidy results are version-dependent. Only VS 2022 editions are listed on purpose - a newer Visual Studio
+# installed on the same machine must not silently take over (AGENTS.md 0.2, no arbitrary upgrade). Returns $null when
+# no such tool is installed; the caller decides whether to fall back or to fail loudly.
+function Find-VsLlvmTool {
+    param([Parameter(Mandatory)][string]$Name)
+    $pf = [Environment]::GetEnvironmentVariable('ProgramFiles')
+    $pf86 = [Environment]::GetEnvironmentVariable('ProgramFiles(x86)')
+    $candidates = @()
+    foreach ($base in @($pf, $pf86)) {
+        if (-not $base) { continue }
+        foreach ($edition in 'Community', 'Professional', 'Enterprise', 'BuildTools') {
+            $candidates += (Join-Path $base "Microsoft Visual Studio\2022\$edition\VC\Tools\Llvm\x64\bin\$Name.exe")
+        }
+    }
+    $hit = $candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+    if ($hit) { return $hit }
+    $cmd = Get-Command "$Name.exe" -ErrorAction SilentlyContinue
+    if ($cmd) { return $cmd.Source }
+    if ($pf) {
+        $other = Join-Path $pf "LLVM\bin\$Name.exe"
+        if (Test-Path -LiteralPath $other) { return $other }
+    }
+    return $null
+}
+
 function Invoke-Native {
     param([Parameter(Mandatory)][string]$Exe, [string[]]$Arguments)
     & $Exe @Arguments

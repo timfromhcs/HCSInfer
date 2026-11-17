@@ -159,12 +159,23 @@ Result<void> decompress(Codec c, std::span<const std::uint8_t> src, std::span<st
 }
 
 std::string_view lz4_version() noexcept {
-    static const std::string v = LZ4_versionString();
-    return v;
+    // noexcept, as declared: the library's version string is built once into a static std::string, and that
+    // allocation could throw std::bad_alloc, which must not escape a noexcept function. A diagnostic version
+    // string must never take the process down, so the catch path returns a literal (no allocation).
+    try {
+        static const std::string v = LZ4_versionString();
+        return v;
+    } catch (...) {
+        return "unknown";
+    }
 }
 std::string_view zstd_version() noexcept {
-    static const std::string v = ZSTD_versionString();
-    return v;
+    try {
+        static const std::string v = ZSTD_versionString();
+        return v;
+    } catch (...) {
+        return "unknown";
+    }
 }
 
 }  // namespace hcs::storage

@@ -202,6 +202,7 @@ Result<WriteStats> write_hcsmodel(const std::filesystem::path& src, const std::f
     st.container_bytes = file_pos;
     st.source_sha256_hex = to_hex(h.source_manifest_hash);
     st.seconds = std::chrono::duration<double>(Clock::now() - t_start).count();
+    // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores) - read by the Cleanup guard's destructor above
     success = true;
     return st;
 }

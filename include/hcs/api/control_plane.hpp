@@ -93,7 +93,7 @@ struct ControlPlaneOptions {
     // anything else is rendered as ChatML and sent verbatim. "chatml"/"plain" always render here.
     std::string chat_template = "auto";
     std::uint32_t max_tokens_cap = 4096;
-    std::size_t max_prompt_bytes = 256 * 1024;
+    std::size_t max_prompt_bytes = std::size_t{256} * 1024;
     std::size_t max_messages = 128;
     Backend backend = Backend::Auto;
     std::uint32_t context_tokens = 4096;

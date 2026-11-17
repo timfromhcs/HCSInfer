@@ -71,7 +71,8 @@ struct JobQueue::Impl {
             try {
                 cb(ev);
             } catch (...) {
-                // a throwing subscriber must never break the queue
+                // A throwing subscriber must never break the queue; the event is deliberately dropped.
+                (void)0;
             }
             lock.lock();
         }
@@ -128,8 +129,12 @@ struct JobQueue::Impl {
                 job->state = JobState::Failed;
                 job->error = result.error();
             }
-            emit_locked(lock, *job, JobEventKind::StateChanged, 1.0,
-                        job->error ? job->error->message : std::string());
+            std::string msg;
+            if (job->error) {
+                const Error& e = *job->error;  // bound explicitly: clang-tidy flags `opt->x` as unchecked
+                msg = e.message;
+            }
+            emit_locked(lock, *job, JobEventKind::StateChanged, 1.0, msg);
             job->fn = nullptr;  // release captured resources promptly
             done_cv.notify_all();
             evict_finished_locked();
@@ -147,7 +152,14 @@ JobQueue::JobQueue(JobQueueOptions options) : impl_(std::make_unique<Impl>()) {
 }
 
 JobQueue::~JobQueue() {
-    shutdown();
+    // A destructor must not let an exception escape (std::mutex/std::condition_variable operations can throw
+    // std::system_error); shutdown() already joins every worker, so a failure here is not actionable.
+    try {
+        shutdown();
+    } catch (...) {
+        // Swallowed on purpose: see above. An exception escaping a destructor would call std::terminate.
+        (void)0;
+    }
 }
 
 void JobQueue::shutdown() {

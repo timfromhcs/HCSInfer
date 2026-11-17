@@ -56,7 +56,7 @@ public:
             std::fputs(text, stderr);
         std::lock_guard l(m_);
         buf_ += text;
-        constexpr std::size_t kMax = 256 * 1024;
+        constexpr std::size_t kMax = std::size_t{256} * 1024;
         if (buf_.size() > kMax) {
             const std::size_t drop = buf_.size() - kMax / 2;
             buf_.erase(0, drop);
