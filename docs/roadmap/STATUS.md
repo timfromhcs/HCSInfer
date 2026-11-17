@@ -6,13 +6,10 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 
 ## Repository state
 
-- Git repo on branch `main` with exactly one commit, `d5baf76` "Initial commit: HCSInfer core, engines, API, MCP,
-  vault, vision, docs" (2026-11-17 13:57 +0100). The work described below was in the working tree on top of it and is
-  committed with this status update.
-- **No remote is configured and no GitHub repository exists for HCSInfer** (`git remote -v` is empty; the only
-  `github.com` repos on the `timfromhcs` account are unrelated projects). There is therefore **no local-vs-GitHub
-  diff** and no other branch to compare: `main` is the only branch (local and remote). CI workflows exist but have
-  never executed; they need a pushed repository.
+- Git repo on branch `main`, pushed to the **public** remote `https://github.com/timfromhcs/HCSInfer` (created
+  2026-11-17). Local and remote `main` are in sync; `main` is the only branch, so there is still no branch-to-branch
+  diff. The history starts at `d5baf76` "Initial commit: HCSInfer core, engines, API, MCP, vault, vision, docs"
+  (2026-11-17 13:57 +0100) and the work described below was committed on top of it in four further commits.
 - Submodule pins: `external/llama.cpp` d3c3e242c16b8cbf51400fad410cd69b22d64f35, `external/stable-diffusion.cpp`
   532d2c15c430a785a712b2d94281f04e733008a4 (see `external/dependency-lock.json`).
 - Toolchain on the target machine: MSVC 19.44.35228 (toolset 14.44.35207) x64, CMake 4.4.0, Ninja 1.13.2,
@@ -58,12 +55,12 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 | M9 research features | NOT RUN | |
 | M10 hardening: audit fixes (D1-D7) | PASS | `M10-fixes/` (red/green pairs): deep-JSON stack guard, connection budget/starvation, abandoned-request cancellation, runaway-job cap, reserved Windows device names, duplicate security headers, loopback literal parsing |
 | M10 soak: 100-cycle load/unload, 30-min generation, long fuzz (ASan), OOM/device-lost/HDD-unplug injection, signing | NOT RUN | only 10x load/unload and the cancellation tests exist |
-| Real Radeon 680M test | PASS for llama text, vision, diffusion, doctor (earlier evidence) | kernel tests NOT RUN; the final 400-test run above is CPU-only |
-| B0 CPU text baseline | PASS (one controlled run) | `benchmark/` (`benchmark_id B0-text`) |
-| B1 Vulkan text baseline, B2-B8 | NOT RUN | no Vulkan run in the final evidence set |
+| Real Radeon 680M test | PASS for llama text (CPU **and** Vulkan), vision, diffusion, doctor; Vulkan text baseline B1 now recorded | `benchmark/`: Vulkan warm decode 126.1 t/s vs 66.1 t/s CPU, warm TTFT 134 ms vs 369 ms (same model/prompt/commit). Kernel tests NOT RUN; the 400-test suite is CPU-only because the regression preset is CPU-only |
+| Text benchmark baselines | PASS (B0 CPU + B1 Vulkan, one controlled run each) | `benchmark/`: same model/prompt/parameters/commit, qwen3-0.6b Q4_K_M, cold+warm phases, full AGENTS.md 21.1 metadata. Other suites (B2-B8) NOT RUN; `--suite full` not implemented |
+| B2-B8 (best-placement reference, vault/chunk storage, prefetch, sdcpp params) | NOT RUN | need the Model Vault in the load path (M5) or a further implementation |
 | clang-format / clang-tidy | NOT RUN | `scripts/format.ps1` exists, no formatting pass has been applied; no compile database run recorded |
 | Shader / SPIR-V validation | n.a. / NOT RUN | no shaders exist |
-| CI workflows | CREATED, NEVER RUN | `.github/workflows/pr.yml`, `hardware.yml`; **no remote**, so they cannot run yet |
+| CI workflows | RUN: clang-format gate PASS, SBOM gate PASS; build+ctest legs FAIL then fixed | `.github/workflows/pr.yml` run 44104062457 (2026-11-17): the `format` and `supply-chain` jobs passed, both `build + ctest` legs failed **before configuring** because `Initialize-MsvcEnvironment` could not locate Visual Studio on the runner (no `vcvars64.bat` found by the hard-coded path list). Fixed in `fddc30d` (vswhere-based detection, pinned to VS 2022); the re-run is in flight and no green full-CI run is claimed yet |
 | SBOM / checksums / package | CREATED, NOT RUN in CI | `scripts/sbom.ps1`, `scripts/package.ps1` (portable folder, not single-EXE) |
 | ADR-001..010 | ADR-005/006/007/009 accepted; 001-004, 008, 010 written/finalised | `docs/decisions/` |
 
@@ -86,10 +83,11 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 
 ## Exact next action
 
-1. Create a GitHub repository for this project and push `main` (needs the user's decision: public or private), so the
-   two workflows run for the first time and the work is backed up.
+1. First green CI run on the new public GitHub repository (`timfromhcs/HCSInfer`): run 1 failed in the build legs because
+   `Initialize-MsvcEnvironment` did not locate Visual Studio on the runner; that is fixed (vswhere-based detection,
+   pinned to VS 2022) and a re-run is in progress.
 2. M1/M2 leftovers: standalone upstream `llama-mtmd-cli` baseline run; more VLM families (Qwen-VL M-RoPE, Gemma3);
    sdcpp `--params-backend disk` vs CPU comparison (B7).
 3. M5: route engine model reads through the Model Vault, then cold/warm benchmarks and the USB-unplug test.
-4. B1 Vulkan benchmark run on the Vulkan build to pair with the B0 baseline now recorded.
-5. clang-format pass + CI first green run; then M8 (one profiled Vulkan kernel behind a flag) and M10 soak/fuzz.
+4. clang-tidy / static analysis and a longer parser fuzz run (ASan) once CI is green; then M8 (one profiled Vulkan
+   kernel behind a flag) and the M10 soak tests.

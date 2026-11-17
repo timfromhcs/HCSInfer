@@ -38,7 +38,7 @@ path, the single-file EXE, `tune`/`cache` and Streamable HTTP are not implemente
 | `benchmark` CLI (`--suite quick`): real text benchmark, AGENTS.md 21.1 JSON | Implemented | cold+warm phases, median/p90, real metrics from the engine; `--suite full` planned |
 | `tune`, `cache` CLI commands | Planned | exit code 10 |
 | Custom Vulkan kernels, scheduler, advanced research features | Planned | only with measured benefit |
-| CI (GitHub Actions) | Created, never run | `.github/workflows/`; the repository has commits but **no remote**, so the workflows have never executed |
+| CI (GitHub Actions) | Running | `.github/workflows/`; public repo `timfromhcs/HCSInfer`. First run: format + SBOM gates green, build legs fixed (VS detection) and being re-run |
 
 Legend: Implemented / Experimental / Planned / Unsupported.
 
@@ -105,7 +105,12 @@ See `SECURITY.md`.
 document with machine, model hash, quantization, backend and storage metadata. Unmeasurable values are the string
 `unknown`, never an estimate. `--suite full` is not implemented yet.
 
-Provisional numbers from earlier runs exist (uncontrolled, few samples): `docs/test-evidence/M1/llama/README.md`,
+Two real baselines are recorded on the target machine with the same model (`qwen3-0.6b` Q4_K_M), prompt, seed and
+commit: **B0 CPU** (warm decode 66.1 t/s, warm TTFT 369 ms) and **B1 Vulkan/Radeon 680M** (warm decode 126.1 t/s,
+warm TTFT 134 ms). Both are 3-iteration medians with an uncontrolled OS file cache and an uncontrolled Vulkan
+shader cache - see `docs/test-evidence/benchmark/README.md` for the full tables and the caveats.
+
+Earlier provisional numbers (uncontrolled, few samples): `docs/test-evidence/M1/llama/README.md`,
 `docs/test-evidence/M6-storage/`. Methodology: `docs/decisions/ADR-010-benchmark-methodology.md`.
 No performance claim is made beyond those files.
 
