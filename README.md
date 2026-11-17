@@ -7,7 +7,8 @@ memory budget, HTTP API, MCP).
 
 **Status: alpha (pre-V1).** Real text generation (CPU and Vulkan), real image generation/editing (CLI, HTTP, MCP,
 GUI; CPU and Vulkan), image understanding, a loopback HTTP API, an MCP stdio server, an embedded local web UI, a
-browser-only WebGPU/WASM demo (`web/`, ADR-013) and a real text benchmark command run on the target machine.
+browser-only WebGPU/WASM demo (`web/`, ADR-013), a local fine-tuning control plane (`HCSInfer train`: dataset
+validation, eval gate, adapter bookkeeping, ADR-012) and a real text benchmark command run on the target machine.
 **Custom Vulkan kernels, the Model Vault in the engine load path, the single-file EXE, `tune`/`cache` and
 Streamable HTTP are not implemented.** V1 is not released. See `docs/roadmap/STATUS.md` for the evidence behind
 every row below.
@@ -38,6 +39,7 @@ every row below.
 | Portable folder package + SHA-256 + SBOM (`scripts/package.ps1`, `scripts/sbom.ps1`) | Experimental | not a single-file EXE |
 | Single `HCSInfer.exe` | Planned, unproven | dynamic CRT today, no clean-machine test (ADR-008) |
 | `benchmark` CLI (`--suite quick`): real text benchmark, AGENTS.md 21.1 JSON | Implemented | cold+warm phases, median/p90, real metrics from the engine; `--suite full` planned |
+| HCS Train: `train validate\|gate\|adapter\|pipeline` (dataset validation, eval gate, adapter bookkeeping) | Implemented (logic) | a trainer is external (ADR-012) and has not been run; promotion is refused unless the gate kept the adapter; `docs/train.md` |
 | `tune`, `cache` CLI commands | Planned | exit code 10 |
 | Custom Vulkan kernels, scheduler, advanced research features | Planned | only with measured benefit |
 | CI (GitHub Actions) | Green | `.github/workflows/`; public repo `timfromhcs/HCSInfer`. `pr-quick-gate` green on `main` (format, SBOM, Release build+ctest, Debug build+ctest); model/GPU tests skip there and stay NOT RUN |
@@ -156,7 +158,7 @@ No performance claim is made beyond those files.
 ## Documentation
 
 `docs/architecture.md`, `docs/build.md`, `docs/api.md`, `docs/mcp.md`, `docs/model-vault.md`,
-`docs/hardware-support.md`, `docs/gui.md`, `docs/supported-models.md`, `web/README.md`,
+`docs/hardware-support.md`, `docs/gui.md`, `docs/supported-models.md`, `docs/train.md`, `web/README.md`,
 `docs/roadmap/IMPLEMENTATION_PLAN.md`, `docs/roadmap/STATUS.md`, `docs/decisions/` (ADRs),
 `AGENTS.md` (binding engineering specification).
 

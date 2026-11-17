@@ -224,3 +224,178 @@ TEST(Cli, CorruptRegistryIsReportedNotCrashed) {
     EXPECT_EQ(r.code, 2);
     EXPECT_TRUE(contains(r.err, "error:"));
 }
+
+// --------------------------------------------------------------------------------------------
+// HCS Train (ADR-012): dataset validation, eval gate, adapter bookkeeping and the pipeline.
+// --------------------------------------------------------------------------------------------
+namespace {
+
+std::string hex64(char c) {
+    return std::string(64, c);
+}
+
+nlohmann::json eval_report(const std::string& eval_id, double heldout, char set = 'd') {
+    return {{"schema_version", 1},
+            {"eval_id", eval_id},
+            {"set_sha256", hex64(set)},
+            {"heldout", {{"samples", 100}, {"score", heldout}}},
+            {"regression",
+             nlohmann::json::array({nlohmann::json{{"name", "coding"}, {"samples", 50}, {"score", 0.9}},
+                                    nlohmann::json{{"name", "tool_use"}, {"samples", 50}, {"score", 0.9}}})}};
+}
+
+nlohmann::json pipeline_input(const std::string& id, double base_heldout, double cand_heldout) {
+    return {{"adapter_id", id},
+            {"base_model_sha256", hex64('a')},
+            {"adapter_sha256", hex64('b')},
+            {"artifact_path", "D:/models/adapters/" + id + ".gguf"},
+            {"dataset_manifest_sha256", hex64('c')},
+            {"hyperparameters", {{"rank", "8"}}},
+            {"baseline", eval_report("agentic-test", base_heldout)},
+            {"candidate", eval_report("agentic-test", cand_heldout)}};
+}
+
+const char* kValidRecord =
+    R"({"id":"r1","licence":"MIT","source":"unit-test","generator":"human",)"
+    R"("messages":[{"role":"user","content":"hi"},{"role":"assistant","content":"hello"}]})";
+
+}  // namespace
+
+TEST(Cli, TrainHelpAndArgumentValidation) {
+    for (const std::vector<std::string>& lvl :
+         std::vector<std::vector<std::string>>{{"train", "--help"},
+                                               {"train"},
+                                               {"train", "validate", "--help"},
+                                               {"train", "gate", "--help"},
+                                               {"train", "adapter", "--help"},
+                                               {"train", "pipeline", "--help"}}) {
+        auto r = run(lvl);
+        if (lvl == std::vector<std::string>{"train"}) {
+            EXPECT_EQ(r.code, 2);
+        } else {
+            EXPECT_EQ(r.code, 0);
+            EXPECT_TRUE(contains(r.out, "Usage")) << lvl.back();
+        }
+    }
+    EXPECT_EQ(run({"train", "frob"}).code, 2);
+    EXPECT_EQ(run({"train", "adapter", "frob"}).code, 2);
+    EXPECT_EQ(run({"train", "validate"}).code, 2);  // --dataset required
+    EXPECT_EQ(run({"train", "gate", "--baseline", "x"}).code, 2);
+    EXPECT_EQ(run({"train", "pipeline"}).code, 2);  // --input required
+}
+
+TEST(Cli, TrainValidateReportsAcceptedAndRejected) {
+    TempDir t;
+    const auto dataset = t / "data.jsonl";
+    hcs::test::write_file(dataset, std::string(kValidRecord) + "\n" +
+                                       R"({"id":"r2","source":"x","generator":"human","messages":[]})" +
+                                       "\n");
+    auto r = run({"train", "validate", "--dataset", dataset.string(), "--json"});
+    ASSERT_EQ(r.code, 0) << r.err;
+    auto j = nlohmann::json::parse(r.out);
+    EXPECT_EQ(j["accepted"], 1);
+    EXPECT_EQ(j["rejected"], 1);
+    EXPECT_EQ(j["clean"], false);
+    EXPECT_FALSE(j["issues"].empty());
+
+    auto text = run({"train", "validate", "--dataset", dataset.string()});
+    EXPECT_EQ(text.code, 0);
+    EXPECT_TRUE(contains(text.out, "accepted:"));
+
+    EXPECT_EQ(run({"train", "validate", "--dataset", (t / "missing.jsonl").string()}).code, 7);
+}
+
+TEST(Cli, TrainGateKeepsRollsBackAndRejectsIncomparableSets) {
+    TempDir t;
+    const auto base = t / "base.json";
+    const auto better = t / "better.json";
+    const auto worse = t / "worse.json";
+    const auto other = t / "other.json";
+    hcs::test::write_file(base, eval_report("agentic-test", 0.50).dump());
+    hcs::test::write_file(better, eval_report("agentic-test", 0.60).dump());
+    hcs::test::write_file(worse, eval_report("agentic-test", 0.45).dump());
+    hcs::test::write_file(other, eval_report("other-suite", 0.60).dump());
+
+    auto keep = run({"train", "gate", "--baseline", base.string(), "--candidate", better.string(), "--json"});
+    ASSERT_EQ(keep.code, 0) << keep.err;
+    EXPECT_EQ(nlohmann::json::parse(keep.out)["decision"], "keep");
+
+    auto rollback =
+        run({"train", "gate", "--baseline", base.string(), "--candidate", worse.string(), "--json"});
+    ASSERT_EQ(rollback.code, 0) << rollback.err;
+    EXPECT_EQ(nlohmann::json::parse(rollback.out)["decision"], "rollback");
+
+    // Different evaluation suites are not comparable: the gate fails closed.
+    auto mix = run({"train", "gate", "--baseline", base.string(), "--candidate", other.string(), "--json"});
+    ASSERT_EQ(mix.code, 0) << mix.err;
+    EXPECT_EQ(nlohmann::json::parse(mix.out)["decision"], "invalid");
+
+    EXPECT_EQ(
+        run({"train", "gate", "--baseline", base.string(), "--candidate", better.string(), "--min-gain", "2"})
+            .code,
+        2);
+}
+
+TEST(Cli, TrainPipelinePromotesOnKeepAndRollsBack) {
+    TempDir t;
+    const std::string state = (t / "state").string();
+    const auto good = t / "good.json";
+    const auto bad = t / "bad.json";
+    hcs::test::write_file(good, pipeline_input("keep-1", 0.50, 0.60).dump());
+    hcs::test::write_file(bad, pipeline_input("roll-1", 0.60, 0.55).dump());
+
+    auto promoted = run({"--state-dir", state, "train", "pipeline", "--input", good.string(), "--json"});
+    ASSERT_EQ(promoted.code, 0) << promoted.err;
+    auto pj = nlohmann::json::parse(promoted.out);
+    EXPECT_EQ(pj["decision"], "keep");
+    EXPECT_TRUE(pj["installed"].get<bool>());
+    EXPECT_TRUE(pj["activated"].get<bool>());
+
+    auto recorded = run({"--state-dir", state, "train", "pipeline", "--input", bad.string(), "--json"});
+    ASSERT_EQ(recorded.code, 0) << recorded.err;
+    EXPECT_EQ(nlohmann::json::parse(recorded.out)["activated"], false);
+
+    auto list = run({"--state-dir", state, "train", "adapter", "list", "--json"});
+    ASSERT_EQ(list.code, 0) << list.err;
+    auto arr = nlohmann::json::parse(list.out);
+    ASSERT_EQ(arr.size(), 2u);
+    bool keep_active = false;
+    bool roll_inactive = false;
+    for (const auto& a : arr) {
+        if (a["adapter_id"] == "keep-1" && a["active"] == true)
+            keep_active = true;
+        if (a["adapter_id"] == "roll-1" && a["active"] == false)
+            roll_inactive = true;
+    }
+    EXPECT_TRUE(keep_active);
+    EXPECT_TRUE(roll_inactive);
+
+    // Activating an adapter the gate did not keep is refused (fail closed).
+    EXPECT_EQ(run({"--state-dir", state, "train", "adapter", "activate", "roll-1"}).code, 11);
+
+    auto rollback = run({"--state-dir", state, "train", "adapter", "rollback", "--base", hex64('a')});
+    EXPECT_EQ(rollback.code, 0) << rollback.err;
+    auto after = run({"--state-dir", state, "train", "adapter", "list", "--json"});
+    for (const auto& a : nlohmann::json::parse(after.out)) {
+        EXPECT_FALSE(a["active"].get<bool>());
+    }
+
+    auto shown = run({"--state-dir", state, "train", "adapter", "show", "keep-1"});
+    EXPECT_EQ(shown.code, 0);
+    EXPECT_EQ(nlohmann::json::parse(shown.out)["adapter_id"], "keep-1");
+    EXPECT_EQ(run({"--state-dir", state, "train", "adapter", "show", "nope"}).code, 7);
+}
+
+TEST(Cli, TrainPipelineRejectsIncomparableInputWithoutWriting) {
+    TempDir t;
+    const std::string state = (t / "state").string();
+    auto input = pipeline_input("mismatch", 0.50, 0.60);
+    input["candidate"] = eval_report("other-suite", 0.60);
+    const auto file = t / "mismatch.json";
+    hcs::test::write_file(file, input.dump());
+    auto r = run({"--state-dir", state, "train", "pipeline", "--input", file.string()});
+    EXPECT_EQ(r.code, 2);
+    EXPECT_TRUE(contains(r.err, "comparable"));
+    auto list = run({"--state-dir", state, "train", "adapter", "list", "--json"});
+    EXPECT_EQ(nlohmann::json::parse(list.out).size(), 0u);
+}

@@ -30,10 +30,10 @@ graph TD
 
 Critical path to V1: vision adapter -> image routes in API/MCP -> GUI (ADR-009) -> Model Vault in the load path ->
 hardening/soak -> release package. M7 single-EXE and M8 kernels gate only the single-file and custom-kernel claims.
-Last completed milestone: V1.1 wave 1 (commit `6a390b8`) plus the wave-2 browser demo `web/` (ADR-013; shell + logic
-green, real WebGPU inference NOT RUN). Earlier: M3 image routes + M4 embedded UI + `benchmark` command + M10 audit
-fixes (`docs/test-evidence/M3-image`, `M4-gui`, `benchmark`, `M10-fixes`).
-Next: the rest of V1.1 wave 2 (HCS Agent adapter, HCS Train pipeline), then M5 Model Vault in the engine load path.
+Last completed milestone: V1.1 wave 1 (commit `6a390b8`) plus the wave-2 browser demo `web/` (ADR-013) and the HCS
+Train pipeline (ADR-012; logic + CLI green, a real training run NOT RUN). Earlier: M3 image routes + M4 embedded UI
++ `benchmark` command + M10 audit fixes (`docs/test-evidence/M3-image`, `M4-gui`, `benchmark`, `M10-fixes`).
+Next: the last V1.1 wave-2 item (HCS Agent adapter), then M5 Model Vault in the engine load path.
 
 ## M0 Repository and hardware baseline
 - [x] Repo inspected, scaffold + build/test scripts
@@ -128,6 +128,6 @@ Next: the rest of V1.1 wave 2 (HCS Agent adapter, HCS Train pipeline), then M5 M
 
 ## M11 V1.1 (2026-11-17 addendum, see AGENTS.md section 26)
 - [x] Wave 1: FLUX.3 Klein engine + step presets, LFM3-Omni Q8 default LLM + tool calls + agentic eval, HCS Studio UI, prime-agent/train foundations (commit `6a390b8`)
-- [~] Wave 2: `web/` browser WebGPU/WASM demo (ADR-013) **done** - shell + logic green (45 tests, 14 e2e checks on a real headless Chrome), real WebGPU inference NOT RUN, Vercel deploy NOT RUN; HCS Agent adapter `[ ]`; HCS Train LoRA pipeline + eval gate `[ ]`
+- [~] Wave 2: `web/` browser WebGPU/WASM demo (ADR-013) **done** - shell + logic green (46 tests, 14 e2e checks on a real headless Chrome), real WebGPU inference NOT RUN, Vercel deploy NOT RUN; HCS Train pipeline + eval gate + adapter book + `train` CLI (ADR-012) **done** - logic + CLI green (30 new tests), a real training run NOT RUN; HCS Agent adapter `[ ]`
 - [ ] Wave 3: RSI loop, single-EXE/packaging, soak + hardening, V1 stable release candidate
 - Merge to `main` after each green wave.

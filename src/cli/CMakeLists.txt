@@ -1,7 +1,14 @@
 hcs_add_library(cli
-  SOURCES cli.cpp chat_cmd.cpp image_cmd.cpp vision_cmd.cpp benchmark_cmd.cpp
+  SOURCES cli.cpp chat_cmd.cpp image_cmd.cpp vision_cmd.cpp benchmark_cmd.cpp train_cmd.cpp
   PUBLIC_LINK hcs_core
   PRIVATE_LINK nlohmann_json::nlohmann_json)
+
+# HCS Train (module `train` is listed before `cli` in HCS_MODULE_DIRS): dataset validation, eval gate and
+# adapter bookkeeping behind `HCSInfer train`.
+if(TARGET hcs_train)
+  target_link_libraries(hcs_cli PRIVATE hcs_train)
+  target_compile_definitions(hcs_cli PRIVATE HCS_HAVE_TRAIN=1)
+endif()
 
 # Optional module delegation (set when the module's CMakeLists was added earlier in the
 # top-level HCS_MODULE_DIRS order). See docs/build.md "Module conventions".

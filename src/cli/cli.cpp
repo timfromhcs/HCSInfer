@@ -17,6 +17,7 @@
 #include "hcs/result.hpp"
 #include "hcs/version.hpp"
 #include "image_cmd.hpp"
+#include "train_cmd.hpp"
 #include "vision_cmd.hpp"
 
 #ifdef HCS_HAVE_API
@@ -64,6 +65,8 @@ const char* kRootHelp =
     "                                Image analysis via llama.cpp libmtmd (see `vision --help`)\n"
     "  benchmark --suite quick --model <path-or-id> [--export file]\n"
     "                                Real text-model benchmark, JSON per AGENTS.md 21.1 (see `benchmark "
+    "--help`)\n"
+    "  train <subcommand>            Dataset validation, eval gate, adapter keep/rollback (see `train "
     "--help`)\n"
     "  tune|cache                    Planned - not implemented yet (exit code 10)\n"
     "\n"
@@ -393,6 +396,13 @@ int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostrea
         return run_image(std::move(args), state_override, out, err);
     if (cmd == "models")
         return cmd_models(std::move(args), state_override, out, err);
+    if (cmd == "train") {
+#ifdef HCS_HAVE_TRAIN
+        return run_train(std::move(args), state_dir(state_override), out, err);
+#else
+        return fail(err, ErrorCode::Unsupported, "'train' is not available in this build");
+#endif
+    }
 #ifdef HCS_HAVE_API
     if (cmd == "serve")
         return hcs::api::run_serve(args, state_dir(state_override), out, err);

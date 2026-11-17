@@ -1,6 +1,6 @@
 # ADR-012: HCS Train and the RSI loop (LoRA, datasets, eval gate)
 
-Date: 2026-11-17 - Status: proposed (foundations implemented; no training run exists) - Owner: AGENT+TRAIN wave
+Date: 2026-11-17 - Status: accepted (dataset validation, evaluation-report ingestion, eval gate, adapter book and pipeline implemented; no training run exists) - Owner: AGENT+TRAIN wave
 
 ## Context
 The V1.1 addendum asks for fine-tuning the local LFM3-Omni-2B Q8_0 model for agentic tool calls and coding, and a
@@ -69,5 +69,7 @@ Verified facts at the pinned llama.cpp commit `d3c3e242c16b8cbf51400fad410cd69b2
 - Real training time and memory on this machine are not measured; the LFM3-Omni weights are not downloaded in this wave.
 
 ## Evidence
-Implementation and tests: `src/train`, `include/hcs/train`, `tests/unit/train`; research:
-`docs/research/train-datasets.md`; results: `docs/test-evidence/agent/README.md`.
+Implementation and tests: `src/train`, `include/hcs/train`, `tests/unit/train` (dataset validator, eval gate,
+evaluation-report ingestion, adapter book, pipeline), the `HCSInfer train ...` CLI (`src/cli/train_cmd.cpp`,
+`tests/contract/cli`) and `docs/train.md`. Research: `docs/research/train-datasets.md`. Results:
+`docs/test-evidence/train/` (logic + CLI proven; a real training run is NOT RUN).
