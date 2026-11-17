@@ -128,6 +128,6 @@ Next: the last V1.1 wave-2 item (HCS Agent adapter), then M5 Model Vault in the 
 
 ## M11 V1.1 (2026-11-17 addendum, see AGENTS.md section 26)
 - [x] Wave 1: FLUX.3 Klein engine + step presets, LFM3-Omni Q8 default LLM + tool calls + agentic eval, HCS Studio UI, prime-agent/train foundations (commit `6a390b8`)
-- [~] Wave 2: `web/` browser WebGPU/WASM demo (ADR-013) **done** - shell + logic green (46 tests, 14 e2e checks on a real headless Chrome), real WebGPU inference NOT RUN, Vercel deploy NOT RUN; HCS Train pipeline + eval gate + adapter book + `train` CLI (ADR-012) **done** - logic + CLI green (30 new tests), a real training run NOT RUN; HCS Agent adapter `[ ]`
+- [~] Wave 2: `web/` browser WebGPU/WASM demo (ADR-013) **done** - shell + logic green (46 tests, 14 e2e checks on a real headless Chrome), real WebGPU inference NOT RUN, Vercel deploy NOT RUN; HCS Train pipeline + eval gate + adapter book + `train` CLI (ADR-012) **done** - logic + CLI green (30 new tests), a real training run NOT RUN; HCS Agent adapter `[~]` - loopback provider document + launch plan done (tests green), process supervisor and a real run NOT RUN
 - [ ] Wave 3: RSI loop, single-EXE/packaging, soak + hardening, V1 stable release candidate
 - Merge to `main` after each green wave.

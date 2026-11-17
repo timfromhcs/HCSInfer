@@ -1,6 +1,7 @@
 # ADR-011: Coding agent integration (prime-agent)
 
-Date: 2026-11-17 - Status: proposed (foundations only; no agent runs inside HCSInfer yet) - Owner: AGENT+TRAIN wave
+Date: 2026-11-17 - Status: accepted (policy layer, provider document and launch plan implemented; the process
+supervisor and a real agent run are NOT RUN) - Owner: AGENT+TRAIN wave
 
 ## Context
 The V1.1 addendum wants a coding agent inside the HCS desktop app, driven by the local LFM3-Omni-2B model, in the
@@ -85,3 +86,8 @@ Facts established by reading the pinned tree and building it (not assumptions):
 
 ## Evidence
 `docs/test-evidence/agent/README.md` (submodule pin, cargo build log summary, unit test results).
+Implemented HCS-owned pieces: `hcs::agent::ToolSandbox` (policy) and `hcs::agent` provider document + launch
+plan (`include/hcs/agent/agent_config.hpp`, tests `tests/unit/agent`). The provider document is loopback-only and
+the launch plan resolves the workspace through the approved-root guard, so a caller cannot point the agent at a
+remote model or an unapproved directory. NOT RUN: the process supervisor (Windows Job Object) and any real
+`prime-agent` session.
