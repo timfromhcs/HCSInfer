@@ -1959,7 +1959,7 @@
     {
       "check": "serve prints port and random token on stderr",
       "pass": true,
-      "detail": "['{\"ts\":\"2026-11-17T13:25:25.556Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"listening\",\"host\":\"127.0.0.1\",\"port\":\"55147\"}', 'HCSInfer API listening on http://127.0.0.1:55147', 'HCSInfer API token: c5ff27ba071ad502cf0b7fb26f3aff7220a83fde77c0c20d39eaa6984ef9e813']"
+      "detail": "['{\"ts\":\"2026-11-17T13:25:25.556Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"listening\",\"host\":\"127.0.0.1\",\"port\":\"55147\"}', 'HCSInfer API listening on http://127.0.0.1:55147', 'HCSInfer API token: <redacted-run-token>']"
     },
     {
       "check": "health without token",

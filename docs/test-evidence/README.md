@@ -1,0 +1,40 @@
+# Test evidence index
+
+Evidence is grouped per milestone. Each directory has a `README.md` explaining what was run, on which machine and
+build, what passed, and what is NOT RUN / BLOCKED. Raw logs, JSON results and (where useful) produced images are kept
+next to it.
+
+| Directory | Milestone / scope |
+|---|---|
+| `M0/` | hardware + repository baseline (`doctor.json`, `doctor-no-vulkan.json`, USB-HDD read benchmark, `vulkaninfo`) |
+| `M1/` | independent upstream engine proof: `llama/` (Vulkan build + real GGUF), `sd/` (stable-diffusion.cpp, patched vs upstream GGML) |
+| `M2-core/` | headless core: lifecycle, registry, JobQueue, MemoryBudget, PathGuard, settings |
+| `M2/` | control-plane facade, llama adapter, diffusion adapter, M7 shared-GGML proof |
+| `M2-vision/` | libmtmd vision adapter (SmolVLM2-500M Q8_0 + mmproj), CPU + Vulkan, and the HTTP/MCP vision end-to-end |
+| `M3-api-mcp/` | HTTP API + MCP stdio end-to-end with a real text model |
+| `M3-image/` | HTTP image routes + MCP image tools with a real diffusion model (47/47 checks) |
+| `M4-gui/` | embedded web UI: unit + contract + socket + headless-browser checks |
+| `M6-storage/` | HCSMODEL container, chunk codecs, parser mutation tests, storage benchmark |
+| `M10/` | security audit report |
+| `M10-fixes/` | the audit defects D1-D7, red/green test pairs and the final full-suite log |
+| `benchmark/` | real `HCSInfer benchmark --suite quick` runs (AGENTS.md 21.1 JSON) |
+| `ci/` | what the CI gates check and which tool versions they were verified with (clang-format pinning) |
+
+## Redaction policy
+
+These files are published with the repository, so:
+
+* **Ephemeral local API tokens are redacted.** The end-to-end scripts capture the `serve` stderr, which contains the
+  one-per-run bearer token of a loopback server (`HCSInfer API token: ...`). Those tokens are dead by the time the
+  evidence is committed, but they are credential-shaped, so the value is replaced with `<redacted-run-token>`.
+  Only the value is replaced; the check names, exit codes and results are untouched.
+* **Model SHA-256 hashes are kept on purpose** - they identify the exact model file a result was measured with.
+* Device, driver and GPU identifiers are kept: they are the point of a hardware-aware project.
+
+Evidence files still contain absolute paths of the machine that produced them (model locations such as
+`E:\AILOCALTRAIN\...`, `D:\HCSModels\...`), because the exact file is part of reproducing a result. They contain no
+credentials, no user documents and no model data.
+
+Per AGENTS.md 16.2: mocks are never accepted as evidence for inference, model loading, Vulkan execution, image
+generation or MCP end-to-end behaviour. Every directory above that claims one of those states which real model and
+machine was used, and marks what is NOT RUN.

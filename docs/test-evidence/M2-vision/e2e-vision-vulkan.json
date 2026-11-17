@@ -28,7 +28,7 @@
     {
       "check": "serve prints port and token",
       "pass": true,
-      "detail": "['{\"ts\":\"2026-11-17T12:54:04.988Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"listening\",\"host\":\"127.0.0.1\",\"port\":\"62692\"}', 'HCSInfer API listening on http://127.0.0.1:62692', 'HCSInfer API token: 0f6d9ce430397b47f2e2cbd547c45999eb8654bcd84f96a77fc956a080360cb7']"
+      "detail": "['{\"ts\":\"2026-11-17T12:54:04.988Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"listening\",\"host\":\"127.0.0.1\",\"port\":\"62692\"}', 'HCSInfer API listening on http://127.0.0.1:62692', 'HCSInfer API token: <redacted-run-token>']"
     },
     {
       "check": "image_url data URI -> 200 with an answer",
