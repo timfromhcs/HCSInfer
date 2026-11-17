@@ -37,6 +37,33 @@ documented check set. The job is non-blocking for one cycle until that has been 
 the version used, the translation-unit count and the diagnostic count are all printed, so a version drift cannot
 hide.
 
+### The wave-1 regression and its fix (2026-11-17)
+
+V1.1 wave 1 (`6a390b8`) landed new modules (`src/agent`, `src/train`, `src/api/chat_tools.*`) that did **not** follow the
+widening idiom above, so the blocking gates failed on `main`:
+
+* `clang-format check` - 4 files needed formatting: `include/hcs/api/control_plane.hpp`, `src/cli/image_cmd.cpp`,
+  `src/engines/diffusion/diffusion_engine.cpp`, `tests/integration/diffusion_engine/test_diffusion_engine.cpp`.
+* `clang-tidy (static analysis)` on clang-tidy **20.1.8** - 8 diagnostics:
+  `bugprone-implicit-widening-of-multiplication-result` in `include/hcs/agent/sandbox_policy.hpp` (lines 41, 43, 44),
+  `include/hcs/api/chat_tools.hpp` (line 27) and `include/hcs/train/dataset_validator.hpp` (lines 35, 39); plus one
+  `clang-analyzer-unix.Malloc` whose location is inside the third-party header
+  `external/stable-diffusion.cpp/thirdparty/stb_image.h:1271`.
+
+Fixes:
+
+* The six size constants are widened first (`std::size_t{64} * 1024`, ...), the same idiom already used elsewhere.
+* `scripts/static-analysis.ps1` now drops `warning:`/`error:` lines whose location is under `external/`: the gate is
+  defined for HCS-owned code (`src`, `include`, `tests`, `tools`) and `--header-filter` already tries to exclude that
+  header, but clang-tidy's static analyzer can still emit a third-party location. The filter only removes
+  third-party lines; every HCS-owned diagnostic still fails the job.
+* `scripts/format.ps1 -Fix` reformatted the four files (clang-format 19.1.5, the VS-bundled version both local and CI use).
+
+Verified locally after the fix: `format.ps1` -> `FORMAT CHECK OK: 152 files`; `static-analysis.ps1 -Preset
+windows-msvc-release -Scope src -FailOnFindings` -> `STATIC ANALYSIS OK: no diagnostic in 51 translation units`; Release
+build green and `ctest --preset windows-msvc-release` -> 475/475 passed, 0 failed. Evidence:
+`docs/test-evidence/static-analysis/wave1-*`.
+
 ## Fixed (real, or clearly worth having)
 
 | Finding | Site(s) | Change |

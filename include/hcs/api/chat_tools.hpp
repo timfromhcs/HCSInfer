@@ -24,7 +24,7 @@ namespace hcs::api::chat_tools {
 using json = nlohmann::json;
 
 inline constexpr std::size_t kMaxTools = 64;
-inline constexpr std::size_t kMaxToolsJsonBytes = 64 * 1024;
+inline constexpr std::size_t kMaxToolsJsonBytes = std::size_t{64} * 1024;
 inline constexpr std::size_t kMaxToolCallsPerMessage = 16;
 
 struct ToolDef {

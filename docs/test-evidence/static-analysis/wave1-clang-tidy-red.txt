@@ -1,0 +1,10 @@
+# clang-tidy gate, V1.1 wave 1 (commit 6a390b8) on main - RED
+# CI run 44154743021, job "clang-tidy (static analysis)"; clang-tidy 20.1.8, -Scope src
+# (8 diagnostics; 7 in HCS-owned code, 1 located in a third-party header)
+include/hcs/agent/sandbox_policy.hpp:41:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+include/hcs/agent/sandbox_policy.hpp:43:33: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+include/hcs/agent/sandbox_policy.hpp:44:35: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+include/hcs/api/chat_tools.hpp:27:51: warning: performing an implicit widening conversion to type 'const std::size_t' (aka 'const unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+include/hcs/train/dataset_validator.hpp:35:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+include/hcs/train/dataset_validator.hpp:39:37: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+external/stable-diffusion.cpp/thirdparty/stb_image.h:1271:27: warning: Potential leak of memory pointed to by 'result' [clang-analyzer-unix.Malloc]

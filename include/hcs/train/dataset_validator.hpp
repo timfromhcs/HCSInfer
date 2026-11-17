@@ -32,11 +32,11 @@
 namespace hcs::train {
 
 struct DatasetLimits {
-    std::size_t max_line_bytes = 1024 * 1024;
+    std::size_t max_line_bytes = std::size_t{1024} * 1024;
     std::size_t max_records = 200'000;
     std::size_t max_total_bytes = 512ULL * 1024 * 1024;
     std::size_t max_messages = 64;
-    std::size_t max_message_bytes = 256 * 1024;
+    std::size_t max_message_bytes = std::size_t{256} * 1024;
     std::size_t max_issues = 1000;  // the report stops recording details (counts stay exact)
 };
 

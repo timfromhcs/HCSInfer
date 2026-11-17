@@ -259,7 +259,8 @@ TEST(DiffusionPreset, UnknownPresetNameIsRejectedEvenWithoutAModel) {
     queue.shutdown();
 }
 
-// SD1.5 has no measured preset table: asking for one must fail loudly, never fall back to the request's steps.
+// SD1.5 has no measured preset table: asking for one must fail loudly, never fall back to the request's
+// steps.
 TEST(DiffusionPreset, PresetWithoutAFamilyTableIsAnErrorOnSd15) {
     REQUIRE_MODEL_OR_SKIP(path);
     Loaded m(path);

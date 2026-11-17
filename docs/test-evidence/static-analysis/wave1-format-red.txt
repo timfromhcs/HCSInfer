@@ -1,0 +1,7 @@
+# clang-format gate, V1.1 wave 1 (commit 6a390b8) on main - RED
+# CI run 44154743021, job "clang-format check" (release workflow pr-quick-gate)
+needs formatting: src\cli\image_cmd.cpp
+needs formatting: src\engines\diffusion\diffusion_engine.cpp
+needs formatting: include\hcs\api\control_plane.hpp
+needs formatting: tests\integration\diffusion_engine\test_diffusion_engine.cpp
+FORMAT CHECK FAILED: 4 of 152 files differ (run scripts\format.ps1 -Fix).

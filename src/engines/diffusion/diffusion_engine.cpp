@@ -312,8 +312,8 @@ struct Components {
     bool any() const { return !llm.empty() || !vae.empty(); }
 };
 
-// `<model without extension>.components.json`: {"llm": "rel/path", "vae": "rel/path", "params_backend": "cpu"}.
-// Paths must be relative to the model's directory, free of "..", and stay under that directory after
+// `<model without extension>.components.json`: {"llm": "rel/path", "vae": "rel/path", "params_backend":
+// "cpu"}. Paths must be relative to the model's directory, free of "..", and stay under that directory after
 // canonicalisation (no junction/symlink escape). The file is untrusted input and size-capped.
 Result<Components> read_sidecar(const std::filesystem::path& model) {
     namespace fs = std::filesystem;
@@ -347,7 +347,8 @@ Result<Components> read_sidecar(const std::filesystem::path& model) {
         std::error_code e2;
         const fs::path full = fs::weakly_canonical(base / rp, e2);
         if (e2 || !fs::is_regular_file(full, e2))
-            return Error(ErrorCode::NotFound, std::string("components sidecar: '") + key + "' file not found");
+            return Error(ErrorCode::NotFound,
+                         std::string("components sidecar: '") + key + "' file not found");
         const auto rel_to = full.lexically_relative(base);
         if (rel_to.empty() || *rel_to.begin() == "..")
             return Error(ErrorCode::SecurityViolation,
@@ -648,9 +649,10 @@ Result<void> DiffusionImageEngine::load(const LoadRequest& req) {
         std::string why = tail_error_lines(log);
         if (!comp.any() && log.find("get sd version from file failed") != std::string::npos)
             why += (why.empty() ? "" : " | ") +
-                   std::string("this file is not an all-in-one checkpoint; a diffusion-only model (FLUX.3 Klein) "
-                               "needs its text encoder and VAE: pass llm_path/vae_path (CLI --llm/--vae) or add a "
-                               "<model>.components.json sidecar");
+                   std::string(
+                       "this file is not an all-in-one checkpoint; a diffusion-only model (FLUX.3 Klein) "
+                       "needs its text encoder and VAE: pass llm_path/vae_path (CLI --llm/--vae) or add a "
+                       "<model>.components.json sidecar");
         Error e = map_status(created, "stable-diffusion.cpp could not load the model" +
                                           (why.empty() ? std::string() : ": " + why));
         return e;

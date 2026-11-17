@@ -115,7 +115,10 @@ if ($PSVersionTable.PSVersion.Major -ge 7) {
 
 $findings = 0
 foreach ($r in $results | Sort-Object file) {
-    $lines = @($r.text -split "`r?`n" | Where-Object { $_ -match 'warning:|error:' })
+    # Only HCS-owned diagnostics count. clang-tidy's static analyzer can still report a location inside a
+    # third-party header (e.g. external/stable-diffusion.cpp/thirdparty/stb_image.h) even with --header-filter set
+    # to src|include/hcs; the gate covers src/, include/, tests/ and tools/ only, so those lines are not counted.
+    $lines = @($r.text -split "`r?`n" | Where-Object { $_ -match 'warning:|error:' -and $_ -notmatch '[\\/]external[\\/]' })
     if ($lines.Count -gt 0) {
         Write-Host ""
         Write-Host "== $($r.file.Substring($root.Length + 1))"

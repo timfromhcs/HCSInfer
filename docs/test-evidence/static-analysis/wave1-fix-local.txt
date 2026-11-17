@@ -1,0 +1,36 @@
+# V1.1 wave-1 gate fix - local verification (2026-11-17)
+# Machine: Windows 11 26200, MSVC 19.44.35228 x64, clang-format/clang-tidy 19.1.5 (VS 2022-bundled), CMake 4.4, Ninja
+
+## 1. Format gate
+> .\scripts\format.ps1 -Fix
+clang-format: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-format.exe (clang-format version 19.1.5)
+Formatted 152 files.
+> .\scripts\format.ps1
+FORMAT CHECK OK: 152 files.
+
+## 2. clang-tidy gate (the CI job's exact command)
+> .\scripts\static-analysis.ps1 -Preset windows-msvc-release -Scope src -Parallel 4 -FailOnFindings
+clang-tidy: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-tidy.exe (LLVM version 19.1.5)
+checks: -*,clang-analyzer-*,bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-casting-through-void,-bugprone-exception-escape,-clang-analyzer-optin.core.EnumCastOutOfRange
+translation units: 51 (src)
+STATIC ANALYSIS OK: no diagnostic in 51 translation units.
+EXIT=0
+
+## 3. Release build
+> cmake --preset windows-msvc-release
+-- Configuring done (15.7s)
+-- Generating done (2.1s)
+> cmake --build --preset windows-msvc-release --parallel
+[130/131] Linking CXX executable bin\HCSInfer.exe
+[131/131] ... (all targets linked)
+
+## 4. Release ctest
+> ctest --preset windows-msvc-release
+100% tests passed out of 475
+Total Test time (real) =  39.14 sec
+CTEST_EXIT=0
+(Real-model / GPU tests are reported (Skipped) = NOT RUN without HCS_TEST_* variables.)
+
+## 5. Web demo (separate job)
+> cd web ; npm test        -> tests 45, pass 45, fail 0
+> node tests/e2e/boot.mjs  -> PASS 14/14 (with --evidence)

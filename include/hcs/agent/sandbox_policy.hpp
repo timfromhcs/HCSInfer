@@ -38,10 +38,10 @@ struct CommandRule {
 struct SandboxLimits {
     std::uint32_t default_timeout_ms = 60'000;
     std::uint32_t max_timeout_ms = 600'000;
-    std::size_t max_output_bytes = 64 * 1024;
+    std::size_t max_output_bytes = std::size_t{64} * 1024;
     std::size_t max_argc = 64;
-    std::size_t max_arg_bytes = 8 * 1024;
-    std::size_t max_write_bytes = 1024 * 1024;
+    std::size_t max_arg_bytes = std::size_t{8} * 1024;
+    std::size_t max_write_bytes = std::size_t{1024} * 1024;
 };
 
 struct SandboxPolicy {
