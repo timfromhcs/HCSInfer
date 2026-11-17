@@ -10,8 +10,8 @@ graph TD
   M0[M0 Repo + hardware baseline - DONE] --> M1[M1 Independent engine proof - vision open]
   M0 --> M2[M2 Headless core + adapters - vision open]
   M1 --> M2
-  M2 --> M3[M3 API + MCP - image/vision routes open]
-  M2 --> M4[M4 GUI - not started]
+  M2 --> M3[M3 API + MCP - done incl. image routes]
+  M2 --> M4[M4 GUI - done, experimental]
   M3 --> M4
   M2 --> M5[M5 Model Vault v1 - partial]
   M5 --> M6[M6 HCSMODEL container - experimental done]
@@ -30,6 +30,9 @@ graph TD
 
 Critical path to V1: vision adapter -> image routes in API/MCP -> GUI (ADR-009) -> Model Vault in the load path ->
 hardening/soak -> release package. M7 single-EXE and M8 kernels gate only the single-file and custom-kernel claims.
+Last completed milestone: M3 image routes + M4 embedded UI + `benchmark` command + M10 audit fixes
+(`docs/test-evidence/M3-image`, `M4-gui`, `benchmark`, `M10-fixes`; full suite 400 tests, 0 failed).
+Next: push to a remote (CI has never run), then M5 Model Vault in the engine load path.
 
 ## M0 Repository and hardware baseline
 - [x] Repo inspected, scaffold + build/test scripts
@@ -43,7 +46,7 @@ hardening/soak -> release package. M7 single-EXE and M8 kernels gate only the si
 ## M1 Independent engine proof
 - [x] Pin llama.cpp + stable-diffusion.cpp commits in `external/dependency-lock.json`
 - [x] llama.cpp Vulkan build, device listing, real GGUF generation from the USB drive (`M1/llama`)
-- [ ] Real multimodal image analysis with model + mmproj, hashes recorded (SmolVLM2-500M files now present locally; no run recorded)
+- [~] Real multimodal image analysis: proven through the HCS adapter (SmolVLM2-500M Q8_0 + mmproj, CPU and Vulkan, `M2-vision/`); a standalone upstream `llama-mtmd-cli` run is NOT recorded and the model-file hashes are not in `dependency-lock.json`
 - [x] sdcpp Vulkan build, diffusion smoke (SD1.5 Q8_0) (`M1/sd`)
 - [ ] sdcpp CPU params vs `--params-backend disk` comparison (B7)
 - [x] CPU-only fallback verified for text and diffusion (not for vision)
@@ -52,30 +55,32 @@ hardening/soak -> release package. M7 single-EXE and M8 kernels gate only the si
 
 ## M2 Headless core
 - [x] C++20 core: Result/Error + exit codes, lifecycle state machine, registry/manifest, JobQueue, MemoryBudget, Settings, PathGuard, logger, engine interfaces
-- [x] CLI: `--help` everywhere, `doctor`, `models list|scan|inspect|load|unload`, `chat`, `image generate|edit`, `serve`, `mcp stdio`
+- [x] CLI: `--help` everywhere, `doctor`, `models list|scan|inspect|load|unload`, `chat`, `image generate|edit`, `serve`, `mcp stdio`, `benchmark --suite quick`
 - [x] Control-plane facade (`src/api/control_plane.cpp`): registry + JobQueue + engines, model switch unloads the previous model
-- [~] Budget checked before eviction: `MemoryBudget` is unit-tested; verifying it against real engine loads is NOT RUN
-- [x] `src/engines/llama` adapter implementing `ITextEngine` (text)
-- [ ] llama adapter vision (`analyze_image` returns `Unsupported`)
+- [~] Budget checked before eviction: `MemoryBudget` is unit-tested and fed by a live memory probe (`src/hardware/memory_probe.cpp`); verifying it against real engine loads is NOT RUN
+- [x] `src/engines/llama` adapter implementing `ITextEngine` (text + vision)
 - [x] `src/engines/diffusion` adapter implementing `IImageEngine` (text-to-image, img2img; CPU + Vulkan)
-- [ ] CLI `vision`, `benchmark`, `tune`, `cache` (exit code 10 today)
-- [x] Cancellation mid-generation and 10x load/unload on the llama adapter (`M2/llama-engine-integration.txt`); [ ] same for the diffusion adapter
+- [~] CLI `tune`, `cache` (exit code 10 today; `benchmark` is implemented)
+- [x] Cancellation mid-generation and 10x load/unload on the llama adapter (`M2/llama-engine-integration.txt`); [x] the diffusion adapter has blocking/cancellation integration tests (`DiffusionBlocking.*`)
 - [~] ADR-001..004: finalised with the evidence available; open items are listed inside each ADR
 
 ## M3 Unified API and MCP
 - [x] HTTP: `/v1/models`, `/v1/chat/completions` (+streaming), `/hcs/v1/{health,runtime,devices,memory,models,models/{id},jobs}`
-- [ ] `/v1/images/generations`, `/v1/images/edits`, image input on chat, `POST /hcs/v1/benchmarks` (501 today)
+- [x] `/v1/images/generations`, `/v1/images/edits` (real render, `M3-image/` 47/47)
+- [ ] `POST /hcs/v1/benchmarks` (`501` today; the CLI `benchmark` command is the supported path)
 - [x] Loopback bind, token auth, body limits, request IDs, structured errors, inflight cap (`tests/contract/api*`)
 - [x] MCP stdio tools: models list/inspect/load/unload, chat.generate, runtime.status, jobs.status/cancel; stdout clean; real run in `e2e_real.py`
-- [ ] MCP `hcs.vision.analyze`, `hcs.image.generate`, `hcs.image.edit` (return `unsupported` today)
+- [x] MCP `hcs.vision.analyze`, `hcs.image.generate`, `hcs.image.edit` (real render, image content block, `M3-image/`)
 - [ ] Optional Streamable HTTP (deliberately not implemented; only after Origin validation + conformance tests)
 - [x] Malformed/oversized/unauthorised request tests; path-root enforcement tests
 
 ## M4 GUI
-- [x] ADR-009 toolkit decision (proposed: embedded local web UI served by the loopback API)
-- [ ] Chat, Vision, Image Studio, Models, Performance, Settings
-- [ ] Simple/Advanced modes; real state, no inert controls; UI starts without Vulkan
-- [ ] Normal-user workflow without terminal
+- [x] ADR-009 toolkit decision (embedded local web UI served by the loopback API) - **accepted and implemented**
+- [x] Chat, Vision, Image Studio, Models, Performance, Settings (`src/gui/assets`), Simple/Advanced modes
+- [x] Hook wired into `ApiHandler::handle()`; real state from `/hcs/v1/*`, no inert controls; page is static so it renders without an engine
+- [x] Unit tests (11 `GuiAssets.*`), contract tests (`ApiUi.*`), e2e over a real socket + a real headless-Chrome boot (`M4-gui/`)
+- [~] Normal-user workflow: manually run against real models (recorded in `M4-gui/README.md`), automated playwright phase NOT RUN
+- [ ] GUI on a Vulkan build; image edit in the UI (CLI/MCP only today)
 
 ## M5 Model Vault v1
 - [~] Approved root + path guard + header/size validation exist; full-file hash validation exists in `hcs_storage` (sha256), not in the registry scan
@@ -104,14 +109,15 @@ hardening/soak -> release package. M7 single-EXE and M8 kernels gate only the si
 - [ ] Each with research note, flag, correctness + performance tests
 
 ## M10 Hardening and release
-- [ ] Security/dependency audit, longer fuzz (ASan + UBSan), soak (100 load/unload, 30 min generation), OOM/device-lost/HDD-unplug
+- [x] Security audit D1-D7: deep-JSON stack guard, connection budget/starvation, abandoned-request cancellation, runaway-job cap, reserved Windows device names, duplicate security headers, loopback literal parsing (`M10-fixes/`)
+- [ ] Soak (100 load/unload, 30 min generation), long fuzz (ASan), OOM/device-lost/HDD-unplug injection
 - [~] SBOM (`scripts/sbom.ps1`), checksums (`scripts/package.ps1`), notices (`THIRD_PARTY_NOTICES.md`) created; not yet run in release CI
 - [ ] Signed build, release notes, support matrix, clean-machine quick start
 
 ## Cross-cutting ADRs
 - [x] 001 GGML topology (accepted with scope limits); 002 process model; 003 Vulkan ownership; 004 memory budget (accepted with open validation items)
 - [x] 005 Vault/no-SSD cache; 006 chunk container; 007 API/MCP security
-- [x] 008 static CRT (decision: deferred, evidence plan); 009 GUI (proposed); 010 benchmark methodology (accepted)
+- [x] 008 static CRT (decision: deferred, evidence plan); 009 GUI (accepted and implemented); 010 benchmark methodology (accepted, first B0 run recorded)
 
 ## CI
 - [x] `.github/workflows/pr.yml`: windows-latest configure/build/ctest + format check (created; never executed, repo has no commits or remote)

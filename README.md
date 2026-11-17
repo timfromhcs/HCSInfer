@@ -5,9 +5,10 @@ HCSInfer is a local-first runtime for text chat, image understanding and image g
 `llama.cpp`/GGML and `stable-diffusion.cpp` behind one control plane (model registry, job queue,
 memory budget, HTTP API, MCP).
 
-**Status: alpha (pre-V1).** Real text generation (CPU and Vulkan), real image generation/editing (CLI, CPU and
-Vulkan), a loopback HTTP API and an MCP stdio server run on the target machine. **GUI, HTTP/MCP image
-generation routes, benchmarks and custom Vulkan kernels are not implemented.** V1 is not released. See
+**Status: alpha (pre-V1).** Real text generation (CPU and Vulkan), real image generation/editing (CLI, HTTP, MCP,
+GUI; CPU and Vulkan), image understanding, a loopback HTTP API, an MCP stdio server, an embedded local web UI and a
+real text benchmark command run on the target machine. **Custom Vulkan kernels, the Model Vault in the engine load
+path, the single-file EXE, `tune`/`cache` and Streamable HTTP are not implemented.** V1 is not released. See
 `docs/roadmap/STATUS.md` for the evidence behind every row below.
 
 ## Feature matrix
@@ -22,20 +23,22 @@ generation routes, benchmarks and custom Vulkan kernels are not implemented.** V
 | Model registry, lifecycle, job queue, cancellation, memory-budget arithmetic, approved-root path guard | Implemented | |
 | HTTP API: `/v1/models`, `/v1/chat/completions` (streaming), `/hcs/v1/*` | Experimental | loopback by default, bearer token, size limits; `docs/api.md` |
 | HTTP API: image input on chat (`image_url` data URIs, streaming, cancellation) | Experimental | needs a model + its mmproj in one folder; `docs/api.md` |
-| HTTP API: `/v1/images/*`, `POST /hcs/v1/benchmarks` | Planned | return `501` today |
+| HTTP API: `/v1/images/generations`, `/v1/images/edits` | Experimental | real stable-diffusion.cpp render; `b64_json` only, no `url`/`mask` (`501`); JSON body only (`multipart` -> `415`); `docs/api.md` |
+| HTTP API: `POST /hcs/v1/benchmarks` | Planned | return `501` today |
 | MCP stdio: models, chat, runtime, jobs tools | Experimental | `docs/mcp.md` |
 | MCP: `hcs.vision.analyze` | Experimental | real VLM, path guarded; `docs/mcp.md` |
-| MCP: `hcs.image.generate`, `hcs.image.edit` | Planned | listed, return `unsupported` today |
+| MCP: `hcs.image.generate`, `hcs.image.edit` | Experimental | real render, image returned as an MCP image content block; `docs/mcp.md` |
 | MCP Streamable HTTP | Planned | intentionally not implemented |
-| GUI | Planned | design proposal in ADR-009 (local web UI served by the API); nothing built |
+| GUI: embedded local web UI (`GET /`, `/ui/*` on the same loopback listener) | Experimental | Chat/Vision/Image Studio/Models/Performance/Settings, Simple+Advanced; no framework, no CDN; `docs/gui.md`, ADR-009 |
 | Model Vault: bounded async sequential reads, SHA-256 (`src/storage`) | Experimental | tested read-only on a real GGUF; the engines do not load through it yet |
 | HCSMODEL chunk container (Raw/LZ4/Zstd, per-chunk hashes) | Experimental | a measured loading benefit on the HDD is not proven |
 | Shared GGML (one GGML for both engines, `SD_USE_UPSTREAM_GGML=ON`) | Experimental | SD1.5 output matched the patched build once; other models untested |
 | Portable folder package + SHA-256 + SBOM (`scripts/package.ps1`, `scripts/sbom.ps1`) | Experimental | not a single-file EXE |
 | Single `HCSInfer.exe` | Planned, unproven | dynamic CRT today, no clean-machine test (ADR-008) |
-| `benchmark`, `tune`, `cache` CLI commands | Planned | exit code 10 |
+| `benchmark` CLI (`--suite quick`): real text benchmark, AGENTS.md 21.1 JSON | Implemented | cold+warm phases, median/p90, real metrics from the engine; `--suite full` planned |
+| `tune`, `cache` CLI commands | Planned | exit code 10 |
 | Custom Vulkan kernels, scheduler, advanced research features | Planned | only with measured benefit |
-| CI (GitHub Actions) | Created, never run | `.github/workflows/`; the repository has no commits or remote yet |
+| CI (GitHub Actions) | Created, never run | `.github/workflows/`; the repository has commits but **no remote**, so the workflows have never executed |
 
 Legend: Implemented / Experimental / Planned / Unsupported.
 
@@ -61,11 +64,14 @@ $exe = '.\build\windows-msvc-release\bin\HCSInfer.exe'
 & $exe image generate --model D:\models\sd15-q8_0.gguf --prompt "a red apple on a plain table" `
    --width 256 --height 256 --steps 2 --backend cpu --json
 & $exe serve --model-root E:\models                                   # 127.0.0.1:8765, token printed on stderr
+                                                                    # open the printed web UI URL, or use the API
+& $exe benchmark --suite quick --model E:\models\model.gguf --backend cpu --export bench.json
 & $exe mcp stdio --model-root E:\models
 ```
 
-Exact build commands and troubleshooting: `docs/build.md`. Tests that need a real model skip (and say so) unless
-`HCS_TEST_GGUF` points to a GGUF file.
+Exact build commands and troubleshooting: `docs/build.md`. Tests that need a real model skip (and say so) unless the
+matching variable points at one: `HCS_TEST_GGUF` (text), `HCS_TEST_VLM` + `HCS_TEST_MMPROJ` (vision),
+`HCS_TEST_DIFFUSION_MODEL` (image).
 
 ## Models and licences
 
@@ -83,8 +89,10 @@ runs took seconds), and cold/warm numbers must never be compared. See `docs/mode
 
 - The API binds to `127.0.0.1` by default, requires a bearer token, validates `Host`/`Origin`, and caps body size and
   concurrency. LAN exposure is an explicit opt-in (`--lan`).
-- MCP and API file arguments go through the approved-root guard (`..`, symlink/junction escape rejected). No shell or
-  arbitrary file tool exists.
+- MCP and API file arguments go through the approved-root guard (`..`, symlink/junction escape, reserved Windows
+  device names such as `NUL`/`CON`, trailing dots/spaces rejected). No shell or arbitrary file tool exists.
+- Untrusted JSON bodies and MCP lines are rejected before parsing when they nest too deeply (stack-exhaustion guard);
+  image dimensions/size and the number of concurrent jobs are bounded.
 - Logs go to stderr as JSON lines and never contain prompts or images.
 - No network access at run time. The build fetches pinned GoogleTest, nlohmann/json, cpp-httplib, LZ4 and Zstandard.
 
@@ -92,13 +100,20 @@ See `SECURITY.md`.
 
 ## Benchmarks
 
-Only provisional numbers exist (uncontrolled, few samples): `docs/test-evidence/M1/llama/README.md`,
-`docs/test-evidence/M6-storage/`. Methodology for future results: `docs/decisions/ADR-010-benchmark-methodology.md`.
+`HCSInfer benchmark --suite quick --model <gguf>` measures real load time, TTFT, prompt and decode tokens/s
+(cold process phase + warm phase with warm-up, median/p90 and the raw samples) and prints one AGENTS.md 21.1 JSON
+document with machine, model hash, quantization, backend and storage metadata. Unmeasurable values are the string
+`unknown`, never an estimate. `--suite full` is not implemented yet.
+
+Provisional numbers from earlier runs exist (uncontrolled, few samples): `docs/test-evidence/M1/llama/README.md`,
+`docs/test-evidence/M6-storage/`. Methodology: `docs/decisions/ADR-010-benchmark-methodology.md`.
 No performance claim is made beyond those files.
 
 ## Known limitations
 
-- Vision is limited to one image per single-turn request and one tested model family (SmolVLM2); no GUI, no benchmark command, no custom kernels.
+- Vision is limited to one image per single-turn request and one tested model family (SmolVLM2); no custom kernels and no scheduler beyond the single-worker job queue.
+- Image routes are text-to-image and img2img only (`b64_json`); `url` responses, `mask`/inpainting and `multipart/form-data` uploads are rejected with a clear error.
+- The GUI is served on the loopback API listener and needs a browser; it has no progress bar for model load, and image edit is CLI/MCP-only.
 - Image models other than SD1.5 Q8_0 are untested; FP8/INT8 diffusion paths are unavailable with upstream GGML.
 - Output of Vulkan diffusion was once not byte-reproducible run to run (not investigated).
 - Real-model tests skip without `HCS_TEST_GGUF`; GPU tests only run on the Vulkan build.
