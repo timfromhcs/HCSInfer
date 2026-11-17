@@ -1,0 +1,322 @@
+{
+  "summary": {
+    "tasks": 40,
+    "passed": 37,
+    "score": 0.925,
+    "tool_use_score": 0.9062,
+    "coding_score": 1.0,
+    "by_category": {
+      "single": {
+        "passed": 12,
+        "total": 12
+      },
+      "select": {
+        "passed": 6,
+        "total": 6
+      },
+      "typed": {
+        "passed": 4,
+        "total": 4
+      },
+      "nocall": {
+        "passed": 4,
+        "total": 4
+      },
+      "parallel": {
+        "passed": 0,
+        "total": 3
+      },
+      "followup": {
+        "passed": 3,
+        "total": 3
+      },
+      "coding": {
+        "passed": 8,
+        "total": 8
+      }
+    },
+    "tasks_sha256": "9080875e782699913bcf20d0e630b3083a78a8f02b8372464ce4b9cbcebfcf26"
+  },
+  "results": [
+    {
+      "id": "single-01",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.9762458801269531
+    },
+    {
+      "id": "single-02",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.9574627876281738
+    },
+    {
+      "id": "single-03",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.8004682064056396
+    },
+    {
+      "id": "single-04",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.0735409259796143
+    },
+    {
+      "id": "single-05",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.3116068840026855
+    },
+    {
+      "id": "single-06",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.7429087162017822
+    },
+    {
+      "id": "single-07",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.9150810241699219
+    },
+    {
+      "id": "single-08",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.8725171089172363
+    },
+    {
+      "id": "single-09",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.9654898643493652
+    },
+    {
+      "id": "single-10",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.2802650928497314
+    },
+    {
+      "id": "single-11",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.7270717620849609
+    },
+    {
+      "id": "single-12",
+      "category": "single",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.0304131507873535
+    },
+    {
+      "id": "select-01",
+      "category": "select",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.728609323501587
+    },
+    {
+      "id": "select-02",
+      "category": "select",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.1675894260406494
+    },
+    {
+      "id": "select-03",
+      "category": "select",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.3373973369598389
+    },
+    {
+      "id": "select-04",
+      "category": "select",
+      "pass": true,
+      "reason": "",
+      "seconds": 2.06290864944458
+    },
+    {
+      "id": "select-05",
+      "category": "select",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.6302282810211182
+    },
+    {
+      "id": "select-06",
+      "category": "select",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.3400135040283203
+    },
+    {
+      "id": "typed-01",
+      "category": "typed",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.5464940071105957
+    },
+    {
+      "id": "typed-02",
+      "category": "typed",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.212435007095337
+    },
+    {
+      "id": "typed-03",
+      "category": "typed",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.324197769165039
+    },
+    {
+      "id": "typed-04",
+      "category": "typed",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.219285249710083
+    },
+    {
+      "id": "nocall-01",
+      "category": "nocall",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.88431715965271
+    },
+    {
+      "id": "nocall-02",
+      "category": "nocall",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.8831546306610107
+    },
+    {
+      "id": "nocall-03",
+      "category": "nocall",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.4869754314422607
+    },
+    {
+      "id": "nocall-04",
+      "category": "nocall",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.0537607669830322
+    },
+    {
+      "id": "parallel-01",
+      "category": "parallel",
+      "pass": false,
+      "reason": "expected 2 call(s), got 1",
+      "seconds": 1.1726820468902588
+    },
+    {
+      "id": "parallel-02",
+      "category": "parallel",
+      "pass": false,
+      "reason": "expected 2 call(s), got 1",
+      "seconds": 0.9223573207855225
+    },
+    {
+      "id": "parallel-03",
+      "category": "parallel",
+      "pass": false,
+      "reason": "expected 2 call(s), got 1",
+      "seconds": 1.1843352317810059
+    },
+    {
+      "id": "followup-01",
+      "category": "followup",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.1728925704956055
+    },
+    {
+      "id": "followup-02",
+      "category": "followup",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.7189412117004395
+    },
+    {
+      "id": "followup-03",
+      "category": "followup",
+      "pass": true,
+      "reason": "",
+      "seconds": 0.9454488754272461
+    },
+    {
+      "id": "coding-01",
+      "category": "coding",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.4534037113189697
+    },
+    {
+      "id": "coding-02",
+      "category": "coding",
+      "pass": true,
+      "reason": "",
+      "seconds": 3.1422698497772217
+    },
+    {
+      "id": "coding-03",
+      "category": "coding",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.4068388938903809
+    },
+    {
+      "id": "coding-04",
+      "category": "coding",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.5053339004516602
+    },
+    {
+      "id": "coding-05",
+      "category": "coding",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.8828270435333252
+    },
+    {
+      "id": "coding-06",
+      "category": "coding",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.2754759788513184
+    },
+    {
+      "id": "coding-07",
+      "category": "coding",
+      "pass": true,
+      "reason": "",
+      "seconds": 4.125342607498169
+    },
+    {
+      "id": "coding-08",
+      "category": "coding",
+      "pass": true,
+      "reason": "",
+      "seconds": 1.260136604309082
+    }
+  ]
+}

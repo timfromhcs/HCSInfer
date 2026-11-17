@@ -1,0 +1,5 @@
+[hcsinfer] cold: backend=vulkan device=AMD Radeon(TM) Graphics (Vulkan0) load_ms=1074 ttft_ms=360
+[hcsinfer] warm 1/3: ttft_ms=378 prompt_tps=19952 decode_tps=37.451
+[hcsinfer] warm 2/3: ttft_ms=476 prompt_tps=18115.9 decode_tps=35.8995
+[hcsinfer] warm 3/3: ttft_ms=437 prompt_tps=15762.2 decode_tps=35.1375
+[hcsinfer] wrote benchmark-quick-vulkan-lfm3-omni-2b-q8_0-quiet.json

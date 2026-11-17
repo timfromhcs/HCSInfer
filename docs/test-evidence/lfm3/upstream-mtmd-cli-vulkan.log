@@ -1,0 +1,23 @@
+0.10.140.661 I cmn          init: llama threadpool init, n_threads = 8
+0.30.671.820 W init_audio: audio input is in experimental stage and may have reduced quality:
+    https://github.com/ggml-org/llama.cpp/discussions/13759
+0.30.749.336 I mtmd_cli_context: chat template example:
+<|im_start|>system
+You are a helpful assistant<|im_end|>
+<|im_start|>user
+Hello<|im_end|>
+<|im_start|>assistant
+Hi there<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+
+0.30.749.351 I main: loading model: LFM3-Omni-2B-Q8_0.gguf
+0.30.749.384 W WARN: This is an experimental CLI for testing multimodal capability.
+0.30.749.385 W       For normal use cases, please use the standard llama-cli
+0.31.780.585 I encoding mtmd batch, n_chunks = 1 (done = 1, total = 3)
+0.36.428.027 I mtmd batch encoding done in 4647 ms
+
+<think></think>The square is **red**, and it is set against a **light gray** background (the square itself is a solid, flat red with no gradient or texture).
+
+

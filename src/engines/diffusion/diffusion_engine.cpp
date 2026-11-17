@@ -17,9 +17,12 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <thread>
 #include <vector>
+
+#include <nlohmann/json.hpp>
 
 #include "stable-diffusion.h"
 
@@ -140,6 +143,8 @@ std::string tail_error_lines(const std::string& log) {
         std::string line = log.substr(pos, e - pos);
         pos = e + 1;
         const std::string low = lower(line);
+        if (low.find("using upstream ggml") != std::string::npos)
+            continue;  // startup warning that happens to contain the word "unsupported"
         if (low.find("error") != std::string::npos || low.find("failed") != std::string::npos ||
             low.find("unsupported") != std::string::npos || low.find("invalid") != std::string::npos)
             keep.push_back(line);
@@ -297,12 +302,107 @@ void progress_cb(const sd_generation_progress_t* p, void* data) {
         (*st->sink)(std::clamp(frac, 0.0, 1.0), std::move(msg));
 }
 
+// ---------------------------------------------------------------------------------------------
+// Multi-file models (FLUX.3 Klein = diffusion GGUF + LLM text encoder + VAE).
+// ---------------------------------------------------------------------------------------------
+struct Components {
+    std::string llm;
+    std::string vae;
+    std::string params_backend;
+    bool any() const { return !llm.empty() || !vae.empty(); }
+};
+
+// `<model without extension>.components.json`: {"llm": "rel/path", "vae": "rel/path", "params_backend": "cpu"}.
+// Paths must be relative to the model's directory, free of "..", and stay under that directory after
+// canonicalisation (no junction/symlink escape). The file is untrusted input and size-capped.
+Result<Components> read_sidecar(const std::filesystem::path& model) {
+    namespace fs = std::filesystem;
+    fs::path side = model;
+    side.replace_extension(".components.json");
+    std::error_code ec;
+    if (!fs::is_regular_file(side, ec))
+        return Components{};
+    const auto size = fs::file_size(side, ec);
+    if (ec || size == 0 || size > (64u << 10))
+        return Error(ErrorCode::InvalidArgument,
+                     "components sidecar is empty or larger than 64 KiB: " + side.filename().string());
+    std::ifstream f(side, std::ios::binary);
+    std::string text(static_cast<std::size_t>(size), '\0');
+    f.read(text.data(), static_cast<std::streamsize>(text.size()));
+    nlohmann::json j = nlohmann::json::parse(text, nullptr, false);
+    if (!j.is_object())
+        return Error(ErrorCode::InvalidArgument, "components sidecar is not a JSON object");
+    const fs::path base = fs::weakly_canonical(model.parent_path(), ec);
+    auto resolve = [&](const char* key, std::string& out) -> Result<void> {
+        if (!j.contains(key))
+            return {};
+        if (!j[key].is_string())
+            return Error(ErrorCode::InvalidArgument,
+                         std::string("components sidecar: '") + key + "' must be a string");
+        const std::string rel = j[key].get<std::string>();
+        const fs::path rp(rel);
+        if (rel.empty() || rp.is_absolute() || rp.has_root_name() || rel.find("..") != std::string::npos)
+            return Error(ErrorCode::SecurityViolation, std::string("components sidecar: '") + key +
+                                                           "' must be a relative path without '..'");
+        std::error_code e2;
+        const fs::path full = fs::weakly_canonical(base / rp, e2);
+        if (e2 || !fs::is_regular_file(full, e2))
+            return Error(ErrorCode::NotFound, std::string("components sidecar: '") + key + "' file not found");
+        const auto rel_to = full.lexically_relative(base);
+        if (rel_to.empty() || *rel_to.begin() == "..")
+            return Error(ErrorCode::SecurityViolation,
+                         std::string("components sidecar: '") + key + "' escapes the model directory");
+        out = full.string();
+        return {};
+    };
+    Components c;
+    if (auto r = resolve("llm", c.llm); !r)
+        return r.error();
+    if (auto r = resolve("vae", c.vae); !r)
+        return r.error();
+    if (j.contains("params_backend") && j["params_backend"].is_string())
+        c.params_backend = j["params_backend"].get<std::string>();
+    return c;
+}
+
+// Quality/time points per model family. Values come from the step sweep in docs/test-evidence/flux3
+// (distilled FLUX.3 Klein: 16 steps is the upstream reference, cfg 1.0).
+struct PresetPoint {
+    std::uint32_t steps;
+    float cfg;
+};
+
+constexpr PresetPoint kFlux3Fast{8, 1.0f};
+constexpr PresetPoint kFlux3Quality{16, 1.0f};
+
+std::optional<PresetPoint> preset_for(const std::string& family, const std::string& preset) {
+    if (family == "flux3") {
+        if (preset == "fast")
+            return kFlux3Fast;
+        if (preset == "quality")
+            return kFlux3Quality;
+    }
+    return std::nullopt;
+}
+
+bool valid_preset_name(const std::string& p) {
+    return p.empty() || p == "fast" || p == "quality";
+}
+
+std::string family_from_log(const std::string& log) {
+    const std::string low = lower(log);
+    if (low.find("flux.3") != std::string::npos || low.find("flux3") != std::string::npos)
+        return "flux3";
+    return {};
+}
+
 struct Session {
     sd_ctx_t* ctx = nullptr;
     std::string device_name;
     std::string device_description;
+    std::string family;  // "flux3" | "" (unknown); drives presets
     bool gpu = false;
-    std::uint32_t model_bytes = 0;
+    std::uint64_t model_bytes = 0;
     std::mutex run_mu;
     ~Session() {
         if (ctx)
@@ -335,8 +435,8 @@ struct DiffusionImageEngine::Impl {
     mutable std::mutex rm;
     std::map<JobId, ImageResult> results;
 
-    Result<ImageResult> render(sd_ctx_t* ctx, const ImageRequest& req, const CancellationToken& token,
-                               const ProgressSink& sink);
+    Result<ImageResult> render(sd_ctx_t* ctx, const std::string& family, const ImageRequest& req,
+                               const CancellationToken& token, const ProgressSink& sink);
 };
 
 DiffusionImageEngine::DiffusionImageEngine(JobQueue& queue) : impl_(std::make_unique<Impl>(queue)) {}
@@ -415,11 +515,37 @@ Result<void> DiffusionImageEngine::load(const LoadRequest& req) {
         }
     }
 
+    std::uint64_t total_bytes = 0;
     {
         std::error_code ec;
         const auto size = std::filesystem::file_size(req.model_path, ec);
         if (ec || size == 0)
             return Error(ErrorCode::NotFound, "cannot read model file: " + req.model_path);
+        total_bytes = size;
+    }
+
+    Components comp;
+    comp.llm = req.llm_path;
+    comp.vae = req.vae_path;
+    comp.params_backend = req.params_backend;
+    if (!comp.any()) {
+        auto side = read_sidecar(std::filesystem::path(req.model_path));
+        if (!side)
+            return side.error();
+        comp = side.value();
+        if (!req.params_backend.empty())
+            comp.params_backend = req.params_backend;
+    }
+    if (!comp.params_backend.empty() && comp.params_backend != "cpu" && comp.params_backend != "disk")
+        return Error(ErrorCode::InvalidArgument, "params_backend must be 'cpu' or 'disk'");
+    for (const std::string* extra : {&comp.llm, &comp.vae}) {
+        if (extra->empty())
+            continue;
+        std::error_code ec;
+        const auto size = std::filesystem::file_size(*extra, ec);
+        if (ec || size == 0)
+            return Error(ErrorCode::NotFound, "cannot read model component file: " + *extra);
+        total_bytes += size;
     }
 
     const auto entries = device_entries();
@@ -484,11 +610,18 @@ Result<void> DiffusionImageEngine::load(const LoadRequest& req) {
         return {};
     };
 
-    Result<void> cfg = set_string("model_path", req.model_path);
+    // Multi-file models (FLUX.3 Klein) name the DiT as diffusion_model_path; all-in-one checkpoints use
+    // model_path.
+    Result<void> cfg = set_string(comp.any() ? "diffusion_model_path" : "model_path", req.model_path);
+    if (cfg && !comp.llm.empty())
+        cfg = set_string("llm_path", comp.llm);
+    if (cfg && !comp.vae.empty())
+        cfg = set_string("vae_path", comp.vae);
     if (cfg)
         cfg = set_string("backend", chosen->name);
     if (cfg)
-        cfg = set_string("params_backend", "cpu");
+        cfg = set_string("params_backend",
+                         comp.params_backend.empty() ? std::string("cpu") : comp.params_backend);
     // HCS LoadRequest::threads == 0 means "engine default"; upstream rejects 0, so only send a positive
     // value.
     if (cfg && req.threads > 0)
@@ -512,7 +645,12 @@ Result<void> DiffusionImageEngine::load(const LoadRequest& req) {
             std::lock_guard l(impl_->mm);
             impl_->load_log = log;
         }
-        const std::string why = tail_error_lines(log);
+        std::string why = tail_error_lines(log);
+        if (!comp.any() && log.find("get sd version from file failed") != std::string::npos)
+            why += (why.empty() ? "" : " | ") +
+                   std::string("this file is not an all-in-one checkpoint; a diffusion-only model (FLUX.3 Klein) "
+                               "needs its text encoder and VAE: pass llm_path/vae_path (CLI --llm/--vae) or add a "
+                               "<model>.components.json sidecar");
         Error e = map_status(created, "stable-diffusion.cpp could not load the model" +
                                           (why.empty() ? std::string() : ": " + why));
         return e;
@@ -523,17 +661,14 @@ Result<void> DiffusionImageEngine::load(const LoadRequest& req) {
     s->device_name = chosen->name;
     s->device_description = chosen->description;
     s->gpu = use_gpu;
+    s->family = family_from_log(log);
 
     EngineMetrics m;
     m.backend = use_gpu ? "vulkan" : "cpu";
     m.device = chosen->description.empty() ? chosen->name : chosen->description + " (" + chosen->name + ")";
     m.load_ms = ms_since(t0);
-    {
-        std::error_code ec;
-        const auto size = std::filesystem::file_size(req.model_path, ec);
-        s->model_bytes = ec ? 0 : static_cast<std::uint32_t>(std::min<std::uint64_t>(size, UINT32_MAX));
-    }
-    m.resident_bytes = s->model_bytes;  // upper bound (file size); the engine does not report RSS
+    s->model_bytes = total_bytes;
+    m.resident_bytes = s->model_bytes;  // upper bound (sum of component file sizes); no RSS is reported
     {
         std::lock_guard l(impl_->mm);
         impl_->metrics = m;
@@ -602,7 +737,9 @@ Result<JobId> DiffusionImageEngine::submit(const std::string& name, const ImageR
         return Error(ErrorCode::InvalidArgument, "width/height must be in 64..4096");
     if (req.width % 8 != 0 || req.height % 8 != 0)
         return Error(ErrorCode::InvalidArgument, "width/height must be multiples of 8");
-    if (req.steps == 0 || req.steps > kMaxSteps)
+    if (!valid_preset_name(req.preset))
+        return Error(ErrorCode::InvalidArgument, "preset must be empty, 'fast' or 'quality'");
+    if (req.preset.empty() && (req.steps == 0 || req.steps > kMaxSteps))
         return Error(ErrorCode::InvalidArgument, "steps must be in 1..150");
     if (!(req.strength >= 0.0f && req.strength <= 1.0f))
         return Error(ErrorCode::InvalidArgument, "strength must be in 0..1");
@@ -626,7 +763,7 @@ Result<JobId> DiffusionImageEngine::submit(const std::string& name, const ImageR
             if (!s)
                 return Error(ErrorCode::Cancelled, "model was unloaded before the job started");
             ProgressSink sink = [&jc](double frac, std::string msg) { jc.progress(frac, std::move(msg)); };
-            auto r = impl->render(s->ctx, req, jc.token(), sink);
+            auto r = impl->render(s->ctx, s->family, req, jc.token(), sink);
             if (!r)
                 return r.error();
             std::lock_guard l(impl->rm);
@@ -680,7 +817,9 @@ Result<ImageResult> DiffusionImageEngine::run(const ImageRequest& req, const Can
         return Error(ErrorCode::InvalidArgument, "width/height must be in 64..4096");
     if (req.width % 8 != 0 || req.height % 8 != 0)
         return Error(ErrorCode::InvalidArgument, "width/height must be multiples of 8");
-    if (req.steps == 0 || req.steps > kMaxSteps)
+    if (!valid_preset_name(req.preset))
+        return Error(ErrorCode::InvalidArgument, "preset must be empty, 'fast' or 'quality'");
+    if (req.preset.empty() && (req.steps == 0 || req.steps > kMaxSteps))
         return Error(ErrorCode::InvalidArgument, "steps must be in 1..150");
     if (!(req.strength >= 0.0f && req.strength <= 1.0f))
         return Error(ErrorCode::InvalidArgument, "strength must be in 0..1");
@@ -700,7 +839,7 @@ Result<ImageResult> DiffusionImageEngine::run(const ImageRequest& req, const Can
         return Error(ErrorCode::Cancelled, "cancelled before generation started");
     std::lock_guard run_lock(s->run_mu);
     try {
-        auto r = impl_->render(s->ctx, req, token, sink);
+        auto r = impl_->render(s->ctx, s->family, req, token, sink);
         if (r) {
             std::lock_guard l(impl_->mm);
             impl_->metrics.image_generation_ms = r.value().generation_ms;
@@ -720,10 +859,26 @@ Result<ImageResult> DiffusionImageEngine::run(const ImageRequest& req, const Can
     }
 }
 
-Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const ImageRequest& req,
+Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std::string& family,
+                                                       const ImageRequest& request,
                                                        const CancellationToken& token,
                                                        const ProgressSink& sink) {
     const auto t0 = Clock::now();
+    // A preset replaces steps and cfg with the measured point for the loaded family. A preset without a
+    // table entry for this family is rejected rather than silently ignored.
+    ImageRequest req = request;
+    if (!req.preset.empty()) {
+        const auto pt = preset_for(family, req.preset);
+        if (!pt)
+            return Error(ErrorCode::InvalidArgument,
+                         "preset '" + req.preset + "' is not defined for the loaded model" +
+                             (family.empty() ? std::string(" (family not recognised; pass explicit steps)")
+                                             : " family '" + family + "'"));
+        req.steps = pt->steps;
+        req.cfg_scale = pt->cfg;
+    }
+    if (req.steps == 0 || req.steps > kMaxSteps)
+        return Error(ErrorCode::InvalidArgument, "steps must be in 1..150");
     sd_img_gen_opt_t* opt = sd_img_gen_opt_create();
     if (!opt)
         return Error(ErrorCode::OutOfMemory, "could not allocate image options");
@@ -844,6 +999,7 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const Imag
     out.width = static_cast<std::uint32_t>(width);
     out.height = static_cast<std::uint32_t>(height);
     out.steps = req.steps;
+    out.preset = req.preset;
     out.format = "png";
     if (!stbi_write_png_to_func(png_sink, &out.bytes, static_cast<int>(width), static_cast<int>(height),
                                 static_cast<int>(channels), pixels, static_cast<int>(width * channels)))

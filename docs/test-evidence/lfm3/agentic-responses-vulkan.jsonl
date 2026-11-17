@@ -1,0 +1,40 @@
+{"id": "single-01", "response": {"content": null, "tool_calls": [{"name": "get_weather", "arguments": {"city": "Paris", "unit": "celsius"}}], "seconds": 0.9762458801269531}}
+{"id": "single-02", "response": {"content": null, "tool_calls": [{"name": "get_weather", "arguments": {"city": "Tokyo", "unit": "fahrenheit"}}], "seconds": 0.9574627876281738}}
+{"id": "single-03", "response": {"content": null, "tool_calls": [{"name": "calculator", "arguments": {"expression": "17 * 23 + 4"}}], "seconds": 0.8004682064056396}}
+{"id": "single-04", "response": {"content": null, "tool_calls": [{"name": "web_search", "arguments": {"max_results": 5, "query": "Python 3.13 release date"}}], "seconds": 1.0735409259796143}}
+{"id": "single-05", "response": {"content": null, "tool_calls": [{"name": "send_email", "arguments": {"body": "Are you free at noon?", "subject": "Lunch", "to": "anna@example.com"}}], "seconds": 1.3116068840026855}}
+{"id": "single-06", "response": {"content": null, "tool_calls": [{"name": "read_file", "arguments": {"path": "notes/todo.txt"}}], "seconds": 0.7429087162017822}}
+{"id": "single-07", "response": {"content": null, "tool_calls": [{"name": "run_sql", "arguments": {"query": "SELECT COUNT(*) AS row_count FROM users;"}}], "seconds": 0.9150810241699219}}
+{"id": "single-08", "response": {"content": null, "tool_calls": [{"name": "set_timer", "arguments": {"label": "tea", "seconds": 90}}], "seconds": 0.8725171089172363}}
+{"id": "single-09", "response": {"content": null, "tool_calls": [{"name": "translate_text", "arguments": {"target_language": "German", "text": "good morning"}}], "seconds": 0.9654898643493652}}
+{"id": "single-10", "response": {"content": null, "tool_calls": [{"name": "create_event", "arguments": {"all_day": true, "date": "2026-12-03", "title": "Offsite"}}], "seconds": 1.2802650928497314}}
+{"id": "single-11", "response": {"content": null, "tool_calls": [{"name": "get_stock_price", "arguments": {"ticker": "NVDA"}}], "seconds": 0.7270717620849609}}
+{"id": "single-12", "response": {"content": null, "tool_calls": [{"name": "write_file", "arguments": {"content": "hello world", "path": "out/greeting.txt"}}], "seconds": 1.0304131507873535}}
+{"id": "select-01", "response": {"content": null, "tool_calls": [{"name": "set_timer", "arguments": {"label": "stretch", "seconds": 600}}], "seconds": 1.728609323501587}}
+{"id": "select-02", "response": {"content": null, "tool_calls": [{"name": "calculator", "arguments": {"expression": "240 * 0.15"}}], "seconds": 1.1675894260406494}}
+{"id": "select-03", "response": {"content": null, "tool_calls": [{"name": "get_weather", "arguments": {"city": "Berlin", "unit": "celsius"}}], "seconds": 1.3373973369598389}}
+{"id": "select-04", "response": {"content": null, "tool_calls": [{"name": "send_email", "arguments": {"body": "The build is green.", "subject": "Build status", "to": "bob@example.com"}}], "seconds": 2.06290864944458}}
+{"id": "select-05", "response": {"content": null, "tool_calls": [{"name": "web_search", "arguments": {"max_results": 5, "query": "2022 FIFA World Cup winner"}}], "seconds": 1.6302282810211182}}
+{"id": "select-06", "response": {"content": null, "tool_calls": [{"name": "run_tests", "arguments": {"package": "core", "verbose": true}}], "seconds": 1.3400135040283203}}
+{"id": "typed-01", "response": {"content": null, "tool_calls": [{"name": "set_light", "arguments": {"brightness": 40, "on": true, "room": "kitchen"}}], "seconds": 1.5464940071105957}}
+{"id": "typed-02", "response": {"content": null, "tool_calls": [{"name": "set_light", "arguments": {"on": false, "room": "bedroom"}}], "seconds": 1.212435007095337}}
+{"id": "typed-03", "response": {"content": null, "tool_calls": [{"name": "add_tags", "arguments": {"note_id": 17, "tags": ["urgent", "finance"]}}], "seconds": 1.324197769165039}}
+{"id": "typed-04", "response": {"content": null, "tool_calls": [{"name": "web_search", "arguments": {"max_results": 3, "query": "rust async book"}}], "seconds": 1.219285249710083}}
+{"id": "nocall-01", "response": {"content": "I'm doing well, thank you! How can I help you today?", "tool_calls": [], "seconds": 0.88431715965271}}
+{"id": "nocall-02", "response": {"content": "The capital of France is **Paris**.", "tool_calls": [], "seconds": 0.8831546306610107}}
+{"id": "nocall-03", "response": {"content": "An API (Application Programming Interface) is a set of protocols and tools that allows different software applications to communicate and exchange data with each other.", "tool_calls": [], "seconds": 1.4869754314422607}}
+{"id": "nocall-04", "response": {"content": "You're welcome! If you have any more questions or need further assistance, just let me know.", "tool_calls": [], "seconds": 1.0537607669830322}}
+{"id": "parallel-01", "response": {"content": null, "tool_calls": [{"name": "get_weather", "arguments": {"city": "Rome", "unit": "celsius"}}], "seconds": 1.1726820468902588}}
+{"id": "parallel-02", "response": {"content": null, "tool_calls": [{"name": "get_stock_price", "arguments": {"ticker": "AAPL"}}], "seconds": 0.9223573207855225}}
+{"id": "parallel-03", "response": {"content": null, "tool_calls": [{"name": "set_timer", "arguments": {"label": "eggs", "seconds": 30}}], "seconds": 1.1843352317810059}}
+{"id": "followup-01", "response": {"content": "The current weather in Madrid is **sunny** with a temperature of **31 °C**.", "tool_calls": [], "seconds": 1.1728925704956055}}
+{"id": "followup-02", "response": {"content": "12 × 12 = **144**.", "tool_calls": [], "seconds": 0.7189412117004395}}
+{"id": "followup-03", "response": {"content": "The current price of Tesla (TSLA) is **$412.50**.", "tool_calls": [], "seconds": 0.9454488754272461}}
+{"id": "coding-01", "response": {"content": "```python\ndef is_palindrome(s):\n    cleaned = [ch.lower() for ch in s if ch.isalnum()]\n    return cleaned == cleaned[::-1]\n```", "tool_calls": [], "seconds": 1.4534037113189697}}
+{"id": "coding-02", "response": {"content": "```python\ndef fizzbuzz(n):\n    result = []\n    for i in range(1, n + 1):\n        if i % 3 == 0 and i % 5 == 0:\n            result.append('FizzBuzz')\n        elif i % 3 == 0:\n            result.append('Fizz')\n        elif i % 5 == 0:\n            result.append('Buzz')\n        else:\n            result.append(str(i))\n    return result\n```", "tool_calls": [], "seconds": 3.1422698497772217}}
+{"id": "coding-03", "response": {"content": "```python\ndef flatten(lst):\n    result = []\n    for item in lst:\n        if isinstance(item, list):\n            result.extend(flatten(item))\n        else:\n            result.append(item)\n    return result\n```", "tool_calls": [], "seconds": 1.4068388938903809}}
+{"id": "coding-04", "response": {"content": "```python\ndef word_count(text):\n    words = text.lower().split()\n    counts = {}\n    for word in words:\n        counts[word] = counts.get(word, 0) + 1\n    return counts\n```", "tool_calls": [], "seconds": 1.5053339004516602}}
+{"id": "coding-05", "response": {"content": "```python\ndef two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return (seen[complement], i)\n        seen[num] = i\n    return None\n```", "tool_calls": [], "seconds": 1.8828270435333252}}
+{"id": "coding-06", "response": {"content": "```python\ndef gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a\n```", "tool_calls": [], "seconds": 1.2754759788513184}}
+{"id": "coding-07", "response": {"content": "```python\ndef roman_to_int(s):\n    roman = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}\n    total = 0\n    for i in range(len(s)):\n        if i < len(s) - 1 and roman[s[i]] < roman[s[i + 1]]:\n            total -= roman[s[i]]\n        else:\n            total += roman[s[i]]\n    return total\n```", "tool_calls": [], "seconds": 4.125342607498169}}
+{"id": "coding-08", "response": {"content": "```python\ndef chunk(lst, n):\n    return [lst[i:i+n] for i in range(0, len(lst), n)]\n```", "tool_calls": [], "seconds": 1.260136604309082}}

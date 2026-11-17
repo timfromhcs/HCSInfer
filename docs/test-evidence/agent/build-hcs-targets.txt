@@ -1,0 +1,11 @@
+[0/2] Re-checking globbed directories...
+[1/11] Building CXX object src\train\CMakeFiles\hcs_train.dir\eval_gate.cpp.obj
+[2/11] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_eval_gate.cpp.obj
+[3/11] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\sandbox_policy.cpp.obj
+[4/11] Linking CXX static library lib\hcs_agent.lib
+[5/11] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_sandbox_policy.cpp.obj
+[6/11] Building CXX object src\train\CMakeFiles\hcs_train.dir\dataset_validator.cpp.obj
+[7/11] Linking CXX executable bin\hcs_test_agent.exe
+[8/11] Linking CXX static library lib\hcs_train.lib
+[9/11] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_dataset_validator.cpp.obj
+[10/11] Linking CXX executable bin\hcs_test_train.exe

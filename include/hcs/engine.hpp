@@ -35,6 +35,14 @@ struct LoadRequest {
     // Weight loading mode, engine-interpreted: "" / "auto" (engine default), "mmap", "none" (read into
     // RAM, no mmap), "mlock", "mmap+mlock", "direct_io". Unknown values => InvalidArgument.
     std::string load_mode;
+    // Diffusion multi-file models (FLUX.3 Klein: diffusion GGUF + LLM text encoder + VAE). Empty => the
+    // adapter looks for a `<model>.components.json` sidecar next to the model, else the model is a single
+    // all-in-one checkpoint. Paths are resolved through PathGuard by the caller.
+    std::string llm_path;
+    std::string vae_path;
+    // Where stable-diffusion.cpp keeps module weights between uses: "" (adapter default "cpu") | "cpu" |
+    // "disk". "disk" is a capacity fallback, not a speed-up (AGENTS.md 11.2).
+    std::string params_backend;
 };
 
 struct TextRequest {
@@ -65,6 +73,10 @@ struct ImageRequest {
     std::optional<ImageInput> init_image;  // edit / img2img
     float strength = 0.75f;                // denoising strength for edit / img2img (0..1)
     float cfg_scale = 0.0f;                // 0 => engine/model default (text CFG)
+    // Named quality/time point ("" | "fast" | "quality"). When set, the adapter replaces `steps` and
+    // `cfg_scale` with the values measured for the loaded model family (docs/test-evidence/flux3). A preset
+    // that has no entry for the loaded family is an InvalidArgument error, never silently ignored.
+    std::string preset;
 };
 
 struct EngineMetrics {

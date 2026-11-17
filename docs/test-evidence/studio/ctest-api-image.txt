@@ -1,0 +1,49 @@
+Running main() from D:\HCSInfer\build\img-api\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 17 tests from 3 test suites.
+[----------] Global test environment set-up.
+[----------] 12 tests from ApiImages
+[ RUN      ] ApiImages.GenerationReturnsBase64PngAndRecordsTheJob
+[       OK ] ApiImages.GenerationReturnsBase64PngAndRecordsTheJob (9 ms)
+[ RUN      ] ApiImages.DefaultsApplyWhenOnlyAPromptIsGiven
+[       OK ] ApiImages.DefaultsApplyWhenOnlyAPromptIsGiven (25 ms)
+[ RUN      ] ApiImages.WrongMethodAndMissingEngine
+[       OK ] ApiImages.WrongMethodAndMissingEngine (8 ms)
+[ RUN      ] ApiImages.RejectsInvalidRequestsBeforeTheEngineIsTouched
+[       OK ] ApiImages.RejectsInvalidRequestsBeforeTheEngineIsTouched (5 ms)
+[ RUN      ] ApiImages.MalformedOversizedAndWrongContentType
+[       OK ] ApiImages.MalformedOversizedAndWrongContentType (4 ms)
+[ RUN      ] ApiImages.NoImageModelLoadedIsAConflictNotACrash
+[       OK ] ApiImages.NoImageModelLoadedIsAConflictNotACrash (5 ms)
+[ RUN      ] ApiImages.SwitchingBetweenTextAndImageModelsUnloadsThePreviousOne
+[       OK ] ApiImages.SwitchingBetweenTextAndImageModelsUnloadsThePreviousOne (5 ms)
+[ RUN      ] ApiImages.ClientDisconnectCancelsTheRender
+[       OK ] ApiImages.ClientDisconnectCancelsTheRender (176 ms)
+[ RUN      ] ApiImages.RequestTimeoutCancelsTheRenderAndReturns504
+[       OK ] ApiImages.RequestTimeoutCancelsTheRenderAndReturns504 (318 ms)
+[ RUN      ] ApiImages.JobCancelEndpointStopsAnImageJob
+[       OK ] ApiImages.JobCancelEndpointStopsAnImageJob (47 ms)
+[ RUN      ] ApiImages.EngineFailureBecomesAStructuredError
+[       OK ] ApiImages.EngineFailureBecomesAStructuredError (10 ms)
+[ RUN      ] ApiImages.RuntimeReportsTheImageEngine
+[       OK ] ApiImages.RuntimeReportsTheImageEngine (12 ms)
+[----------] 12 tests from ApiImages (629 ms total)
+
+[----------] 3 tests from ApiImageEdits
+[ RUN      ] ApiImageEdits.AcceptsADataUriAndKeepsTheInputSizeByDefault
+[       OK ] ApiImageEdits.AcceptsADataUriAndKeepsTheInputSizeByDefault (11 ms)
+[ RUN      ] ApiImageEdits.BareBase64IsAccepted
+[       OK ] ApiImageEdits.BareBase64IsAccepted (13 ms)
+[ RUN      ] ApiImageEdits.RejectsBadInputImagesAndMultipart
+[       OK ] ApiImageEdits.RejectsBadInputImagesAndMultipart (12 ms)
+[----------] 3 tests from ApiImageEdits (38 ms total)
+
+[----------] 2 tests from ApiUi
+[ RUN      ] ApiUi.RootAndAssetsAreServedWithoutATokenButBehindHostAndOriginChecks
+[       OK ] ApiUi.RootAndAssetsAreServedWithoutATokenButBehindHostAndOriginChecks (14 ms)
+[ RUN      ] ApiUi.OnlyGetAndHeadAndTheApiStaysAuthenticated
+[       OK ] ApiUi.OnlyGetAndHeadAndTheApiStaysAuthenticated (10 ms)
+[----------] 2 tests from ApiUi (25 ms total)
+
+[----------] Global test environment tear-down
+[==========] 17 tests from 3 test suites ran. (694 ms total)
+[  PASSED  ] 17 tests.

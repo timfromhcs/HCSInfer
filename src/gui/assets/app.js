@@ -1,9 +1,10 @@
-/* HCSInfer local UI. Vanilla JS, no dependencies, no inline handlers, no network access except same-origin API calls.
+/* HCS Studio (HCSmedia) local UI. Vanilla JS, no dependencies, no inline handlers, no network access except same-origin API calls.
    Everything shown comes from the server; unsupported features display the server's reason. */
 "use strict";
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var DEFAULTS = { interval: 3 };
+  var TITLES = { chat: "Chat", image: "Image Studio", vision: "Vision", models: "Models", perf: "Performance", settings: "Settings", agent: "Agent", train: "Train" };
   var state = { token: "", mode: "simple", models: [], runtime: null, jobs: {}, perfTimer: 0, busy: {} };
 
   /* ---------- small helpers ---------- */
@@ -32,6 +33,23 @@
       dl.appendChild(el("dd", "", fmtVal(k, v)));
     });
   }
+  function randomSeed() {
+    try { var a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % 2147483647; } catch (e) { return Math.floor(Math.random() * 2147483647); }
+  }
+  function dataUriToBlob(uri) {
+    var m = /^data:([^;,]+)?(;base64)?,(.*)$/.exec(uri);
+    if (!m) return null;
+    var bin = m[2] ? atob(m[3]) : decodeURIComponent(m[3]), arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return new Blob([arr], { type: m[1] || "application/octet-stream" });
+  }
+  function readFileAsDataUri(f, ok, fail) {
+    var fr = new FileReader();
+    fr.onload = function () { ok(String(fr.result)); };
+    fr.onerror = function () { fail(); };
+    fr.readAsDataURL(f);
+  }
+  var IMG_OK = /^image\/(png|jpeg|gif|bmp)$/;
 
   /* ---------- panel states: idle | busy | loading | error | oom | unsupported | ok ---------- */
   function setBanner(id, kind, msg) {
@@ -125,8 +143,23 @@
     } catch (e) { return false; }
   }
 
-  /* ---------- tabs / mode ---------- */
-  var panels = ["chat", "vision", "image", "models", "perf", "settings"];
+  /* ---------- theme ---------- */
+  var THEMES = ["system", "light", "dark"];
+  function setTheme(t) {
+    if (THEMES.indexOf(t) < 0) t = "system";
+    var root = document.documentElement;
+    if (t === "system") root.removeAttribute("data-theme"); else root.setAttribute("data-theme", t);
+    lstore("hcs.theme", t);
+    var b = $("theme-toggle");
+    b.setAttribute("aria-label", "Theme: " + (t === "system" ? "follow system" : t) + ". Activate to change.");
+    text($("theme-label"), t);
+    Array.prototype.forEach.call(document.querySelectorAll("input[name=theme]"), function (r) { r.checked = r.value === t; });
+    state.theme = t;
+  }
+
+  /* ---------- tabs / mode / nav ---------- */
+  var panels = ["chat", "image", "vision", "models", "perf", "settings", "agent", "train"];
+  function closeNav() { $("side").classList.remove("open"); $("nav-toggle").setAttribute("aria-expanded", "false"); }
   function showPanel(name) {
     panels.forEach(function (p) {
       var on = p === name;
@@ -135,6 +168,9 @@
       t.setAttribute("aria-selected", on ? "true" : "false");
       t.tabIndex = on ? 0 : -1;
     });
+    text($("page-title"), TITLES[name] || name);
+    document.title = (TITLES[name] || "Studio") + " - HCS Studio";
+    closeNav();
     if (name === "perf") startPerf(); else stopPerf();
     if (name === "models") refreshModels().catch(function () {});
   }
@@ -144,13 +180,20 @@
     tabs.addEventListener("keydown", function (e) {
       var i = panels.indexOf(document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.panel : "");
       if (i < 0) return;
-      var n = e.key === "ArrowRight" ? i + 1 : e.key === "ArrowLeft" ? i - 1 : e.key === "Home" ? 0 : e.key === "End" ? panels.length - 1 : -1;
+      var n = (e.key === "ArrowRight" || e.key === "ArrowDown") ? i + 1 : (e.key === "ArrowLeft" || e.key === "ArrowUp") ? i - 1 : e.key === "Home" ? 0 : e.key === "End" ? panels.length - 1 : -1;
       if (n < 0) return;
       e.preventDefault();
       n = (n + panels.length) % panels.length;
       showPanel(panels[n]);
       $("tab-" + panels[n]).focus();
     });
+    $("nav-toggle").addEventListener("click", function () {
+      var open = !$("side").classList.contains("open");
+      $("side").classList.toggle("open", open);
+      $("nav-toggle").setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeNav(); });
+    $("main").addEventListener("click", closeNav);
   }
   function setMode(m) {
     state.mode = m === "advanced" ? "advanced" : "simple";
@@ -182,8 +225,11 @@
     }
     state.models.forEach(function (m) {
       var tr = el("tr");
-      tr.appendChild(el("td", "", m.display_name && m.display_name !== m.id ? m.display_name + " (" + m.id + ")" : m.id));
-      tr.appendChild(el("td", "", kindOf(m)));
+      var nm = el("td", "mname");
+      if (m.display_name && m.display_name !== m.id) { nm.appendChild(document.createTextNode(m.display_name)); nm.appendChild(el("div", "sub", m.id)); }
+      else nm.appendChild(document.createTextNode(m.id));
+      tr.appendChild(nm);
+      tr.appendChild(el("td", "", /^mmproj/i.test(m.id) ? "projector" : kindOf(m)));
       tr.appendChild(el("td", "", m.quantization || "unknown"));
       tr.appendChild(el("td", "", fmtBytes(m.size_bytes)));
       tr.appendChild(el("td", "", m.state));
@@ -191,29 +237,63 @@
       var loading = state.busy["load:" + m.id];
       var isLoaded = m.state === "loaded" || m.state === "running";
       var lb = el("button", "", loading ? "Loading..." : "Load");
-      lb.disabled = !!loading || isLoaded;
+      var isProj = /^mmproj/i.test(m.id);  /* a projector is loaded together with its model, never on its own */
+      lb.disabled = !!loading || isLoaded || isProj;
+      if (isProj) lb.title = "Projector file: it is loaded automatically with its vision model.";
       lb.addEventListener("click", function () { loadModel(m.id); });
       act.appendChild(lb);
       if (loading && loading.jobId) {
         var cb = el("button", "danger", "Cancel");
         cb.addEventListener("click", function () { cancelJob(loading.jobId); });
-        act.appendChild(document.createTextNode(" "));
         act.appendChild(cb);
       }
       var ub = el("button", "ghost", "Unload");
       ub.disabled = !isLoaded || !!loading;
       ub.addEventListener("click", function () { unloadModel(m.id); });
-      act.appendChild(document.createTextNode(" "));
       act.appendChild(ub);
       tr.appendChild(act);
       tb.appendChild(tr);
     });
+  }
+  /* Memory split: the server's budget entries grouped by category against the budget total. Unknown stays unknown. */
+  function renderMemory(mem) {
+    var bar = $("mem-bar"), lg = $("mem-legend"), note = $("mem-note");
+    clear(bar); clear(lg);
+    if (!mem) { text(note, "Memory report unavailable."); return; }
+    var total = typeof mem.total_bytes === "number" ? mem.total_bytes : 0;
+    var cats = {}, order = [], used = 0;
+    (mem.entries || []).forEach(function (e) {
+      if (!(e.category in cats)) { cats[e.category] = 0; order.push(e.category); }
+      cats[e.category] += e.bytes; used += e.bytes;
+    });
+    var basis = total || used;
+    order.forEach(function (c, i) {
+      if (!basis || !cats[c]) return;
+      var seg = el("span", "s" + (i % 6));
+      seg.style.width = (100 * cats[c] / basis) + "%";
+      seg.title = c + ": " + fmtBytes(cats[c]);
+      bar.appendChild(seg);
+      var li = el("li"); li.appendChild(el("i", "s" + (i % 6))); li.appendChild(document.createTextNode(c + " " + fmtBytes(cats[c])));
+      lg.appendChild(li);
+    });
+    if (total) {
+      var li2 = el("li"); li2.appendChild(el("i", "sfree"));
+      li2.appendChild(document.createTextNode("free " + fmtBytes(Math.max(0, total - used))));
+      lg.appendChild(li2);
+    }
+    bar.setAttribute("aria-label", "Memory budget: " + (total ? fmtBytes(used) + " reserved of " + fmtBytes(total) : "total unknown, " + fmtBytes(used) + " reserved"));
+    var parts = [];
+    parts.push(total ? "Budget " + fmtBytes(total) + ", reserved " + fmtBytes(used) + "." : "Budget total unknown on this build; only reservations are shown.");
+    if (mem.measured && typeof mem.measured.available_physical_bytes === "number") parts.push("Available physical memory now: " + fmtBytes(mem.measured.available_physical_bytes) + ".");
+    if (!order.length) parts.push("Nothing is reserved: no model is loaded.");
+    text(note, parts.join(" "));
   }
   async function refreshModels() {
     var j = await api("GET", "/hcs/v1/models");
     state.models = (j && j.models) || [];
     await refreshRuntime().catch(function () {});
     renderModels();
+    api("GET", "/hcs/v1/memory").then(renderMemory).catch(function () { renderMemory(null); });
   }
   async function refreshRuntime() {
     var j = await api("GET", "/hcs/v1/runtime");
@@ -268,7 +348,7 @@
   /* ---------- streaming chat (shared by Chat and Vision) ---------- */
   function selectedModel(id) { var v = $(id).value; return v ? v : undefined; }
   function jobFromChunkId(cid) { var m = /^chatcmpl-(\d+)$/.exec(cid || ""); return m ? "job-" + m[1] : ""; }
-  /* Streams a chat completion. handlers: onJob(id), onDelta(text), onUsage(u). Returns {finish, aborted}. */
+  /* Streams a chat completion. handlers: onJob(id), onDelta(text), onToolCall(index, id, name, argsDelta), onUsage(u). Returns {finish}. */
   async function streamChat(body, ctl, handlers) {
     body.stream = true;
     var r;
@@ -295,6 +375,12 @@
         if (!gotJob && d.id) { gotJob = true; handlers.onJob(jobFromChunkId(d.id)); }
         var ch = d.choices && d.choices[0];
         if (ch && ch.delta && ch.delta.content) handlers.onDelta(ch.delta.content);
+        if (ch && ch.delta && Array.isArray(ch.delta.tool_calls) && handlers.onToolCall) {
+          ch.delta.tool_calls.forEach(function (tc, k) {
+            var f = tc.function || {};
+            handlers.onToolCall(typeof tc.index === "number" ? tc.index : k, tc.id || "", f.name || "", f.arguments || "");
+          });
+        }
         if (ch && ch.finish_reason) finish = ch.finish_reason;
         if (d.usage && handlers.onUsage) handlers.onUsage(d.usage);
       }
@@ -311,9 +397,28 @@
     var body = el("span", "", content);
     d.appendChild(body);
     var log = $("chat-log");
+    $("chat-empty").hidden = true;
     log.appendChild(d);
     log.scrollTop = log.scrollHeight;
     return body;
+  }
+  /* A model-requested tool call is shown, never executed (the Agent tab is planned). */
+  function toolCallView(container) {
+    var calls = {};
+    return function (index, id, name, argsDelta) {
+      var c = calls[index];
+      if (!c) {
+        var det = el("details", "toolcall"), sum = el("summary", "", "tool call"), pre = el("pre", "", "");
+        det.open = true; det.appendChild(sum); det.appendChild(pre); container.appendChild(det);
+        c = calls[index] = { sum: sum, pre: pre, name: "", args: "" };
+      }
+      if (name) c.name = name;
+      c.args += argsDelta;
+      text(c.sum, "tool call: " + (c.name || "...") + " (shown only, not executed)");
+      var pretty = c.args;
+      try { pretty = JSON.stringify(JSON.parse(c.args), null, 2); } catch (e) { /* partial JSON while streaming */ }
+      text(c.pre, pretty || "(no arguments)");
+    };
   }
   function setChatBusy(b) { $("chat-send").disabled = b; $("chat-stop").hidden = !b; $("chat-input").disabled = b; }
   async function sendChat() {
@@ -335,22 +440,23 @@
     setChatBusy(true);
     var willLoad = body.model && state.runtime && state.runtime.loaded_model !== body.model;
     setBanner("chat-state", willLoad ? "loading" : "busy", willLoad ? "loading " + body.model + " before generating (can take several seconds)" : "generating");
-    var acc = "", t0 = performance.now(), first = 0, usage = null;
+    var acc = "", t0 = performance.now(), first = 0, usage = null, onTool = toolCallView(out.parentNode);
     try {
       var res = await streamChat(body, chat.ctl, {
         onJob: function (id) { chat.job = id; if (id) trackJob(id, "chat", "running"); setBanner("chat-state", "busy", "generating"); },
         onDelta: function (t) { if (!first) first = performance.now() - t0; acc += t; text(out, acc); var l = $("chat-log"); l.scrollTop = l.scrollHeight; },
+        onToolCall: onTool,
         onUsage: function (u) { usage = u; }
       });
       chat.history.push({ role: "assistant", content: acc });
       if (chat.job) trackJob(chat.job, "chat", "succeeded");
       setBanner("chat-state", "idle");
-      text($("chat-meta"), (first ? "first token " + Math.round(first) + " ms" : "") + (usage ? " - " + (usage.completion_tokens || 0) + " tokens" : "") + (res.finish === "length" ? " - stopped at max tokens" : ""));
+      text($("chat-meta"), (first ? "first token " + Math.round(first) + " ms" : "") + (usage ? " - " + (usage.completion_tokens || 0) + " tokens" : "") + (res.finish === "length" ? " - stopped at max tokens" : "") + (res.finish === "tool_calls" ? " - model requested a tool call" : ""));
     } catch (e) {
       var d = describe(e);
       if (acc) chat.history.push({ role: "assistant", content: acc }); else chat.history.pop();
       if (chat.job) trackJob(chat.job, "chat", d.kind === "idle" ? "cancelled" : "failed");
-      if (!acc) out.parentNode.parentNode.removeChild(out.parentNode);
+      if (!acc && !out.parentNode.querySelector("details")) out.parentNode.parentNode.removeChild(out.parentNode);
       if (d.kind === "idle") setBanner("chat-state", "idle");
       else { setBanner("chat-state", d.kind, d.message); }
       if (d.kind === "idle") text($("chat-meta"), "stopped");
@@ -377,15 +483,12 @@
     if (vision.url) { URL.revokeObjectURL(vision.url); vision.url = ""; }
     prev.hidden = true;
     if (!f) return;
-    if (!/^image\/(png|jpeg|gif|bmp)$/.test(f.type)) { setBanner("vision-state", "unsupported", "only PNG, JPEG, GIF or BMP images are accepted (" + (f.type || "unknown type") + " selected)."); return; }
+    if (!IMG_OK.test(f.type)) { setBanner("vision-state", "unsupported", "only PNG, JPEG, GIF or BMP images are accepted (" + (f.type || "unknown type") + " selected)."); return; }
     if (f.size > 32 * 1024 * 1024) { setBanner("vision-state", "error", "image is larger than the 32 MiB server limit."); return; }
     setBanner("vision-state", "idle");
     vision.url = URL.createObjectURL(f);
     prev.src = vision.url; prev.hidden = false;
-    var fr = new FileReader();
-    fr.onload = function () { vision.dataUri = String(fr.result); };
-    fr.onerror = function () { setBanner("vision-state", "error", "could not read the file."); };
-    fr.readAsDataURL(f);
+    readFileAsDataUri(f, function (u) { vision.dataUri = u; }, function () { setBanner("vision-state", "error", "could not read the file."); });
   }
   async function sendVision(ev) {
     ev.preventDefault();
@@ -421,28 +524,119 @@
   }
 
   /* ---------- Image Studio ---------- */
-  var image = { ctl: null };
+  var image = { ctl: null, initUri: "", gallery: [], current: -1, timer: 0, blobUrl: "" };
+  var GALLERY_MAX = 24;
+  function imageMode() { var r = document.querySelector("input[name=image-mode]:checked"); return r ? r.value : "txt2img"; }
+  function setImageMode(m) {
+    Array.prototype.forEach.call(document.querySelectorAll("input[name=image-mode]"), function (r) { r.checked = r.value === m; });
+    var i2i = m === "img2img";
+    $("image-init-box").hidden = !i2i;
+    var match = $("image-size-match");
+    match.hidden = !i2i; match.disabled = !i2i;
+    if (i2i && image.initUri) $("image-size").value = "";
+    else if (!i2i && $("image-size").value === "") $("image-size").value = "512x512";
+  }
+  function syncPreset() {
+    var v = $("image-steps").value;
+    Array.prototype.forEach.call(document.querySelectorAll("input[name=image-preset]"), function (r) { r.checked = r.value === v; });
+  }
+  function setInitImage(uri, label) {
+    image.initUri = uri;
+    var prev = $("image-init-preview");
+    if (!uri) { prev.hidden = true; text($("image-drop-text"), "Drop an image here or choose one (PNG, JPEG, GIF, BMP)"); return; }
+    prev.src = uri; prev.hidden = false;
+    text($("image-drop-text"), label || "Input image ready. Drop another to replace it.");
+    if (imageMode() === "img2img") $("image-size").value = "";
+  }
+  function onImageFile(f) {
+    if (!f) return;
+    if (!IMG_OK.test(f.type)) { setBanner("image-state", "unsupported", "only PNG, JPEG, GIF or BMP images are accepted (" + (f.type || "unknown type") + " selected)."); return; }
+    if (f.size > 32 * 1024 * 1024) { setBanner("image-state", "error", "image is larger than the 32 MiB limit."); return; }
+    setBanner("image-state", "idle");
+    readFileAsDataUri(f, function (u) { setInitImage(u, f.name + " loaded. Drop another to replace it."); }, function () { setBanner("image-state", "error", "could not read the file."); });
+  }
+  function showGalleryItem(i) {
+    var g = image.gallery[i];
+    if (!g) return;
+    image.current = i;
+    $("image-out").src = g.src; $("image-out").hidden = false; $("image-empty").hidden = true;
+    text($("image-meta"), g.meta);
+    $("image-actions").hidden = false;
+    renderGallery();
+  }
+  function renderGallery() {
+    var ul = $("image-gallery");
+    clear(ul);
+    image.gallery.forEach(function (g, i) {
+      var li = el("li"), b = el("button", "ghost");
+      b.type = "button";
+      b.setAttribute("aria-label", "Image " + (i + 1) + ": " + g.meta);
+      if (i === image.current) b.setAttribute("aria-current", "true");
+      var im = el("img"); im.src = g.src; im.alt = "";
+      b.appendChild(im);
+      b.addEventListener("click", function () { showGalleryItem(i); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+  function stopImageTimer() { if (image.timer) { clearInterval(image.timer); image.timer = 0; } }
   async function sendImage(ev) {
     ev.preventDefault();
     if (image.ctl) return;
     var prompt = $("image-prompt").value.trim();
     if (!prompt) { setBanner("image-state", "error", "enter a prompt."); return; }
-    var body = { model: selectedModel("image-model"), prompt: prompt, n: 1, size: $("image-size").value, response_format: "b64_json" };
-    if (state.mode === "advanced") { body.steps = numOrUndef("image-steps"); body.seed = numOrUndef("image-seed"); }
+    var i2i = imageMode() === "img2img";
+    if (i2i && !image.initUri) { setBanner("image-state", "error", "choose an input image for image to image."); return; }
+    var seed = numOrUndef("image-seed");
+    if (seed === undefined) seed = randomSeed();
+    var body = { model: selectedModel("image-model"), prompt: prompt, n: 1, response_format: "b64_json", seed: seed };
+    var size = $("image-size").value;
+    if (size) body.size = size;
+    var steps = numOrUndef("image-steps");
+    if (steps !== undefined) body.steps = steps;
+    if (i2i) { body.image = image.initUri; body.strength = Number($("image-strength").value); }
+    if (state.mode === "advanced") {
+      var neg = $("image-negative").value.trim(); if (neg) body.negative_prompt = neg;
+      var cfg = numOrUndef("image-cfg"); if (cfg !== undefined) body.cfg_scale = cfg;
+    }
     image.ctl = new AbortController();
-    $("image-send").disabled = true; $("image-stop").hidden = false; $("image-out").hidden = true;
-    setBanner("image-state", "busy", "generating (the server reports no progress for this route; Cancel drops the request)");
+    $("image-send").disabled = true; $("image-stop").hidden = false;
+    $("image-busy").hidden = false; $("image-empty").hidden = true;
+    var t0 = performance.now();
+    setBanner("image-state", "busy", (i2i ? "editing" : "generating") + " (the server reports no per-step progress; Cancel drops the request and stops the render)");
+    stopImageTimer();
+    image.timer = setInterval(function () { text($("image-meta"), "Working... " + Math.round((performance.now() - t0) / 1000) + " s elapsed"); }, 500);
     try {
-      var j = await api("POST", "/v1/images/generations", body, image.ctl.signal);
+      var j = await api("POST", i2i ? "/v1/images/edits" : "/v1/images/generations", body, image.ctl.signal);
       var item = j && j.data && j.data[0];
       var src = item && (item.b64_json ? "data:image/png;base64," + item.b64_json : (item.url && item.url.indexOf("data:image/") === 0 ? item.url : ""));
       if (!src) throw new ApiError(502, null, "the server returned no image data");
-      $("image-out").src = src; $("image-out").hidden = false;
+      var h = (j && j.hcs) || {};
+      var meta = (i2i ? "image to image" : "text to image") + " - " + (h.width || "?") + "x" + (h.height || "?") + ", " + (h.steps || steps || "?") + " steps, seed " + seed + (typeof h.generation_ms === "number" ? ", " + (h.generation_ms / 1000).toFixed(1) + " s" : ", " + ((performance.now() - t0) / 1000).toFixed(1) + " s wall") + (h.model ? " - " + h.model : "");
+      image.gallery.push({ src: src, meta: meta, seed: seed });
+      if (image.gallery.length > GALLERY_MAX) image.gallery.shift();
+      showGalleryItem(image.gallery.length - 1);
       setBanner("image-state", "ok", "image generated.");
     } catch (e) {
       var d = describe(e);
+      text($("image-meta"), "");
       setBanner("image-state", d.kind, d.message);
-    } finally { image.ctl = null; $("image-send").disabled = false; $("image-stop").hidden = true; }
+      if (!image.gallery.length) $("image-empty").hidden = false;
+    } finally {
+      stopImageTimer();
+      image.ctl = null; $("image-send").disabled = false; $("image-stop").hidden = true; $("image-busy").hidden = true;
+      refreshRuntime().catch(function () {});
+    }
+  }
+  function saveCurrentImage() {
+    var g = image.gallery[image.current];
+    if (!g) return;
+    var blob = dataUriToBlob(g.src);
+    if (!blob) { setBanner("image-state", "error", "could not prepare the file."); return; }
+    if (image.blobUrl) URL.revokeObjectURL(image.blobUrl);
+    image.blobUrl = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = image.blobUrl; a.download = "hcs-studio-seed-" + g.seed + ".png";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
   }
 
   /* ---------- Performance ---------- */
@@ -469,7 +663,7 @@
   var RESETS = {
     chat: { "chat-system": "", "chat-temp": "0.7", "chat-max": "256", "chat-seed": "" },
     vision: { "vision-max": "256", "vision-temp": "0" },
-    image: { "image-steps": "20", "image-seed": "" }
+    image: { "image-negative": "", "image-cfg": "" }
   };
 
   /* ---------- wiring ---------- */
@@ -482,7 +676,10 @@
     text($("set-origin"), location.origin);
     initTabs();
     setMode(lstore("hcs.mode") || "simple");
+    setTheme(lstore("hcs.theme") || "system");
     Array.prototype.forEach.call(document.querySelectorAll("input[name=mode]"), function (r) { r.addEventListener("change", function () { if (r.checked) setMode(r.value); }); });
+    Array.prototype.forEach.call(document.querySelectorAll("input[name=theme]"), function (r) { r.addEventListener("change", function () { if (r.checked) setTheme(r.value); }); });
+    $("theme-toggle").addEventListener("click", function () { setTheme(THEMES[(THEMES.indexOf(state.theme) + 1) % THEMES.length]); });
     Array.prototype.forEach.call(document.querySelectorAll("[data-reset]"), function (b) {
       b.addEventListener("click", function () { var m = RESETS[b.dataset.reset]; Object.keys(m).forEach(function (k) { $(k).value = m[k]; }); });
     });
@@ -498,12 +695,46 @@
     $("chat-form").addEventListener("submit", function (e) { e.preventDefault(); sendChat(); });
     $("chat-input").addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); sendChat(); } });
     $("chat-stop").addEventListener("click", stopChat);
-    $("chat-clear").addEventListener("click", function () { if (chat.ctl) return; chat.history = []; clear($("chat-log")); text($("chat-meta"), ""); setBanner("chat-state", "idle"); });
+    $("chat-clear").addEventListener("click", function () {
+      if (chat.ctl) return;
+      chat.history = [];
+      var log = $("chat-log");
+      Array.prototype.slice.call(log.querySelectorAll(".msg")).forEach(function (n) { log.removeChild(n); });
+      $("chat-empty").hidden = false;
+      text($("chat-meta"), ""); setBanner("chat-state", "idle");
+    });
     $("vision-file").addEventListener("change", onVisionFile);
     $("vision-form").addEventListener("submit", sendVision);
     $("vision-stop").addEventListener("click", stopVision);
+    /* Image Studio */
     $("image-form").addEventListener("submit", sendImage);
     $("image-stop").addEventListener("click", function () { if (image.ctl) image.ctl.abort(); });
+    Array.prototype.forEach.call(document.querySelectorAll("input[name=image-mode]"), function (r) { r.addEventListener("change", function () { if (r.checked) setImageMode(r.value); }); });
+    Array.prototype.forEach.call(document.querySelectorAll("input[name=image-preset]"), function (r) { r.addEventListener("change", function () { if (r.checked) $("image-steps").value = r.value; }); });
+    $("image-steps").addEventListener("input", syncPreset);
+    $("image-dice").addEventListener("click", function () { $("image-seed").value = String(randomSeed()); });
+    $("image-strength").addEventListener("input", function () { text($("image-strength-val"), Number($("image-strength").value).toFixed(2)); });
+    $("image-file").addEventListener("change", function () { onImageFile($("image-file").files[0]); });
+    var drop = $("image-drop");
+    ["dragenter", "dragover"].forEach(function (n) { drop.addEventListener(n, function (e) { e.preventDefault(); drop.classList.add("over"); }); });
+    ["dragleave", "drop"].forEach(function (n) { drop.addEventListener(n, function (e) { e.preventDefault(); drop.classList.remove("over"); }); });
+    drop.addEventListener("drop", function (e) { var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; onImageFile(f); });
+    $("image-save").addEventListener("click", saveCurrentImage);
+    $("image-reuse").addEventListener("click", function () {
+      var g = image.gallery[image.current];
+      if (!g) return;
+      setInitImage(g.src, "Previous result is the input image.");
+      setImageMode("img2img");
+    });
+    $("image-copy-seed").addEventListener("click", function () {
+      var g = image.gallery[image.current];
+      if (!g) return;
+      $("image-seed").value = String(g.seed);
+      try { navigator.clipboard.writeText(String(g.seed)).catch(function () { /* clipboard may be refused */ }); } catch (e) { /* ignore */ }
+      setBanner("image-state", "ok", "seed " + g.seed + " is now in the Seed field.");
+    });
+    $("image-steps").value = "16"; syncPreset();
+    setImageMode("txt2img");
     $("models-refresh").addEventListener("click", function () { refreshModels().catch(function (e) { var d = describe(e); setBanner("models-state", d.kind, d.message); }); });
     $("perf-refresh").addEventListener("click", refreshPerf);
     connect();

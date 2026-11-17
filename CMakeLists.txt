@@ -57,7 +57,7 @@ endif()
 # modules listed before it. Adding a brand-new module name = one line below.
 # ---------------------------------------------------------------------------
 set(HCS_MODULE_DIRS
-  core hardware storage memory scheduler telemetry
+  core hardware storage memory scheduler telemetry agent train
   engines/llama engines/diffusion
   gui api mcp
   cli app)

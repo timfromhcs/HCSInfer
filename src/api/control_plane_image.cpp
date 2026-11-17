@@ -131,6 +131,7 @@ Result<Submitted> ControlPlane::submit_image(const ImageParams& p, bool require_
             ir.seed = p.seed;
             ir.strength = p.strength;
             ir.cfg_scale = p.cfg_scale;
+            ir.preset = p.preset;
             ir.init_image = p.init_image;
             Result<ImageResult> r = make_error(ErrorCode::Internal, "engine threw");
             try {

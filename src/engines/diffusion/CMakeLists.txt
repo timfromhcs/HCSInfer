@@ -37,7 +37,7 @@ endif()
 hcs_add_library(engine_diffusion
   SOURCES diffusion_engine.cpp
   PUBLIC_LINK hcs_core
-  PRIVATE_LINK stable-diffusion)
+  PRIVATE_LINK stable-diffusion nlohmann_json::nlohmann_json)
 # stb (public domain / MIT) and the upstream C API are third-party headers: no HCS warning policy.
 target_include_directories(hcs_engine_diffusion SYSTEM PRIVATE
   "${CMAKE_SOURCE_DIR}/external/stable-diffusion.cpp/include"

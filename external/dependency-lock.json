@@ -29,7 +29,7 @@
         "MTMD_VIDEO": "OFF (video needs a subprocess ffmpeg; V1 is images only)"
       },
       "patches": [],
-      "tested": "Real GGUF text generation via HCSInfer CLI/HTTP on the target machine (CPU and Vulkan), see docs/test-evidence/M1/llama and M2/llama-adapter-README.md; real VLM image analysis (SmolVLM2-500M-Video-Instruct Q8_0 + mmproj) via HCSInfer CLI/HTTP/MCP on the target machine, see docs/test-evidence/M2-vision",
+      "tested": "Real GGUF text generation via HCSInfer CLI/HTTP on the target machine (CPU and Vulkan), see docs/test-evidence/M1/llama and M2/llama-adapter-README.md; real VLM image analysis (SmolVLM2-500M-Video-Instruct Q8_0 + mmproj) via HCSInfer CLI/HTTP/MCP on the target machine, see docs/test-evidence/M2-vision; real LiquidAI LFM3-Omni-2B Q8_0 + mmproj (architecture lfm3, LFM3VL projector) text, tool calling and image understanding, CPU and Vulkan, no pin change needed (docs/test-evidence/lfm3)",
       "compile_definitions": {
         "GGML_MAX_NAME": "160 (one GGML struct layout for llama, mtmd and stable-diffusion.cpp)",
         "stbi_* -> hcs_mtmd_stbi_*": "applied PRIVATE to the mtmd target only (src/engines/llama/CMakeLists.txt, 48 public stb_image symbols). mtmd compiles its own vendor/stb copy with external linkage and stable-diffusion.cpp compiles another; renaming mtmd's copy by preprocessor avoids LNK2005 in the single process without touching either upstream tree."
@@ -56,7 +56,7 @@
         "CMAKE_CXX_STANDARD": "17 (upstream requirement)"
       },
       "patches": [],
-      "known_incompatibilities": "SD_USE_UPSTREAM_GGML=ON omits the patched-GGML INT8/FP8 code paths; SD1.5 Q8_0 output was byte-identical to the patched-GGML build in M1. Not yet tested with Flux/DiT/Qwen-Image models.",
+      "known_incompatibilities": "SD_USE_UPSTREAM_GGML=ON omits the patched-GGML INT8/FP8 code paths (FP8 weights are converted to F16 at load); SD1.5 Q8_0 output was byte-identical to the patched-GGML build in M1. FLUX.3 Image Klein: the pinned commit already contains VERSION_FLUX3 (src/model/integrations/flux3.cpp), so no pin bump was needed; the unsloth UD-Q4_K_XL GGUF is recognised as \"Flux.3 Image Klein\" under upstream GGML (docs/test-evidence/flux3/probe-no-encoder.log). A real FLUX.3 render is BLOCKED until the gated black-forest-labs text encoder/VAE are accessible (docs/test-evidence/flux3/README.md).",
       "tested": "Real SD1.5 Q8_0 diffusion on the target machine (CPU and Vulkan, upstream CLI), see docs/test-evidence/M1/sd"
     },
     {
@@ -150,6 +150,20 @@
       "licence": "BSD-3-Clause (HCSInfer selects the BSD option)",
       "linked": true,
       "source": "FetchContent (pinned)"
+    },
+    {
+      "name": "prime-agent",
+      "url": "https://github.com/PrimeIntellect-ai/prime-agent",
+      "commit": "8980e66f2f07762d62a6c1d73b347a4cac5275cc",
+      "tag": "v0.10.4",
+      "role": "coding agent candidate (ADR-011): separate Rust workspace built from source as a sidecar process (prime-agent.exe + pa-daemon.exe, Python kernel via uv); NOT linked into HCSInfer.exe and not part of the single-EXE target",
+      "licence": "MIT",
+      "licence_file": "external/prime-agent/LICENSE",
+      "linked": false,
+      "source": "git submodule external/prime-agent",
+      "build": "cargo build --release (Rust 1.96.0, x86_64-pc-windows-msvc) outside CMake; no installer scripts",
+      "patches": [],
+      "tested": "builds on Windows 11 (10 m 22 s), prime-agent --version = 0.10.4; no run against HCSInfer yet, see docs/test-evidence/agent/README.md"
     }
   ]
 }

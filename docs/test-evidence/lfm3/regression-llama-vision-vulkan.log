@@ -1,0 +1,33 @@
+Running main() from D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\build\lfm3-vk\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 10 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 10 tests from LlamaVisionReal
+[ RUN      ] LlamaVisionReal.DescribesAGeneratedImageOnCpu
+[vision answer]  Red.
+[       OK ] LlamaVisionReal.DescribesAGeneratedImageOnCpu (2669 ms)
+[ RUN      ] LlamaVisionReal.DescribesAGeneratedImageOnVulkan
+[vision answer, vulkan]  Red. (device AMD Radeon(TM) Graphics (Vulkan0))
+[       OK ] LlamaVisionReal.DescribesAGeneratedImageOnVulkan (3693 ms)
+[ RUN      ] LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs
+[       OK ] LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs (8498 ms)
+[ RUN      ] LlamaVisionReal.UnloadAndReloadReleasesTheProjector
+[       OK ] LlamaVisionReal.UnloadAndReloadReleasesTheProjector (561 ms)
+[ RUN      ] LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine
+[       OK ] LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine (2912 ms)
+[ RUN      ] LlamaVisionReal.CancellationStopsAVisionJob
+[       OK ] LlamaVisionReal.CancellationStopsAVisionJob (5347 ms)
+[ RUN      ] LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly
+[       OK ] LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly (132 ms)
+[ RUN      ] LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors
+[       OK ] LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors (398 ms)
+[ RUN      ] LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected
+[mismatch] model_error: could not initialise the vision projector (mmproj does not match this model, or the projector architecture is unsupported): mtmd_init_from_file: error: mismatch between text model (n_embd = 1024) and mmproj (n_embd = 960) | hint: you may be using wrong mmproj
+[       OK ] LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected (740 ms)
+[ RUN      ] LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError
+[mmproj-as-model] unsupported: llama.cpp could not load the model: llama_model_load: error loading model: CLIP cannot be used as main model, use it with --mmproj instead | llama_model_load_from_file_impl: failed to load model
+[       OK ] LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError (1 ms)
+[----------] 10 tests from LlamaVisionReal (24956 ms total)
+
+[----------] Global test environment tear-down
+[==========] 10 tests from 1 test suite ran. (24956 ms total)
+[  PASSED  ] 10 tests.

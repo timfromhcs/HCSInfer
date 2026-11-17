@@ -1,0 +1,285 @@
+[V] version: stable-diffusion.cpp version master-1106-532d2c1, commit 532d2c1 --- main.cpp:760
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | rebar: 0 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 32768 | int dot: 1 | matrix cores: none
+[V] System Info: 
+   SSE3 = 1 |    SSSE3 = 1 |    AVX = 1 |    AVX2 = 1 |    F16C = 1 |    FMA = 1 |    OPENMP = 1 |    REPACK = 1 |  --- main.cpp:761
+[W] Using upstream GGML: INT8 tensorwise/convrot is disabled and FP8 weights are converted to F16 at load time. Some operators may be unsupported and performance may be lower than with patched GGML. --- diffusion_engine.cpp:902
+[V] using 8 threads for model loading --- model_loader.cpp:194
+[I] loading diffusion model from 'D:/HCSModels/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf' --- diffusion_engine.cpp:697
+[I] load D:/HCSModels/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf using gguf format --- model_loader.cpp:220
+[V] init from 'D:/HCSModels/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf' --- model_loader.cpp:266
+[V] GGUF v3, tensor_count=359, metadata_kv_count=6 --- gguf_reader_ext.h:225
+[I] Version: Flux.3 Image Klein  --- diffusion_engine.cpp:982
+[I] auto-fit plan: --- backend_fit.cpp:335
+[I]   devices: --- backend_fit.cpp:336
+[I]     Vulkan0      AMD Radeon(TM) Graphics          free  13515 MiB, budget  13003 MiB --- backend_fit.cpp:340
+[I]     RAM          free   8131 MiB, params budget   6083 MiB --- backend_fit.cpp:346
+[I]   compute-device weight cache priority: diffusion > te > vae --- backend_fit.cpp:348
+[I]   components (params: compute device -> RAM -> other GPU -> disk): --- backend_fit.cpp:349
+[I]     DiT          params   3747 MiB, compute reserve  2048 MiB -> compute CPU, params cpu --- backend_fit.cpp:360
+[I] auto-fit: --backend "cpu" --params-backend "diffusion=cpu" --- backend_fit.cpp:489
+[V] Initializing backend: CPU --- ggml_extend_backend.cpp:421
+[V] using 8 threads for model loading --- model_loader.cpp:194
+[I] Weight type stat:                      f32: 86   |    q8_0: 12   |    q2_K: 24   |    q3_K: 5    |    q4_K: 51   |    q5_K: 88   |    q6_K: 79   |    bf16: 14    --- diffusion_engine.cpp:1560
+[I] Conditioner weight type stat:      --- diffusion_engine.cpp:1561
+[I] Diffusion model weight type stat:      f32: 86   |    q8_0: 12   |    q2_K: 24   |    q3_K: 5    |    q4_K: 51   |    q5_K: 88   |    q6_K: 79   |    bf16: 14    --- diffusion_engine.cpp:1562
+[I] VAE weight type stat:              --- diffusion_engine.cpp:1563
+[V] llm: num_layers = 0, vocab_size = 152064, hidden_size = 3584, intermediate_size = 18944 --- llm.hpp:464
+[V] flux3: hidden_size = 3072, context_dim = 20480, depth = 5, single_depth = 28, flow_map = true --- flux3.hpp:53
+[I] using VAE for encoding / decoding --- model_builders.cpp:226
+[I] flash attention auto: CPU -> on (CPU) --- flash_attn.cpp:70
+[I] conv2d direct auto: CPU -> off (no implicit GEMM path) --- conv_direct.cpp:90
+[I] conv3d direct auto: CPU -> off (no implicit GEMM path) --- conv_direct.cpp:90
+[V] validating model metadata --- diffusion_engine.cpp:1314
+[E] Conditioner model tensor 'text_encoders.llm.model.embed_tokens.weight' not in model metadata --- model_manager.cpp:780
+[E] Conditioner model tensor 'text_encoders.llm.model.norm.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.conv_in.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.conv_in.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.conv_out.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.conv_out.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.attn_1.k.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.attn_1.k.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.attn_1.norm.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.attn_1.norm.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.attn_1.proj_out.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.attn_1.proj_out.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.attn_1.q.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.attn_1.q.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.attn_1.v.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.attn_1.v.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_1.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_1.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_1.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_1.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_1.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_1.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_1.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_1.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_2.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_2.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_2.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_2.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_2.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_2.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_2.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.mid.block_2.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.norm_out.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.norm_out.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.0.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.0.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.0.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.0.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.0.nin_shortcut.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.0.nin_shortcut.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.0.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.0.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.0.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.0.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.1.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.1.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.1.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.1.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.1.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.1.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.1.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.1.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.2.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.2.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.2.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.2.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.2.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.2.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.2.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.0.block.2.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.0.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.0.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.0.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.0.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.0.nin_shortcut.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.0.nin_shortcut.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.0.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.0.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.0.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.0.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.1.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.1.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.1.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.1.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.1.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.1.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.1.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.1.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.2.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.2.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.2.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.2.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.2.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.2.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.2.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.block.2.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.upsample.conv.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.1.upsample.conv.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.0.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.0.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.0.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.0.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.0.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.0.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.0.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.0.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.1.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.1.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.1.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.1.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.1.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.1.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.1.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.1.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.2.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.2.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.2.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.2.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.2.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.2.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.2.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.block.2.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.upsample.conv.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.2.upsample.conv.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.0.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.0.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.0.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.0.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.0.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.0.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.0.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.0.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.1.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.1.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.1.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.1.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.1.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.1.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.1.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.1.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.2.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.2.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.2.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.2.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.2.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.2.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.2.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.block.2.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.upsample.conv.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.decoder.up.3.upsample.conv.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.conv_in.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.conv_in.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.conv_out.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.conv_out.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.0.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.0.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.0.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.0.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.0.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.0.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.0.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.0.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.1.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.1.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.1.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.1.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.1.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.1.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.1.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.block.1.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.downsample.conv.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.0.downsample.conv.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.0.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.0.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.0.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.0.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.0.nin_shortcut.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.0.nin_shortcut.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.0.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.0.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.0.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.0.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.1.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.1.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.1.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.1.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.1.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.1.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.1.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.block.1.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.downsample.conv.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.1.downsample.conv.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.0.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.0.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.0.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.0.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.0.nin_shortcut.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.0.nin_shortcut.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.0.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.0.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.0.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.0.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.1.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.1.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.1.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.1.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.1.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.1.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.1.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.block.1.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.downsample.conv.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.2.downsample.conv.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.0.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.0.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.0.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.0.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.0.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.0.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.0.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.0.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.1.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.1.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.1.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.1.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.1.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.1.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.1.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.down.3.block.1.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.attn_1.k.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.attn_1.k.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.attn_1.norm.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.attn_1.norm.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.attn_1.proj_out.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.attn_1.proj_out.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.attn_1.q.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.attn_1.q.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.attn_1.v.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.attn_1.v.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_1.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_1.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_1.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_1.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_1.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_1.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_1.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_1.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_2.conv1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_2.conv1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_2.conv2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_2.conv2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_2.norm1.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_2.norm1.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_2.norm2.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.mid.block_2.norm2.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.norm_out.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.encoder.norm_out.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.post_quant_conv.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.post_quant_conv.weight' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.quant_conv.bias' not in model metadata --- model_manager.cpp:780
+[E] VAE tensor 'first_stage_model.quant_conv.weight' not in model metadata --- model_manager.cpp:780
+[E] model metadata validation failed --- diffusion_engine.cpp:1373
+[I] sd_ctx_create failed --- main.cpp:960

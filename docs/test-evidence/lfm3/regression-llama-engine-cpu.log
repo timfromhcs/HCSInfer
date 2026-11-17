@@ -1,0 +1,65 @@
+Running main() from D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\build\lfm3-unit\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 17 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 7 tests from LlamaEngineErrors
+[ RUN      ] LlamaEngineErrors.GenerateBeforeLoadIsInvalidState
+[       OK ] LlamaEngineErrors.GenerateBeforeLoadIsInvalidState (0 ms)
+[ RUN      ] LlamaEngineErrors.MissingFileIsNotFound
+[       OK ] LlamaEngineErrors.MissingFileIsNotFound (30 ms)
+[ RUN      ] LlamaEngineErrors.NonGgufIsModelError
+[       OK ] LlamaEngineErrors.NonGgufIsModelError (2 ms)
+[ RUN      ] LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable
+[       OK ] LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable (7 ms)
+[ RUN      ] LlamaEngineErrors.BadArguments
+[       OK ] LlamaEngineErrors.BadArguments (0 ms)
+[ RUN      ] LlamaEngineErrors.VisionRequestValidation
+[       OK ] LlamaEngineErrors.VisionRequestValidation (0 ms)
+[ RUN      ] LlamaEngineErrors.VulkanOnCpuOnlyBuildIsUnsupported
+[       OK ] LlamaEngineErrors.VulkanOnCpuOnlyBuildIsUnsupported (1 ms)
+[----------] 7 tests from LlamaEngineErrors (44 ms total)
+
+[----------] 10 tests from LlamaEngineReal
+[ RUN      ] LlamaEngineReal.CpuGeneration
+[evidence] {"test":"CpuGeneration","backend":"cpu","device":"CPU","offloaded_layers":0,"total_layers":28,"load_ms":9284.457400,"ttft_ms":244.891200,"prompt_tokens":20,"prompt_tps":95.218734,"decode_tokens":47,"decode_tps":70.063839,"output_chars":212}
+[output] <think>
+Okay, the user wants me to reply with exactly "HCSInfer smoke test passed." So first, I need to make sure that the response is exactly that string. Let me check the original query again. The user provided
+[       OK ] LlamaEngineReal.CpuGeneration (10319 ms)
+[ RUN      ] LlamaEngineReal.VulkanGeneration
+D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\tests\integration\llama_engine\test_llama_engine.cpp(254): Skipped
+NOT RUN: no GPU device visible to this build (vulkan_compiled=0)
+
+[  SKIPPED ] LlamaEngineReal.VulkanGeneration (0 ms)
+[ RUN      ] LlamaEngineReal.GreedyIsDeterministicOnCpu
+[       OK ] LlamaEngineReal.GreedyIsDeterministicOnCpu (1369 ms)
+[ RUN      ] LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly
+[       OK ] LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly (677 ms)
+[ RUN      ] LlamaEngineReal.CancellationMidGenerationCpu
+[evidence] {"test":"CancelCpu","chunks_at_cancel":5,"chunks_final":5,"stop_latency_ms":0.343400}
+[       OK ] LlamaEngineReal.CancellationMidGenerationCpu (977 ms)
+[ RUN      ] LlamaEngineReal.CancellationMidGenerationVulkan
+D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\tests\integration\llama_engine\test_llama_engine.cpp(355): Skipped
+NOT RUN: no GPU device visible to this build (vulkan_compiled=0)
+
+[  SKIPPED ] LlamaEngineReal.CancellationMidGenerationVulkan (0 ms)
+[ RUN      ] LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth
+[evidence] {"test":"Cycle10Cpu","cycles":10,"private_bytes_after_each_unload":[8232960,9363456,8843264,11112448,10919936,11751424,10338304,10686464,10260480,12046336],"working_set_after_each_unload":[15425536,15814656,15876096,16117760,16621568,16842752,16777216,17305600,17371136,17772544],"private_growth_after_cycle3":3203072,"working_set_growth_after_cycle3":1896448}
+[       OK ] LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth (6828 ms)
+[ RUN      ] LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth
+D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\tests\integration\llama_engine\test_llama_engine.cpp(399): Skipped
+NOT RUN: no GPU device visible to this build (vulkan_compiled=0)
+
+[  SKIPPED ] LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth (0 ms)
+[ RUN      ] LlamaEngineReal.ModelSwitchBetweenBackendsAndModels
+[evidence] {"test":"ModelSwitch","auto_backend":"cpu","second_model_distinct":false}
+[       OK ] LlamaEngineReal.ModelSwitchBetweenBackendsAndModels (1384 ms)
+[ RUN      ] LlamaEngineReal.LoadModesAreAccepted
+[       OK ] LlamaEngineReal.LoadModesAreAccepted (1604 ms)
+[----------] 10 tests from LlamaEngineReal (23162 ms total)
+
+[----------] Global test environment tear-down
+[==========] 17 tests from 2 test suites ran. (23207 ms total)
+[  PASSED  ] 14 tests.
+[  SKIPPED ] 3 tests, listed below:
+[  SKIPPED ] LlamaEngineReal.VulkanGeneration
+[  SKIPPED ] LlamaEngineReal.CancellationMidGenerationVulkan
+[  SKIPPED ] LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth

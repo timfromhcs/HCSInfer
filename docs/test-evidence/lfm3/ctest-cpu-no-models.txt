@@ -1,0 +1,1044 @@
+Test project D:/HCSInfer/.claude/worktrees/flux3-agent-engine-v1-665ab0/build/lfm3-unit
+        Start   1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules
+        Start   2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd
+        Start   3: SandboxPolicy.RejectsUnlistedShellsAndPathPrograms
+        Start   4: SandboxPolicy.SubcommandMustBeArgvOneAndAllowListed
+  1/469 Test   #3: SandboxPolicy.RejectsUnlistedShellsAndPathPrograms ................................................   Passed    0.07 sec
+        Start   5: SandboxPolicy.DeniedArgumentsAreRejectedAlsoWithEqualsForm
+  2/469 Test   #1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules ............................................   Passed    0.08 sec
+  3/469 Test   #4: SandboxPolicy.SubcommandMustBeArgvOneAndAllowListed ...............................................   Passed    0.07 sec
+  4/469 Test   #2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd ...........................................   Passed    0.08 sec
+        Start   6: SandboxPolicy.NetworkIsOffByDefault
+        Start   7: SandboxPolicy.PathArgumentsMustStayInsideApprovedRoots
+        Start   8: SandboxPolicy.WorkingDirectoryIsGuarded
+  5/469 Test   #5: SandboxPolicy.DeniedArgumentsAreRejectedAlsoWithEqualsForm ........................................   Passed    0.04 sec
+        Start   9: SandboxPolicy.TimeoutIsDefaultedClampedAndNeverZero
+  6/469 Test   #6: SandboxPolicy.NetworkIsOffByDefault ...............................................................   Passed    0.04 sec
+        Start  10: SandboxPolicy.ArgumentCountAndSizeAndNulAreBounded
+  7/469 Test   #8: SandboxPolicy.WorkingDirectoryIsGuarded ...........................................................   Passed    0.09 sec
+        Start  11: SandboxPolicy.ReadAndWritePaths
+  8/469 Test   #9: SandboxPolicy.TimeoutIsDefaultedClampedAndNeverZero ...............................................   Passed    0.09 sec
+        Start  12: SandboxPolicy.OutputCapTruncatesOnUtf8Boundary
+  9/469 Test  #10: SandboxPolicy.ArgumentCountAndSizeAndNulAreBounded ................................................   Passed    0.04 sec
+        Start  13: ChatToolsRequest.NoToolsIsOff
+ 10/469 Test  #11: SandboxPolicy.ReadAndWritePaths ...................................................................   Passed    0.04 sec
+        Start  14: ChatToolsRequest.ParsesToolsAndDefaultsToAuto
+ 11/469 Test  #12: SandboxPolicy.OutputCapTruncatesOnUtf8Boundary ....................................................   Passed    0.04 sec
+        Start  15: ChatToolsRequest.ToolChoiceNoneAndAuto
+ 12/469 Test  #13: ChatToolsRequest.NoToolsIsOff .....................................................................   Passed    0.03 sec
+        Start  16: ChatToolsRequest.RequiredAndNamedChoiceAreUnsupported
+ 13/469 Test  #14: ChatToolsRequest.ParsesToolsAndDefaultsToAuto .....................................................   Passed    0.06 sec
+        Start  17: ChatToolsRequest.LegacyFunctionsAreUnsupported
+ 14/469 Test  #15: ChatToolsRequest.ToolChoiceNoneAndAuto ............................................................   Passed    0.05 sec
+        Start  18: ChatToolsRequest.RejectsMalformedDefinitions
+ 15/469 Test  #16: ChatToolsRequest.RequiredAndNamedChoiceAreUnsupported .............................................   Passed    0.07 sec
+        Start  19: ChatToolsRequest.RejectsTooManyAndTooLarge
+ 16/469 Test  #17: ChatToolsRequest.LegacyFunctionsAreUnsupported ....................................................   Passed    0.08 sec
+        Start  20: ChatToolsRender.ToolsBlockUsesPythonJsonLayout
+ 17/469 Test  #18: ChatToolsRequest.RejectsMalformedDefinitions ......................................................   Passed    0.03 sec
+        Start  21: ChatToolsRender.AssistantToolCallsAreXml
+ 18/469 Test  #19: ChatToolsRequest.RejectsTooManyAndTooLarge ........................................................   Passed    0.03 sec
+        Start  22: ChatToolsRender.RejectsBadAssistantToolCalls
+ 19/469 Test  #20: ChatToolsRender.ToolsBlockUsesPythonJsonLayout ....................................................   Passed    0.04 sec
+        Start  23: ChatToolsRender.ToolResponseWrapsOnce
+ 20/469 Test  #21: ChatToolsRender.AssistantToolCallsAreXml ..........................................................   Passed    0.03 sec
+        Start  24: ChatToolsParse.PlainTextHasNoCalls
+ 21/469 Test  #22: ChatToolsRender.RejectsBadAssistantToolCalls ......................................................   Passed    0.03 sec
+        Start  25: ChatToolsParse.XmlCallIsTypedBySchema
+ 22/469 Test  #23: ChatToolsRender.ToolResponseWrapsOnce .............................................................   Passed    0.03 sec
+        Start  26: ChatToolsParse.MultipleCallsAndHermesJson
+ 23/469 Test  #24: ChatToolsParse.PlainTextHasNoCalls ................................................................   Passed    0.03 sec
+        Start  27: ChatToolsParse.UnparseableBlockStaysVisible
+ 24/469 Test  #25: ChatToolsParse.XmlCallIsTypedBySchema .............................................................   Passed    0.03 sec
+        Start  28: ChatToolsParse.TruncatedBlockWithoutFunctionEndIsKeptAsText
+ 25/469 Test  #26: ChatToolsParse.MultipleCallsAndHermesJson .........................................................   Passed    0.03 sec
+        Start  29: ChatToolsStream.PlainTextStreamsWithoutLoss
+ 26/469 Test  #27: ChatToolsParse.UnparseableBlockStaysVisible .......................................................   Passed    0.04 sec
+        Start  30: ChatToolsStream.HoldsBackTagPrefixAndParsesCall
+ 27/469 Test  #28: ChatToolsParse.TruncatedBlockWithoutFunctionEndIsKeptAsText .......................................   Passed    0.03 sec
+        Start  31: ChatToolsStream.UnusableCallRegionIsReturnedAsContent
+ 28/469 Test  #29: ChatToolsStream.PlainTextStreamsWithoutLoss .......................................................   Passed    0.03 sec
+        Start  32: JsonSchema.TypesAndRequired
+ 29/469 Test  #30: ChatToolsStream.HoldsBackTagPrefixAndParsesCall ...................................................   Passed    0.03 sec
+        Start  33: JsonSchema.AdditionalPropertiesFalseRejectsUnknown
+ 30/469 Test  #31: ChatToolsStream.UnusableCallRegionIsReturnedAsContent .............................................   Passed    0.04 sec
+        Start  34: JsonSchema.NumericAndStringBounds
+ 31/469 Test  #32: JsonSchema.TypesAndRequired .......................................................................   Passed    0.03 sec
+        Start  35: JsonSchema.ArraysEnumsAndAnyOf
+ 32/469 Test  #33: JsonSchema.AdditionalPropertiesFalseRejectsUnknown ................................................   Passed    0.04 sec
+        Start  36: JsonSchema.ErrorMessageCarriesPath
+ 33/469 Test  #34: JsonSchema.NumericAndStringBounds .................................................................   Passed    0.04 sec
+        Start  37: JsonSchema.UnsupportedKeywordNeverSilentlyWeakens
+ 34/469 Test  #35: JsonSchema.ArraysEnumsAndAnyOf ....................................................................   Passed    0.05 sec
+        Start  38: JsonSchema.DeepSchemaIsBounded
+ 35/469 Test  #36: JsonSchema.ErrorMessageCarriesPath ................................................................   Passed    0.03 sec
+        Start  39: ImageProbe.PngDimensionsFromHeaderOnly
+ 36/469 Test  #37: JsonSchema.UnsupportedKeywordNeverSilentlyWeakens .................................................   Passed    0.04 sec
+        Start  40: ImageProbe.RealGeneratedPng
+ 37/469 Test  #38: JsonSchema.DeepSchemaIsBounded ....................................................................   Passed    0.05 sec
+        Start  41: ImageProbe.GifBmpJpeg
+ 38/469 Test  #39: ImageProbe.PngDimensionsFromHeaderOnly ............................................................   Passed    0.05 sec
+        Start  42: ImageProbe.RejectsGarbageTruncatedAndZeroSized
+ 39/469 Test  #40: ImageProbe.RealGeneratedPng .......................................................................   Passed    0.04 sec
+        Start  43: DataUri.RoundTripsBytes
+ 40/469 Test  #41: ImageProbe.GifBmpJpeg .............................................................................   Passed    0.03 sec
+        Start  44: DataUri.RejectsEverythingThatIsNotAStrictImageDataUri
+ 41/469 Test  #42: ImageProbe.RejectsGarbageTruncatedAndZeroSized ....................................................   Passed    0.04 sec
+        Start  45: DataUri.SizeLimitIsCheckedBeforeDecoding
+ 42/469 Test  #43: DataUri.RoundTripsBytes ...........................................................................   Passed    0.03 sec
+        Start  46: Result.ValueAndError
+ 43/469 Test  #44: DataUri.RejectsEverythingThatIsNotAStrictImageDataUri .............................................   Passed    0.03 sec
+        Start  47: Result.VoidSpecialisation
+ 44/469 Test  #45: DataUri.SizeLimitIsCheckedBeforeDecoding ..........................................................   Passed    0.06 sec
+        Start  48: Result.MoveOnlyAndString
+ 45/469 Test  #46: Result.ValueAndError ..............................................................................   Passed    0.05 sec
+        Start  49: ErrorTaxonomy.ExitCodesAreStable
+ 46/469 Test  #47: Result.VoidSpecialisation .........................................................................   Passed    0.04 sec
+        Start  50: ErrorTaxonomy.NamesAreUniqueAndKnown
+ 47/469 Test  #48: Result.MoveOnlyAndString ..........................................................................   Passed    0.04 sec
+        Start  51: CheckedMath.Add
+ 48/469 Test  #49: ErrorTaxonomy.ExitCodesAreStable ..................................................................   Passed    0.05 sec
+        Start  52: CheckedMath.Mul
+ 49/469 Test  #50: ErrorTaxonomy.NamesAreUniqueAndKnown ..............................................................   Passed    0.04 sec
+        Start  53: CheckedMath.SaturatingSub
+ 50/469 Test  #51: CheckedMath.Add ...................................................................................   Passed    0.04 sec
+        Start  54: CheckedMath.RangeWithin
+ 51/469 Test  #52: CheckedMath.Mul ...................................................................................   Passed    0.05 sec
+        Start  55: Lifecycle.StaticTableMatchesSpecification
+ 52/469 Test  #53: CheckedMath.SaturatingSub .........................................................................   Passed    0.05 sec
+        Start  56: Lifecycle.EveryPairBehavesAccordingToTable
+ 53/469 Test  #54: CheckedMath.RangeWithin ...........................................................................   Passed    0.05 sec
+        Start  57: Lifecycle.FullHappyPathAndReload
+ 54/469 Test  #55: Lifecycle.StaticTableMatchesSpecification .........................................................   Passed    0.07 sec
+        Start  58: Lifecycle.TransitionToFailedRequiresFail
+ 55/469 Test  #56: Lifecycle.EveryPairBehavesAccordingToTable ........................................................   Passed    0.07 sec
+        Start  59: Lifecycle.RecoverableFailureCanRevalidate
+ 56/469 Test  #57: Lifecycle.FullHappyPathAndReload ..................................................................   Passed    0.04 sec
+        Start  60: Lifecycle.NonRecoverableFailureOnlyAllowsUnloading
+ 57/469 Test  #58: Lifecycle.TransitionToFailedRequiresFail ..........................................................   Passed    0.03 sec
+        Start  61: Lifecycle.CannotFailFromIdleStates
+ 58/469 Test  #59: Lifecycle.RecoverableFailureCanRevalidate .........................................................   Passed    0.04 sec
+        Start  62: Lifecycle.CompareAndTransition
+ 59/469 Test  #60: Lifecycle.NonRecoverableFailureOnlyAllowsUnloading ................................................   Passed    0.04 sec
+        Start  63: Lifecycle.ExactlyOneConcurrentOwnerWinsTheLoad
+ 60/469 Test  #61: Lifecycle.CannotFailFromIdleStates ................................................................   Passed    0.03 sec
+        Start  64: Lifecycle.NamesAreDistinct
+ 61/469 Test  #62: Lifecycle.CompareAndTransition ....................................................................   Passed    0.04 sec
+        Start  65: MemoryBudgetMath.PhysicalOnly
+ 62/469 Test  #64: Lifecycle.NamesAreDistinct ........................................................................   Passed    0.04 sec
+        Start  66: MemoryBudgetMath.VulkanHeadroomCapsBudget
+ 63/469 Test  #63: Lifecycle.ExactlyOneConcurrentOwnerWinsTheLoad ....................................................   Passed    0.07 sec
+        Start  67: MemoryBudgetMath.SaturatesInsteadOfUnderflowing
+ 64/469 Test  #65: MemoryBudgetMath.PhysicalOnly .....................................................................   Passed    0.06 sec
+        Start  68: MemoryBudget.ReserveAndRelease
+ 65/469 Test  #66: MemoryBudgetMath.VulkanHeadroomCapsBudget .........................................................   Passed    0.03 sec
+        Start  69: MemoryBudget.ExceedingBudgetFailsAndLeavesStateUntouched
+ 66/469 Test  #67: MemoryBudgetMath.SaturatesInsteadOfUnderflowing ...................................................   Passed    0.04 sec
+        Start  70: MemoryBudget.OverflowIsOutOfMemoryNotWraparound
+ 67/469 Test  #68: MemoryBudget.ReserveAndRelease ....................................................................   Passed    0.06 sec
+        Start  71: MemoryBudget.NoDoubleCountingOfSharedRegion
+ 68/469 Test  #69: MemoryBudget.ExceedingBudgetFailsAndLeavesStateUntouched ..........................................   Passed    0.05 sec
+        Start  72: MemoryBudget.InvalidArguments
+ 69/469 Test  #70: MemoryBudget.OverflowIsOutOfMemoryNotWraparound ...................................................   Passed    0.04 sec
+        Start  73: MemoryBudget.Resize
+ 70/469 Test  #71: MemoryBudget.NoDoubleCountingOfSharedRegion .......................................................   Passed    0.04 sec
+        Start  74: MemoryBudget.RemeasureCanOvercommit
+ 71/469 Test  #72: MemoryBudget.InvalidArguments .....................................................................   Passed    0.04 sec
+        Start  75: MemoryBudget.ConstructFromMeasurements
+ 72/469 Test  #73: MemoryBudget.Resize ...............................................................................   Passed    0.04 sec
+        Start  76: PathGuard.AcceptsPathsInsideRoot
+ 73/469 Test  #74: MemoryBudget.RemeasureCanOvercommit ...............................................................   Passed    0.04 sec
+        Start  77: PathGuard.RejectsDotDotTraversal
+ 74/469 Test  #75: MemoryBudget.ConstructFromMeasurements ............................................................   Passed    0.04 sec
+        Start  78: PathGuard.RejectsAbsolutePathOutside
+ 75/469 Test  #76: PathGuard.AcceptsPathsInsideRoot ..................................................................   Passed    0.05 sec
+        Start  79: PathGuard.RejectsSiblingWithSharedPrefix
+ 76/469 Test  #77: PathGuard.RejectsDotDotTraversal ..................................................................   Passed    0.06 sec
+        Start  80: PathGuard.RejectsEmptyAndNul
+ 77/469 Test  #78: PathGuard.RejectsAbsolutePathOutside ..............................................................   Passed    0.05 sec
+        Start  81: PathGuard.EmptyGuardRejectsEverything
+ 78/469 Test  #79: PathGuard.RejectsSiblingWithSharedPrefix ..........................................................   Passed    0.04 sec
+        Start  82: PathGuard.AddRootValidation
+ 79/469 Test  #80: PathGuard.RejectsEmptyAndNul ......................................................................   Passed    0.04 sec
+        Start  83: PathGuard.LinkInsideRootPointingOutsideIsRejected
+ 80/469 Test  #81: PathGuard.EmptyGuardRejectsEverything .............................................................   Passed    0.04 sec
+        Start  84: PathGuard.LinkInsideRootPointingInsideIsAccepted
+ 81/469 Test  #82: PathGuard.AddRootValidation .......................................................................   Passed    0.04 sec
+        Start  85: PathGuard.WindowsCaseInsensitiveRootMatch
+ 82/469 Test  #85: PathGuard.WindowsCaseInsensitiveRootMatch .........................................................   Passed    0.04 sec
+        Start  86: PathGuard.WindowsRejectsDeviceNamespaceAndStreams
+ 83/469 Test  #84: PathGuard.LinkInsideRootPointingInsideIsAccepted ..................................................   Passed    0.10 sec
+ 84/469 Test  #83: PathGuard.LinkInsideRootPointingOutsideIsRejected .................................................   Passed    0.12 sec
+        Start  87: PathGuard.WindowsRejectsDosDeviceNamesInsideRoot
+        Start  88: PathGuard.WindowsRejectsWildcardsAndTrailingDotsInsideRoot
+ 85/469 Test  #86: PathGuard.WindowsRejectsDeviceNamespaceAndStreams .................................................   Passed    0.05 sec
+        Start  89: PathGuard.WindowsStillAcceptsLookalikeLegitimateNames
+ 86/469 Test  #87: PathGuard.WindowsRejectsDosDeviceNamesInsideRoot ..................................................   Passed    0.04 sec
+ 87/469 Test  #88: PathGuard.WindowsRejectsWildcardsAndTrailingDotsInsideRoot ........................................   Passed    0.05 sec
+        Start  90: JobQueue.RunsJobToSuccessWithEvents
+        Start  91: JobQueue.FailureCarriesError
+ 88/469 Test  #89: PathGuard.WindowsStillAcceptsLookalikeLegitimateNames .............................................   Passed    0.05 sec
+        Start  92: JobQueue.ThrowingJobBecomesInternalFailureAndQueueSurvives
+ 89/469 Test  #91: JobQueue.FailureCarriesError ......................................................................   Passed    0.04 sec
+ 90/469 Test  #90: JobQueue.RunsJobToSuccessWithEvents ...............................................................   Passed    0.07 sec
+        Start  93: JobQueue.CancelRunningJobIsCooperative
+        Start  94: JobQueue.CancelQueuedJobNeverRuns
+ 91/469 Test  #92: JobQueue.ThrowingJobBecomesInternalFailureAndQueueSurvives ........................................   Passed    0.05 sec
+        Start  95: JobQueue.CancelFinishedIsNoOpAndUnknownIsNotFound
+ 92/469 Test  #93: JobQueue.CancelRunningJobIsCooperative ............................................................   Passed    0.03 sec
+        Start  96: JobQueue.FullQueueRejectsWithBusy
+ 93/469 Test  #95: JobQueue.CancelFinishedIsNoOpAndUnknownIsNotFound .................................................   Passed    0.04 sec
+        Start  97: JobQueue.JobsRunInSubmissionOrderOnOneWorker
+ 94/469 Test  #94: JobQueue.CancelQueuedJobNeverRuns .................................................................   Passed    0.06 sec
+        Start  98: JobQueue.MultipleWorkersRunConcurrently
+ 95/469 Test  #96: JobQueue.FullQueueRejectsWithBusy .................................................................   Passed    0.05 sec
+        Start  99: JobQueue.EventCallbackReceivesStreamAndMayThrow
+ 96/469 Test  #97: JobQueue.JobsRunInSubmissionOrderOnOneWorker ......................................................   Passed    0.05 sec
+        Start 100: JobQueue.ProgressEventsAreBoundedButOutputIsNot
+ 97/469 Test  #99: JobQueue.EventCallbackReceivesStreamAndMayThrow ...................................................   Passed    0.06 sec
+        Start 101: JobQueue.ShutdownCancelsRunningAndQueuedAndRejectsNewWork
+ 98/469 Test #100: JobQueue.ProgressEventsAreBoundedButOutputIsNot ...................................................   Passed    0.05 sec
+        Start 102: JobQueue.DestructorCancelsWithoutHanging
+ 99/469 Test  #98: JobQueue.MultipleWorkersRunConcurrently ...........................................................   Passed    0.11 sec
+        Start 103: JobQueue.RetainsBoundedNumberOfFinishedJobs
+100/469 Test #101: JobQueue.ShutdownCancelsRunningAndQueuedAndRejectsNewWork .........................................   Passed    0.04 sec
+        Start 104: JobQueue.RejectsEmptyFunction
+101/469 Test #102: JobQueue.DestructorCancelsWithoutHanging ..........................................................   Passed    0.04 sec
+        Start 105: CancellationToken.SourceAndToken
+102/469 Test #103: JobQueue.RetainsBoundedNumberOfFinishedJobs .......................................................   Passed    0.04 sec
+        Start 106: Settings.DefaultsAreSafeAndValid
+103/469 Test #104: JobQueue.RejectsEmptyFunction .....................................................................   Passed    0.05 sec
+        Start 107: Settings.RoundTripThroughFile
+104/469 Test #105: CancellationToken.SourceAndToken ..................................................................   Passed    0.04 sec
+        Start 108: Settings.MissingFileYieldsDefaults
+105/469 Test #106: Settings.DefaultsAreSafeAndValid ..................................................................   Passed    0.04 sec
+        Start 109: Settings.AtomicWriteReplacesAndLeavesNoTempFiles
+106/469 Test #107: Settings.RoundTripThroughFile .....................................................................   Passed    0.05 sec
+        Start 110: Settings.FailedSaveKeepsPreviousFile
+107/469 Test #108: Settings.MissingFileYieldsDefaults ................................................................   Passed    0.05 sec
+        Start 111: Settings.MigratesLegacyV0
+108/469 Test #109: Settings.AtomicWriteReplacesAndLeavesNoTempFiles ..................................................   Passed    0.08 sec
+        Start 112: Settings.MigratedFileIsRewrittenAtCurrentVersion
+109/469 Test #110: Settings.FailedSaveKeepsPreviousFile ..............................................................   Passed    0.08 sec
+        Start 113: Settings.NewerSchemaIsRejectedNotDowngraded
+110/469 Test #111: Settings.MigratesLegacyV0 .........................................................................   Passed    0.07 sec
+        Start 114: Settings.RejectsCorruptAndMistypedInput
+111/469 Test #112: Settings.MigratedFileIsRewrittenAtCurrentVersion ..................................................   Passed    0.08 sec
+        Start 115: Settings.IgnoresUnknownKeys
+112/469 Test #113: Settings.NewerSchemaIsRejectedNotDowngraded .......................................................   Passed    0.04 sec
+        Start 116: Settings.ValidationBounds
+113/469 Test #114: Settings.RejectsCorruptAndMistypedInput ...........................................................   Passed    0.04 sec
+        Start 117: Settings.NonLoopbackBindNeedsExplicitLanOptIn
+114/469 Test #115: Settings.IgnoresUnknownKeys .......................................................................   Passed    0.04 sec
+        Start 118: Settings.LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch
+115/469 Test #116: Settings.ValidationBounds .........................................................................   Passed    0.04 sec
+        Start 119: Settings.ContextTokenCapMatchesEngineCap
+116/469 Test #117: Settings.NonLoopbackBindNeedsExplicitLanOptIn .....................................................   Passed    0.04 sec
+        Start 120: Settings.ProfileNames
+117/469 Test #118: Settings.LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch ...........................................   Passed    0.04 sec
+        Start 121: ModelId.Validation
+118/469 Test #119: Settings.ContextTokenCapMatchesEngineCap ..........................................................   Passed    0.04 sec
+        Start 122: ModelId.MakeIdSanitises
+119/469 Test #120: Settings.ProfileNames .............................................................................   Passed    0.04 sec
+        Start 123: ModelRegistry.AddGetListRemove
+120/469 Test #121: ModelId.Validation ................................................................................   Passed    0.04 sec
+        Start 124: ModelRegistry.RejectsBadAndDuplicateIds
+121/469 Test #122: ModelId.MakeIdSanitises ...........................................................................   Passed    0.04 sec
+        Start 125: ModelRegistry.LifecycleThroughRegistryAndRemovalGuard
+122/469 Test #123: ModelRegistry.AddGetListRemove ....................................................................   Passed    0.05 sec
+        Start 126: ModelRegistry.FailMarksFailed
+123/469 Test #124: ModelRegistry.RejectsBadAndDuplicateIds ...........................................................   Passed    0.04 sec
+        Start 127: ModelRegistry.JsonRoundTrip
+124/469 Test #125: ModelRegistry.LifecycleThroughRegistryAndRemovalGuard .............................................   Passed    0.05 sec
+        Start 128: ModelRegistry.LoadJsonRejectsGarbage
+125/469 Test #126: ModelRegistry.FailMarksFailed .....................................................................   Passed    0.05 sec
+        Start 129: ModelRegistryScan.FindsValidatesAndIsIdempotent
+126/469 Test #127: ModelRegistry.JsonRoundTrip .......................................................................   Passed    0.04 sec
+        Start 130: ModelRegistryScan.DuplicateStemsGetSuffixedIds
+127/469 Test #128: ModelRegistry.LoadJsonRejectsGarbage ..............................................................   Passed    0.04 sec
+        Start 131: ModelRegistryScan.SafetensorsHeaderChecked
+128/469 Test #129: ModelRegistryScan.FindsValidatesAndIsIdempotent ...................................................   Passed    0.05 sec
+        Start 132: ModelRegistryScan.DoesNotFollowLinksOutOfRoot
+129/469 Test #130: ModelRegistryScan.DuplicateStemsGetSuffixedIds ....................................................   Passed    0.05 sec
+        Start 133: ModelRegistryScan.RootOutsideGuardIsRejected
+130/469 Test #131: ModelRegistryScan.SafetensorsHeaderChecked ........................................................   Passed    0.04 sec
+        Start 134: ModelRegistryScan.NeverModifiesScannedFiles
+131/469 Test #133: ModelRegistryScan.RootOutsideGuardIsRejected ......................................................   Passed    0.04 sec
+        Start 135: Logger.WritesOneJsonObjectPerLine
+132/469 Test #134: ModelRegistryScan.NeverModifiesScannedFiles .......................................................   Passed    0.04 sec
+        Start 136: Logger.LevelFiltering
+133/469 Test #132: ModelRegistryScan.DoesNotFollowLinksOutOfRoot .....................................................   Passed    0.07 sec
+        Start 137: Logger.EscapesControlCharacters
+134/469 Test #135: Logger.WritesOneJsonObjectPerLine .................................................................   Passed    0.04 sec
+        Start 138: Logger.ParseLevel
+135/469 Test #136: Logger.LevelFiltering .............................................................................   Passed    0.04 sec
+        Start 139: Logger.DefaultGlobalLoggerExists
+136/469 Test #137: Logger.EscapesControlCharacters ...................................................................   Passed    0.04 sec
+        Start 140: EngineInterface.TextAdapterContract
+137/469 Test #138: Logger.ParseLevel .................................................................................   Passed    0.04 sec
+        Start 141: EngineInterface.ImageAdapterContract
+138/469 Test #139: Logger.DefaultGlobalLoggerExists ..................................................................   Passed    0.04 sec
+        Start 142: EngineInterface.DefaultsAreConservative
+139/469 Test #140: EngineInterface.TextAdapterContract ...............................................................   Passed    0.04 sec
+        Start 143: GgufProbe.TextModelWithArchitecture
+140/469 Test #141: EngineInterface.ImageAdapterContract ..............................................................   Passed    0.04 sec
+        Start 144: GgufProbe.DiffusionModelIsClassifiedAsImageWithoutMetadata
+141/469 Test #142: EngineInterface.DefaultsAreConservative ...........................................................   Passed    0.04 sec
+        Start 145: GgufProbe.ArchitectureMarksDiffusion
+142/469 Test #143: GgufProbe.TextModelWithArchitecture ...............................................................   Passed    0.04 sec
+        Start 146: GgufProbe.UnknownContentStaysUnknown
+143/469 Test #144: GgufProbe.DiffusionModelIsClassifiedAsImageWithoutMetadata ........................................   Passed    0.04 sec
+        Start 147: GgufProbe.StringArrayMetadataIsSkipped
+144/469 Test #145: GgufProbe.ArchitectureMarksDiffusion ..............................................................   Passed    0.04 sec
+        Start 148: GgufProbe.TruncatedTensorTableIsIncompleteNotFatal
+145/469 Test #146: GgufProbe.UnknownContentStaysUnknown ..............................................................   Passed    0.04 sec
+        Start 149: GgufProbe.TinyInputsAreRejectedWithoutReading
+146/469 Test #147: GgufProbe.StringArrayMetadataIsSkipped ............................................................   Passed    0.04 sec
+        Start 150: GgufProbe.BadMagicIsRejected
+147/469 Test #148: GgufProbe.TruncatedTensorTableIsIncompleteNotFatal ................................................   Passed    0.04 sec
+        Start 151: GgufProbe.UnsupportedVersionIsRejected
+148/469 Test #149: GgufProbe.TinyInputsAreRejectedWithoutReading .....................................................   Passed    0.04 sec
+        Start 152: GgufProbe.V1IsValidButNotParsed
+149/469 Test #150: GgufProbe.BadMagicIsRejected ......................................................................   Passed    0.06 sec
+        Start 153: GgufProbe.AbsurdStringLengthIsRejected
+150/469 Test #151: GgufProbe.UnsupportedVersionIsRejected ............................................................   Passed    0.05 sec
+        Start 154: GgufProbe.AbsurdArrayCountIsRejectedWithoutAllocating
+151/469 Test #152: GgufProbe.V1IsValidButNotParsed ...................................................................   Passed    0.05 sec
+        Start 155: GgufProbe.HugeFixedArrayCountIsRejectedByBufferBounds
+152/469 Test #153: GgufProbe.AbsurdStringLengthIsRejected ............................................................   Passed    0.06 sec
+        Start 156: GgufProbe.TooManyTensorDimsIsRejected
+153/469 Test #154: GgufProbe.AbsurdArrayCountIsRejectedWithoutAllocating .............................................   Passed    0.04 sec
+        Start 157: GgufProbe.UnknownMetadataTypeIsRejected
+154/469 Test #155: GgufProbe.HugeFixedArrayCountIsRejectedByBufferBounds .............................................   Passed    0.04 sec
+        Start 158: GgufProbe.NameCapStopsWalking
+155/469 Test #156: GgufProbe.TooManyTensorDimsIsRejected .............................................................   Passed    0.07 sec
+        Start 159: GgufProbe.FileProbeReadsAndReportsMissingFiles
+156/469 Test #157: GgufProbe.UnknownMetadataTypeIsRejected ...........................................................   Passed    0.07 sec
+        Start 160: GgufProbe.FileProbeHonoursTheByteLimit
+157/469 Test #158: GgufProbe.NameCapStopsWalking .....................................................................   Passed    0.04 sec
+        Start 161: GuiAssets.RootServesIndexHtmlWithStrictCsp
+158/469 Test #159: GgufProbe.FileProbeReadsAndReportsMissingFiles ....................................................   Passed    0.04 sec
+        Start 162: GuiAssets.EveryAssetIsServedWithCspAndRightType
+159/469 Test #161: GuiAssets.RootServesIndexHtmlWithStrictCsp ........................................................   Passed    0.05 sec
+        Start 163: GuiAssets.StudioStructure
+160/469 Test #160: GgufProbe.FileProbeHonoursTheByteLimit ............................................................   Passed    0.09 sec
+        Start 164: GuiAssets.EmbeddedBytesMatchExpectedMarkers
+161/469 Test #162: GuiAssets.EveryAssetIsServedWithCspAndRightType ...................................................   Passed    0.04 sec
+        Start 165: GuiAssets.NoExternalUrlsOrInlineCode
+162/469 Test #163: GuiAssets.StudioStructure .........................................................................   Passed    0.05 sec
+        Start 166: GuiAssets.TokenComesFromFragmentNeverQueryString
+163/469 Test #164: GuiAssets.EmbeddedBytesMatchExpectedMarkers .......................................................   Passed    0.05 sec
+        Start 167: GuiAssets.TraversalAndMalformedPathsAreRejected
+164/469 Test #166: GuiAssets.TokenComesFromFragmentNeverQueryString ..................................................   Passed    0.04 sec
+        Start 168: GuiAssets.UnknownAssetIs404AndNamespaceEdges
+165/469 Test #167: GuiAssets.TraversalAndMalformedPathsAreRejected ...................................................   Passed    0.04 sec
+        Start 169: GuiAssets.OtherPathsAreNotHandled
+166/469 Test #168: GuiAssets.UnknownAssetIs404AndNamespaceEdges ......................................................   Passed    0.04 sec
+167/469 Test #165: GuiAssets.NoExternalUrlsOrInlineCode ..............................................................   Passed    0.10 sec
+        Start 170: GuiAssets.MethodHandling
+        Start 171: GuiAssets.NoSecretsEmbedded
+168/469 Test #169: GuiAssets.OtherPathsAreNotHandled .................................................................   Passed    0.04 sec
+        Start 172: GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles
+169/469 Test #170: GuiAssets.MethodHandling ..........................................................................   Passed    0.03 sec
+        Start 173: HardwareFormat.Bytes
+170/469 Test #171: GuiAssets.NoSecretsEmbedded .......................................................................   Passed    0.04 sec
+        Start 174: HardwareFormat.MibS
+171/469 Test #173: HardwareFormat.Bytes ..............................................................................   Passed    0.04 sec
+        Start 175: HardwareFormat.BusAndDriveTypes
+172/469 Test #174: HardwareFormat.MibS ...............................................................................   Passed    0.04 sec
+173/469 Test #172: GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles ..................................................***Failed    0.05 sec
+Running main() from D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\build\lfm3-unit\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GuiAssets
+[ RUN      ] GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles
+D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\tests\unit\gui\test_gui_assets.cpp(208): error: Expected equality of these values:
+  asset_text(std::string(n))
+    Which is: "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"referrer\" content=\"no-referrer\">\n<meta name=\"color-scheme\" content=\"light dark\">\n<title>HCS Studio</title>\n<link rel=\"icon\" href=\"data:,\">\n<link rel=\"stylesheet\" href=\"/ui/app.css\">\n<script src=\"/ui/app.js\" defer></script>\n</head>\n<body>\n<a class=\"skip\" href=\"#main\">Skip to content</a>\n<div class=\"shell\">\n\n<aside class=\"side\" id=\"side\" aria-label=\"HCS Studio navigation\">\n  <div class=\"brand\">\n    <svg class=\"mark\" viewBox=\"0 0 32 32\" role=\"img\" aria-label=\"HCSmedia\">\n      <rect class=\"mark-bg\" width=\"32\" height=\"32\" rx=\"8\"/>\n      <path class=\"mark-fg\" d=\"M9 8v16M23 8v16M9 16h14\"/>\n      <circle class=\"mark-dot\" cx=\"16\" cy=\"16\" r=\"2.2\"/>\n    </svg>\n    <div class=\"wordmark\">\n      <svg viewBox=\"0 0 132 22\" role=\"img\" aria-label=\"HCSmedia\">\n        <text class=\"wm-a\" x=\"0\" y=\"17\" textLength=\"52\" lengthAdjust=\"spacingAndGlyphs\">HCS</text>\n        <text class=\"wm-b\" x=\"55\" y=\"17\" textLength=\"77\" lengthAdjust=\"spacingAndGlyphs\">media</text>\n      </svg>\n      <span class=\"product\">Studio</span>\n    </div>\n  </div>\n\n  <nav aria-label=\"Sections\">\n    <div role=\"tablist\" id=\"tabs\" aria-label=\"Sections\" aria-orientation=\"vertical\">\n      <p class=\"grp\" role=\"presentation\">Create</p>\n      <button role=\"tab\" id=\"tab-chat\" data-panel=\"chat\" aria-controls=\"panel-chat\" aria-selected=\"true\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 4h14v9H9l-4 3v-3H3z\"/></svg><span>Chat</span></button>\n      <button role=\"tab\" id=\"tab-image\" data-panel=\"image\" aria-controls=\"panel-image\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><rect x=\"3\" y=\"4\" width=\"14\" height=\"12\" rx=\"2\"/><circle cx=\"8\" cy=\"9\" r=\"1.5\"/><path d=\"M4 15l4-4 3 3 2-2 3 3\"/></svg><span>Image Studio</span></button>\n      <button role=\"tab\" id=\"tab-vision\" data-panel=\"vision\" aria-controls=\"panel-vision\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z\"/><circle cx=\"10\" cy=\"10\" r=\"2.5\"/></svg><span>Vision</span></button>\n      <p class=\"grp\" role=\"presentation\">Runtime</p>\n      <button role=\"tab\" id=\"tab-models\" data-panel=\"models\" aria-controls=\"panel-models\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M10 3l7 3.5v7L10 17l-7-3.5v-7z\"/><path d=\"M3 6.5L10 10l7-3.5M10 10v7\"/></svg><span>Models</span></button>\n      <button role=\"tab\" id=\"tab-perf\" data-panel=\"perf\" aria-controls=\"panel-perf\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 16V9M8 16V4M13 16v-7M17 16V7\"/></svg><span>Performance</span></button>\n      <button role=\"tab\" id=\"tab-settings\" data-panel=\"settings\" aria-controls=\"panel-settings\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><circle cx=\"10\" cy=\"10\" r=\"2.5\"/><path d=\"M10 2v2.5M10 15.5V18M2 10h2.5M15.5 10H18M4.3 4.3l1.8 1.8M13.9 13.9l1.8 1.8M15.7 4.3l-1.8 1.8M6.1 13.9l-1.8 1.8\"/></svg><span>Settings</span></button>\n      <p class=\"grp\" role=\"presentation\">Roadmap</p>\n      <button role=\"tab\" id=\"tab-agent\" data-panel=\"agent\" aria-controls=\"panel-agent\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M5 6l4 4-4 4M11 15h5\"/></svg><span>Agent</span><span class=\"tag\">Planned</span></button>\n      <button role=\"tab\" id=\"tab-train\" data-panel=\"train\" aria-controls=\"panel-train\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 15c3 0 3-10 7-10s4 10 7 10\"/></svg><span>Train</span><span class=\"tag\">Planned</span></button>\n    </div>\n  </nav>\n\n  <div class=\"side-foot\">\n    <span id=\"ver\" class=\"note\">HCSInfer local UI</span>\n  </div>\n</aside>\n\n<div class=\"work\">\n  <header class=\"top\">\n    <button type=\"button\" id=\"nav-toggle\" class=\"ghost icon-btn\" aria-controls=\"side\" aria-expanded=\"false\" aria-label=\"Toggle navigation\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 6h14M3 10h14M3 14h14\"/></svg></button>\n    <h1 id=\"page-title\">Chat</h1>\n    <div class=\"status\" role=\"status\" aria-live=\"polite\">\n      <span id=\"conn\" class=\"pill pill-unknown\">connecting</span>\n      <span id=\"loaded\" class=\"pill pill-unknown\">no model loaded</span>\n    </div>\n    <button type=\"button\" id=\"theme-toggle\" class=\"ghost icon-btn\" aria-label=\"Theme: follow system\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><circle cx=\"10\" cy=\"10\" r=\"3.5\"/><path d=\"M10 2v2M10 16v2M2 10h2M16 10h2M4.5 4.5l1.4 1.4M14.1 14.1l1.4 1.4M15.5 4.5l-1.4 1.4M5.9 14.1l-1.4 1.4\"/></svg><span id=\"theme-label\" class=\"vh\">system</span></button>\n  </header>\n\n<main id=\"main\">\n  <div id=\"authbar\" class=\"banner banner-error\" hidden>\n    <form id=\"auth-form\" autocomplete=\"off\">\n      <label for=\"auth-token\">API token (printed by <code>HCSInfer serve</code> on stderr)</label>\n      <div class=\"row\">\n        <input id=\"auth-token\" type=\"password\" autocomplete=\"off\" spellcheck=\"false\" required>\n        <button type=\"submit\">Use token</button>\n      </div>\n    </form>\n    <p id=\"auth-note\" class=\"note\">The token is kept only in this tab (memory and session storage). It is never put in a URL query string.</p>\n  </div>\n\n  <!-- ===================== Chat ===================== -->\n  <section role=\"tabpanel\" id=\"panel-chat\" aria-labelledby=\"tab-chat\" tabindex=\"0\">\n    <div class=\"banner\" id=\"chat-state\" role=\"status\" aria-live=\"polite\" hidden></div>\n    <div class=\"chat-wrap\">\n      <div id=\"chat-log\" class=\"log\" aria-live=\"polite\" aria-label=\"Conversation\"><p class=\"empty\" id=\"chat-empty\">Pick a model, then ask something. Replies stream in as the model writes them. Tool calls, when a model makes them, appear here as expandable blocks.</p></div>\n      <form id=\"chat-form\" class=\"composer\">\n        <div class=\"row between\">\n          <label class=\"inline-field\">Model <select id=\"chat-model\"></select></label>\n          <span id=\"chat-meta\" class=\"note\"></span>\n        </div>\n        <div class=\"adv\" data-advanced hidden>\n          <label>System prompt <textarea id=\"chat-system\" rows=\"2\" maxlength=\"8000\"></textarea></label>\n          <div class=\"fields\">\n            <label>Temperature <input id=\"chat-temp\" type=\"number\" min=\"0\" max=\"2\" step=\"0.1\" value=\"0.7\"></label>\n            <label>Max tokens <input id=\"chat-max\" type=\"number\" min=\"1\" max=\"4096\" step=\"1\" value=\"256\"></label>\n            <label>Seed <input id=\"chat-seed\" type=\"number\" min=\"0\" step=\"1\" placeholder=\"random\"></label>\n          </div>\n          <button type=\"button\" class=\"ghost\" data-reset=\"chat\">Reset to defaults</button>\n        </div>\n        <label for=\"chat-input\" class=\"vh\">Message</label>\n        <textarea id=\"chat-input\" rows=\"3\" placeholder=\"Type a message. Enter sends, Shift+Enter adds a line.\" maxlength=\"60000\"></textarea>\n        <div class=\"row\">\n          <button type=\"submit\" id=\"chat-send\">Send</button>\n          <button type=\"button\" id=\"chat-stop\" class=\"danger\" hidden>Stop</button>\n          <button type=\"button\" id=\"chat-clear\" class=\"ghost\">Clear</button>\n        </div>\n      </form>\n    </div>\n  </section>\n\n  <!-- ===================== Image Studio ===================== -->\n  <section role=\"tabpanel\" id=\"panel-image\" aria-labelledby=\"tab-image\" tabindex=\"0\" hidden>\n    <div class=\"banner\" id=\"image-state\" role=\"status\" aria-live=\"polite\" hidden></div>\n    <div class=\"studio\">\n      <form id=\"image-form\" class=\"controls\">\n        <div class=\"seg\" role=\"radiogroup\" aria-label=\"Mode\">\n          <label><input type=\"radio\" name=\"image-mode\" value=\"txt2img\" checked><span>Text to image</span></label>\n          <label><input type=\"radio\" name=\"image-mode\" value=\"img2img\"><span>Image to image</span></label>\n        </div>\n        <label>Model <select id=\"image-model\"></select></label>\n        <label>Prompt <textarea id=\"image-prompt\" rows=\"3\" maxlength=\"4000\" placeholder=\"Describe the picture you want.\"></textarea></label>\n\n        <div id=\"image-init-box\" hidden>\n          <label class=\"drop\" id=\"image-drop\" for=\"image-file\">\n            <span id=\"image-drop-text\">Drop an image here or choose one (PNG, JPEG, GIF, BMP)</span>\n            <input id=\"image-file\" type=\"file\" accept=\"image/png,image/jpeg,image/gif,image/bmp\">\n          </label>\n          <img id=\"image-init-preview\" alt=\"Input image preview\" hidden>\n          <label>Strength <span class=\"val\" id=\"image-strength-val\">0.75</span>\n            <input id=\"image-strength\" type=\"range\" min=\"0.05\" max=\"1\" step=\"0.05\" value=\"0.75\">\n          </label>\n          <p class=\"note\">Higher strength moves further from the input image.</p>\n        </div>\n\n        <fieldset class=\"presets\">\n          <legend>Steps preset</legend>\n          <div class=\"seg\" role=\"radiogroup\" aria-label=\"Steps preset\">\n            <label><input type=\"radio\" name=\"image-preset\" value=\"4\"><span>Draft 4</span></label>\n            <label><input type=\"radio\" name=\"image-preset\" value=\"8\"><span>Fast 8</span></label>\n            <label><input type=\"radio\" name=\"image-preset\" value=\"16\"><span>Standard 16</span></label>\n            <label><input type=\"radio\" name=\"image-preset\" value=\"28\"><span>Fine 28</span></label>\n          </div>\n          <p class=\"note\">A preset only sets the step count. Few steps look good only with a step-distilled checkpoint; other models need more.</p>\n        </fieldset>\n\n        <div class=\"fields\">\n          <label>Size\n            <select id=\"image-size\"><option value=\"\" id=\"image-size-match\" hidden>Match input image</option><option>256x256</option><option>384x384</option><option selected>512x512</option><option>640x640</option><option>768x768</option><option>512x768</option><option>768x512</option></select>\n          </label>\n          <label>Steps <input id=\"image-steps\" type=\"number\" min=\"1\" max=\"100\" value=\"16\"></label>\n          <label class=\"wide\">Seed\n            <span class=\"inline-pair\"><input id=\"image-seed\" type=\"number\" min=\"0\" max=\"2147483647\" placeholder=\"random\"><button type=\"button\" id=\"image-dice\" class=\"ghost\" aria-label=\"Pick a random seed\">Random</button></span>\n          </label>\n        </div>\n        <div class=\"adv\" data-advanced hidden>\n          <label>Negative prompt <textarea id=\"image-negative\" rows=\"2\" maxlength=\"4000\"></textarea></label>\n          <label>Guidance scale <input id=\"image-cfg\" type=\"number\" min=\"0\" max=\"30\" step=\"0.5\" placeholder=\"model default\"></label>\n          <button type=\"button\" class=\"ghost\" data-reset=\"image\">Reset to defaults</button>\n        </div>\n        <div class=\"row\">\n          <button type=\"submit\" id=\"image-send\">Generate</button>\n          <button type=\"button\" id=\"image-stop\" class=\"danger\" hidden>Cancel</button>\n        </div>\n      </form>\n\n      <div class=\"stage\">\n        <div class=\"canvas\" id=\"image-canvas\">\n          <p class=\"empty\" id=\"image-empty\">Your image appears here. Each finished image is kept in the gallery below for this browser session.</p>\n          <img id=\"image-out\" alt=\"Generated image\" hidden>\n          <div class=\"busybar\" id=\"image-busy\" hidden role=\"progressbar\" aria-label=\"Generating\"><span></span></div>\n        </div>\n        <p class=\"note\" id=\"image-meta\"></p>\n        <div class=\"row\" id=\"image-actions\" hidden>\n          <button type=\"button\" id=\"image-save\" class=\"ghost\">Save PNG</button>\n          <button type=\"button\" id=\"image-reuse\" class=\"ghost\">Use as input image</button>\n          <button type=\"button\" id=\"image-copy-seed\" class=\"ghost\">Copy seed</button>\n        </div>\n        <h3 class=\"sect\">Gallery</h3>\n        <ul id=\"image-gallery\" class=\"gallery\" aria-label=\"Generated images this session\"></ul>\n      </div>\n    </div>\n  </section>\n\n  <!-- ===================== Vision ===================== -->\n  <section role=\"tabpanel\" id=\"panel-vision\" aria-labelledby=\"tab-vision\" tabindex=\"0\" hidden>\n    <p class=\"note lead\">Needs a multimodal model whose projector (mmproj) file is in the same folder. One image per request (PNG, JPEG, GIF or BMP). The server body limit applies (default 1 MiB; start the server with a larger <code>--max-body-bytes</code> for photos).</p>\n    <div class=\"banner\" id=\"vision-state\" role=\"status\" aria-live=\"polite\" hidden></div>\n    <div class=\"two\">\n      <form id=\"vision-form\" class=\"controls\">\n        <label>Model <select id=\"vision-model\"></select></label>\n        <label>Image <input id=\"vision-file\" type=\"file\" accept=\"image/png,image/jpeg,image/gif,image/bmp\"></label>\n        <img id=\"vision-preview\" alt=\"Selected image preview\" hidden>\n        <label>Question <textarea id=\"vision-prompt\" rows=\"2\" maxlength=\"8000\">Describe this image.</textarea></label>\n        <div class=\"adv\" data-advanced hidden>\n          <div class=\"fields\">\n            <label>Max tokens <input id=\"vision-max\" type=\"number\" min=\"1\" max=\"4096\" value=\"256\"></label>\n            <label>Temperature <input id=\"vision-temp\" type=\"number\" min=\"0\" max=\"2\" step=\"0.1\" value=\"0\"></label>\n          </div>\n          <button type=\"button\" class=\"ghost\" data-reset=\"vision\">Reset to defaults</button>\n        </div>\n        <div class=\"row\">\n          <button type=\"submit\" id=\"vision-send\">Analyze</button>\n          <button type=\"button\" id=\"vision-stop\" class=\"danger\" hidden>Stop</button>\n        </div>\n      </form>\n      <div>\n        <h3 class=\"sect first\">Answer</h3>\n        <pre id=\"vision-out\" class=\"out\" aria-live=\"polite\"></pre>\n      </div>\n    </div>\n  </section>\n\n  <!-- ===================== Models ===================== -->\n  <section role=\"tabpanel\" id=\"panel-models\" aria-labelledby=\"tab-models\" tabindex=\"0\" hidden>\n    <div class=\"banner\" id=\"models-state\" role=\"status\" aria-live=\"polite\" hidden></div>\n    <div class=\"row\"><button type=\"button\" id=\"models-refresh\">Refresh list</button>\n      <span class=\"note\">Folders are added on the server with <code>HCSInfer models scan &lt;folder&gt;</code>; this page shows what the registry holds.</span></div>\n    <div class=\"card\">\n      <h3 class=\"sect first\">Memory split</h3>\n      <div class=\"membar\" id=\"mem-bar\" role=\"img\" aria-label=\"Memory budget split\"></div>\n      <ul class=\"legend\" id=\"mem-legend\"></ul>\n      <p class=\"note\" id=\"mem-note\"></p>\n    </div>\n    <div class=\"scroll\">\n      <table id=\"models-table\">\n        <thead><tr><th scope=\"col\">Model</th><th scope=\"col\">Kind</th><th scope=\"col\">Quantization</th><th scope=\"col\">Size</th><th scope=\"col\">State</th><th scope=\"col\">Actions</th></tr></thead>\n        <tbody></tbody>\n      </table>\n    </div>\n    <p class=\"note\">Loading is asynchronous; the state shown here is the real job state.</p>\n  </section>\n\n  <!-- ===================== Performance ===================== -->\n  <section role=\"tabpanel\" id=\"panel-perf\" aria-labelledby=\"tab-perf\" tabindex=\"0\" hidden>\n    <div class=\"banner\" id=\"perf-state\" role=\"status\" aria-live=\"polite\" hidden></div>\n    <div class=\"row\">\n      <label class=\"inline\"><input type=\"checkbox\" id=\"perf-auto\" checked> Auto-refresh</label>\n      <button type=\"button\" id=\"perf-refresh\" class=\"ghost\">Refresh now</button>\n    </div>\n    <div class=\"grid\">\n      <div class=\"card\"><h3 class=\"sect first\">Runtime</h3><dl id=\"perf-runtime\"></dl></div>\n      <div class=\"card\"><h3 class=\"sect first\">Memory</h3><dl id=\"perf-memory\"></dl></div>\n      <div class=\"card\"><h3 class=\"sect first\">Jobs started from this page</h3><dl id=\"perf-jobs\"></dl></div>\n    </div>\n    <h3 class=\"sect\">Devices</h3>\n    <pre id=\"perf-devices\" class=\"out\" tabindex=\"0\"></pre>\n  </section>\n\n  <!-- ===================== Settings ===================== -->\n  <section role=\"tabpanel\" id=\"panel-settings\" aria-labelledby=\"tab-settings\" tabindex=\"0\" hidden>\n    <fieldset>\n      <legend>Mode</legend>\n      <label class=\"inline\"><input type=\"radio\" name=\"mode\" value=\"simple\" checked> Simple</label>\n      <label class=\"inline\"><input type=\"radio\" name=\"mode\" value=\"advanced\"> Advanced</label>\n      <p class=\"note\">Advanced shows sampling and image options. Every advanced option has a reset button.</p>\n    </fieldset>\n    <fieldset>\n      <legend>Appearance</legend>\n      <label class=\"inline\"><input type=\"radio\" name=\"theme\" value=\"system\" checked> System</label>\n      <label class=\"inline\"><input type=\"radio\" name=\"theme\" value=\"light\"> Light</label>\n      <label class=\"inline\"><input type=\"radio\" name=\"theme\" value=\"dark\"> Dark</label>\n    </fieldset>\n    <fieldset>\n      <legend>Connection</legend>\n      <p class=\"note\">Server: <code id=\"set-origin\"></code></p>\n      <button type=\"button\" id=\"set-forget\" class=\"ghost\">Forget token in this tab</button>\n    </fieldset>\n    <fieldset>\n      <legend>Performance refresh</legend>\n      <label>Interval (seconds) <input id=\"set-interval\" type=\"number\" min=\"1\" max=\"60\" value=\"3\"></label>\n      <button type=\"button\" class=\"ghost\" id=\"set-interval-reset\">Reset to default</button>\n    </fieldset>\n    <p class=\"note\">Model folders, memory profile and backend selection are server-side settings (<code>settings.json</code> and <code>serve</code> options); this page does not change them.</p>\n  </section>\n\n  <!-- ===================== Agent (planned) ===================== -->\n  <section role=\"tabpanel\" id=\"panel-agent\" aria-labelledby=\"tab-agent\" tabindex=\"0\" hidden>\n    <div class=\"planned\">\n      <p class=\"badge\">Planned, not available in this build</p>\n      <h2>HCS Agent</h2>\n      <p>A coding agent that runs against the local OpenAI-compatible endpoint of this server. It has no controls here because nothing is wired to it yet.</p>\n      <dl class=\"roadmap\">\n        <dt>Base</dt><dd>Prime Agent (MIT licence), vendored at a pinned commit as an HCS engine adapter. Its source is added to the repository as a submodule; it is not built or started by HCSInfer yet.</dd>\n        <dt>Model</dt><dd>LFM3-Omni-2B Q8_0 as the local model. It needs a llama.cpp revision that supports the lfm3 architecture; the pinned revision has not been checked against it.</dd>\n        <dt>Safety</dt><dd>Tool calls confined to approved folders, no network by default, every shell and file call logged and cancellable.</dd>\n        <dt>Shipping</dt><dd>A sidecar in the portable folder until the single-executable gate (M7) passes.</dd>\n        <dt>Meanwhile</dt><dd>Chat shows tool-call deltas as expandable blocks when the server sends them. It never executes them.</dd>\n      </dl>\n    </div>\n  </section>\n\n  <!-- ===================== Train (planned) ===================== -->\n  <section role=\"tabpanel\" id=\"panel-train\" aria-labelledby=\"tab-train\" tabindex=\"0\" hidden>\n    <div class=\"planned\">\n      <p class=\"badge\">Planned, not available in this build</p>\n      <h2>HCS Train</h2>\n      <p>Datasets, small LoRA runs and evaluation for local models. No training controls are shown because no training endpoint exists yet.</p>\n      <dl class=\"roadmap\">\n        <dt>Scope</dt><dd>Short LoRA runs on a 2B model on this machine. Real tokens per second and wall time will be reported; a toy run is never presented as a quality result.</dd>\n        <dt>Data</dt><dd>Permissively licensed open datasets with the licence recorded per dataset, the project's own tests and traces, and human-approved examples. No distillation from proprietary model outputs.</dd>\n        <dt>Evaluation</dt><dd>A fixed held-out set for tool calling and coding, run before and after. An adapter is kept only if it improves that set without regressing the base model.</dd>\n        <dt>Self-improvement</dt><dd>Reflect on trajectories, propose a small prompt or dataset change, evaluate, keep only on measured gain, keep rollback snapshots.</dd>\n      </dl>\n    </div>\n  </section>\n</main>\n<footer>HCSmedia Studio &middot; local only, talks to this server and nothing else</footer>\n</div>\n</div>\n</body>\n</html>\n"
+  src
+    Which is: "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"referrer\" content=\"no-referrer\">\n<meta name=\"color-scheme\" content=\"light dark\">\n<title>HCS Studio</title>\n<link rel=\"icon\" href=\"data:,\">\n<link rel=\"stylesheet\" href=\"/ui/app.css\">\n<script src=\"/ui/app.js\" defer></script>\n</head>\n<body>\n<a class=\"skip\" href=\"#main\">Skip to content</a>\n<div class=\"shell\">\n\n<aside class=\"side\" id=\"side\" aria-label=\"HCS Studio navigation\">\n  <div class=\"brand\">\n    <svg class=\"mark\" viewBox=\"0 0 32 32\" role=\"img\" aria-label=\"HCSmedia\">\n      <rect class=\"mark-bg\" width=\"32\" height=\"32\" rx=\"8\"/>\n      <path class=\"mark-fg\" d=\"M9 8v16M23 8v16M9 16h14\"/>\n      <circle class=\"mark-dot\" cx=\"16\" cy=\"16\" r=\"2.2\"/>\n    </svg>\n    <div class=\"wordmark\">\n      <svg viewBox=\"0 0 132 22\" role=\"img\" aria-label=\"HCSmedia\">\n        <text class=\"wm-a\" x=\"0\" y=\"17\" textLength=\"52\" lengthAdjust=\"spacingAndGlyphs\">HCS</text>\n        <text class=\"wm-b\" x=\"55\" y=\"17\" textLength=\"77\" lengthAdjust=\"spacingAndGlyphs\">media</text>\n      </svg>\n      <span class=\"product\">Studio</span>\n    </div>\n  </div>\n\n  <nav aria-label=\"Sections\">\n    <div role=\"tablist\" id=\"tabs\" aria-label=\"Sections\" aria-orientation=\"vertical\">\n      <p class=\"grp\" role=\"presentation\">Create</p>\n      <button role=\"tab\" id=\"tab-chat\" data-panel=\"chat\" aria-controls=\"panel-chat\" aria-selected=\"true\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 4h14v9H9l-4 3v-3H3z\"/></svg><span>Chat</span></button>\n      <button role=\"tab\" id=\"tab-image\" data-panel=\"image\" aria-controls=\"panel-image\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><rect x=\"3\" y=\"4\" width=\"14\" height=\"12\" rx=\"2\"/><circle cx=\"8\" cy=\"9\" r=\"1.5\"/><path d=\"M4 15l4-4 3 3 2-2 3 3\"/></svg><span>Image Studio</span></button>\n      <button role=\"tab\" id=\"tab-vision\" data-panel=\"vision\" aria-controls=\"panel-vision\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z\"/><circle cx=\"10\" cy=\"10\" r=\"2.5\"/></svg><span>Vision</span></button>\n      <p class=\"grp\" role=\"presentation\">Runtime</p>\n      <button role=\"tab\" id=\"tab-models\" data-panel=\"models\" aria-controls=\"panel-models\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M10 3l7 3.5v7L10 17l-7-3.5v-7z\"/><path d=\"M3 6.5L10 10l7-3.5M10 10v7\"/></svg><span>Models</span></button>\n      <button role=\"tab\" id=\"tab-perf\" data-panel=\"perf\" aria-controls=\"panel-perf\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 16V9M8 16V4M13 16v-7M17 16V7\"/></svg><span>Performance</span></button>\n      <button role=\"tab\" id=\"tab-settings\" data-panel=\"settings\" aria-controls=\"panel-settings\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><circle cx=\"10\" cy=\"10\" r=\"2.5\"/><path d=\"M10 2v2.5M10 15.5V18M2 10h2.5M15.5 10H18M4.3 4.3l1.8 1.8M13.9 13.9l1.8 1.8M15.7 4.3l-1.8 1.8M6.1 13.9l-1.8 1.8\"/></svg><span>Settings</span></button>\n      <p class=\"grp\" role=\"presentation\">Roadmap</p>\n      <button role=\"tab\" id=\"tab-agent\" data-panel=\"agent\" aria-controls=\"panel-agent\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M5 6l4 4-4 4M11 15h5\"/></svg><span>Agent</span><span class=\"tag\">Planned</span></button>\n      <button role=\"tab\" id=\"tab-train\" data-panel=\"train\" aria-controls=\"panel-train\" aria-selected=\"false\" tabindex=\"-1\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 15c3 0 3-10 7-10s4 10 7 10\"/></svg><span>Train</span><span class=\"tag\">Planned</span></button>\n    </div>\n  </nav>\n\n  <div class=\"side-foot\">\n    <span id=\"ver\" class=\"note\">HCSInfer local UI</span>\n  </div>\n</aside>\n\n<div class=\"work\">\n  <header class=\"top\">\n    <button type=\"button\" id=\"nav-toggle\" class=\"ghost icon-btn\" aria-controls=\"side\" aria-expanded=\"false\" aria-label=\"Toggle navigation\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><path d=\"M3 6h14M3 10h14M3 14h14\"/></svg></button>\n    <h1 id=\"page-title\">Chat</h1>\n    <div class=\"status\" role=\"status\" aria-live=\"polite\">\n      <span id=\"conn\" class=\"pill pill-unknown\">connecting</span>\n      <span id=\"loaded\" class=\"pill pill-unknown\">no model loaded</span>\n    </div>\n    <button type=\"button\" id=\"theme-toggle\" class=\"ghost icon-btn\" aria-label=\"Theme: follow system\"><svg class=\"ic\" viewBox=\"0 0 20 20\" aria-hidden=\"true\"><circle cx=\"10\" cy=\"10\" r=\"3.5\"/><path d=\"M10 2v2M10 16v2M2 10h2M16 10h2M4.5 4.5l1.4 1.4M14.1 14.1l1.4 1.4M15.5 4.5l-1.4 1.4M5.9 14.1l-1.4 1.4\"/></svg><span id=\"theme-label\" class=\"vh\">system</span></button>\n  </header>\n\n<main id=\"main\">\n  <div id=\"authbar\" class=\"banner banner-error\" hidden>\n    <form id=\"auth-form\" autocomplete=\"off\">\n      <label for=\"auth-token\">API token (printed by <code>HCSInfer serve</code> on stderr)</label>\n      <div class=\"row\">\n        <input id=\"auth-token\" type=\"password\" autocomplete=\"off\" spellcheck=\"false\" required>\n        <button type=\"submit\">Use token</button>\n      </div>\n    </form>\n    <p id=\"auth-note\" class=\"note\">The token is kept only in this tab (memory and session storage). It is never put in a URL query string.</p>\n  </div>\n\n  <!-- ===================== Chat ===================== -->\n  <section role=\"tabpanel\" id=\"panel-chat\" aria-labelledby=\"tab-chat\" tabindex=\"0\">\n    <div class=\"banner\" id=\"chat-state\" role=\"status\" aria-live=\"polite\" hidden></div>\n    <div class=\"chat-wrap\">\n      <div id=\"chat-log\" class=\"log\" aria-live=\"polite\" aria-label=\"Conversation\"><p class=\"empty\" id=\"chat-empty\">Pick a model, then ask something. Replies stream in as the model writes them. Tool calls, when a model makes them, appear here as expandable blocks.</p></div>\n      <form id=\"chat-form\" class=\"composer\">\n        <div class=\"row between\">\n          <label class=\"inline-field\">Model <select id=\"chat-model\"></select></label>\n          <span id=\"chat-meta\" class=\"note\"></span>\n        </div>\n        <div class=\"adv\" data-advanced hidden>\n          <label>System prompt <textarea id=\"chat-system\" rows=\"2\" maxlength=\"8000\"></textarea></label>\n          <div class=\"fields\">\n            <label>Temperature <input id=\"chat-temp\" type=\"number\" min=\"0\" max=\"2\" step=\"0.1\" value=\"0.7\"></label>\n            <label>Max tokens <input id=\"chat-max\" type=\"number\" min=\"1\" max=\"4096\" step=\"1\" value=\"256\"></label>\n            <label>Seed <input id=\"chat-seed\" type=\"number\" min=\"0\" step=\"1\" placeholder=\"random\"></label>\n          </div>\n          <button type=\"button\" class=\"ghost\" data-reset=\"chat\">Reset to defaults</button>\n        </div>\n        <label for=\"chat-input\" class=\"vh\">Message</label>\n        <textarea id=\"chat-input\" rows=\"3\" placeholder=\"Type a message. Enter sends, Shift+Enter adds a line.\" maxlength=\"60000\"></textarea>\n        <div class=\"row\">\n          <button type=\"submit\" id=\"chat-send\">Send</button>\n          <button type=\"button\" id=\"chat-stop\" class=\"danger\" hidden>Stop</button>\n          <button type=\"button\" id=\"chat-clear\" class=\"ghost\">Clear</button>\n        </div>\n      </form>\n    </div>\n  </section>\n\n  <!-- ===================== Image Studio ===================== -->\n  <section role=\"tabpanel\" id=\"panel-image\" aria-labelledby=\"tab-image\" tabindex=\"0\" hidden>\n    <div class=\"banner\" id=\"image-state\" role=\"status\" aria-live=\"polite\" hidden></div>\n    <div class=\"studio\">\n      <form id=\"image-form\" class=\"controls\">\n        <div class=\"seg\" role=\"radiogroup\" aria-label=\"Mode\">\n          <label><input type=\"radio\" name=\"image-mode\" value=\"txt2img\" checked><span>Text to image</span></label>\n          <label><input type=\"radio\" name=\"image-mode\" value=\"img2img\"><span>Image to image</span></label>\n        </div>\n        <label>Model <select id=\"image-model\"></select></label>\n        <label>Prompt <textarea id=\"image-prompt\" rows=\"3\" maxlength=\"4000\" placeholder=\"Describe the picture you want.\"></textarea></label>\n\n        <div id=\"image-init-box\" hidden>\n          <label class=\"drop\" id=\"image-drop\" for=\"image-file\">\n            <span id=\"image-drop-text\">Drop an image here or choose one (PNG, JPEG, GIF, BMP)</span>\n            <input id=\"image-file\" type=\"file\" accept=\"image/png,image/jpeg,image/gif,image/bmp\">\n          </label>\n          <img id=\"image-init-preview\" alt=\"Input image preview\" hidden>\n          <label class=\"range\">Strength <span class=\"val\" id=\"image-strength-val\">0.75</span>\n            <input id=\"image-strength\" type=\"range\" min=\"0.05\" max=\"1\" step=\"0.05\" value=\"0.75\">\n          </label>\n          <p class=\"note\">Higher strength moves further from the input image.</p>\n        </div>\n\n        <fieldset class=\"presets\">\n          <legend>Steps preset</legend>\n          <div class=\"seg\" role=\"radiogroup\" aria-label=\"Steps preset\">\n            <label><input type=\"radio\" name=\"image-preset\" value=\"4\"><span>Draft 4</span></label>\n            <label><input type=\"radio\" name=\"image-preset\" value=\"8\"><span>Fast 8</span></label>\n            <label><input type=\"radio\" name=\"image-preset\" value=\"16\"><span>Standard 16</span></label>\n            <label><input type=\"radio\" name=\"image-preset\" value=\"28\"><span>Fine 28</span></label>\n          </div>\n          <p class=\"note\">A preset only sets the step count. Few steps look good only with a step-distilled checkpoint; other models need more.</p>\n        </fieldset>\n\n        <div class=\"fields\">\n          <label>Size\n            <select id=\"image-size\"><option value=\"\" id=\"image-size-match\" hidden>Match input image</option><option>256x256</option><option>384x384</option><option selected>512x512</option><option>640x640</option><option>768x768</option><option>512x768</option><option>768x512</option></select>\n          </label>\n          <label>Steps <input id=\"image-steps\" type=\"number\" min=\"1\" max=\"100\" value=\"16\"></label>\n          <label class=\"wide\">Seed\n            <span class=\"inline-pair\"><input id=\"image-seed\" type=\"number\" min=\"0\" max=\"2147483647\" placeholder=\"random\"><button type=\"button\" id=\"image-dice\" class=\"ghost\" aria-label=\"Pick a random seed\">Random</button></span>\n          </label>\n        </div>\n        <div class=\"adv\" data-advanced hidden>\n          <label>Negative prompt <textarea id=\"image-negative\" rows=\"2\" maxlength=\"4000\"></textarea></label>\n          <label>Guidance scale <input id=\"image-cfg\" type=\"number\" min=\"0\" max=\"30\" step=\"0.5\" placeholder=\"model default\"></label>\n          <button type=\"button\" class=\"ghost\" data-reset=\"image\">Reset to defaults</button>\n        </div>\n        <div class=\"row\">\n          <button type=\"submit\" id=\"image-send\">Generate</button>\n          <button type=\"button\" id=\"image-stop\" class=\"danger\" hidden>Cancel</button>\n        </div>\n      </form>\n\n      <div class=\"stage\">\n        <div class=\"canvas\" id=\"image-canvas\">\n          <p class=\"empty\" id=\"image-empty\">Your image appears here. Each finished image is kept in the gallery below for this browser session.</p>\n          <img id=\"image-out\" alt=\"Generated image\" hidden>\n          <div class=\"busybar\" id=\"image-busy\" hidden role=\"progressbar\" aria-label=\"Generating\"><span></span></div>\n        </div>\n        <p class=\"note\" id=\"image-meta\"></p>\n        <div class=\"row\" id=\"image-actions\" hidden>\n          <button type=\"button\" id=\"image-save\" class=\"ghost\">Save PNG</button>\n          <button type=\"button\" id=\"image-reuse\" class=\"ghost\">Use as input image</button>\n          <button type=\"button\" id=\"image-copy-seed\" class=\"ghost\">Copy seed</button>\n        </div>\n        <h3 class=\"sect\">Gallery</h3>\n        <ul id=\"image-gallery\" class=\"gallery\" aria-label=\"Generated images this session\"></ul>\n      </div>\n    </div>\n  </section>\n\n  <!-- ===================== Vision ===================== -->\n  <section role=\"tabpanel\" id=\"panel-vision\" aria-labelledby=\"tab-vision\" tabindex=\"0\" hidden>\n    <p class=\"note lead\">Needs a multimodal model whose projector (mmproj) file is in the same folder. One image per request (PNG, JPEG, GIF or BMP). The server body limit applies (default 1 MiB; start the server with a larger <code>--max-body-bytes</code> for photos).</p>\n    <div class=\"banner\" id=\"vision-state\" role=\"status\" aria-live=\"polite\" hidden></div>\n    <div class=\"two\">\n      <form id=\"vision-form\" class=\"controls\">\n        <label>Model <select id=\"vision-model\"></select></label>\n        <label>Image <input id=\"vision-file\" type=\"file\" accept=\"image/png,image/jpeg,image/gif,image/bmp\"></label>\n        <img id=\"vision-preview\" alt=\"Selected image preview\" hidden>\n        <label>Question <textarea id=\"vision-prompt\" rows=\"2\" maxlength=\"8000\">Describe this image.</textarea></label>\n        <div class=\"adv\" data-advanced hidden>\n          <div class=\"fields\">\n            <label>Max tokens <input id=\"vision-max\" type=\"number\" min=\"1\" max=\"4096\" value=\"256\"></label>\n            <label>Temperature <input id=\"vision-temp\" type=\"number\" min=\"0\" max=\"2\" step=\"0.1\" value=\"0\"></label>\n          </div>\n          <button type=\"button\" class=\"ghost\" data-reset=\"vision\">Reset to defaults</button>\n        </div>\n        <div class=\"row\">\n          <button type=\"submit\" id=\"vision-send\">Analyze</button>\n          <button type=\"button\" id=\"vision-stop\" class=\"danger\" hidden>Stop</button>\n        </div>\n      </form>\n      <div>\n        <h3 class=\"sect first\">Answer</h3>\n        <pre id=\"vision-out\" class=\"out\" aria-live=\"polite\"></pre>\n      </div>\n    </div>\n  </section>\n\n  <!-- ===================== Models ===================== -->\n  <section role=\"tabpanel\" id=\"panel-models\" aria-labelledby=\"tab-models\" tabindex=\"0\" hidden>\n    <div class=\"banner\" id=\"models-state\" role=\"status\" aria-live=\"polite\" hidden></div>\n    <div class=\"row\"><button type=\"button\" id=\"models-refresh\">Refresh list</button>\n      <span class=\"note\">Folders are added on the server with <code>HCSInfer models scan &lt;folder&gt;</code>; this page shows what the registry holds.</span></div>\n    <div class=\"card\">\n      <h3 class=\"sect first\">Memory split</h3>\n      <div class=\"membar\" id=\"mem-bar\" role=\"img\" aria-label=\"Memory budget split\"></div>\n      <ul class=\"legend\" id=\"mem-legend\"></ul>\n      <p class=\"note\" id=\"mem-note\"></p>\n    </div>\n    <div class=\"scroll\">\n      <table id=\"models-table\">\n        <thead><tr><th scope=\"col\">Model</th><th scope=\"col\">Kind</th><th scope=\"col\">Quantization</th><th scope=\"col\">Size</th><th scope=\"col\">State</th><th scope=\"col\">Actions</th></tr></thead>\n        <tbody></tbody>\n      </table>\n    </div>\n    <p class=\"note\">Loading is asynchronous; the state shown here is the real job state.</p>\n  </section>\n\n  <!-- ===================== Performance ===================== -->\n  <section role=\"tabpanel\" id=\"panel-perf\" aria-labelledby=\"tab-perf\" tabindex=\"0\" hidden>\n    <div class=\"banner\" id=\"perf-state\" role=\"status\" aria-live=\"polite\" hidden></div>\n    <div class=\"row\">\n      <label class=\"inline\"><input type=\"checkbox\" id=\"perf-auto\" checked> Auto-refresh</label>\n      <button type=\"button\" id=\"perf-refresh\" class=\"ghost\">Refresh now</button>\n    </div>\n    <div class=\"grid\">\n      <div class=\"card\"><h3 class=\"sect first\">Runtime</h3><dl id=\"perf-runtime\"></dl></div>\n      <div class=\"card\"><h3 class=\"sect first\">Memory</h3><dl id=\"perf-memory\"></dl></div>\n      <div class=\"card\"><h3 class=\"sect first\">Jobs started from this page</h3><dl id=\"perf-jobs\"></dl></div>\n    </div>\n    <h3 class=\"sect\">Devices</h3>\n    <pre id=\"perf-devices\" class=\"out\" tabindex=\"0\"></pre>\n  </section>\n\n  <!-- ===================== Settings ===================== -->\n  <section role=\"tabpanel\" id=\"panel-settings\" aria-labelledby=\"tab-settings\" tabindex=\"0\" hidden>\n    <fieldset>\n      <legend>Mode</legend>\n      <label class=\"inline\"><input type=\"radio\" name=\"mode\" value=\"simple\" checked> Simple</label>\n      <label class=\"inline\"><input type=\"radio\" name=\"mode\" value=\"advanced\"> Advanced</label>\n      <p class=\"note\">Advanced shows sampling and image options. Every advanced option has a reset button.</p>\n    </fieldset>\n    <fieldset>\n      <legend>Appearance</legend>\n      <label class=\"inline\"><input type=\"radio\" name=\"theme\" value=\"system\" checked> System</label>\n      <label class=\"inline\"><input type=\"radio\" name=\"theme\" value=\"light\"> Light</label>\n      <label class=\"inline\"><input type=\"radio\" name=\"theme\" value=\"dark\"> Dark</label>\n    </fieldset>\n    <fieldset>\n      <legend>Connection</legend>\n      <p class=\"note\">Server: <code id=\"set-origin\"></code></p>\n      <button type=\"button\" id=\"set-forget\" class=\"ghost\">Forget token in this tab</button>\n    </fieldset>\n    <fieldset>\n      <legend>Performance refresh</legend>\n      <label>Interval (seconds) <input id=\"set-interval\" type=\"number\" min=\"1\" max=\"60\" value=\"3\"></label>\n      <button type=\"button\" class=\"ghost\" id=\"set-interval-reset\">Reset to default</button>\n    </fieldset>\n    <p class=\"note\">Model folders, memory profile and backend selection are server-side settings (<code>settings.json</code> and <code>serve</code> options); this page does not change them.</p>\n  </section>\n\n  <!-- ===================== Agent (planned) ===================== -->\n  <section role=\"tabpanel\" id=\"panel-agent\" aria-labelledby=\"tab-agent\" tabindex=\"0\" hidden>\n    <div class=\"planned\">\n      <p class=\"badge\">Planned, not available in this build</p>\n      <h2>HCS Agent</h2>\n      <p>A coding agent that runs against the local OpenAI-compatible endpoint of this server. It has no controls here because nothing is wired to it yet.</p>\n      <dl class=\"roadmap\">\n        <dt>Base</dt><dd>Prime Agent (MIT licence), vendored at a pinned commit as an HCS engine adapter. Its source is added to the repository as a submodule; it is not built or started by HCSInfer yet.</dd>\n        <dt>Model</dt><dd>LFM3-Omni-2B Q8_0 as the local model. It needs a llama.cpp revision that supports the lfm3 architecture; the pinned revision has not been checked against it.</dd>\n        <dt>Safety</dt><dd>Tool calls confined to approved folders, no network by default, every shell and file call logged and cancellable.</dd>\n        <dt>Shipping</dt><dd>A sidecar in the portable folder until the single-executable gate (M7) passes.</dd>\n        <dt>Meanwhile</dt><dd>Chat shows tool-call deltas as expandable blocks when the server sends them. It never executes them.</dd>\n      </dl>\n    </div>\n  </section>\n\n  <!-- ===================== Train (planned) ===================== -->\n  <section role=\"tabpanel\" id=\"panel-train\" aria-labelledby=\"tab-train\" tabindex=\"0\" hidden>\n    <div class=\"planned\">\n      <p class=\"badge\">Planned, not available in this build</p>\n      <h2>HCS Train</h2>\n      <p>Datasets, small LoRA runs and evaluation for local models. No training controls are shown because no training endpoint exists yet.</p>\n      <dl class=\"roadmap\">\n        <dt>Scope</dt><dd>Short LoRA runs on a 2B model on this machine. Real tokens per second and wall time will be reported; a toy run is never presented as a quality result.</dd>\n        <dt>Data</dt><dd>Permissively licensed open datasets with the licence recorded per dataset, the project's own tests and traces, and human-approved examples. No distillation from proprietary model outputs.</dd>\n        <dt>Evaluation</dt><dd>A fixed held-out set for tool calling and coding, run before and after. An adapter is kept only if it improves that set without regressing the base model.</dd>\n        <dt>Self-improvement</dt><dd>Reflect on trajectories, propose a small prompt or dataset change, evaluate, keep only on measured gain, keep rollback snapshots.</dd>\n      </dl>\n    </div>\n  </section>\n</main>\n<footer>HCSmedia Studio &middot; local only, talks to this server and nothing else</footer>\n</div>\n</div>\n</body>\n</html>\n"
+With diff:
+@@ -123,5 +123,5 @@
+           </label>
+           <img id=\"image-init-preview\" alt=\"Input image preview\" hidden>
+-          <label>Strength <span class=\"val\" id=\"image-strength-val\">0.75</span>
++          <label class=\"range\">Strength <span class=\"val\" id=\"image-strength-val\">0.75</span>
+             <input id=\"image-strength\" type=\"range\" min=\"0.05\" max=\"1\" step=\"0.05\" value=\"0.75\">
+           </label>
+
+index.html
+
+D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\tests\unit\gui\test_gui_assets.cpp(208): error: Expected equality of these values:
+  asset_text(std::string(n))
+    Which is: "/* HCS Studio (HCSmedia). Layout: fixed sidebar + work area; below 860px the sidebar becomes a slide-over.\n   No external fonts or images (CSP): system UI stack, inline SVG only. */\n:root{\n  --bg:#eef3f3;--surface:#ffffff;--surface2:#f6f9f9;--fg:#0e1b1d;--mut:#4d6065;--bd:#cbd8d9;--bd2:#dde7e8;\n  --acc:#0b6e6a;--accfg:#ffffff;--acc-soft:#dff2f0;\n  --err:#a3151d;--errbg:#fdecec;--warn:#7a4a00;--warnbg:#fff3dc;--ok:#116029;--okbg:#e4f5e9;--busy:#0b4a9e;--busybg:#e6effc;\n  --focus:#b35c00;--side:#0f2022;--sidefg:#d5e4e5;--sidemut:#8fa9ac;--sideacc:#5fd8cc;--shadow:0 1px 2px rgba(10,30,32,.08),0 4px 14px rgba(10,30,32,.06);\n  --mono:ui-monospace,\"Cascadia Mono\",\"SF Mono\",Consolas,monospace;\n  --sans:system-ui,-apple-system,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif;\n  color-scheme:light;\n}\n@media (prefers-color-scheme:dark){:root:not([data-theme=\"light\"]){\n  --bg:#0a1113;--surface:#121b1e;--surface2:#0f171a;--fg:#e3eeee;--mut:#96abaf;--bd:#2c3d41;--bd2:#223034;\n  --acc:#4fd1c5;--accfg:#04201d;--acc-soft:#12302f;\n  --err:#ff9a9d;--errbg:#3a1618;--warn:#ffd08a;--warnbg:#3a2a10;--ok:#8fe0a6;--okbg:#14301c;--busy:#a9c8ff;--busybg:#15284a;\n  --focus:#ffb454;--side:#070d0f;--sidefg:#d5e4e5;--sidemut:#8fa9ac;--sideacc:#5fd8cc;--shadow:none;color-scheme:dark}}\n:root[data-theme=\"dark\"]{\n  --bg:#0a1113;--surface:#121b1e;--surface2:#0f171a;--fg:#e3eeee;--mut:#96abaf;--bd:#2c3d41;--bd2:#223034;\n  --acc:#4fd1c5;--accfg:#04201d;--acc-soft:#12302f;\n  --err:#ff9a9d;--errbg:#3a1618;--warn:#ffd08a;--warnbg:#3a2a10;--ok:#8fe0a6;--okbg:#14301c;--busy:#a9c8ff;--busybg:#15284a;\n  --focus:#ffb454;--side:#070d0f;--sidefg:#d5e4e5;--sidemut:#8fa9ac;--sideacc:#5fd8cc;--shadow:none;color-scheme:dark}\n\n*{box-sizing:border-box}\nhtml{font-size:16px;height:100%}\nbody{margin:0;min-height:100%;background:var(--bg);color:var(--fg);font:1rem/1.5 var(--sans);-webkit-text-size-adjust:100%}\n[hidden]{display:none!important}\n.skip{position:absolute;left:-999px;top:0;background:var(--acc);color:var(--accfg);padding:.5rem 1rem;z-index:50}\n.skip:focus{left:0}\n.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}\n:focus-visible{outline:3px solid var(--focus);outline-offset:2px}\n\n/* ---------- shell ---------- */\n.shell{display:grid;grid-template-columns:15rem minmax(0,1fr);min-height:100vh}\n.side{background:var(--side);color:var(--sidefg);display:flex;flex-direction:column;gap:1rem;padding:1rem .75rem;position:sticky;top:0;height:100vh;overflow-y:auto}\n.brand{display:flex;align-items:center;gap:.65rem;padding:.2rem .5rem .6rem}\n.mark{width:2.1rem;height:2.1rem;flex:none}\n.mark-bg{fill:var(--sideacc)}\n.mark-fg{stroke:#06201d;stroke-width:3.4;stroke-linecap:round;fill:none}\n.mark-dot{fill:#06201d}\n.wordmark{display:flex;flex-direction:column;line-height:1}\n.wordmark svg{width:6.6rem;height:1.1rem;display:block}\n.wm-a{fill:#fff;font:800 19px var(--sans);letter-spacing:.02em}\n.wm-b{fill:var(--sideacc);font:600 19px var(--sans)}\n.product{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--sidemut);margin-top:.3rem}\nnav{flex:1 1 auto;min-width:0}\n[role=tablist]{display:flex;flex-direction:column;gap:.15rem}\n.grp{margin:.9rem .6rem .25rem;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sidemut)}\n.grp:first-child{margin-top:0}\n[role=tab]{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;background:transparent;color:var(--sidefg);border:1px solid transparent;border-radius:8px;padding:.45rem .6rem;font:inherit;cursor:pointer;min-height:2.5rem}\n[role=tab]:hover{background:rgba(255,255,255,.06)}\n[role=tab][aria-selected=true]{background:rgba(95,216,204,.14);border-color:rgba(95,216,204,.4);color:#fff;font-weight:600}\n[role=tab] .ic{stroke:currentColor}\n.ic{width:1.15rem;height:1.15rem;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}\n.tag{margin-left:auto;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid #c79a4a;color:#f0c987;border-radius:999px;padding:.02rem .45rem}\n.side-foot{padding:.4rem .6rem;border-top:1px solid rgba(255,255,255,.1)}\n.side-foot .note{color:var(--sidemut)}\n.work{min-width:0;display:flex;flex-direction:column}\n.top{display:flex;align-items:center;gap:.75rem;padding:.65rem max(1rem,env(safe-area-inset-right,0px)) .65rem max(1rem,env(safe-area-inset-left,0px));background:var(--surface);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}\n.top h1{font-size:1.1rem;margin:0;font-weight:650;letter-spacing:-.01em;flex:1 1 auto;min-width:0}\n.status{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}\n.pill{border:1px solid var(--bd);border-radius:999px;padding:.1rem .7rem;font-size:.82rem;white-space:nowrap;max-width:16rem;overflow:hidden;text-overflow:ellipsis}\n.pill-ok{background:var(--okbg);color:var(--ok);border-color:transparent}\n.pill-err{background:var(--errbg);color:var(--err);border-color:transparent}\n.pill-busy{background:var(--busybg);color:var(--busy)}\n.pill-unknown{color:var(--mut);background:var(--surface2)}\n.icon-btn{padding:.4rem;min-width:2.5rem;display:inline-flex;align-items:center;justify-content:center}\n#nav-toggle{display:none}\nmain{width:100%;max-width:78rem;margin:0 auto;padding:1.1rem max(1rem,env(safe-area-inset-right,0px)) 1.5rem max(1rem,env(safe-area-inset-left,0px));flex:1 1 auto;min-width:0}\nh2{margin:.2rem 0 .8rem;font-size:1.35rem;letter-spacing:-.01em}\nh3{font-size:1rem;margin:.8rem 0 .3rem}\nh3.sect{font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:650;margin:1.2rem 0 .5rem}\nh3.sect.first{margin-top:0}\n\n/* ---------- controls ---------- */\nbutton,input,select,textarea{font:inherit;color:inherit}\nbutton{background:var(--acc);color:var(--accfg);border:1px solid var(--acc);border-radius:8px;padding:.45rem 1rem;cursor:pointer;min-height:2.5rem;font-weight:550;transition:filter .12s}\nbutton:hover:not(:disabled){filter:brightness(1.08)}\nbutton.ghost{background:transparent;color:var(--fg);border-color:var(--bd);font-weight:500}\nbutton.ghost:hover:not(:disabled){background:var(--surface2);filter:none}\nbutton.danger{background:var(--err);border-color:var(--err);color:var(--bg)}\nbutton:disabled{opacity:.55;cursor:not-allowed}\ninput,select,textarea{background:var(--surface);border:1px solid var(--bd);border-radius:8px;padding:.45rem .65rem;max-width:100%;min-height:2.5rem}\nselect{padding-right:.4rem}\ntextarea{width:100%;resize:vertical;line-height:1.45}\nlabel{display:block;margin:.55rem 0;font-size:.92rem;color:var(--mut)}\nlabel input:not([type=checkbox]):not([type=radio]):not([type=range]),label select{display:block;margin-top:.25rem;width:100%;color:var(--fg)}\nlabel textarea{margin-top:.25rem;color:var(--fg)}\nlabel.inline{display:inline-block;margin-right:1rem;color:var(--fg)}\nlabel.inline-field{display:flex;align-items:center;gap:.5rem;margin:0}\nlabel.inline-field select{margin:0;width:auto;max-width:min(24rem,60vw)}\n.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.6rem 0}\n.row.between{justify-content:space-between}\n.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));gap:0 .75rem}\n.inline-pair{display:flex;gap:.4rem;margin-top:.25rem}\n.inline-pair{align-items:stretch}\nlabel .inline-pair input:not([type=checkbox]):not([type=radio]):not([type=range]){width:auto;flex:1 1 0;min-width:0;margin-top:0}\n.inline-pair button{flex:none;min-height:2.5rem}\n.fields .wide{grid-column:1/-1}\n.gallery:empty::before{content:\"No images yet.\";color:var(--mut);font-size:.88rem}\n.note{color:var(--mut);font-size:.88rem;margin:.3rem 0}\n.note.lead{max-width:60rem}\n.val{float:right;font-variant-numeric:tabular-nums;color:var(--fg)}\ninput[type=range]{padding:0;min-height:2rem;accent-color:var(--acc);border:0;background:transparent}\n.adv{border:1px dashed var(--bd);border-radius:10px;padding:.4rem .8rem .6rem;margin:.6rem 0}\nfieldset{border:1px solid var(--bd);border-radius:10px;margin:.8rem 0;background:var(--surface)}\nlegend{padding:0 .4rem;color:var(--mut);font-size:.85rem}\n.presets{background:transparent;border:0;padding:0;margin:.6rem 0}\n.presets legend{padding:0;margin-bottom:.3rem}\n.seg{display:flex;flex-wrap:wrap;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:var(--surface)}\n.seg label{margin:0;flex:1 1 auto;position:relative}\n.seg input{position:absolute;opacity:0;inset:0;width:100%;height:100%;cursor:pointer;margin:0}\n.seg span{display:block;text-align:center;padding:.5rem .7rem;color:var(--fg);font-size:.9rem;border-right:1px solid var(--bd2);min-height:2.5rem;line-height:1.5}\n.seg label:last-child span{border-right:0}\n.seg input:checked + span{background:var(--acc);color:var(--accfg);font-weight:600}\n.seg input:focus-visible + span{outline:3px solid var(--focus);outline-offset:-3px}\n.drop{border:2px dashed var(--bd);border-radius:12px;padding:1rem;text-align:center;cursor:pointer;background:var(--surface2);color:var(--mut)}\n.drop.over{border-color:var(--acc);background:var(--acc-soft);color:var(--fg)}\n.drop input{margin-top:.5rem}\n\n/* ---------- banners / state ---------- */\n.banner{border:1px solid var(--bd);border-left-width:6px;border-radius:8px;padding:.55rem .85rem;margin:.6rem 0;background:var(--surface)}\n.banner-busy{background:var(--busybg);color:var(--busy);border-color:var(--busy)}\n.banner-error,.banner-oom{background:var(--errbg);color:var(--err);border-color:var(--err)}\n.banner-unsupported{background:var(--warnbg);color:var(--warn);border-color:var(--warn)}\n.banner-ok{background:var(--okbg);color:var(--ok);border-color:var(--ok)}\n.banner label{color:inherit}\n.empty{color:var(--mut);margin:.4rem;max-width:44rem}\n\n/* ---------- chat ---------- */\n.chat-wrap{display:flex;flex-direction:column;gap:.8rem;min-height:calc(100vh - 11.5rem)}\n.log{flex:1 1 auto;min-height:12rem;overflow:auto;border:1px solid var(--bd);border-radius:12px;padding:.7rem;background:var(--surface)}\n.composer{background:var(--surface);border:1px solid var(--bd);border-radius:12px;padding:.7rem .8rem;box-shadow:var(--shadow)}\n.composer textarea{border-color:var(--bd2)}\n.msg{margin:.5rem 0;padding:.5rem .8rem;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere;max-width:48rem}\n.msg b{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:.1rem}\n.msg-user{background:var(--acc-soft);margin-left:auto}\n.msg-assistant{background:var(--surface2);border:1px solid var(--bd2)}\n.msg-error{background:var(--errbg);color:var(--err)}\n.toolcall{margin:.4rem 0;border:1px solid var(--bd);border-radius:8px;background:var(--surface);white-space:normal}\n.toolcall summary{cursor:pointer;padding:.35rem .6rem;font-family:var(--mono);font-size:.85rem}\n.toolcall pre{margin:0;padding:.5rem .6rem;border-top:1px solid var(--bd2);font:.82rem/1.4 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}\n\n/* ---------- image studio ---------- */\n.studio,.two{display:grid;grid-template-columns:minmax(0,22rem) minmax(0,1fr);gap:1.2rem;align-items:start}\n.controls{background:var(--surface);border:1px solid var(--bd);border-radius:12px;padding:.4rem .9rem .8rem;box-shadow:var(--shadow);min-width:0}\n.stage{min-width:0}\n.canvas{position:relative;display:flex;align-items:center;justify-content:center;min-height:18rem;border:1px solid var(--bd);border-radius:12px;background:var(--surface2);overflow:hidden}\n#image-out{display:block;max-width:100%;max-height:70vh;height:auto}\n#vision-preview,#image-init-preview{max-width:100%;max-height:14rem;border:1px solid var(--bd);border-radius:8px;margin:.4rem 0;display:block}\n.busybar{position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--bd2);overflow:hidden}\n.busybar span{display:block;height:100%;width:35%;background:var(--acc);animation:slide 1.3s ease-in-out infinite}\n@keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}\n.gallery{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(5.5rem,1fr));gap:.5rem}\n.gallery button{padding:0;width:100%;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--surface2);border:2px solid var(--bd);min-height:0}\n.gallery button[aria-current=true]{border-color:var(--acc)}\n.gallery img{width:100%;height:100%;object-fit:cover;display:block}\n.out{white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--bd);border-radius:10px;background:var(--surface);padding:.7rem;min-height:3rem;max-height:60vh;overflow:auto;font:.88rem/1.45 var(--mono);margin:0}\n\n/* ---------- models / perf ---------- */\n.card{background:var(--surface);border:1px solid var(--bd);border-radius:12px;padding:.8rem 1rem;margin:.8rem 0;min-width:0}\n.membar{display:flex;height:1.1rem;border-radius:6px;overflow:hidden;background:var(--bd2);border:1px solid var(--bd)}\n.membar span{display:block;min-width:2px}\n.membar .s0{background:#1f8a84}.membar .s1{background:#5b6fd1}.membar .s2{background:#c98a1d}.membar .s3{background:#b04f9c}.membar .s4{background:#4f8f3a}.membar .s5{background:#7b8794}\n.legend{list-style:none;margin:.5rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.3rem 1.1rem;font-size:.85rem}\n.legend li{display:flex;align-items:center;gap:.35rem}\n.legend i{width:.7rem;height:.7rem;border-radius:2px;display:inline-block}\n.legend .s0{background:#1f8a84}.legend .s1{background:#5b6fd1}.legend .s2{background:#c98a1d}.legend .s3{background:#b04f9c}.legend .s4{background:#4f8f3a}.legend .s5{background:#7b8794}.legend .sfree{background:var(--bd2);border:1px solid var(--bd)}\n.scroll{overflow-x:auto;border:1px solid var(--bd);border-radius:12px;background:var(--surface)}\ntable{border-collapse:collapse;width:100%;min-width:42rem}\n.mname{min-width:13rem;overflow-wrap:anywhere}\n.sub{font:.78rem var(--mono);color:var(--mut)}\nth,td{border-bottom:1px solid var(--bd2);padding:.5rem .7rem;text-align:left;vertical-align:middle}\nth{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:650}\ntr:last-child td{border-bottom:0}\ntd button{margin-right:.3rem;min-height:2.1rem;padding:.25rem .75rem}\n.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:1rem}\n.grid .card{margin:0}\ndl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.15rem .8rem;font-size:.88rem}\ndt{color:var(--mut)}\ndd{margin:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}\ncode{background:var(--surface2);border:1px solid var(--bd2);border-radius:4px;padding:0 .3rem;font:.85em var(--mono)}\n\n/* ---------- planned ---------- */\n.planned{max-width:46rem;background:var(--surface);border:1px dashed var(--bd);border-radius:14px;padding:1.2rem 1.4rem}\n.badge{display:inline-block;margin:0 0 .4rem;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--warn);color:var(--warn);background:var(--warnbg);border-radius:999px;padding:.1rem .7rem}\n.roadmap{grid-template-columns:7rem minmax(0,1fr);gap:.6rem 1rem;font-size:.95rem;margin-top:1rem}\n.roadmap dt{font-weight:650;color:var(--fg)}\n\nfooter{text-align:center;color:var(--mut);font-size:.82rem;padding:1rem}\n\n/* ---------- responsive ---------- */\n@media (max-width:860px){\n  .shell{grid-template-columns:minmax(0,1fr)}\n  .side{position:fixed;inset:0 auto 0 0;width:min(17rem,86vw);z-index:20;transform:translateX(-102%);transition:transform .18s;height:100%}\n  .side.open{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.45)}\n  #nav-toggle{display:inline-flex}\n  .studio,.two{grid-template-columns:minmax(0,1fr)}\n  .status .pill{max-width:9rem}\n  .chat-wrap{min-height:0}\n}\n@media (max-width:480px){.top{gap:.4rem}.status #conn{display:none}.roadmap{grid-template-columns:minmax(0,1fr)}.roadmap dt{margin-top:.4rem}}\n@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.busybar span{width:100%;opacity:.5}}\n"
+  src
+    Which is: "/* HCS Studio (HCSmedia). Layout: fixed sidebar + work area; below 860px the sidebar becomes a slide-over.\n   No external fonts or images (CSP): system UI stack, inline SVG only. */\n:root{\n  --bg:#eef3f3;--surface:#ffffff;--surface2:#f6f9f9;--fg:#0e1b1d;--mut:#4d6065;--bd:#cbd8d9;--bd2:#dde7e8;\n  --acc:#0b6e6a;--accfg:#ffffff;--acc-soft:#dff2f0;\n  --err:#a3151d;--errbg:#fdecec;--warn:#7a4a00;--warnbg:#fff3dc;--ok:#116029;--okbg:#e4f5e9;--busy:#0b4a9e;--busybg:#e6effc;\n  --focus:#b35c00;--side:#0f2022;--sidefg:#d5e4e5;--sidemut:#8fa9ac;--sideacc:#5fd8cc;--shadow:0 1px 2px rgba(10,30,32,.08),0 4px 14px rgba(10,30,32,.06);\n  --mono:ui-monospace,\"Cascadia Mono\",\"SF Mono\",Consolas,monospace;\n  --sans:system-ui,-apple-system,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif;\n  color-scheme:light;\n}\n@media (prefers-color-scheme:dark){:root:not([data-theme=\"light\"]){\n  --bg:#0a1113;--surface:#121b1e;--surface2:#0f171a;--fg:#e3eeee;--mut:#96abaf;--bd:#2c3d41;--bd2:#223034;\n  --acc:#4fd1c5;--accfg:#04201d;--acc-soft:#12302f;\n  --err:#ff9a9d;--errbg:#3a1618;--warn:#ffd08a;--warnbg:#3a2a10;--ok:#8fe0a6;--okbg:#14301c;--busy:#a9c8ff;--busybg:#15284a;\n  --focus:#ffb454;--side:#070d0f;--sidefg:#d5e4e5;--sidemut:#8fa9ac;--sideacc:#5fd8cc;--shadow:none;color-scheme:dark}}\n:root[data-theme=\"dark\"]{\n  --bg:#0a1113;--surface:#121b1e;--surface2:#0f171a;--fg:#e3eeee;--mut:#96abaf;--bd:#2c3d41;--bd2:#223034;\n  --acc:#4fd1c5;--accfg:#04201d;--acc-soft:#12302f;\n  --err:#ff9a9d;--errbg:#3a1618;--warn:#ffd08a;--warnbg:#3a2a10;--ok:#8fe0a6;--okbg:#14301c;--busy:#a9c8ff;--busybg:#15284a;\n  --focus:#ffb454;--side:#070d0f;--sidefg:#d5e4e5;--sidemut:#8fa9ac;--sideacc:#5fd8cc;--shadow:none;color-scheme:dark}\n\n*{box-sizing:border-box}\nhtml{font-size:16px;height:100%}\nbody{margin:0;min-height:100%;background:var(--bg);color:var(--fg);font:1rem/1.5 var(--sans);-webkit-text-size-adjust:100%}\n[hidden]{display:none!important}\n.skip{position:absolute;left:-999px;top:0;background:var(--acc);color:var(--accfg);padding:.5rem 1rem;z-index:50}\n.skip:focus{left:0}\n.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}\n:focus-visible{outline:3px solid var(--focus);outline-offset:2px}\n\n/* ---------- shell ---------- */\n.shell{display:grid;grid-template-columns:15rem minmax(0,1fr);min-height:100vh}\n.side{background:var(--side);color:var(--sidefg);display:flex;flex-direction:column;gap:1rem;padding:1rem .75rem;position:sticky;top:0;height:100vh;overflow-y:auto}\n.brand{display:flex;align-items:center;gap:.65rem;padding:.2rem .5rem .6rem}\n.mark{width:2.1rem;height:2.1rem;flex:none}\n.mark-bg{fill:var(--sideacc)}\n.mark-fg{stroke:#06201d;stroke-width:3.4;stroke-linecap:round;fill:none}\n.mark-dot{fill:#06201d}\n.wordmark{display:flex;flex-direction:column;line-height:1}\n.wordmark svg{width:6.6rem;height:1.1rem;display:block}\n.wm-a{fill:#fff;font:800 19px var(--sans);letter-spacing:.02em}\n.wm-b{fill:var(--sideacc);font:600 19px var(--sans)}\n.product{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--sidemut);margin-top:.3rem}\nnav{flex:1 1 auto;min-width:0}\n[role=tablist]{display:flex;flex-direction:column;gap:.15rem}\n.grp{margin:.9rem .6rem .25rem;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sidemut)}\n.grp:first-child{margin-top:0}\n[role=tab]{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;background:transparent;color:var(--sidefg);border:1px solid transparent;border-radius:8px;padding:.45rem .6rem;font:inherit;cursor:pointer;min-height:2.5rem}\n[role=tab]:hover{background:rgba(255,255,255,.06)}\n[role=tab][aria-selected=true]{background:rgba(95,216,204,.14);border-color:rgba(95,216,204,.4);color:#fff;font-weight:600}\n[role=tab] .ic{stroke:currentColor}\n.ic{width:1.15rem;height:1.15rem;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}\n.tag{margin-left:auto;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;border:1px solid #c79a4a;color:#f0c987;border-radius:999px;padding:.02rem .45rem}\n.side-foot{padding:.4rem .6rem;border-top:1px solid rgba(255,255,255,.1)}\n.side-foot .note{color:var(--sidemut)}\n.work{min-width:0;display:flex;flex-direction:column}\n.top{display:flex;align-items:center;gap:.75rem;padding:.65rem max(1rem,env(safe-area-inset-right,0px)) .65rem max(1rem,env(safe-area-inset-left,0px));background:var(--surface);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}\n.top h1{font-size:1.1rem;margin:0;font-weight:650;letter-spacing:-.01em;flex:1 1 auto;min-width:0}\n.status{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}\n.pill{border:1px solid var(--bd);border-radius:999px;padding:.1rem .7rem;font-size:.82rem;white-space:nowrap;max-width:16rem;overflow:hidden;text-overflow:ellipsis}\n.pill-ok{background:var(--okbg);color:var(--ok);border-color:transparent}\n.pill-err{background:var(--errbg);color:var(--err);border-color:transparent}\n.pill-busy{background:var(--busybg);color:var(--busy)}\n.pill-unknown{color:var(--mut);background:var(--surface2)}\n.icon-btn{padding:.4rem;min-width:2.5rem;display:inline-flex;align-items:center;justify-content:center}\n#nav-toggle{display:none}\nmain{width:100%;max-width:78rem;margin:0 auto;padding:1.1rem max(1rem,env(safe-area-inset-right,0px)) 1.5rem max(1rem,env(safe-area-inset-left,0px));flex:1 1 auto;min-width:0}\nh2{margin:.2rem 0 .8rem;font-size:1.35rem;letter-spacing:-.01em}\nh3{font-size:1rem;margin:.8rem 0 .3rem}\nh3.sect{font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:650;margin:1.2rem 0 .5rem}\nh3.sect.first{margin-top:0}\n\n/* ---------- controls ---------- */\nbutton,input,select,textarea{font:inherit;color:inherit}\nbutton{background:var(--acc);color:var(--accfg);border:1px solid var(--acc);border-radius:8px;padding:.45rem 1rem;cursor:pointer;min-height:2.5rem;font-weight:550;transition:filter .12s}\nbutton:hover:not(:disabled){filter:brightness(1.08)}\nbutton.ghost{background:transparent;color:var(--fg);border-color:var(--bd);font-weight:500}\nbutton.ghost:hover:not(:disabled){background:var(--surface2);filter:none}\nbutton.danger{background:var(--err);border-color:var(--err);color:var(--bg)}\nbutton:disabled{opacity:.55;cursor:not-allowed}\ninput,select,textarea{background:var(--surface);border:1px solid var(--bd);border-radius:8px;padding:.45rem .65rem;max-width:100%;min-height:2.5rem}\nselect{padding-right:.4rem}\ntextarea{width:100%;resize:vertical;line-height:1.45}\nlabel{display:block;margin:.55rem 0;font-size:.92rem;color:var(--mut)}\nlabel input:not([type=checkbox]):not([type=radio]):not([type=range]),label select{display:block;margin-top:.25rem;width:100%;color:var(--fg)}\nlabel textarea{margin-top:.25rem;color:var(--fg)}\nlabel.inline{display:inline-block;margin-right:1rem;color:var(--fg)}\nlabel.inline-field{display:flex;align-items:center;gap:.5rem;margin:0}\nlabel.inline-field select{margin:0;width:auto;max-width:min(24rem,60vw)}\n.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.6rem 0}\n.row.between{justify-content:space-between}\n.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));gap:0 .75rem}\n.inline-pair{display:flex;gap:.4rem;margin-top:.25rem}\n.inline-pair{align-items:stretch}\nlabel .inline-pair input:not([type=checkbox]):not([type=radio]):not([type=range]){width:auto;flex:1 1 0;min-width:0;margin-top:0}\n.inline-pair button{flex:none;min-height:2.5rem}\n.fields .wide{grid-column:1/-1}\n.gallery:empty::before{content:\"No images yet.\";color:var(--mut);font-size:.88rem}\n.note{color:var(--mut);font-size:.88rem;margin:.3rem 0}\n.note.lead{max-width:60rem}\n.range{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:.5rem}\n.range input{grid-column:1/-1}\n.val{font-variant-numeric:tabular-nums;color:var(--fg)}\ninput[type=range]{padding:0;min-height:2rem;accent-color:var(--acc);border:0;background:transparent}\n.adv{border:1px dashed var(--bd);border-radius:10px;padding:.4rem .8rem .6rem;margin:.6rem 0}\nfieldset{border:1px solid var(--bd);border-radius:10px;margin:.8rem 0;background:var(--surface)}\nlegend{padding:0 .4rem;color:var(--mut);font-size:.85rem}\n.presets{background:transparent;border:0;padding:0;margin:.6rem 0}\n.presets legend{padding:0;margin-bottom:.3rem}\n.seg{display:flex;flex-wrap:wrap;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:var(--surface)}\n.seg label{margin:0;flex:1 1 auto;position:relative}\n.seg input{position:absolute;opacity:0;inset:0;width:100%;height:100%;cursor:pointer;margin:0}\n.seg span{display:block;text-align:center;padding:.5rem .7rem;color:var(--fg);font-size:.9rem;border-right:1px solid var(--bd2);min-height:2.5rem;line-height:1.5}\n.seg label:last-child span{border-right:0}\n.seg input:checked + span{background:var(--acc);color:var(--accfg);font-weight:600}\n.seg input:focus-visible + span{outline:3px solid var(--focus);outline-offset:-3px}\n.drop{border:2px dashed var(--bd);border-radius:12px;padding:1rem;text-align:center;cursor:pointer;background:var(--surface2);color:var(--mut)}\n.drop.over{border-color:var(--acc);background:var(--acc-soft);color:var(--fg)}\n.drop input{margin-top:.5rem}\n\n/* ---------- banners / state ---------- */\n.banner{border:1px solid var(--bd);border-left-width:6px;border-radius:8px;padding:.55rem .85rem;margin:.6rem 0;background:var(--surface)}\n.banner-busy{background:var(--busybg);color:var(--busy);border-color:var(--busy)}\n.banner-error,.banner-oom{background:var(--errbg);color:var(--err);border-color:var(--err)}\n.banner-unsupported{background:var(--warnbg);color:var(--warn);border-color:var(--warn)}\n.banner-ok{background:var(--okbg);color:var(--ok);border-color:var(--ok)}\n.banner label{color:inherit}\n.empty{color:var(--mut);margin:.4rem;max-width:44rem}\n\n/* ---------- chat ---------- */\n.chat-wrap{display:flex;flex-direction:column;gap:.8rem;min-height:calc(100vh - 11.5rem)}\n.log{flex:1 1 auto;min-height:12rem;overflow:auto;border:1px solid var(--bd);border-radius:12px;padding:.7rem;background:var(--surface)}\n.composer{background:var(--surface);border:1px solid var(--bd);border-radius:12px;padding:.7rem .8rem;box-shadow:var(--shadow)}\n.composer textarea{border-color:var(--bd2)}\n.msg{margin:.5rem 0;padding:.5rem .8rem;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere;max-width:48rem}\n.msg b{display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:.1rem}\n.msg-user{background:var(--acc-soft);margin-left:auto}\n.msg-assistant{background:var(--surface2);border:1px solid var(--bd2)}\n.msg-error{background:var(--errbg);color:var(--err)}\n.toolcall{margin:.4rem 0;border:1px solid var(--bd);border-radius:8px;background:var(--surface);white-space:normal}\n.toolcall summary{cursor:pointer;padding:.35rem .6rem;font-family:var(--mono);font-size:.85rem}\n.toolcall pre{margin:0;padding:.5rem .6rem;border-top:1px solid var(--bd2);font:.82rem/1.4 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}\n\n/* ---------- image studio ---------- */\n.studio,.two{display:grid;grid-template-columns:minmax(0,22rem) minmax(0,1fr);gap:1.2rem;align-items:start}\n.controls{background:var(--surface);border:1px solid var(--bd);border-radius:12px;padding:.4rem .9rem .8rem;box-shadow:var(--shadow);min-width:0}\n.stage{min-width:0}\n.canvas{position:relative;display:flex;align-items:center;justify-content:center;min-height:18rem;border:1px solid var(--bd);border-radius:12px;background:var(--surface2);overflow:hidden}\n#image-out{display:block;max-width:100%;max-height:70vh;height:auto}\n#vision-preview,#image-init-preview{max-width:100%;max-height:14rem;border:1px solid var(--bd);border-radius:8px;margin:.4rem 0;display:block}\n.busybar{position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--bd2);overflow:hidden}\n.busybar span{display:block;height:100%;width:35%;background:var(--acc);animation:slide 1.3s ease-in-out infinite}\n@keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}\n.gallery{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(5.5rem,1fr));gap:.5rem}\n.gallery button{padding:0;width:100%;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--surface2);border:2px solid var(--bd);min-height:0}\n.gallery button[aria-current=true]{border-color:var(--acc)}\n.gallery img{width:100%;height:100%;object-fit:cover;display:block}\n.out{white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--bd);border-radius:10px;background:var(--surface);padding:.7rem;min-height:3rem;max-height:60vh;overflow:auto;font:.88rem/1.45 var(--mono);margin:0}\n\n/* ---------- models / perf ---------- */\n.card{background:var(--surface);border:1px solid var(--bd);border-radius:12px;padding:.8rem 1rem;margin:.8rem 0;min-width:0}\n.membar{display:flex;height:1.1rem;border-radius:6px;overflow:hidden;background:var(--bd2);border:1px solid var(--bd)}\n.membar span{display:block;min-width:2px}\n.membar .s0{background:#1f8a84}.membar .s1{background:#5b6fd1}.membar .s2{background:#c98a1d}.membar .s3{background:#b04f9c}.membar .s4{background:#4f8f3a}.membar .s5{background:#7b8794}\n.legend{list-style:none;margin:.5rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.3rem 1.1rem;font-size:.85rem}\n.legend li{display:flex;align-items:center;gap:.35rem}\n.legend i{width:.7rem;height:.7rem;border-radius:2px;display:inline-block}\n.legend .s0{background:#1f8a84}.legend .s1{background:#5b6fd1}.legend .s2{background:#c98a1d}.legend .s3{background:#b04f9c}.legend .s4{background:#4f8f3a}.legend .s5{background:#7b8794}.legend .sfree{background:var(--bd2);border:1px solid var(--bd)}\n.scroll{overflow-x:auto;border:1px solid var(--bd);border-radius:12px;background:var(--surface)}\ntable{border-collapse:collapse;width:100%;min-width:42rem}\n.mname{min-width:13rem;overflow-wrap:anywhere}\n.sub{font:.78rem var(--mono);color:var(--mut)}\nth,td{border-bottom:1px solid var(--bd2);padding:.5rem .7rem;text-align:left;vertical-align:middle}\nth{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:650}\ntr:last-child td{border-bottom:0}\ntd button{margin-right:.3rem;min-height:2.1rem;padding:.25rem .75rem}\n.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:1rem}\n.grid .card{margin:0}\ndl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.15rem .8rem;font-size:.88rem}\ndt{color:var(--mut)}\ndd{margin:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}\ncode{background:var(--surface2);border:1px solid var(--bd2);border-radius:4px;padding:0 .3rem;font:.85em var(--mono)}\n\n/* ---------- planned ---------- */\n.planned{max-width:46rem;background:var(--surface);border:1px dashed var(--bd);border-radius:14px;padding:1.2rem 1.4rem}\n.badge{display:inline-block;margin:0 0 .4rem;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--warn);color:var(--warn);background:var(--warnbg);border-radius:999px;padding:.1rem .7rem}\n.roadmap{grid-template-columns:7rem minmax(0,1fr);gap:.6rem 1rem;font-size:.95rem;margin-top:1rem}\n.roadmap dt{font-weight:650;color:var(--fg)}\n\nfooter{text-align:center;color:var(--mut);font-size:.82rem;padding:1rem}\n\n/* ---------- responsive ---------- */\n@media (max-width:860px){\n  .shell{grid-template-columns:minmax(0,1fr)}\n  .side{position:fixed;inset:0 auto 0 0;width:min(17rem,86vw);z-index:20;transform:translateX(-102%);visibility:hidden;transition:transform .18s,visibility 0s .18s;height:100%}\n  .side.open{transform:none;visibility:visible;transition-delay:0s;box-shadow:0 0 0 100vmax rgba(0,0,0,.45)}\n  #nav-toggle{display:inline-flex}\n  .studio,.two{grid-template-columns:minmax(0,1fr)}\n  .status .pill{max-width:9rem}\n  .chat-wrap{min-height:0}\n}\n@media (max-width:480px){.top{gap:.4rem}.status #conn{display:none}.roadmap{grid-template-columns:minmax(0,1fr)}.roadmap dt{margin-top:.4rem}}\n@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.busybar span{width:100%;opacity:.5}}\n"
+With diff:
+@@ -100,5 +100,7 @@
+ .note{color:var(--mut);font-size:.88rem;margin:.3rem 0}
+ .note.lead{max-width:60rem}
+-.val{float:right;font-variant-numeric:tabular-nums;color:var(--fg)}
++.range{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:.5rem}
++.range input{grid-column:1/-1}
++.val{font-variant-numeric:tabular-nums;color:var(--fg)}
+ input[type=range]{padding:0;min-height:2rem;accent-color:var(--acc);border:0;background:transparent}
+ .adv{border:1px dashed var(--bd);border-radius:10px;padding:.4rem .8rem .6rem;margin:.6rem 0}
+@@ -192,6 +194,6 @@
+ @media (max-width:860px){
+   .shell{grid-template-columns:minmax(0,1fr)}
+-  .side{position:fixed;inset:0 auto 0 0;width:min(17rem,86vw);z-index:20;transform:translateX(-102%);transition:transform .18s;height:100%}
+-  .side.open{transform:none;box-shadow:0 0 0 100vmax rgba(0,0,0,.45)}
++  .side{position:fixed;inset:0 auto 0 0;width:min(17rem,86vw);z-index:20;transform:translateX(-102%);visibility:hidden;transition:transform .18s,visibility 0s .18s;height:100%}
++  .side.open{transform:none;visibility:visible;transition-delay:0s;box-shadow:0 0 0 100vmax rgba(0,0,0,.45)}
+   #nav-toggle{display:inline-flex}
+   .studio,.two{grid-template-columns:minmax(0,1fr)}
+
+app.css
+
+[  FAILED  ] GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles (9 ms)
+[----------] 1 test from GuiAssets (9 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (9 ms total)
+[  PASSED  ] 0 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles
+
+ 1 FAILED TEST
+
+        Start 176: HardwareFormat.TimestampLooksLikeUtcIso
+        Start 177: HardwareFormat.RenderTextHandlesEmptyReportWithUnknown
+174/469 Test #175: HardwareFormat.BusAndDriveTypes ...................................................................   Passed    0.04 sec
+        Start 178: HardwareFormat.RenderTextShowsSyntheticValues
+175/469 Test #176: HardwareFormat.TimestampLooksLikeUtcIso ...........................................................   Passed    0.04 sec
+176/469 Test #177: HardwareFormat.RenderTextHandlesEmptyReportWithUnknown ............................................   Passed    0.04 sec
+        Start 179: CpuDecode.IdentityFamilyModelStepping
+        Start 180: CpuDecode.FeaturesRequireOsSupport
+177/469 Test #178: HardwareFormat.RenderTextShowsSyntheticValues .....................................................   Passed    0.04 sec
+        Start 181: CpuDecode.Avx512NeedsZmmState
+178/469 Test #179: CpuDecode.IdentityFamilyModelStepping .............................................................   Passed    0.04 sec
+        Start 182: CpuDecode.NoCpuidReportsUnknownNotFalse
+179/469 Test #180: CpuDecode.FeaturesRequireOsSupport ................................................................   Passed    0.04 sec
+        Start 183: DoctorLive.ReportStructureNoVulkan
+180/469 Test #181: CpuDecode.Avx512NeedsZmmState .....................................................................   Passed    0.04 sec
+        Start 184: DoctorLive.CpuFeaturesPresent
+181/469 Test #182: CpuDecode.NoCpuidReportsUnknownNotFalse ...........................................................   Passed    0.04 sec
+        Start 185: DoctorLive.VulkanReportWhenAvailable
+182/469 Test #183: DoctorLive.ReportStructureNoVulkan ................................................................   Passed    0.09 sec
+        Start 186: DoctorLive.ReadBenchmarkOnTempFile
+183/469 Test #184: DoctorLive.CpuFeaturesPresent .....................................................................   Passed    0.08 sec
+        Start 187: DoctorLive.ReadBenchmarkMissingFileIsErrorNotCrash
+184/469 Test #187: DoctorLive.ReadBenchmarkMissingFileIsErrorNotCrash ................................................   Passed    0.07 sec
+        Start 188: DoctorLive.RejectsInvalidOptions
+185/469 Test #185: DoctorLive.VulkanReportWhenAvailable ..............................................................   Passed    0.15 sec
+        Start 189: DoctorLive.TextAndJsonRunnersWork
+186/469 Test #186: DoctorLive.ReadBenchmarkOnTempFile ................................................................   Passed    0.11 sec
+        Start 190: MemoryProbe.PolicyReservesTenPercentWithAOneGiBFloorAndHalfGiBMargin
+187/469 Test #188: DoctorLive.RejectsInvalidOptions ..................................................................   Passed    0.04 sec
+        Start 191: MemoryProbe.BudgetNeverUnderflowsWhenTheMachineIsAlmostFull
+188/469 Test #190: MemoryProbe.PolicyReservesTenPercentWithAOneGiBFloorAndHalfGiBMargin ..............................   Passed    0.04 sec
+        Start 192: MemoryProbe.LiveMeasurementIsPlausible
+189/469 Test #189: DoctorLive.TextAndJsonRunnersWork .................................................................   Passed    0.07 sec
+        Start 193: Sha256.KnownVectorsDefaultImplementation
+190/469 Test #191: MemoryProbe.BudgetNeverUnderflowsWhenTheMachineIsAlmostFull .......................................   Passed    0.04 sec
+        Start 194: Sha256.KnownVectorsPortableImplementation
+191/469 Test #192: MemoryProbe.LiveMeasurementIsPlausible ............................................................   Passed    0.04 sec
+        Start 195: Sha256.MillionAs
+192/469 Test #193: Sha256.KnownVectorsDefaultImplementation ..........................................................   Passed    0.07 sec
+193/469 Test #194: Sha256.KnownVectorsPortableImplementation .........................................................   Passed    0.07 sec
+        Start 196: Sha256.HardwareMatchesPortableOnManyLengthsAndSplits
+        Start 197: Sha256.HexRoundTrip
+194/469 Test #195: Sha256.MillionAs ..................................................................................   Passed    0.07 sec
+        Start 198: Codec.CompressibleDataActuallyShrinks
+195/469 Test #197: Sha256.HexRoundTrip ...............................................................................   Passed    0.03 sec
+196/469 Test #196: Sha256.HardwareMatchesPortableOnManyLengthsAndSplits ..............................................   Passed    0.04 sec
+        Start 199: Codec.CorruptBlockIsRejectedNotCrashing
+        Start 200: Codec.NamesAndIds
+197/469 Test #198: Codec.CompressibleDataActuallyShrinks .............................................................   Passed    0.10 sec
+        Start 201: HcsModelParser.AcceptsValidContainerAndExposesFields
+198/469 Test #200: Codec.NamesAndIds .................................................................................   Passed    0.07 sec
+        Start 202: HcsModelParser.TruncatedHeader
+199/469 Test #199: Codec.CorruptBlockIsRejectedNotCrashing ...........................................................   Passed    0.08 sec
+        Start 203: HcsModelParser.TruncatedTableAndTruncatedPayload
+200/469 Test #201: HcsModelParser.AcceptsValidContainerAndExposesFields ..............................................   Passed    0.04 sec
+        Start 204: HcsModelParser.BadMagicVersionEndianFlagsReserved
+201/469 Test #202: HcsModelParser.TruncatedHeader ....................................................................   Passed    0.04 sec
+        Start 205: HcsModelParser.HeaderAndTableChecksumMismatch
+202/469 Test #203: HcsModelParser.TruncatedTableAndTruncatedPayload ..................................................   Passed    0.04 sec
+        Start 206: HcsModelParser.UnknownCodecAndFlags
+203/469 Test #204: HcsModelParser.BadMagicVersionEndianFlagsReserved .................................................   Passed    0.04 sec
+        Start 207: HcsModelParser.OffsetPlusSizeOverflow
+204/469 Test #205: HcsModelParser.HeaderAndTableChecksumMismatch .....................................................   Passed    0.04 sec
+        Start 208: HcsModelParser.OverlappingChunkPayloads
+205/469 Test #206: HcsModelParser.UnknownCodecAndFlags ...............................................................   Passed    0.04 sec
+        Start 209: HcsModelParser.ChunkOverlapsTableOrHeader
+206/469 Test #207: HcsModelParser.OffsetPlusSizeOverflow .............................................................   Passed    0.04 sec
+        Start 210: HcsModelParser.HugeDeclaredAllocationsAreCapped
+207/469 Test #208: HcsModelParser.OverlappingChunkPayloads ...........................................................   Passed    0.04 sec
+        Start 211: HcsModelParser.NonContiguousOrInconsistentSizes
+208/469 Test #209: HcsModelParser.ChunkOverlapsTableOrHeader .........................................................   Passed    0.04 sec
+        Start 212: HcsModelParser.BadTextFields
+209/469 Test #210: HcsModelParser.HugeDeclaredAllocationsAreCapped ...................................................   Passed    0.04 sec
+        Start 213: HcsModelParser.WrongChunkHashDetectedAtDecode
+210/469 Test #211: HcsModelParser.NonContiguousOrInconsistentSizes ...................................................   Passed    0.04 sec
+        Start 214: HcsModelParser.CorruptCompressedBlockDetectedAtDecode
+211/469 Test #212: HcsModelParser.BadTextFields ......................................................................   Passed    0.04 sec
+        Start 215: HcsModelParser.SerializationRoundTrip
+212/469 Test #213: HcsModelParser.WrongChunkHashDetectedAtDecode .....................................................   Passed    0.04 sec
+        Start 216: CheckedMath.StorageRelevantBoundaries
+213/469 Test #215: HcsModelParser.SerializationRoundTrip .............................................................   Passed    0.04 sec
+        Start 217: Writer.RawFallbackWhenSavingsBelowThreshold
+214/469 Test #214: HcsModelParser.CorruptCompressedBlockDetectedAtDecode .............................................   Passed    0.05 sec
+        Start 218: Writer.MixedChunkCodecsInOneContainer
+215/469 Test #216: CheckedMath.StorageRelevantBoundaries .............................................................   Passed    0.04 sec
+        Start 219: Writer.RefusesToOverwriteAndValidatesOptions
+216/469 Test #218: Writer.MixedChunkCodecsInOneContainer .............................................................   Passed    0.05 sec
+        Start 220: Writer.CancelledWriteRemovesOnlyItsOwnPartialFile
+217/469 Test #219: Writer.RefusesToOverwriteAndValidatesOptions ......................................................   Passed    0.04 sec
+        Start 221: RandomAccess.OneChunkDecodesWithoutTouchingOthers
+218/469 Test #217: Writer.RawFallbackWhenSavingsBelowThreshold .......................................................   Passed    0.09 sec
+        Start 222: Reader.FactorySniffsFormatAndRejectsGarbage
+219/469 Test #220: Writer.CancelledWriteRemovesOnlyItsOwnPartialFile .................................................   Passed    0.04 sec
+        Start 223: Stream.InOrderDeliveryAcrossBufferAndWorkerCounts
+220/469 Test #221: RandomAccess.OneChunkDecodesWithoutTouchingOthers .................................................   Passed    0.05 sec
+        Start 224: Stream.BufferMemoryIsBoundedAndBudgetEnforced
+221/469 Test #222: Reader.FactorySniffsFormatAndRejectsGarbage .......................................................   Passed    0.04 sec
+        Start 225: Stream.SlowSinkBackPressuresWithoutGrowingMemory
+222/469 Test #224: Stream.BufferMemoryIsBoundedAndBudgetEnforced .....................................................   Passed    0.07 sec
+        Start 226: Stream.CancellationFromSinkStopsPromptlyAndLeaksNothing
+223/469 Test #225: Stream.SlowSinkBackPressuresWithoutGrowingMemory ..................................................   Passed    0.10 sec
+        Start 227: Stream.PreCancelledTokenReturnsCancelled
+224/469 Test #223: Stream.InOrderDeliveryAcrossBufferAndWorkerCounts .................................................   Passed    0.16 sec
+        Start 228: Stream.SinkErrorPropagatesAndStops
+225/469 Test #226: Stream.CancellationFromSinkStopsPromptlyAndLeaksNothing ...........................................   Passed    0.09 sec
+        Start 229: Stream.SinkExceptionBecomesInternalError
+226/469 Test #227: Stream.PreCancelledTokenReturnsCancelled ..........................................................   Passed    0.05 sec
+        Start 230: Stream.CorruptChunkOnDiskIsDetectedWithoutHang
+227/469 Test #228: Stream.SinkErrorPropagatesAndStops ................................................................   Passed    0.05 sec
+        Start 231: Stream.SubRangeOfChunks
+228/469 Test #229: Stream.SinkExceptionBecomesInternalError ..........................................................   Passed    0.05 sec
+        Start 232: Stream.PlainFileStreamsWithoutHashes
+229/469 Test #231: Stream.SubRangeOfChunks ...........................................................................   Passed    0.05 sec
+        Start 233: Stream.RepeatedStartStopIsStable
+230/469 Test #230: Stream.CorruptChunkOnDiskIsDetectedWithoutHang ....................................................   Passed    0.07 sec
+231/469 Test #232: Stream.PlainFileStreamsWithoutHashes ..............................................................   Passed    0.05 sec
+        Start 234: Gguf.ParsesValidFile
+        Start 235: Gguf.RejectsBadMagicAndVersions
+232/469 Test #235: Gguf.RejectsBadMagicAndVersions ...................................................................   Passed    0.03 sec
+233/469 Test #234: Gguf.ParsesValidFile ..............................................................................   Passed    0.04 sec
+        Start 236: Gguf.TruncationAtEveryPositionIsRejectedSafely
+        Start 237: Gguf.HugeCountsAreRejectedBeforeAllocation
+234/469 Test #233: Stream.RepeatedStartStopIsStable ..................................................................   Passed    0.06 sec
+        Start 238: Gguf.HugeStringLengthIsRejected
+235/469 Test #237: Gguf.HugeCountsAreRejectedBeforeAllocation ........................................................   Passed    0.04 sec
+        Start 239: Gguf.TensorBeyondFileOrMisalignedOrBadDims
+236/469 Test #238: Gguf.HugeStringLengthIsRejected ...................................................................   Passed    0.04 sec
+        Start 240: Gguf.ArrayDepthAndLengthLimits
+237/469 Test #236: Gguf.TruncationAtEveryPositionIsRejectedSafely ....................................................   Passed    0.07 sec
+        Start 241: Gguf.InvalidAlignment
+238/469 Test #239: Gguf.TensorBeyondFileOrMisalignedOrBadDims ........................................................   Passed    0.04 sec
+        Start 242: Gguf.TypeLayoutTable
+239/469 Test #240: Gguf.ArrayDepthAndLengthLimits ....................................................................   Passed    0.04 sec
+        Start 243: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <00-00 00-00>, 0)
+240/469 Test #241: Gguf.InvalidAlignment .............................................................................   Passed    0.04 sec
+        Start 244: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 0)
+241/469 Test #242: Gguf.TypeLayoutTable ..............................................................................   Passed    0.04 sec
+        Start 245: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 9)
+242/469 Test #243: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <00-00 00-00>, 0) ....   Passed    0.04 sec
+        Start 246: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 0)
+243/469 Test #244: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 0) ....   Passed    0.04 sec
+        Start 247: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 1)
+244/469 Test #246: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 0) ....   Passed    0.05 sec
+        Start 248: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 12)
+245/469 Test #247: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 1) ....   Passed    0.05 sec
+        Start 249: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <00-00 00-00>
+246/469 Test #245: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 9) ....   Passed    0.09 sec
+        Start 250: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <01-00 00-00>
+247/469 Test #249: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <00-00 00-00> ..............   Passed    0.05 sec
+        Start 251: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <02-00 00-00>
+248/469 Test #250: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <01-00 00-00> ..............   Passed    0.05 sec
+        Start 252: DatasetValidator.AcceptsAWellFormedRecordAndCountsByLicence
+249/469 Test #248: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 12) ...   Passed    0.08 sec
+        Start 253: DatasetValidator.AcceptsToolCallTrajectories
+250/469 Test #252: DatasetValidator.AcceptsAWellFormedRecordAndCountsByLicence .......................................   Passed    0.03 sec
+        Start 254: DatasetValidator.RejectsToolCallsWithBadArguments
+251/469 Test #253: DatasetValidator.AcceptsToolCallTrajectories ......................................................   Passed    0.04 sec
+        Start 255: DatasetValidator.LicenceIsRequiredAndMustBeAllowed
+252/469 Test #251: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <02-00 00-00> ..............   Passed    0.06 sec
+        Start 256: DatasetValidator.RejectsClaudeDistillationProvenance
+253/469 Test #254: DatasetValidator.RejectsToolCallsWithBadArguments .................................................   Passed    0.04 sec
+        Start 257: DatasetValidator.SchemaViolationsAreReportedWithLineNumbers
+254/469 Test #255: DatasetValidator.LicenceIsRequiredAndMustBeAllowed ................................................   Passed    0.04 sec
+        Start 258: DatasetValidator.DeduplicatesAfterWhitespaceAndCaseNormalisation
+255/469 Test #256: DatasetValidator.RejectsClaudeDistillationProvenance ..............................................   Passed    0.04 sec
+        Start 259: DatasetValidator.EnforcesSizeCapsWithoutBufferingHostileLines
+256/469 Test #257: DatasetValidator.SchemaViolationsAreReportedWithLineNumbers .......................................   Passed    0.04 sec
+        Start 260: DatasetValidator.RejectsDeeplyNestedJsonWithoutCrashing
+257/469 Test #258: DatasetValidator.DeduplicatesAfterWhitespaceAndCaseNormalisation ..................................   Passed    0.04 sec
+        Start 261: DatasetValidator.RejectsRecordsContainingSecrets
+258/469 Test #259: DatasetValidator.EnforcesSizeCapsWithoutBufferingHostileLines .....................................   Passed    0.04 sec
+        Start 262: DatasetValidator.IgnoresBlankLinesAndHandlesCrLf
+259/469 Test #260: DatasetValidator.RejectsDeeplyNestedJsonWithoutCrashing ...........................................   Passed    0.04 sec
+        Start 263: DatasetValidator.EmptyInputIsNotClean
+260/469 Test #261: DatasetValidator.RejectsRecordsContainingSecrets ..................................................   Passed    0.04 sec
+        Start 264: DatasetValidator.IssueListIsCappedButCountsAreExact
+261/469 Test #262: DatasetValidator.IgnoresBlankLinesAndHandlesCrLf ..................................................   Passed    0.04 sec
+        Start 265: EvalGate.KeepsWhenHeldoutImprovesAndNothingRegresses
+262/469 Test #263: DatasetValidator.EmptyInputIsNotClean .............................................................   Passed    0.03 sec
+        Start 266: EvalGate.KeepsWhenRegressionSuitesImproveOrStayEqual
+263/469 Test #264: DatasetValidator.IssueListIsCappedButCountsAreExact ...............................................   Passed    0.03 sec
+        Start 267: EvalGate.RollsBackWhenAnyRegressionSuiteDrops
+264/469 Test #265: EvalGate.KeepsWhenHeldoutImprovesAndNothingRegresses ..............................................   Passed    0.04 sec
+        Start 268: EvalGate.ToleranceAllowsSmallNoiseOnlyWhenConfigured
+265/469 Test #266: EvalGate.KeepsWhenRegressionSuitesImproveOrStayEqual ..............................................   Passed    0.04 sec
+        Start 269: EvalGate.RollsBackWhenHeldoutDoesNotImproveEnough
+266/469 Test #267: EvalGate.RollsBackWhenAnyRegressionSuiteDrops .....................................................   Passed    0.04 sec
+        Start 270: EvalGate.GainWithRegressionIsStillRollback
+267/469 Test #268: EvalGate.ToleranceAllowsSmallNoiseOnlyWhenConfigured ..............................................   Passed    0.04 sec
+        Start 271: EvalGate.IncomparableInputsAreInvalidAndFailClosed
+268/469 Test #269: EvalGate.RollsBackWhenHeldoutDoesNotImproveEnough .................................................   Passed    0.04 sec
+        Start 272: EvalGate.NonFiniteOrOutOfRangeScoresAreInvalid
+269/469 Test #270: EvalGate.GainWithRegressionIsStillRollback ........................................................   Passed    0.04 sec
+        Start 273: ApiAuth.MissingTokenIs401WithChallenge
+270/469 Test #271: EvalGate.IncomparableInputsAreInvalidAndFailClosed ................................................   Passed    0.04 sec
+        Start 274: ApiAuth.WrongTokenIs401
+271/469 Test #272: EvalGate.NonFiniteOrOutOfRangeScoresAreInvalid ....................................................   Passed    0.04 sec
+        Start 275: ApiAuth.EveryRouteExceptHealthNeedsAuth
+272/469 Test #273: ApiAuth.MissingTokenIs401WithChallenge ............................................................   Passed    0.11 sec
+273/469 Test #274: ApiAuth.WrongTokenIs401 ...........................................................................   Passed    0.11 sec
+        Start 276: ApiAuth.EmptyConfiguredTokenNeverAuthenticates
+        Start 277: ApiHostOrigin.DnsRebindingHostRejectedEvenWithValidToken
+274/469 Test #275: ApiAuth.EveryRouteExceptHealthNeedsAuth ...........................................................   Passed    0.09 sec
+        Start 278: ApiHostOrigin.LoopbackHostsAccepted
+275/469 Test #276: ApiAuth.EmptyConfiguredTokenNeverAuthenticates ....................................................   Passed    0.05 sec
+        Start 279: ApiHostOrigin.LanModeAllowsIpLiteralsButNotNames
+276/469 Test #277: ApiHostOrigin.DnsRebindingHostRejectedEvenWithValidToken ..........................................   Passed    0.06 sec
+277/469 Test #278: ApiHostOrigin.LoopbackHostsAccepted ...............................................................   Passed    0.05 sec
+        Start 280: ApiHostOrigin.ForeignOriginsRejected
+        Start 281: ApiHostOrigin.SameOriginAndAllowListAccepted
+278/469 Test #279: ApiHostOrigin.LanModeAllowsIpLiteralsButNotNames ..................................................   Passed    0.06 sec
+        Start 282: ApiHostOrigin.NoCorsHeadersAreEverEmitted
+279/469 Test #280: ApiHostOrigin.ForeignOriginsRejected ..............................................................   Passed    0.05 sec
+280/469 Test #281: ApiHostOrigin.SameOriginAndAllowListAccepted ......................................................   Passed    0.05 sec
+        Start 283: ApiValidation.OversizeBodyIs413
+        Start 284: ApiValidation.MalformedJsonIs400
+281/469 Test #282: ApiHostOrigin.NoCorsHeadersAreEverEmitted .........................................................   Passed    0.05 sec
+        Start 285: ApiValidation.PathologicalNestingIs400
+282/469 Test #283: ApiValidation.OversizeBodyIs413 ...................................................................   Passed    0.05 sec
+283/469 Test #284: ApiValidation.MalformedJsonIs400 ..................................................................   Passed    0.05 sec
+        Start 286: ApiValidation.SchemaViolationsAre400
+        Start 287: ApiValidation.WrongContentTypeIs415
+284/469 Test #285: ApiValidation.PathologicalNestingIs400 ............................................................   Passed    0.05 sec
+        Start 288: ApiValidation.UnsupportedFeaturesAre501NotSilentlyIgnored
+285/469 Test #286: ApiValidation.SchemaViolationsAre400 ..............................................................   Passed    0.05 sec
+        Start 289: ApiRouting.UnknownRoutesAndMethods
+286/469 Test #287: ApiValidation.WrongContentTypeIs415 ...............................................................   Passed    0.05 sec
+        Start 290: ApiRouting.RequestIdOnEverythingAndUnique
+287/469 Test #288: ApiValidation.UnsupportedFeaturesAre501NotSilentlyIgnored .........................................   Passed    0.05 sec
+288/469 Test #289: ApiRouting.UnknownRoutesAndMethods ................................................................   Passed    0.05 sec
+        Start 291: ApiNative.HealthRuntimeDevicesMemoryModels
+        Start 292: ApiNative.ImageRoutesReturn501WithReason
+289/469 Test #290: ApiRouting.RequestIdOnEverythingAndUnique .........................................................   Passed    0.05 sec
+        Start 293: ApiNative.ModelLoadIsAJobAndUnloadWorks
+290/469 Test #291: ApiNative.HealthRuntimeDevicesMemoryModels ........................................................   Passed    0.05 sec
+291/469 Test #292: ApiNative.ImageRoutesReturn501WithReason ..........................................................   Passed    0.05 sec
+        Start 294: ApiNative.LoadPathTraversalInModelIdIsRejected
+        Start 295: ApiNative.RegistryPathOutsideApprovedRootNeverReachesEngine
+292/469 Test #293: ApiNative.ModelLoadIsAJobAndUnloadWorks ...........................................................   Passed    0.05 sec
+        Start 296: ApiNative.MalformedJobIds
+293/469 Test #294: ApiNative.LoadPathTraversalInModelIdIsRejected ....................................................   Passed    0.05 sec
+        Start 297: ApiChat.NonStreamingCompletionAutoLoadsModel
+294/469 Test #295: ApiNative.RegistryPathOutsideApprovedRootNeverReachesEngine .......................................   Passed    0.05 sec
+295/469 Test #296: ApiNative.MalformedJobIds .........................................................................   Passed    0.05 sec
+        Start 298: ApiChat.NoModelLoadedAndNoModelGivenIs409
+        Start 299: ApiChat.UnknownModelIs404
+296/469 Test #297: ApiChat.NonStreamingCompletionAutoLoadsModel ......................................................   Passed    0.05 sec
+        Start 300: ApiChat.TemplateRouting
+297/469 Test #298: ApiChat.NoModelLoadedAndNoModelGivenIs409 .........................................................   Passed    0.05 sec
+        Start 301: ApiChat.SseStreaming
+298/469 Test #299: ApiChat.UnknownModelIs404 .........................................................................   Passed    0.05 sec
+        Start 302: ApiChat.SseClientDisconnectCancelsTheRealWork
+299/469 Test #300: ApiChat.TemplateRouting ...........................................................................   Passed    0.05 sec
+300/469 Test #301: ApiChat.SseStreaming ..............................................................................   Passed    0.05 sec
+        Start 303: ApiChat.CancelEndpointStopsRunningGeneration
+        Start 304: ApiChat.RequestTimeoutCancelsAndReturns504
+301/469 Test #302: ApiChat.SseClientDisconnectCancelsTheRealWork .....................................................   Passed    0.09 sec
+        Start 305: ApiChat.ConcurrencyBoundReturns429
+302/469 Test #305: ApiChat.ConcurrencyBoundReturns429 ................................................................   Passed    0.08 sec
+        Start 306: ApiChat.NoEngineReportsUnsupportedHonestly
+303/469 Test #303: ApiChat.CancelEndpointStopsRunningGeneration ......................................................   Passed    0.16 sec
+        Start 307: ApiChat.LoadFailureSurfacesAsErrorAndModelIsRecoverable
+304/469 Test #306: ApiChat.NoEngineReportsUnsupportedHonestly ........................................................   Passed    0.05 sec
+        Start 308: ApiPrivacy.PromptsAreNeverLogged
+305/469 Test #307: ApiChat.LoadFailureSurfacesAsErrorAndModelIsRecoverable ...........................................   Passed    0.05 sec
+        Start 309: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakNonStreamingResponses
+306/469 Test #304: ApiChat.RequestTimeoutCancelsAndReturns504 ........................................................   Passed    0.22 sec
+        Start 310: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakStreaming
+307/469 Test #308: ApiPrivacy.PromptsAreNeverLogged ..................................................................   Passed    0.05 sec
+        Start 311: ApiAudit.NonStreamingChatCancelsTheJobWhenThePeerDisconnects
+308/469 Test #309: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakNonStreamingResponses ..................................   Passed    0.05 sec
+        Start 312: ApiAudit.StreamingChatCancelsWhenThePeerDisconnectsBeforeAnyOutput
+309/469 Test #310: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakStreaming ..............................................   Passed    0.05 sec
+        Start 313: ApiAudit.ModelLargerThanTheMeasuredBudgetIsRefusedBeforeAnythingIsEvicted
+310/469 Test #311: ApiAudit.NonStreamingChatCancelsTheJobWhenThePeerDisconnects ......................................   Passed    0.07 sec
+        Start 314: ApiAudit.KvCacheOfAHugeContextCountsAgainstTheBudget
+311/469 Test #312: ApiAudit.StreamingChatCancelsWhenThePeerDisconnectsBeforeAnyOutput ................................   Passed    0.07 sec
+        Start 315: ApiAudit.BudgetIsRemeasuredOnEveryLoad
+312/469 Test #313: ApiAudit.ModelLargerThanTheMeasuredBudgetIsRefusedBeforeAnythingIsEvicted .........................   Passed    0.08 sec
+        Start 316: ApiAudit.WithoutAnyMeasurementLoadsStayPermissiveAndMemoryEndpointSaysSo
+313/469 Test #314: ApiAudit.KvCacheOfAHugeContextCountsAgainstTheBudget ..............................................   Passed    0.05 sec
+        Start 317: ApiAudit.RuntimeBuildsItsBudgetFromInjectedMeasurements
+314/469 Test #315: ApiAudit.BudgetIsRemeasuredOnEveryLoad ............................................................   Passed    0.05 sec
+        Start 318: ApiAudit.RuntimeDefaultsToTheLiveHardwareMeasurement
+315/469 Test #316: ApiAudit.WithoutAnyMeasurementLoadsStayPermissiveAndMemoryEndpointSaysSo ..........................   Passed    0.05 sec
+        Start 319: ApiAudit.RedactPathsScrubsDirectoriesButKeepsFileNames
+316/469 Test #317: ApiAudit.RuntimeBuildsItsBudgetFromInjectedMeasurements ...........................................   Passed    0.07 sec
+        Start 320: ApiAudit.JobErrorsOverHttpDoNotLeakLocalPaths
+317/469 Test #318: ApiAudit.RuntimeDefaultsToTheLiveHardwareMeasurement ..............................................   Passed    0.06 sec
+        Start 321: ApiAudit.ControlTokensInUserTextAreNeutralised
+318/469 Test #319: ApiAudit.RedactPathsScrubsDirectoriesButKeepsFileNames ............................................   Passed    0.04 sec
+        Start 322: ApiChatTools.NonStreamReturnsToolCalls
+319/469 Test #321: ApiAudit.ControlTokensInUserTextAreNeutralised ....................................................   Passed    0.05 sec
+        Start 323: ApiChatTools.PlainAnswerWithToolsStaysAnAnswer
+320/469 Test #320: ApiAudit.JobErrorsOverHttpDoNotLeakLocalPaths .....................................................   Passed    0.06 sec
+        Start 324: ApiChatTools.ToolsAreRenderedIntoTheChatMLSystemTurn
+321/469 Test #322: ApiChatTools.NonStreamReturnsToolCalls ............................................................   Passed    0.07 sec
+        Start 325: ApiChatTools.ToolsWithoutSystemMessageGetOne
+322/469 Test #323: ApiChatTools.PlainAnswerWithToolsStaysAnAnswer ....................................................   Passed    0.05 sec
+323/469 Test #324: ApiChatTools.ToolsAreRenderedIntoTheChatMLSystemTurn ..............................................   Passed    0.05 sec
+        Start 326: ApiChatTools.AssistantToolCallAndToolResultRoundTrip
+        Start 327: ApiChatTools.ToolChoiceNoneHidesTheToolsFromTheModel
+324/469 Test #325: ApiChatTools.ToolsWithoutSystemMessageGetOne ......................................................   Passed    0.04 sec
+        Start 328: ApiChatTools.ForcedChoiceAndLegacyFunctionsAre501
+325/469 Test #326: ApiChatTools.AssistantToolCallAndToolResultRoundTrip ..............................................   Passed    0.05 sec
+326/469 Test #327: ApiChatTools.ToolChoiceNoneHidesTheToolsFromTheModel ..............................................   Passed    0.04 sec
+        Start 329: ApiChatTools.BadToolShapesAre400
+        Start 330: ApiChatTools.ControlTokensInToolOutputCannotForgeATurn
+327/469 Test #328: ApiChatTools.ForcedChoiceAndLegacyFunctionsAre501 .................................................   Passed    0.04 sec
+        Start 331: ApiChatTools.StreamingEmitsToolCallsDeltaAndFinishReason
+328/469 Test #330: ApiChatTools.ControlTokensInToolOutputCannotForgeATurn ............................................   Passed    0.04 sec
+329/469 Test #329: ApiChatTools.BadToolShapesAre400 ..................................................................   Passed    0.04 sec
+        Start 332: ApiChatTools.StreamingPlainAnswerIsLossless
+        Start 333: ApiChatTools.Lfm3PromptHasBosAndEmptyThinkBlocks
+330/469 Test #331: ApiChatTools.StreamingEmitsToolCallsDeltaAndFinishReason ..........................................   Passed    0.04 sec
+        Start 334: ApiSocket.HealthIsReachableWithoutToken
+331/469 Test #333: ApiChatTools.Lfm3PromptHasBosAndEmptyThinkBlocks ..................................................   Passed    0.03 sec
+        Start 335: ApiSocket.AuthIsEnforcedOverTheWire
+332/469 Test #332: ApiChatTools.StreamingPlainAnswerIsLossless .......................................................   Passed    0.04 sec
+        Start 336: ApiSocket.ForeignOriginRejectedOverTheWire
+333/469 Test #334: ApiSocket.HealthIsReachableWithoutToken ...........................................................   Passed    0.05 sec
+        Start 337: ApiSocket.OversizeBodyRejectedByTransportBeforeReadingIt
+334/469 Test #337: ApiSocket.OversizeBodyRejectedByTransportBeforeReadingIt ..........................................   Passed    0.06 sec
+335/469 Test #336: ApiSocket.ForeignOriginRejectedOverTheWire ........................................................   Passed    0.10 sec
+336/469 Test #335: ApiSocket.AuthIsEnforcedOverTheWire ...............................................................   Passed    0.10 sec
+        Start 338: ApiSocket.ChatCompletionOverTheWire
+        Start 339: ApiSocket.SseStreamsIncrementallyOverTheWire
+        Start 340: ApiSocket.ClientAbortMidStreamCancelsGeneration
+337/469 Test #338: ApiSocket.ChatCompletionOverTheWire ...............................................................   Passed    0.06 sec
+        Start 341: ApiSocket.BindsLoopbackOnlyByDefault
+338/469 Test #341: ApiSocket.BindsLoopbackOnlyByDefault ..............................................................   Passed    0.08 sec
+        Start 342: ApiSocket.ServerStopsCleanly
+339/469 Test #340: ApiSocket.ClientAbortMidStreamCancelsGeneration ...................................................   Passed    0.18 sec
+        Start 343: ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob
+340/469 Test #339: ApiSocket.SseStreamsIncrementallyOverTheWire ......................................................   Passed    0.32 sec
+        Start 344: ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded
+341/469 Test #343: ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob ..........................................   Passed    0.24 sec
+        Start 345: ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout
+342/469 Test #342: ApiSocket.ServerStopsCleanly ......................................................................   Passed    0.36 sec
+        Start 346: ApiImages.GenerationReturnsBase64PngAndRecordsTheJob
+343/469 Test #346: ApiImages.GenerationReturnsBase64PngAndRecordsTheJob ..............................................   Passed    0.07 sec
+        Start 347: ApiImages.DefaultsApplyWhenOnlyAPromptIsGiven
+344/469 Test #347: ApiImages.DefaultsApplyWhenOnlyAPromptIsGiven .....................................................   Passed    0.06 sec
+        Start 348: ApiImages.WrongMethodAndMissingEngine
+345/469 Test #348: ApiImages.WrongMethodAndMissingEngine .............................................................   Passed    0.05 sec
+        Start 349: ApiImages.RejectsInvalidRequestsBeforeTheEngineIsTouched
+346/469 Test #349: ApiImages.RejectsInvalidRequestsBeforeTheEngineIsTouched ..........................................   Passed    0.04 sec
+        Start 350: ApiImages.MalformedOversizedAndWrongContentType
+347/469 Test #350: ApiImages.MalformedOversizedAndWrongContentType ...................................................   Passed    0.04 sec
+        Start 351: ApiImages.NoImageModelLoadedIsAConflictNotACrash
+348/469 Test #351: ApiImages.NoImageModelLoadedIsAConflictNotACrash ..................................................   Passed    0.04 sec
+        Start 352: ApiImages.SwitchingBetweenTextAndImageModelsUnloadsThePreviousOne
+349/469 Test #352: ApiImages.SwitchingBetweenTextAndImageModelsUnloadsThePreviousOne .................................   Passed    0.04 sec
+        Start 353: ApiImages.ClientDisconnectCancelsTheRender
+350/469 Test #353: ApiImages.ClientDisconnectCancelsTheRender ........................................................   Passed    0.20 sec
+        Start 354: ApiImages.RequestTimeoutCancelsTheRenderAndReturns504
+351/469 Test   #7: SandboxPolicy.PathArgumentsMustStayInsideApprovedRoots ............................................   Passed    7.36 sec
+        Start 355: ApiImages.JobCancelEndpointStopsAnImageJob
+352/469 Test #355: ApiImages.JobCancelEndpointStopsAnImageJob ........................................................   Passed    0.07 sec
+        Start 356: ApiImages.EngineFailureBecomesAStructuredError
+353/469 Test #356: ApiImages.EngineFailureBecomesAStructuredError ....................................................   Passed    0.04 sec
+        Start 357: ApiImages.RuntimeReportsTheImageEngine
+354/469 Test #357: ApiImages.RuntimeReportsTheImageEngine ............................................................   Passed    0.04 sec
+        Start 358: ApiImageEdits.AcceptsADataUriAndKeepsTheInputSizeByDefault
+355/469 Test #358: ApiImageEdits.AcceptsADataUriAndKeepsTheInputSizeByDefault ........................................   Passed    0.04 sec
+        Start 359: ApiImageEdits.BareBase64IsAccepted
+356/469 Test #359: ApiImageEdits.BareBase64IsAccepted ................................................................   Passed    0.04 sec
+        Start 360: ApiImageEdits.RejectsBadInputImagesAndMultipart
+357/469 Test #360: ApiImageEdits.RejectsBadInputImagesAndMultipart ...................................................   Passed    0.04 sec
+        Start 361: ApiUi.RootAndAssetsAreServedWithoutATokenButBehindHostAndOriginChecks
+358/469 Test #361: ApiUi.RootAndAssetsAreServedWithoutATokenButBehindHostAndOriginChecks .............................   Passed    0.05 sec
+        Start 362: ApiUi.OnlyGetAndHeadAndTheApiStaysAuthenticated
+359/469 Test #354: ApiImages.RequestTimeoutCancelsTheRenderAndReturns504 .............................................   Passed    0.36 sec
+        Start 363: VisionPairing.NameMatchPairsMmprojIgnoringQuantisation
+360/469 Test #362: ApiUi.OnlyGetAndHeadAndTheApiStaysAuthenticated ...................................................   Passed    0.04 sec
+        Start 364: VisionPairing.AmbiguousFolderIsNotGuessed
+361/469 Test #364: VisionPairing.AmbiguousFolderIsNotGuessed .........................................................   Passed    0.06 sec
+        Start 365: VisionControlPlane.LoadsProjectorAndStreamsTheAnswer
+362/469 Test #363: VisionPairing.NameMatchPairsMmprojIgnoringQuantisation ............................................   Passed    0.08 sec
+        Start 366: VisionControlPlane.ModelWithoutProjectorIsACleanUnsupportedError
+363/469 Test #345: ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout ..............................   Passed    1.07 sec
+        Start 367: VisionControlPlane.PlainTextChatStillUsesTheTextPath
+364/469 Test #365: VisionControlPlane.LoadsProjectorAndStreamsTheAnswer ..............................................   Passed    0.04 sec
+        Start 368: VisionControlPlane.ValidationRejectsBadShapesAndImages
+365/469 Test #366: VisionControlPlane.ModelWithoutProjectorIsACleanUnsupportedError ..................................   Passed    0.04 sec
+        Start 369: VisionHttp.DataUriImageReturnsTheModelAnswer
+366/469 Test #367: VisionControlPlane.PlainTextChatStillUsesTheTextPath ..............................................   Passed    0.05 sec
+        Start 370: VisionHttp.StreamingWorksWithImages
+367/469 Test #368: VisionControlPlane.ValidationRejectsBadShapesAndImages ............................................   Passed    0.05 sec
+        Start 371: VisionHttp.RemoteUrlsPathsAndBadDataUrisAreRejected
+368/469 Test #369: VisionHttp.DataUriImageReturnsTheModelAnswer ......................................................   Passed    0.05 sec
+        Start 372: VisionHttp.NonImageBytesAndOversizedDimensionsAre400
+369/469 Test #370: VisionHttp.StreamingWorksWithImages ...............................................................   Passed    0.05 sec
+        Start 373: VisionHttp.ModelWithoutProjectorIs501NotAFakeAnswer
+370/469 Test #371: VisionHttp.RemoteUrlsPathsAndBadDataUrisAreRejected ...............................................   Passed    0.05 sec
+        Start 374: VisionHttp.ImageInSystemMessageIsRejected
+371/469 Test #372: VisionHttp.NonImageBytesAndOversizedDimensionsAre400 ..............................................   Passed    0.05 sec
+        Start 375: VisionMcp.AnalyzeReadsApprovedPathAndReturnsText
+372/469 Test #373: VisionHttp.ModelWithoutProjectorIs501NotAFakeAnswer ...............................................   Passed    0.05 sec
+        Start 376: VisionMcp.PathEscapesNonImagesAndMissingProjectorAreCleanErrors
+373/469 Test #374: VisionHttp.ImageInSystemMessageIsRejected .........................................................   Passed    0.05 sec
+        Start 377: Cli.HelpWorksAtEveryLevel
+374/469 Test #375: VisionMcp.AnalyzeReadsApprovedPathAndReturnsText ..................................................   Passed    0.05 sec
+        Start 378: Cli.VersionAndNoArgs
+375/469 Test #376: VisionMcp.PathEscapesNonImagesAndMissingProjectorAreCleanErrors ...................................   Passed    0.05 sec
+        Start 379: Cli.UnknownCommandIsInvalidArgument
+376/469 Test #378: Cli.VersionAndNoArgs ..............................................................................   Passed    0.04 sec
+        Start 380: Cli.PlannedCommandsReturnUnsupported
+377/469 Test #377: Cli.HelpWorksAtEveryLevel .........................................................................   Passed    0.05 sec
+        Start 381: Cli.BenchmarkHelpAndArgumentValidationBeforeLoadingAnything
+378/469 Test #379: Cli.UnknownCommandIsInvalidArgument ...............................................................   Passed    0.04 sec
+        Start 382: Cli.ImplementedTransportsHaveHelpAndValidateArguments
+379/469 Test #380: Cli.PlannedCommandsReturnUnsupported ..............................................................   Passed    0.06 sec
+        Start 383: Cli.ChatValidatesArgumentsBeforeLoadingAnything
+380/469 Test #383: Cli.ChatValidatesArgumentsBeforeLoadingAnything ...................................................   Passed    0.14 sec
+381/469 Test #382: Cli.ImplementedTransportsHaveHelpAndValidateArguments .............................................   Passed    0.18 sec
+        Start 384: Cli.VisionHelpAndArgumentValidationBeforeLoadingAnything
+        Start 385: Cli.DoctorJsonIsValidAndNeverGuesses
+382/469 Test #381: Cli.BenchmarkHelpAndArgumentValidationBeforeLoadingAnything .......................................   Passed    0.20 sec
+        Start 386: Cli.DoctorTextWorks
+383/469 Test #384: Cli.VisionHelpAndArgumentValidationBeforeLoadingAnything ..........................................   Passed    0.04 sec
+        Start 387: Cli.ModelsScanListInspectRoundTrip
+384/469 Test #387: Cli.ModelsScanListInspectRoundTrip ................................................................   Passed    0.05 sec
+        Start 388: Cli.ScanErrors
+385/469 Test #388: Cli.ScanErrors ....................................................................................   Passed    0.04 sec
+        Start 389: Cli.CorruptRegistryIsReportedNotCrashed
+386/469 Test #386: Cli.DoctorTextWorks ...............................................................................   Passed    0.17 sec
+387/469 Test #385: Cli.DoctorJsonIsValidAndNeverGuesses ..............................................................   Passed    0.18 sec
+        Start 390: McpProtocol.ServerDiscoverAdvertisesVersionsAndTools
+        Start 391: McpProtocol.DiscoverRejectsUnknownRequestedVersionWithSupportedList
+388/469 Test #389: Cli.CorruptRegistryIsReportedNotCrashed ...........................................................   Passed    0.05 sec
+        Start 392: McpProtocol.RequestsMustCarryMetaVersionAndCapabilities
+389/469 Test #392: McpProtocol.RequestsMustCarryMetaVersionAndCapabilities ...........................................   Passed    0.06 sec
+        Start 393: McpProtocol.ModernResultsCarryResultTypeAndServerInfo
+390/469 Test #391: McpProtocol.DiscoverRejectsUnknownRequestedVersionWithSupportedList ...............................   Passed    0.07 sec
+391/469 Test #390: McpProtocol.ServerDiscoverAdvertisesVersionsAndTools ..............................................   Passed    0.08 sec
+        Start 394: McpProtocol.PingIsRemovedInModernEra
+        Start 395: McpProtocol.LegacyHandshakeStillWorks
+392/469 Test #393: McpProtocol.ModernResultsCarryResultTypeAndServerInfo .............................................   Passed    0.04 sec
+        Start 396: McpProtocol.MalformedMessages
+393/469 Test #394: McpProtocol.PingIsRemovedInModernEra ..............................................................   Passed    0.04 sec
+        Start 397: McpTools.ListHasNarrowSchemasForEveryRequiredTool
+394/469 Test #395: McpProtocol.LegacyHandshakeStillWorks .............................................................   Passed    0.04 sec
+        Start 398: McpTools.ModelsListAndInspect
+395/469 Test #396: McpProtocol.MalformedMessages .....................................................................   Passed    0.04 sec
+        Start 399: McpTools.InvalidArgumentsAreToolErrorsUnknownToolIsProtocolError
+396/469 Test #397: McpTools.ListHasNarrowSchemasForEveryRequiredTool .................................................   Passed    0.04 sec
+        Start 400: McpTools.LoadChatUnloadRoundTrip
+397/469 Test #398: McpTools.ModelsListAndInspect .....................................................................   Passed    0.04 sec
+        Start 401: McpTools.ChatNeedsExactlyOneOfPromptOrMessages
+398/469 Test #399: McpTools.InvalidArgumentsAreToolErrorsUnknownToolIsProtocolError ..................................   Passed    0.04 sec
+        Start 402: McpTools.ModelIdPathTraversalIsRejected
+399/469 Test #400: McpTools.LoadChatUnloadRoundTrip ..................................................................   Passed    0.04 sec
+        Start 403: McpTools.ImagePathsAreGuardedEvenForUnsupportedTools
+400/469 Test #401: McpTools.ChatNeedsExactlyOneOfPromptOrMessages ....................................................   Passed    0.05 sec
+        Start 404: McpTools.JobIdsAreValidated
+401/469 Test #402: McpTools.ModelIdPathTraversalIsRejected ...........................................................   Passed    0.04 sec
+        Start 405: McpTools.NoEngineIsReportedAsUnsupported
+402/469 Test #403: McpTools.ImagePathsAreGuardedEvenForUnsupportedTools ..............................................   Passed    0.05 sec
+        Start 406: McpStdio.StdoutCarriesOnlyJsonRpcAndLogsStayElsewhere
+403/469 Test #404: McpTools.JobIdsAreValidated .......................................................................   Passed    0.04 sec
+        Start 407: McpStdio.OversizeLineIsRejectedNotBuffered
+404/469 Test #405: McpTools.NoEngineIsReportedAsUnsupported ..........................................................   Passed    0.04 sec
+        Start 408: McpStdio.BatchesAreRejected
+405/469 Test #344: ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded .................................   Passed    2.09 sec
+        Start 409: McpStdio.CancelNotificationStopsWorkAndSuppressesTheResponse
+406/469 Test #407: McpStdio.OversizeLineIsRejectedNotBuffered ........................................................   Passed    0.04 sec
+        Start 410: McpStdio.ConcurrentCallLimit
+407/469 Test #406: McpStdio.StdoutCarriesOnlyJsonRpcAndLogsStayElsewhere .............................................   Passed    0.06 sec
+        Start 411: McpStdio.EofCancelsStragglersAfterGraceAndExits
+408/469 Test #408: McpStdio.BatchesAreRejected .......................................................................   Passed    0.04 sec
+        Start 412: McpAudit.DeeplyNestedParamsAreRejectedNotACrash
+409/469 Test #412: McpAudit.DeeplyNestedParamsAreRejectedNotACrash ...................................................   Passed    0.04 sec
+        Start 413: McpAudit.DeeplyNestedLinesOverStdioAreRejectedAndServerKeepsServing
+410/469 Test #409: McpStdio.CancelNotificationStopsWorkAndSuppressesTheResponse ......................................   Passed    0.10 sec
+        Start 414: McpAudit.DuplicateInFlightRequestIdIsRejected
+411/469 Test #411: McpStdio.EofCancelsStragglersAfterGraceAndExits ...................................................   Passed    0.08 sec
+        Start 415: McpAudit.CancelDuringModelLoadReleasesTheCallSlotPromptly
+412/469 Test #413: McpAudit.DeeplyNestedLinesOverStdioAreRejectedAndServerKeepsServing ...............................   Passed    0.05 sec
+        Start 416: McpAudit.ErrorsDoNotLeakAbsoluteLocalPaths
+413/469 Test #410: McpStdio.ConcurrentCallLimit ......................................................................   Passed    0.13 sec
+        Start 417: McpImage.ToolsAreListedWithRealSchemas
+414/469 Test #416: McpAudit.ErrorsDoNotLeakAbsoluteLocalPaths ........................................................   Passed    0.04 sec
+        Start 418: McpImage.GenerateReturnsAnImageContentBlock
+415/469 Test #417: McpImage.ToolsAreListedWithRealSchemas ............................................................   Passed    0.05 sec
+        Start 419: McpImage.GenerateValidatesEverythingBeforeTheEngine
+416/469 Test #418: McpImage.GenerateReturnsAnImageContentBlock .......................................................   Passed    0.06 sec
+        Start 420: McpImage.NoImageEngineIsUnsupportedNotFake
+417/469 Test #414: McpAudit.DuplicateInFlightRequestIdIsRejected .....................................................   Passed    0.15 sec
+        Start 421: McpImage.EditReadsOnlyFromApprovedRootsAndKeepsTheInputSize
+418/469 Test #419: McpImage.GenerateValidatesEverythingBeforeTheEngine ...............................................   Passed    0.06 sec
+        Start 422: McpImage.CancellationNotificationStopsTheRender
+419/469 Test #420: McpImage.NoImageEngineIsUnsupportedNotFake ........................................................   Passed    0.05 sec
+        Start 423: McpImage.ToolTimeoutCancelsTheRender
+420/469 Test #421: McpImage.EditReadsOnlyFromApprovedRootsAndKeepsTheInputSize .......................................   Passed    0.05 sec
+        Start 424: MutationFuzz.HcsModelParserNeverCrashesOrViolatesInvariants
+421/469 Test #422: McpImage.CancellationNotificationStopsTheRender ...................................................   Passed    0.07 sec
+        Start 425: MutationFuzz.GgufParserNeverCrashesOrViolatesInvariants
+422/469 Test #424: MutationFuzz.HcsModelParserNeverCrashesOrViolatesInvariants .......................................   Passed    0.13 sec
+        Start 426: MutationFuzz.PureRandomGarbageIsRejected
+423/469 Test #423: McpImage.ToolTimeoutCancelsTheRender ..............................................................   Passed    0.37 sec
+        Start 427: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng
+424/469 Test #427: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng ........................................***Skipped   0.06 sec
+        Start 428: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize
+425/469 Test #428: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize .......................................***Skipped   0.04 sec
+        Start 429: DiffusionBlocking.ProgressSinkStillReceivesProgress
+426/469 Test #429: DiffusionBlocking.ProgressSinkStillReceivesProgress ...............................................***Skipped   0.04 sec
+        Start 430: DiffusionBlocking.CancellationStopsTheRender
+427/469 Test #430: DiffusionBlocking.CancellationStopsTheRender ......................................................***Skipped   0.04 sec
+        Start 431: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering
+428/469 Test #431: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering .......................................***Skipped   0.04 sec
+        Start 432: DiffusionBlocking.NotLoadedIsAnErrorNotACrash
+429/469 Test #426: MutationFuzz.PureRandomGarbageIsRejected ..........................................................   Passed    0.49 sec
+        Start 433: DiffusionComponents.SidecarWithParentTraversalIsRejected
+430/469 Test #432: DiffusionBlocking.NotLoadedIsAnErrorNotACrash .....................................................   Passed    0.06 sec
+        Start 434: DiffusionComponents.SidecarWithAbsolutePathIsRejected
+431/469 Test #433: DiffusionComponents.SidecarWithParentTraversalIsRejected ..........................................   Passed    0.05 sec
+        Start 435: DiffusionComponents.SidecarWithMissingFileIsNotFound
+432/469 Test #434: DiffusionComponents.SidecarWithAbsolutePathIsRejected .............................................   Passed    0.04 sec
+        Start 436: DiffusionComponents.MalformedSidecarIsInvalidArgument
+433/469 Test #435: DiffusionComponents.SidecarWithMissingFileIsNotFound ..............................................   Passed    0.04 sec
+        Start 437: DiffusionComponents.UnknownParamsBackendIsInvalidArgument
+434/469 Test #436: DiffusionComponents.MalformedSidecarIsInvalidArgument .............................................   Passed    0.04 sec
+        Start 438: DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel
+435/469 Test #437: DiffusionComponents.UnknownParamsBackendIsInvalidArgument .........................................   Passed    0.04 sec
+        Start 439: DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15
+436/469 Test #438: DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel ......................................   Passed    0.04 sec
+        Start 440: DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem
+437/469 Test #439: DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15 ..........................................***Skipped   0.04 sec
+        Start 441: LlamaEngineErrors.GenerateBeforeLoadIsInvalidState
+438/469 Test #440: DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem .............................................***Skipped   0.04 sec
+        Start 442: LlamaEngineErrors.MissingFileIsNotFound
+439/469 Test #441: LlamaEngineErrors.GenerateBeforeLoadIsInvalidState ................................................   Passed    0.04 sec
+        Start 443: LlamaEngineErrors.NonGgufIsModelError
+440/469 Test #442: LlamaEngineErrors.MissingFileIsNotFound ...........................................................   Passed    0.04 sec
+        Start 444: LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable
+441/469 Test #443: LlamaEngineErrors.NonGgufIsModelError .............................................................   Passed    0.05 sec
+        Start 445: LlamaEngineErrors.BadArguments
+442/469 Test #444: LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable ...................................   Passed    0.05 sec
+        Start 446: LlamaEngineErrors.VisionRequestValidation
+443/469 Test #445: LlamaEngineErrors.BadArguments ....................................................................   Passed    0.04 sec
+        Start 447: LlamaEngineErrors.VulkanOnCpuOnlyBuildIsUnsupported
+444/469 Test #446: LlamaEngineErrors.VisionRequestValidation .........................................................   Passed    0.04 sec
+        Start 448: LlamaEngineReal.CpuGeneration
+445/469 Test #447: LlamaEngineErrors.VulkanOnCpuOnlyBuildIsUnsupported ...............................................   Passed    0.05 sec
+        Start 449: LlamaEngineReal.VulkanGeneration
+446/469 Test #448: LlamaEngineReal.CpuGeneration .....................................................................***Skipped   0.05 sec
+        Start 450: LlamaEngineReal.GreedyIsDeterministicOnCpu
+447/469 Test #449: LlamaEngineReal.VulkanGeneration ..................................................................***Skipped   0.05 sec
+        Start 451: LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly
+448/469 Test #450: LlamaEngineReal.GreedyIsDeterministicOnCpu ........................................................***Skipped   0.04 sec
+        Start 452: LlamaEngineReal.CancellationMidGenerationCpu
+449/469 Test #451: LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly ..........................................***Skipped   0.04 sec
+        Start 453: LlamaEngineReal.CancellationMidGenerationVulkan
+450/469 Test #452: LlamaEngineReal.CancellationMidGenerationCpu ......................................................***Skipped   0.04 sec
+        Start 454: LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth
+451/469 Test #453: LlamaEngineReal.CancellationMidGenerationVulkan ...................................................***Skipped   0.04 sec
+        Start 455: LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth
+452/469 Test #454: LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth .................................................***Skipped   0.04 sec
+        Start 456: LlamaEngineReal.ModelSwitchBetweenBackendsAndModels
+453/469 Test #455: LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth ..............................................***Skipped   0.04 sec
+        Start 457: LlamaEngineReal.LoadModesAreAccepted
+454/469 Test #456: LlamaEngineReal.ModelSwitchBetweenBackendsAndModels ...............................................***Skipped   0.05 sec
+        Start 458: LlamaVisionReal.DescribesAGeneratedImageOnCpu
+455/469 Test #457: LlamaEngineReal.LoadModesAreAccepted ..............................................................***Skipped   0.04 sec
+        Start 459: LlamaVisionReal.DescribesAGeneratedImageOnVulkan
+456/469 Test #458: LlamaVisionReal.DescribesAGeneratedImageOnCpu .....................................................***Skipped   0.05 sec
+        Start 460: LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs
+457/469 Test #459: LlamaVisionReal.DescribesAGeneratedImageOnVulkan ..................................................***Skipped   0.05 sec
+        Start 461: LlamaVisionReal.UnloadAndReloadReleasesTheProjector
+458/469 Test #460: LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs ....................***Skipped   0.05 sec
+        Start 462: LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine
+459/469 Test #461: LlamaVisionReal.UnloadAndReloadReleasesTheProjector ...............................................***Skipped   0.05 sec
+        Start 463: LlamaVisionReal.CancellationStopsAVisionJob
+460/469 Test #462: LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine .......................................***Skipped   0.05 sec
+        Start 464: LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly
+461/469 Test #415: McpAudit.CancelDuringModelLoadReleasesTheCallSlotPromptly .........................................   Passed    1.55 sec
+        Start 465: LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors
+462/469 Test #463: LlamaVisionReal.CancellationStopsAVisionJob .......................................................***Skipped   0.04 sec
+        Start 466: LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected
+463/469 Test #464: LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly ........................................***Skipped   0.05 sec
+        Start 467: LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError
+464/469 Test #465: LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors ...................................***Skipped   0.05 sec
+        Start 468: RealGguf.HeaderParsesAndTensorsLieInsideTheFile
+465/469 Test #466: LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected ...................................***Skipped   0.05 sec
+        Start 469: RealGguf.StreamingDeliversEveryByteInOrder
+466/469 Test #467: LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError ...............................***Skipped   0.05 sec
+467/469 Test #468: RealGguf.HeaderParsesAndTensorsLieInsideTheFile ...................................................***Skipped   0.04 sec
+468/469 Test #469: RealGguf.StreamingDeliversEveryByteInOrder ........................................................***Skipped   0.04 sec
+469/469 Test #425: MutationFuzz.GgufParserNeverCrashesOrViolatesInvariants ...........................................   Passed    1.88 sec
+
+99% tests passed, 1 tests failed out of 469
+
+Label Time Summary:
+contract       =  15.24 sec*proc (151 tests)
+integration    =   1.94 sec*proc (43 tests)
+parser         =   2.50 sec*proc (3 tests)
+unit           =  20.38 sec*proc (272 tests)
+
+Total Test time (real) =  14.02 sec
+
+The following tests did not run:
+	427 - DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng (Skipped)
+	428 - DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize (Skipped)
+	429 - DiffusionBlocking.ProgressSinkStillReceivesProgress (Skipped)
+	430 - DiffusionBlocking.CancellationStopsTheRender (Skipped)
+	431 - DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering (Skipped)
+	439 - DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15 (Skipped)
+	440 - DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem (Skipped)
+	448 - LlamaEngineReal.CpuGeneration (Skipped)
+	449 - LlamaEngineReal.VulkanGeneration (Skipped)
+	450 - LlamaEngineReal.GreedyIsDeterministicOnCpu (Skipped)
+	451 - LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly (Skipped)
+	452 - LlamaEngineReal.CancellationMidGenerationCpu (Skipped)
+	453 - LlamaEngineReal.CancellationMidGenerationVulkan (Skipped)
+	454 - LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth (Skipped)
+	455 - LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth (Skipped)
+	456 - LlamaEngineReal.ModelSwitchBetweenBackendsAndModels (Skipped)
+	457 - LlamaEngineReal.LoadModesAreAccepted (Skipped)
+	458 - LlamaVisionReal.DescribesAGeneratedImageOnCpu (Skipped)
+	459 - LlamaVisionReal.DescribesAGeneratedImageOnVulkan (Skipped)
+	460 - LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs (Skipped)
+	461 - LlamaVisionReal.UnloadAndReloadReleasesTheProjector (Skipped)
+	462 - LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine (Skipped)
+	463 - LlamaVisionReal.CancellationStopsAVisionJob (Skipped)
+	464 - LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly (Skipped)
+	465 - LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors (Skipped)
+	466 - LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected (Skipped)
+	467 - LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError (Skipped)
+	468 - RealGguf.HeaderParsesAndTensorsLieInsideTheFile (Skipped)
+	469 - RealGguf.StreamingDeliversEveryByteInOrder (Skipped)
+
+The following tests FAILED:
+	172 - GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles (Failed) unit
+Errors while running CTest

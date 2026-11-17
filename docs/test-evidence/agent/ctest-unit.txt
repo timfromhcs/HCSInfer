@@ -1,0 +1,74 @@
+Test project D:/HCSInfer/.claude/worktrees/flux3-agent-engine-v1-665ab0/build/agent-cmake
+      Start  1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules
+ 1/33 Test  #1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules .............   Passed    0.03 sec
+      Start  2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd
+ 2/33 Test  #2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd ............   Passed    0.07 sec
+      Start  3: SandboxPolicy.RejectsUnlistedShellsAndPathPrograms
+ 3/33 Test  #3: SandboxPolicy.RejectsUnlistedShellsAndPathPrograms .................   Passed    0.04 sec
+      Start  4: SandboxPolicy.SubcommandMustBeArgvOneAndAllowListed
+ 4/33 Test  #4: SandboxPolicy.SubcommandMustBeArgvOneAndAllowListed ................   Passed    0.11 sec
+      Start  5: SandboxPolicy.DeniedArgumentsAreRejectedAlsoWithEqualsForm
+ 5/33 Test  #5: SandboxPolicy.DeniedArgumentsAreRejectedAlsoWithEqualsForm .........   Passed    0.15 sec
+      Start  6: SandboxPolicy.NetworkIsOffByDefault
+ 6/33 Test  #6: SandboxPolicy.NetworkIsOffByDefault ................................   Passed    0.03 sec
+      Start  7: SandboxPolicy.PathArgumentsMustStayInsideApprovedRoots
+ 7/33 Test  #7: SandboxPolicy.PathArgumentsMustStayInsideApprovedRoots .............   Passed    7.32 sec
+      Start  8: SandboxPolicy.WorkingDirectoryIsGuarded
+ 8/33 Test  #8: SandboxPolicy.WorkingDirectoryIsGuarded ............................   Passed    0.03 sec
+      Start  9: SandboxPolicy.TimeoutIsDefaultedClampedAndNeverZero
+ 9/33 Test  #9: SandboxPolicy.TimeoutIsDefaultedClampedAndNeverZero ................   Passed    0.04 sec
+      Start 10: SandboxPolicy.ArgumentCountAndSizeAndNulAreBounded
+10/33 Test #10: SandboxPolicy.ArgumentCountAndSizeAndNulAreBounded .................   Passed    0.04 sec
+      Start 11: SandboxPolicy.ReadAndWritePaths
+11/33 Test #11: SandboxPolicy.ReadAndWritePaths ....................................   Passed    0.04 sec
+      Start 12: SandboxPolicy.OutputCapTruncatesOnUtf8Boundary
+12/33 Test #12: SandboxPolicy.OutputCapTruncatesOnUtf8Boundary .....................   Passed    0.04 sec
+      Start 14: DatasetValidator.AcceptsAWellFormedRecordAndCountsByLicence
+13/33 Test #14: DatasetValidator.AcceptsAWellFormedRecordAndCountsByLicence ........   Passed    0.03 sec
+      Start 15: DatasetValidator.AcceptsToolCallTrajectories
+14/33 Test #15: DatasetValidator.AcceptsToolCallTrajectories .......................   Passed    0.03 sec
+      Start 16: DatasetValidator.RejectsToolCallsWithBadArguments
+15/33 Test #16: DatasetValidator.RejectsToolCallsWithBadArguments ..................   Passed    0.03 sec
+      Start 17: DatasetValidator.LicenceIsRequiredAndMustBeAllowed
+16/33 Test #17: DatasetValidator.LicenceIsRequiredAndMustBeAllowed .................   Passed    0.03 sec
+      Start 18: DatasetValidator.RejectsClaudeDistillationProvenance
+17/33 Test #18: DatasetValidator.RejectsClaudeDistillationProvenance ...............   Passed    0.03 sec
+      Start 19: DatasetValidator.SchemaViolationsAreReportedWithLineNumbers
+18/33 Test #19: DatasetValidator.SchemaViolationsAreReportedWithLineNumbers ........   Passed    0.03 sec
+      Start 20: DatasetValidator.DeduplicatesAfterWhitespaceAndCaseNormalisation
+19/33 Test #20: DatasetValidator.DeduplicatesAfterWhitespaceAndCaseNormalisation ...   Passed    0.03 sec
+      Start 21: DatasetValidator.EnforcesSizeCapsWithoutBufferingHostileLines
+20/33 Test #21: DatasetValidator.EnforcesSizeCapsWithoutBufferingHostileLines ......   Passed    0.03 sec
+      Start 22: DatasetValidator.RejectsDeeplyNestedJsonWithoutCrashing
+21/33 Test #22: DatasetValidator.RejectsDeeplyNestedJsonWithoutCrashing ............   Passed    0.03 sec
+      Start 23: DatasetValidator.RejectsRecordsContainingSecrets
+22/33 Test #23: DatasetValidator.RejectsRecordsContainingSecrets ...................   Passed    0.03 sec
+      Start 24: DatasetValidator.IgnoresBlankLinesAndHandlesCrLf
+23/33 Test #24: DatasetValidator.IgnoresBlankLinesAndHandlesCrLf ...................   Passed    0.03 sec
+      Start 25: DatasetValidator.EmptyInputIsNotClean
+24/33 Test #25: DatasetValidator.EmptyInputIsNotClean ..............................   Passed    0.03 sec
+      Start 26: DatasetValidator.IssueListIsCappedButCountsAreExact
+25/33 Test #26: DatasetValidator.IssueListIsCappedButCountsAreExact ................   Passed    0.03 sec
+      Start 27: EvalGate.KeepsWhenHeldoutImprovesAndNothingRegresses
+26/33 Test #27: EvalGate.KeepsWhenHeldoutImprovesAndNothingRegresses ...............   Passed    0.03 sec
+      Start 28: EvalGate.KeepsWhenRegressionSuitesImproveOrStayEqual
+27/33 Test #28: EvalGate.KeepsWhenRegressionSuitesImproveOrStayEqual ...............   Passed    0.03 sec
+      Start 29: EvalGate.RollsBackWhenAnyRegressionSuiteDrops
+28/33 Test #29: EvalGate.RollsBackWhenAnyRegressionSuiteDrops ......................   Passed    0.03 sec
+      Start 30: EvalGate.ToleranceAllowsSmallNoiseOnlyWhenConfigured
+29/33 Test #30: EvalGate.ToleranceAllowsSmallNoiseOnlyWhenConfigured ...............   Passed    0.03 sec
+      Start 31: EvalGate.RollsBackWhenHeldoutDoesNotImproveEnough
+30/33 Test #31: EvalGate.RollsBackWhenHeldoutDoesNotImproveEnough ..................   Passed    0.03 sec
+      Start 32: EvalGate.GainWithRegressionIsStillRollback
+31/33 Test #32: EvalGate.GainWithRegressionIsStillRollback .........................   Passed    0.03 sec
+      Start 33: EvalGate.IncomparableInputsAreInvalidAndFailClosed
+32/33 Test #33: EvalGate.IncomparableInputsAreInvalidAndFailClosed .................   Passed    0.03 sec
+      Start 34: EvalGate.NonFiniteOrOutOfRangeScoresAreInvalid
+33/33 Test #34: EvalGate.NonFiniteOrOutOfRangeScoresAreInvalid .....................   Passed    0.03 sec
+
+100% tests passed out of 33
+
+Label Time Summary:
+unit    =   8.57 sec*proc (33 tests)
+
+Total Test time (real) =  22.45 sec

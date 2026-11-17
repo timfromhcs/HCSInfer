@@ -1,0 +1,107 @@
+Test project D:/HCSInfer/.claude/worktrees/flux3-agent-engine-v1-665ab0/build/lfm3-unit
+      Start  13: ChatToolsRequest.NoToolsIsOff
+ 1/49 Test  #13: ChatToolsRequest.NoToolsIsOff .................................   Passed    0.03 sec
+      Start  14: ChatToolsRequest.ParsesToolsAndDefaultsToAuto
+ 2/49 Test  #14: ChatToolsRequest.ParsesToolsAndDefaultsToAuto .................   Passed    0.03 sec
+      Start  15: ChatToolsRequest.ToolChoiceNoneAndAuto
+ 3/49 Test  #15: ChatToolsRequest.ToolChoiceNoneAndAuto ........................   Passed    0.03 sec
+      Start  16: ChatToolsRequest.RequiredAndNamedChoiceAreUnsupported
+ 4/49 Test  #16: ChatToolsRequest.RequiredAndNamedChoiceAreUnsupported .........   Passed    0.04 sec
+      Start  17: ChatToolsRequest.LegacyFunctionsAreUnsupported
+ 5/49 Test  #17: ChatToolsRequest.LegacyFunctionsAreUnsupported ................   Passed    0.03 sec
+      Start  18: ChatToolsRequest.RejectsMalformedDefinitions
+ 6/49 Test  #18: ChatToolsRequest.RejectsMalformedDefinitions ..................   Passed    0.03 sec
+      Start  19: ChatToolsRequest.RejectsTooManyAndTooLarge
+ 7/49 Test  #19: ChatToolsRequest.RejectsTooManyAndTooLarge ....................   Passed    0.03 sec
+      Start  20: ChatToolsRender.ToolsBlockUsesPythonJsonLayout
+ 8/49 Test  #20: ChatToolsRender.ToolsBlockUsesPythonJsonLayout ................   Passed    0.03 sec
+      Start  21: ChatToolsRender.AssistantToolCallsAreXml
+ 9/49 Test  #21: ChatToolsRender.AssistantToolCallsAreXml ......................   Passed    0.03 sec
+      Start  22: ChatToolsRender.RejectsBadAssistantToolCalls
+10/49 Test  #22: ChatToolsRender.RejectsBadAssistantToolCalls ..................   Passed    0.03 sec
+      Start  23: ChatToolsRender.ToolResponseWrapsOnce
+11/49 Test  #23: ChatToolsRender.ToolResponseWrapsOnce .........................   Passed    0.03 sec
+      Start  24: ChatToolsParse.PlainTextHasNoCalls
+12/49 Test  #24: ChatToolsParse.PlainTextHasNoCalls ............................   Passed    0.03 sec
+      Start  25: ChatToolsParse.XmlCallIsTypedBySchema
+13/49 Test  #25: ChatToolsParse.XmlCallIsTypedBySchema .........................   Passed    0.03 sec
+      Start  26: ChatToolsParse.MultipleCallsAndHermesJson
+14/49 Test  #26: ChatToolsParse.MultipleCallsAndHermesJson .....................   Passed    0.03 sec
+      Start  27: ChatToolsParse.UnparseableBlockStaysVisible
+15/49 Test  #27: ChatToolsParse.UnparseableBlockStaysVisible ...................   Passed    0.03 sec
+      Start  28: ChatToolsParse.TruncatedBlockWithoutFunctionEndIsKeptAsText
+16/49 Test  #28: ChatToolsParse.TruncatedBlockWithoutFunctionEndIsKeptAsText ...   Passed    0.03 sec
+      Start  29: ChatToolsStream.PlainTextStreamsWithoutLoss
+17/49 Test  #29: ChatToolsStream.PlainTextStreamsWithoutLoss ...................   Passed    0.03 sec
+      Start  30: ChatToolsStream.HoldsBackTagPrefixAndParsesCall
+18/49 Test  #30: ChatToolsStream.HoldsBackTagPrefixAndParsesCall ...............   Passed    0.03 sec
+      Start  31: ChatToolsStream.UnusableCallRegionIsReturnedAsContent
+19/49 Test  #31: ChatToolsStream.UnusableCallRegionIsReturnedAsContent .........   Passed    0.03 sec
+      Start 283: ApiValidation.OversizeBodyIs413
+20/49 Test #283: ApiValidation.OversizeBodyIs413 ...............................   Passed    0.05 sec
+      Start 284: ApiValidation.MalformedJsonIs400
+21/49 Test #284: ApiValidation.MalformedJsonIs400 ..............................   Passed    0.04 sec
+      Start 285: ApiValidation.PathologicalNestingIs400
+22/49 Test #285: ApiValidation.PathologicalNestingIs400 ........................   Passed    0.04 sec
+      Start 286: ApiValidation.SchemaViolationsAre400
+23/49 Test #286: ApiValidation.SchemaViolationsAre400 ..........................   Passed    0.04 sec
+      Start 287: ApiValidation.WrongContentTypeIs415
+24/49 Test #287: ApiValidation.WrongContentTypeIs415 ...........................   Passed    0.07 sec
+      Start 288: ApiValidation.UnsupportedFeaturesAre501NotSilentlyIgnored
+25/49 Test #288: ApiValidation.UnsupportedFeaturesAre501NotSilentlyIgnored .....   Passed    0.05 sec
+      Start 297: ApiChat.NonStreamingCompletionAutoLoadsModel
+26/49 Test #297: ApiChat.NonStreamingCompletionAutoLoadsModel ..................   Passed    0.05 sec
+      Start 298: ApiChat.NoModelLoadedAndNoModelGivenIs409
+27/49 Test #298: ApiChat.NoModelLoadedAndNoModelGivenIs409 .....................   Passed    0.05 sec
+      Start 299: ApiChat.UnknownModelIs404
+28/49 Test #299: ApiChat.UnknownModelIs404 .....................................   Passed    0.04 sec
+      Start 300: ApiChat.TemplateRouting
+29/49 Test #300: ApiChat.TemplateRouting .......................................   Passed    0.04 sec
+      Start 301: ApiChat.SseStreaming
+30/49 Test #301: ApiChat.SseStreaming ..........................................   Passed    0.04 sec
+      Start 302: ApiChat.SseClientDisconnectCancelsTheRealWork
+31/49 Test #302: ApiChat.SseClientDisconnectCancelsTheRealWork .................   Passed    0.10 sec
+      Start 303: ApiChat.CancelEndpointStopsRunningGeneration
+32/49 Test #303: ApiChat.CancelEndpointStopsRunningGeneration ..................   Passed    0.16 sec
+      Start 304: ApiChat.RequestTimeoutCancelsAndReturns504
+33/49 Test #304: ApiChat.RequestTimeoutCancelsAndReturns504 ....................   Passed    0.22 sec
+      Start 305: ApiChat.ConcurrencyBoundReturns429
+34/49 Test #305: ApiChat.ConcurrencyBoundReturns429 ............................   Passed    0.08 sec
+      Start 306: ApiChat.NoEngineReportsUnsupportedHonestly
+35/49 Test #306: ApiChat.NoEngineReportsUnsupportedHonestly ....................   Passed    0.04 sec
+      Start 307: ApiChat.LoadFailureSurfacesAsErrorAndModelIsRecoverable
+36/49 Test #307: ApiChat.LoadFailureSurfacesAsErrorAndModelIsRecoverable .......   Passed    0.04 sec
+      Start 322: ApiChatTools.NonStreamReturnsToolCalls
+37/49 Test #322: ApiChatTools.NonStreamReturnsToolCalls ........................   Passed    0.04 sec
+      Start 323: ApiChatTools.PlainAnswerWithToolsStaysAnAnswer
+38/49 Test #323: ApiChatTools.PlainAnswerWithToolsStaysAnAnswer ................   Passed    0.04 sec
+      Start 324: ApiChatTools.ToolsAreRenderedIntoTheChatMLSystemTurn
+39/49 Test #324: ApiChatTools.ToolsAreRenderedIntoTheChatMLSystemTurn ..........   Passed    0.04 sec
+      Start 325: ApiChatTools.ToolsWithoutSystemMessageGetOne
+40/49 Test #325: ApiChatTools.ToolsWithoutSystemMessageGetOne ..................   Passed    0.04 sec
+      Start 326: ApiChatTools.AssistantToolCallAndToolResultRoundTrip
+41/49 Test #326: ApiChatTools.AssistantToolCallAndToolResultRoundTrip ..........   Passed    0.04 sec
+      Start 327: ApiChatTools.ToolChoiceNoneHidesTheToolsFromTheModel
+42/49 Test #327: ApiChatTools.ToolChoiceNoneHidesTheToolsFromTheModel ..........   Passed    0.04 sec
+      Start 328: ApiChatTools.ForcedChoiceAndLegacyFunctionsAre501
+43/49 Test #328: ApiChatTools.ForcedChoiceAndLegacyFunctionsAre501 .............   Passed    0.04 sec
+      Start 329: ApiChatTools.BadToolShapesAre400
+44/49 Test #329: ApiChatTools.BadToolShapesAre400 ..............................   Passed    0.04 sec
+      Start 330: ApiChatTools.ControlTokensInToolOutputCannotForgeATurn
+45/49 Test #330: ApiChatTools.ControlTokensInToolOutputCannotForgeATurn ........   Passed    0.04 sec
+      Start 331: ApiChatTools.StreamingEmitsToolCallsDeltaAndFinishReason
+46/49 Test #331: ApiChatTools.StreamingEmitsToolCallsDeltaAndFinishReason ......   Passed    0.04 sec
+      Start 332: ApiChatTools.StreamingPlainAnswerIsLossless
+47/49 Test #332: ApiChatTools.StreamingPlainAnswerIsLossless ...................   Passed    0.04 sec
+      Start 333: ApiChatTools.Lfm3PromptHasBosAndEmptyThinkBlocks
+48/49 Test #333: ApiChatTools.Lfm3PromptHasBosAndEmptyThinkBlocks ..............   Passed    0.03 sec
+      Start 473: eval_agentic_scorer_selftest
+49/49 Test #473: eval_agentic_scorer_selftest ..................................   Passed    0.43 sec
+
+100% tests passed out of 49
+
+Label Time Summary:
+contract    =   1.62 sec*proc (29 tests)
+unit        =   1.04 sec*proc (20 tests)
+
+Total Test time (real) =   3.99 sec

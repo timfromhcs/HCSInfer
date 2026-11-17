@@ -1,0 +1,31 @@
+PASS  scan registers the VLM
+== HTTP phase (serve, data-URI image input) ==
+PASS  serve prints port and token
+PASS  image_url data URI -> 200 with an answer
+PASS  answer mentions the red square
+PASS  usage.prompt_tokens shows the image was consumed (>60)
+PASS  runtime reports the backend that served the image request
+PASS  greedy answer is deterministic across requests
+PASS  SSE stream: 200, text/event-stream, [DONE]
+PASS  SSE stream text equals non-stream text
+PASS  rejected: remote https URL -> 400
+PASS  rejected: file:// URL -> 400
+PASS  rejected: local path -> 400
+PASS  rejected: bad base64 -> 400
+PASS  rejected: non-image media type -> 400
+PASS  rejected: bytes that are not an image -> 400
+PASS  rejected: huge declared dimensions -> 400
+PASS  rejected: two images -> 400
+PASS  rejected: oversize body -> 413
+PASS  image request without token -> 401
+PASS  client disconnect during streaming cancels the work (no job pending)
+PASS  engine healthy after cancellation
+== MCP phase (stdio, hcs.vision.analyze) ==
+PASS  MCP vision.analyze returns an answer
+PASS  MCP answer mentions red
+PASS  MCP: path outside approved roots -> security_violation
+PASS  MCP: '..' traversal -> security_violation
+PASS  MCP: non-image file -> invalid_argument
+PASS  MCP still responsive afterwards
+
+SUMMARY: 27 checks, 0 failed

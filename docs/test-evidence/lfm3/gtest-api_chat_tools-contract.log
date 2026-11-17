@@ -1,0 +1,33 @@
+Running main() from D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\build\lfm3-unit\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 12 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 12 tests from ApiChatTools
+[ RUN      ] ApiChatTools.NonStreamReturnsToolCalls
+[       OK ] ApiChatTools.NonStreamReturnsToolCalls (8 ms)
+[ RUN      ] ApiChatTools.PlainAnswerWithToolsStaysAnAnswer
+[       OK ] ApiChatTools.PlainAnswerWithToolsStaysAnAnswer (5 ms)
+[ RUN      ] ApiChatTools.ToolsAreRenderedIntoTheChatMLSystemTurn
+[       OK ] ApiChatTools.ToolsAreRenderedIntoTheChatMLSystemTurn (5 ms)
+[ RUN      ] ApiChatTools.ToolsWithoutSystemMessageGetOne
+[       OK ] ApiChatTools.ToolsWithoutSystemMessageGetOne (5 ms)
+[ RUN      ] ApiChatTools.AssistantToolCallAndToolResultRoundTrip
+[       OK ] ApiChatTools.AssistantToolCallAndToolResultRoundTrip (5 ms)
+[ RUN      ] ApiChatTools.ToolChoiceNoneHidesTheToolsFromTheModel
+[       OK ] ApiChatTools.ToolChoiceNoneHidesTheToolsFromTheModel (6 ms)
+[ RUN      ] ApiChatTools.ForcedChoiceAndLegacyFunctionsAre501
+[       OK ] ApiChatTools.ForcedChoiceAndLegacyFunctionsAre501 (5 ms)
+[ RUN      ] ApiChatTools.BadToolShapesAre400
+[       OK ] ApiChatTools.BadToolShapesAre400 (4 ms)
+[ RUN      ] ApiChatTools.ControlTokensInToolOutputCannotForgeATurn
+[       OK ] ApiChatTools.ControlTokensInToolOutputCannotForgeATurn (5 ms)
+[ RUN      ] ApiChatTools.StreamingEmitsToolCallsDeltaAndFinishReason
+[       OK ] ApiChatTools.StreamingEmitsToolCallsDeltaAndFinishReason (5 ms)
+[ RUN      ] ApiChatTools.StreamingPlainAnswerIsLossless
+[       OK ] ApiChatTools.StreamingPlainAnswerIsLossless (5 ms)
+[ RUN      ] ApiChatTools.Lfm3PromptHasBosAndEmptyThinkBlocks
+[       OK ] ApiChatTools.Lfm3PromptHasBosAndEmptyThinkBlocks (0 ms)
+[----------] 12 tests from ApiChatTools (64 ms total)
+
+[----------] Global test environment tear-down
+[==========] 12 tests from 1 test suite ran. (64 ms total)
+[  PASSED  ] 12 tests.

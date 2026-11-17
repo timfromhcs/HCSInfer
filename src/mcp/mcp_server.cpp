@@ -137,7 +137,8 @@ json tool_list(std::uint32_t cap) {
               {"height", {{"type", "integer"}, {"minimum", 64}, {"maximum", 2048}}},
               {"steps", {{"type", "integer"}, {"minimum", 1}, {"maximum", 150}}},
               {"seed", {{"type", "integer"}, {"minimum", 0}}},
-              {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}}},
+              {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}},
+              {"preset", {{"type", "string"}, {"enum", json::array({"fast", "quality"})}}}},
              {"prompt"}, false));
     tools.push_back(
         tool("hcs.image.edit", "Edit image",
@@ -152,7 +153,8 @@ json tool_list(std::uint32_t cap) {
               {"steps", {{"type", "integer"}, {"minimum", 1}, {"maximum", 150}}},
               {"strength", {{"type", "number"}, {"minimum", 0}, {"maximum", 1}}},
               {"seed", {{"type", "integer"}, {"minimum", 0}}},
-              {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}}},
+              {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}},
+              {"preset", {{"type", "string"}, {"enum", json::array({"fast", "quality"})}}}},
              {"prompt", "input_path"}, false));
     tools.push_back(tool(
         "hcs.runtime.status", "Runtime status",
@@ -487,6 +489,8 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
             p.seed = args["seed"].get<std::uint64_t>();
         if (args.contains("cfg_scale"))
             p.cfg_scale = args["cfg_scale"].get<float>();
+        if (args.contains("preset"))
+            p.preset = args["preset"].get<std::string>();
         if (args.contains("strength"))
             p.strength = args["strength"].get<float>();
         if (edit) {

@@ -1,0 +1,16 @@
+{
+  "backend": "vulkan",
+  "bytes": 112235,
+  "device": "AMD Radeon(TM) Graphics (Vulkan0)",
+  "generation_ms": 4088.3,
+  "height": 256,
+  "load_ms": 1815.7082,
+  "mode": "generate",
+  "model": "D:/HCSModels/diffusion/sd15-q8_0.gguf",
+  "output": "docs/test-evidence/flux3/sd15-regression-vulkan.png",
+  "preset": "",
+  "schema_version": 1,
+  "steps": 2,
+  "total_ms": 4118.3357,
+  "width": 256
+}

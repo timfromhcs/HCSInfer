@@ -126,7 +126,7 @@ def browser_boot_phase(port, token, browser, expect_models):
                f"--user-data-dir={prof}", "--virtual-time-budget=10000", "--dump-dom", url]
         r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
         dom = r.stdout
-        if "<title>HCSInfer</title>" not in dom:
+        if "<title>HCS Studio</title>" not in dom:
             check("browser rendered the UI", False, (r.returncode, dom[:200], r.stderr[-200:]))
             return
         check("browser rendered the UI", True)

@@ -1,0 +1,33 @@
+Running main() from D:\HCSInfer\build\img-api\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 12 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 12 tests from GuiAssets
+[ RUN      ] GuiAssets.RootServesIndexHtmlWithStrictCsp
+[       OK ] GuiAssets.RootServesIndexHtmlWithStrictCsp (0 ms)
+[ RUN      ] GuiAssets.EveryAssetIsServedWithCspAndRightType
+[       OK ] GuiAssets.EveryAssetIsServedWithCspAndRightType (0 ms)
+[ RUN      ] GuiAssets.StudioStructure
+[       OK ] GuiAssets.StudioStructure (0 ms)
+[ RUN      ] GuiAssets.EmbeddedBytesMatchExpectedMarkers
+[       OK ] GuiAssets.EmbeddedBytesMatchExpectedMarkers (0 ms)
+[ RUN      ] GuiAssets.NoExternalUrlsOrInlineCode
+[       OK ] GuiAssets.NoExternalUrlsOrInlineCode (49 ms)
+[ RUN      ] GuiAssets.TokenComesFromFragmentNeverQueryString
+[       OK ] GuiAssets.TokenComesFromFragmentNeverQueryString (0 ms)
+[ RUN      ] GuiAssets.TraversalAndMalformedPathsAreRejected
+[       OK ] GuiAssets.TraversalAndMalformedPathsAreRejected (0 ms)
+[ RUN      ] GuiAssets.UnknownAssetIs404AndNamespaceEdges
+[       OK ] GuiAssets.UnknownAssetIs404AndNamespaceEdges (0 ms)
+[ RUN      ] GuiAssets.OtherPathsAreNotHandled
+[       OK ] GuiAssets.OtherPathsAreNotHandled (0 ms)
+[ RUN      ] GuiAssets.MethodHandling
+[       OK ] GuiAssets.MethodHandling (0 ms)
+[ RUN      ] GuiAssets.NoSecretsEmbedded
+[       OK ] GuiAssets.NoSecretsEmbedded (0 ms)
+[ RUN      ] GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles
+[       OK ] GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles (1 ms)
+[----------] 12 tests from GuiAssets (51 ms total)
+
+[----------] Global test environment tear-down
+[==========] 12 tests from 1 test suite ran. (51 ms total)
+[  PASSED  ] 12 tests.

@@ -8,6 +8,7 @@
 #include <sstream>
 
 #include "hcs/api/base64.hpp"
+#include "hcs/api/chat_tools.hpp"
 #include "hcs/api/data_uri.hpp"
 #include "hcs/api/image_probe.hpp"
 #include "hcs/api/json_guard.hpp"
@@ -147,6 +148,24 @@ std::string generate_token() {
     return out;  // 64 hex chars = 256 bits
 }
 
+// OpenAI tool_calls array; `delta` adds the per-item "index" that streaming chunks carry.
+static json tool_calls_json(const std::vector<chat_tools::ToolCall>& calls, bool delta) {
+    json arr = json::array();
+    std::size_t i = 0;
+    for (const auto& c : calls) {
+        json item = {{"id", c.id},
+                     {"type", "function"},
+                     {"function",
+                      {{"name", c.name},
+                       {"arguments", c.arguments.dump(-1, ' ', false, json::error_handler_t::replace)}}}};
+        if (delta)
+            item["index"] = i;
+        arr.push_back(std::move(item));
+        ++i;
+    }
+    return arr;
+}
+
 json chat_completions_schema(std::uint32_t cap) {
     static const char* kSchema = R"JSON({
   "type": "object",
@@ -157,17 +176,23 @@ json chat_completions_schema(std::uint32_t cap) {
       "type": "array", "minItems": 1, "maxItems": 128,
       "items": {
         "type": "object",
-        "required": ["role", "content"],
+        "required": ["role"],
         "properties": {
-          "role": {"type": "string", "enum": ["system", "user", "assistant"]},
+          "role": {"type": "string", "enum": ["system", "user", "assistant", "tool"]},
           "content": {"anyOf": [
+            {"type": "null"},
             {"type": "string"},
             {"type": "array", "maxItems": 64,
              "items": {"type": "object", "required": ["type"], "properties": {"type": {"type": "string"}}}}
-          ]}
+          ]},
+          "tool_calls": {"type": "array", "maxItems": 16, "items": {"type": "object"}},
+          "tool_call_id": {"type": "string", "maxLength": 128},
+          "name": {"type": "string", "maxLength": 128}
         }
       }
     },
+    "tools": {"type": ["array", "null"], "maxItems": 64, "items": {"type": "object"}},
+    "tool_choice": {"type": ["string", "object", "null"]},
     "max_tokens": {"type": "integer", "minimum": 1},
     "max_completion_tokens": {"type": "integer", "minimum": 1},
     "temperature": {"type": "number", "minimum": 0, "maximum": 2},
@@ -496,11 +521,14 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,
         return error(400, "invalid_request_error", "invalid_json", "malformed JSON body", rid);
     if (auto v = validate_json(chat_schema_, body); !v)
         return error(400, "invalid_request_error", "invalid_request", v.error().message, rid);
-    for (const char* k : {"tools", "functions", "tool_choice", "function_call"}) {
-        if (body.contains(k))
-            return error(501, "server_error", "unsupported", std::string("'") + k + "' is not supported",
-                         rid);
+    auto tools_req = chat_tools::parse_tools_request(body);
+    if (!tools_req) {
+        if (tools_req.error().code == ErrorCode::Unsupported)
+            return error(501, "server_error", "unsupported", tools_req.error().message, rid);
+        return error(400, "invalid_request_error", "invalid_request", tools_req.error().message, rid);
     }
+    const chat_tools::ToolsRequest tools = std::move(tools_req.value());
+    const bool tools_on = tools.mode == chat_tools::ToolMode::Auto;
     if (body.contains("response_format") &&
         !(body["response_format"].is_object() && body["response_format"].contains("type") &&
           body["response_format"]["type"].is_string() &&
@@ -513,8 +541,20 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,
     for (const auto& m : body["messages"]) {
         ChatMessage cm;
         cm.role = m["role"].get<std::string>();
-        const auto& c = m["content"];
-        if (c.is_string()) {
+        if (cm.role == "tool" && !tools_on && tools.mode != chat_tools::ToolMode::None)
+            return error(400, "invalid_request_error", "invalid_request",
+                         "'tool' messages need a 'tools' array in the request", rid);
+        if (m.contains("tool_calls") && cm.role != "assistant")
+            return error(400, "invalid_request_error", "invalid_request",
+                         "'tool_calls' is only allowed on assistant messages", rid);
+        const json c = m.contains("content") ? m["content"] : json(nullptr);
+        if (c.is_null()) {
+            if (cm.role != "assistant" || !m.contains("tool_calls"))
+                return error(400, "invalid_request_error", "invalid_request",
+                             "message content is required (null is only allowed on an assistant message "
+                             "with tool_calls)",
+                             rid);
+        } else if (c.is_string()) {
             cm.content = c.get<std::string>();
         } else {
             for (const auto& part : c) {
@@ -552,7 +592,34 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,
                 }
             }
         }
+        if (cm.role == "assistant" && m.contains("tool_calls")) {
+            auto rendered = chat_tools::render_assistant_tool_calls(m["tool_calls"]);
+            if (!rendered)
+                return error(400, "invalid_request_error", "invalid_request", rendered.error().message, rid);
+            if (!cm.content.empty())
+                cm.content += "\n\n";
+            cm.content += rendered.value();
+        } else if (cm.role == "tool") {
+            cm.content = chat_tools::render_tool_response(cm.content);
+        }
         p.messages.push_back(std::move(cm));
+    }
+    if (tools_on) {
+        // The tool definitions travel in the system turn (merged into an existing system message).
+        const std::string block = chat_tools::render_tools_block(tools.tools);
+        if (!p.messages.empty() && p.messages.front().role == "system") {
+            auto& sc = p.messages.front().content;
+            sc += (sc.empty() ? "" : "\n\n") + block;
+        } else {
+            ChatMessage sm;
+            sm.role = "system";
+            sm.content = block;
+            p.messages.insert(p.messages.begin(), std::move(sm));
+        }
+        p.tools = true;
+    } else if (tools.mode == chat_tools::ToolMode::None) {
+        // tool_choice "none": the model never sees the tools; history tool messages stay renderable.
+        p.tools = true;
     }
     if (body.contains("max_tokens"))
         p.max_tokens = body["max_tokens"].get<std::uint32_t>();
@@ -679,13 +746,21 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,
                 return from_error(*st.value().error, rid);
             return error(409, "invalid_request_error", "cancelled", "job was cancelled", rid);
         }
+        json message = {{"role", "assistant"}, {"content", text}};
+        std::string fr = finish_reason();
+        if (tools_on) {
+            auto po = chat_tools::parse_output(text, tools.tools, job.value);
+            if (!po.calls.empty()) {
+                message["content"] = po.content.empty() ? json(nullptr) : json(po.content);
+                message["tool_calls"] = tool_calls_json(po.calls, false);
+                fr = "tool_calls";
+            }
+        }
         json j = {{"id", cid},
                   {"object", "chat.completion"},
                   {"created", created},
                   {"model", model_name()},
-                  {"choices", json::array({json{{"index", 0},
-                                                {"message", {{"role", "assistant"}, {"content", text}}},
-                                                {"finish_reason", finish_reason()}}})},
+                  {"choices", json::array({json{{"index", 0}, {"message", message}, {"finish_reason", fr}}})},
                   {"usage", usage_json()},
                   {"hcs", {{"job_id", to_string(job)}, {"request_id", rid}}}};
         return json_ok(j);
@@ -695,9 +770,11 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,
     r.content_type = "text/event-stream";
     r.headers.emplace_back("X-Accel-Buffering", "no");
     r.stream = [this, guard, channel, job, cid, created, model_name, first = std::move(first), got_first,
-                finished, deadline, usage_json, finish_reason, rid, peer_closed](const StreamWriter& write) {
+                finished, deadline, usage_json, finish_reason, rid, peer_closed, tools_on,
+                tdefs = tools.tools](const StreamWriter& write) {
         (void)guard;  // keeps the in-flight slot until streaming ends
         try {
+            chat_tools::StreamSplitter splitter(tdefs, job.value);
             auto chunk = [&](const json& delta, const json& fr, const json* usage) {
                 json j = {
                     {"id", cid},
@@ -709,11 +786,18 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,
                     j["usage"] = *usage;
                 return "data: " + dump_safe(j) + "\n\n";
             };
+            // With tools on, text that may start a <tool_call> block is held back until it is decided.
+            auto emit = [&](const std::string& t) {
+                if (!tools_on)
+                    return write(chunk({{"content", t}}, nullptr, nullptr));
+                const std::string out = splitter.feed(t);
+                return out.empty() || write(chunk({{"content", out}}, nullptr, nullptr));
+            };
             if (!write(chunk({{"role", "assistant"}, {"content", ""}}, nullptr, nullptr))) {
                 (void)cp_.cancel_job(job);
                 return;
             }
-            if (got_first && !write(chunk({{"content", first}}, nullptr, nullptr))) {
+            if (got_first && !emit(first)) {
                 (void)cp_.cancel_job(job);
                 return;
             }
@@ -725,8 +809,7 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,
                 switch (channel->pop(ev, std::min(deadline, std::chrono::steady_clock::now() +
                                                                 std::chrono::milliseconds(150)))) {
                     case JobChannel::Pop::Event:
-                        if (ev.kind == JobEventKind::Output &&
-                            !write(chunk({{"content", ev.text}}, nullptr, nullptr))) {
+                        if (ev.kind == JobEventKind::Output && !emit(ev.text)) {
                             (void)cp_.cancel_job(job);  // client disconnected: stop the real work
                             return;
                         }
@@ -764,7 +847,18 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,
                 (void)write("data: " + dump_safe(e) + "\n\n");
             } else {
                 const json u = usage_json();
-                (void)write(chunk(json::object(), finish_reason(), u.is_null() ? nullptr : &u));
+                std::string fr = finish_reason();
+                if (tools_on) {
+                    auto po = splitter.finish();
+                    if (!po.content.empty())
+                        (void)write(chunk({{"content", po.content}}, nullptr, nullptr));
+                    if (!po.calls.empty()) {
+                        (void)write(
+                            chunk({{"tool_calls", tool_calls_json(po.calls, true)}}, nullptr, nullptr));
+                        fr = "tool_calls";
+                    }
+                }
+                (void)write(chunk(json::object(), fr, u.is_null() ? nullptr : &u));
             }
             (void)write("data: [DONE]\n\n");
         } catch (const std::exception& e) {
@@ -791,6 +885,7 @@ json image_request_schema(bool edit, std::size_t max_prompt, std::uint32_t max_s
                 {"steps", {{"type", "integer"}, {"minimum", 1}, {"maximum", max_steps}}},
                 {"seed", {{"type", "integer"}, {"minimum", 0}}},
                 {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}},
+                {"preset", {{"type", "string"}, {"enum", json::array({"fast", "quality"})}}},
                 {"strength", {{"type", "number"}, {"minimum", 0}, {"maximum", 1}}},
                 {"image", {{"type", "string"}}}}}};
     return s;
@@ -866,6 +961,8 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
         p.seed = body["seed"].get<std::uint64_t>();
     if (body.contains("cfg_scale"))
         p.cfg_scale = body["cfg_scale"].get<float>();
+    if (body.contains("preset"))
+        p.preset = body["preset"].get<std::string>();
     if (body.contains("strength"))
         p.strength = body["strength"].get<float>();
     bool size_given = false;
@@ -947,6 +1044,8 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
         hcs["model"] = *lm;
     if (p.seed)
         hcs["seed"] = *p.seed;
+    if (!r.preset.empty())
+        hcs["preset"] = r.preset;
     json j = {{"created", static_cast<std::int64_t>(std::time(nullptr))},
               {"data", json::array({json{{"b64_json", base64_encode(r.bytes.data(), r.bytes.size())}}})},
               {"hcs", std::move(hcs)}};

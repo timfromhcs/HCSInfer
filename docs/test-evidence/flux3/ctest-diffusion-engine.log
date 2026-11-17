@@ -1,0 +1,50 @@
+Running main() from D:\HCSInfer\build\gui\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 14 tests from 3 test suites.
+[----------] Global test environment set-up.
+[----------] 6 tests from DiffusionBlocking
+[ RUN      ] DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | rebar: 0 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 32768 | int dot: 1 | matrix cores: none
+[       OK ] DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng (10762 ms)
+[ RUN      ] DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize
+[       OK ] DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize (23610 ms)
+[ RUN      ] DiffusionBlocking.ProgressSinkStillReceivesProgress
+[       OK ] DiffusionBlocking.ProgressSinkStillReceivesProgress (10882 ms)
+[ RUN      ] DiffusionBlocking.CancellationStopsTheRender
+[       OK ] DiffusionBlocking.CancellationStopsTheRender (10860 ms)
+[ RUN      ] DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering
+[       OK ] DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering (192 ms)
+[ RUN      ] DiffusionBlocking.NotLoadedIsAnErrorNotACrash
+[       OK ] DiffusionBlocking.NotLoadedIsAnErrorNotACrash (0 ms)
+[----------] 6 tests from DiffusionBlocking (56309 ms total)
+
+[----------] 5 tests from DiffusionComponents
+[ RUN      ] DiffusionComponents.SidecarWithParentTraversalIsRejected
+[       OK ] DiffusionComponents.SidecarWithParentTraversalIsRejected (2 ms)
+[ RUN      ] DiffusionComponents.SidecarWithAbsolutePathIsRejected
+[       OK ] DiffusionComponents.SidecarWithAbsolutePathIsRejected (2 ms)
+[ RUN      ] DiffusionComponents.SidecarWithMissingFileIsNotFound
+[       OK ] DiffusionComponents.SidecarWithMissingFileIsNotFound (2 ms)
+[ RUN      ] DiffusionComponents.MalformedSidecarIsInvalidArgument
+[       OK ] DiffusionComponents.MalformedSidecarIsInvalidArgument (2 ms)
+[ RUN      ] DiffusionComponents.UnknownParamsBackendIsInvalidArgument
+[       OK ] DiffusionComponents.UnknownParamsBackendIsInvalidArgument (1 ms)
+[----------] 5 tests from DiffusionComponents (11 ms total)
+
+[----------] 3 tests from DiffusionPreset
+[ RUN      ] DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel
+[       OK ] DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel (0 ms)
+[ RUN      ] DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15
+[       OK ] DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15 (192 ms)
+[ RUN      ] DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem
+Y:\tests\integration\diffusion_engine\test_diffusion_engine.cpp(277): Skipped
+NOT RUN: HCS_TEST_FLUX3_MODEL is not set (needs the FLUX.3 Klein GGUF + components)
+
+[  SKIPPED ] DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem (0 ms)
+[----------] 3 tests from DiffusionPreset (192 ms total)
+
+[----------] Global test environment tear-down
+[==========] 14 tests from 3 test suites ran. (56513 ms total)
+[  PASSED  ] 13 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem

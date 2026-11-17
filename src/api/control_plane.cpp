@@ -368,8 +368,15 @@ std::string ControlPlane::build_prompt(const std::vector<ChatMessage>& messages,
         p += "assistant:";
         return p;
     }
-    for (const auto& m : messages) p += "<|im_start|>" + m.role + "\n" + m.content + "<|im_end|>\n";
-    p += "<|im_start|>assistant\n";
+    // "chatml-lfm3": ChatML plus what LFM3's chat template adds: the BOS token first and an empty think block
+    // after every assistant header (the model misbehaves without the BOS).
+    const std::string think = tmpl == "chatml-lfm3" ? "<think></think>" : "";
+    if (tmpl == "chatml-lfm3")
+        p = "<|startoftext|>";
+    for (const auto& m : messages)
+        p += "<|im_start|>" + m.role + "\n" + (m.role == "assistant" ? think : "") + m.content +
+             "<|im_end|>\n";
+    p += "<|im_start|>assistant\n" + think;
     return p;
 }
 
@@ -380,7 +387,7 @@ Result<void> ControlPlane::validate_chat(const ChatParams& p) const {
         return make_error(ErrorCode::InvalidArgument, "too many messages");
     std::size_t total = 0;
     for (const auto& m : p.messages) {
-        if (m.role != "system" && m.role != "user" && m.role != "assistant")
+        if (m.role != "system" && m.role != "user" && m.role != "assistant" && !(p.tools && m.role == "tool"))
             return make_error(ErrorCode::InvalidArgument, "unsupported role '" + m.role + "'");
         total += m.content.size();
         if (total > opt_.max_prompt_bytes)
@@ -461,13 +468,18 @@ Result<Submitted> ControlPlane::submit_chat(const ChatParams& original) {
             const auto& ms = p.messages;
             const bool single_turn = (ms.size() == 1 && ms[0].role == "user") ||
                                      (ms.size() == 2 && ms[0].role == "system" && ms[1].role == "user");
-            if (opt_.chat_template == "auto" && single_turn) {
+            if (opt_.chat_template == "auto" && single_turn && !p.tools) {
                 tr.prompt = ms.back().content;
                 if (ms.size() == 2)
                     tr.system_prompt = ms[0].content;
                 tr.apply_chat_template = true;
             } else {
-                tr.prompt = build_prompt(ms, opt_.chat_template == "plain" ? "plain" : "chatml");
+                std::string fmt = opt_.chat_template == "plain" ? "plain" : "chatml";
+                if (fmt == "chatml") {
+                    if (auto mm = registry_.get(id); mm && mm.value().architecture == "lfm3")
+                        fmt = "chatml-lfm3";
+                }
+                tr.prompt = build_prompt(ms, fmt);
                 tr.apply_chat_template = false;
             }
         }

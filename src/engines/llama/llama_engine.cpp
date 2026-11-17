@@ -14,6 +14,7 @@
 #include <mutex>
 #include <random>
 #include <regex>
+#include <string_view>
 #include <thread>
 
 #include "ggml-backend.h"
@@ -204,6 +205,11 @@ struct Session {
     const llama_vocab* vocab = nullptr;
     mtmd_context* mctx = nullptr;  // vision projector (null => text-only session)
     std::string chat_template;     // empty => none
+    // LFM3's chat template starts with its BOS token and ends the generation prompt with an empty think block
+    // (enable_thinking=false). The legacy llama_chat_apply_template() ChatML rendering has neither, and the
+    // vocab does not auto-add BOS: without it the model drifts into audio output (`<|audio_start|>`), so both
+    // are added here (see run_generation).
+    bool lfm3_template = false;
     std::uint32_t n_ctx = 0;
     std::mutex run_mu;  // one owner of the context
     ~Session() {
@@ -499,6 +505,11 @@ Result<void> LlamaTextEngine::load_impl(const LoadRequest& req) {
     }
     if (const char* t = llama_model_chat_template(s->model, nullptr))
         s->chat_template = t;
+    {
+        char arch[64] = {0};
+        if (llama_model_meta_val_str(s->model, "general.architecture", arch, sizeof(arch)) > 0)
+            s->lfm3_template = std::string_view(arch) == "lfm3";
+    }
 
     const std::string log = LogSink::instance().since(log_mark);
     EngineMetrics m;
@@ -688,6 +699,10 @@ Result<void> LlamaTextEngine::Impl::run_generation(const std::shared_ptr<Session
                          "the model's chat template is not supported by llama_chat_apply_template; "
                          "disable apply_chat_template to send a raw prompt");
         text.assign(buf.data(), static_cast<std::size_t>(n));
+        if (s->lfm3_template) {
+            const char* bos = s->vocab ? llama_vocab_get_text(s->vocab, llama_vocab_bos(s->vocab)) : nullptr;
+            text = std::string(bos && *bos ? bos : "<|startoftext|>") + text + "<think></think>";
+        }
     } else {
         text = (req.system_prompt.empty() ? std::string() : req.system_prompt + "\n") + user_text;
     }

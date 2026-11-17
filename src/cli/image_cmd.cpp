@@ -43,6 +43,13 @@ const char* image_help() {
            "  --width <n>            Image width, 64..4096, multiple of 8 (default 512)\n"
            "  --height <n>           Image height, 64..4096, multiple of 8 (default 512)\n"
            "  --steps <n>            Sampling steps, 1..150 (default 20)\n"
+           "  --preset <p>           fast | quality: measured steps/cfg point for the loaded model family\n"
+           "                         (FLUX.3 Klein); overrides --steps/--cfg, rejected for other families\n"
+           "  --llm <file>           Text-encoder weights for multi-file models (FLUX.3: Qwen3-VL 4B)\n"
+           "  --vae <file>           VAE weights for multi-file models\n"
+           "                         (without --llm/--vae a `<model>.components.json` sidecar is read)\n"
+           "  --params-backend <b>   cpu (default) | disk: where module weights live between uses; disk is a\n"
+           "                         capacity fallback and can be slower\n"
            "  --cfg <f>              Text CFG scale; 0 = engine/model default\n"
            "  --seed <n>             Sampling seed (default: random)\n"
            "  --backend <b>          auto (default) | cpu | vulkan; explicit failure never falls back "
@@ -201,6 +208,7 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
 
     std::string model, prompt, negative, input, output, backend = "auto", device, load_mode;
     std::string v_width, v_height, v_steps, v_cfg, v_seed, v_strength, v_threads;
+    std::string preset, llm, vae, params_backend;
     bool bad = false;
     take_value(args, "--model", model, bad);
     take_value(args, "--prompt", prompt, bad);
@@ -210,6 +218,10 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
     take_value(args, "--backend", backend, bad);
     take_value(args, "--device", device, bad);
     take_value(args, "--load-mode", load_mode, bad);
+    take_value(args, "--preset", preset, bad);
+    take_value(args, "--llm", llm, bad);
+    take_value(args, "--vae", vae, bad);
+    take_value(args, "--params-backend", params_backend, bad);
     take_value(args, "--width", v_width, bad);
     take_value(args, "--height", v_height, bad);
     take_value(args, "--steps", v_steps, bad);
@@ -262,6 +274,27 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
         return fail(err, ErrorCode::InvalidArgument, "--backend must be auto, cpu or vulkan");
     lr.device = device;
     lr.load_mode = load_mode;
+    lr.params_backend = params_backend;
+    if (preset != "" && preset != "fast" && preset != "quality")
+        return fail(err, ErrorCode::InvalidArgument, "--preset must be fast or quality");
+    req.preset = preset;
+    for (const std::string* comp : {&llm, &vae}) {
+        if (comp->empty())
+            continue;
+        if (comp->find("..") != std::string::npos)
+            return fail(err, ErrorCode::SecurityViolation, "component path must not contain '..'");
+        std::error_code ec;
+        if (!fs::is_regular_file(*comp, ec))
+            return fail(err, ErrorCode::NotFound, "component file not found: " + *comp);
+    }
+    if (!llm.empty()) {
+        std::error_code ec;
+        lr.llm_path = fs::weakly_canonical(llm, ec).string();
+    }
+    if (!vae.empty()) {
+        std::error_code ec;
+        lr.vae_path = fs::weakly_canonical(vae, ec).string();
+    }
 
     if (sub == "edit") {
         auto in = read_input_image(input);
@@ -344,6 +377,7 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
         j["width"] = img.width;
         j["height"] = img.height;
         j["steps"] = img.steps;
+        j["preset"] = img.preset;
         j["bytes"] = img.bytes.size();
         j["backend"] = lm.backend;
         j["device"] = lm.device;

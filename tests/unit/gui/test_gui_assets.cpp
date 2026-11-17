@@ -27,7 +27,7 @@ TEST(GuiAssets, RootServesIndexHtmlWithStrictCsp) {
     ASSERT_TRUE(r.has_value());
     EXPECT_EQ(r->status, 200);
     EXPECT_EQ(r->content_type, "text/html; charset=utf-8");
-    EXPECT_NE(r->body.find("<title>HCSInfer</title>"), std::string_view::npos);
+    EXPECT_NE(r->body.find("<title>HCS Studio</title>"), std::string_view::npos);
     const auto csp = header(*r, "Content-Security-Policy");
     EXPECT_EQ(csp, std::string(content_security_policy()));
     EXPECT_NE(csp.find("default-src 'none'"), std::string::npos);
@@ -57,6 +57,37 @@ TEST(GuiAssets, EveryAssetIsServedWithCspAndRightType) {
     EXPECT_EQ(serve("GET", "/ui/app.js")->content_type, "text/javascript; charset=utf-8");
     EXPECT_EQ(serve("GET", "/ui/app.css")->content_type, "text/css; charset=utf-8");
     EXPECT_EQ(serve("GET", "/ui/index.html")->content_type, "text/html; charset=utf-8");
+}
+
+TEST(GuiAssets, StudioStructure) {
+    const std::string html = asset_text("index.html");
+    // every section the e2e test and the docs rely on, plus the two planned placeholders
+    for (const char* id : {"tab-chat", "tab-image", "tab-vision", "tab-models", "tab-perf", "tab-settings",
+                           "tab-agent", "tab-train", "panel-agent", "panel-train", "theme-toggle", "mem-bar",
+                           "image-gallery", "image-file", "image-strength", "chat-stop"})
+        EXPECT_NE(html.find(std::string("id=\"") + id + "\""), std::string::npos) << id;
+    EXPECT_NE(html.find("aria-label=\"HCSmedia\""), std::string::npos);  // inline SVG wordmark
+    // Planned tabs are labelled and carry no form controls of their own.
+    const auto a = html.find("id=\"panel-agent\"");
+    const auto t = html.find("id=\"panel-train\"");
+    const auto end = html.find("</main>");
+    ASSERT_NE(a, std::string::npos);
+    ASSERT_NE(t, std::string::npos);
+    ASSERT_NE(end, std::string::npos);
+    const std::string planned = html.substr(a, end - a);
+    EXPECT_NE(planned.find("Planned, not available"), std::string::npos);
+    for (const char* ctl : {"<button", "<input", "<select", "<textarea", "<form"})
+        EXPECT_EQ(planned.find(ctl), std::string::npos) << ctl;
+    // Image Studio is wired to both real routes; tool-call display is present.
+    const std::string js = asset_text("app.js");
+    EXPECT_NE(js.find("/v1/images/edits"), std::string::npos);
+    EXPECT_NE(js.find("tool_calls"), std::string::npos);
+    EXPECT_NE(js.find("/hcs/v1/memory"), std::string::npos);
+    // Colours are tokens with a dark variant, in both the media query and the explicit data-theme form.
+    const std::string css = asset_text("app.css");
+    EXPECT_NE(css.find("[data-theme=\"dark\"]"), std::string::npos);
+    EXPECT_NE(css.find(":root:not([data-theme=\"light\"])"), std::string::npos);
+    EXPECT_NE(css.find("prefers-reduced-motion"), std::string::npos);
 }
 
 TEST(GuiAssets, EmbeddedBytesMatchExpectedMarkers) {

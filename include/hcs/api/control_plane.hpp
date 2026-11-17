@@ -31,7 +31,7 @@
 namespace hcs::api {
 
 struct ChatMessage {
-    std::string role;  // system | user | assistant
+    std::string role;  // system | user | assistant | tool (tool: content is the wrapped tool response)
     std::string content;
     // Encoded images (png/jpeg/gif/bmp) attached to a user message (OpenAI image_url data URIs). V1: at most
     // one image per request, single user turn (optionally preceded by a system message). See validate_chat().
@@ -44,6 +44,9 @@ struct ChatParams {
     std::uint32_t max_tokens = 256;
     float temperature = 0.8f;
     std::optional<std::uint64_t> seed;
+    // Tool calling (OpenAI `tools`): the request is rendered as ChatML by the control plane (the engine's
+    // legacy template path cannot express tools); `tool` role messages are allowed only when set.
+    bool tools = false;
 };
 
 // Text-to-image (`init_image` empty) or img2img/edit (`init_image` set) request. Bounds are
@@ -58,6 +61,7 @@ struct ImageParams {
     std::optional<std::uint64_t> seed;
     float strength = 0.75f;
     float cfg_scale = 0.0f;                // 0 => engine default
+    std::string preset;                    // "" | "fast" | "quality" (replaces steps/cfg, model-family specific)
     std::optional<ImageInput> init_image;  // edit / img2img
 };
 

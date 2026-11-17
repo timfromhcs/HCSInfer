@@ -1,0 +1,100 @@
+PASS  scan registers the model
+PASS  serve prints port and token
+PASS  load request accepted
+PASS  model load job succeeded
+PASS  runtime reports a backend
+PASS  greedy chat -> 200 and answer
+PASS  answer contains the requested phrase
+PASS  greedy decoding is deterministic
+PASS  SSE stream 200 with text
+PASS  stream contains the counting
+PASS  long stream started
+PASS  client disconnect cancels the work and the engine serves again
+PASS  tools: non-stream returns tool_calls
+PASS  tools: get_weather(city=Paris)
+PASS  tools: finish_reason is tool_calls
+PASS  tools: answer after tool result uses it
+PASS  tools: stream carries tool_calls and finish_reason
+PASS  tools: no tag text leaks into streamed content
+single-01    PASS 
+single-02    PASS 
+single-03    PASS 
+single-04    PASS 
+single-05    PASS 
+single-06    PASS 
+single-07    PASS 
+single-08    PASS 
+single-09    PASS 
+single-10    PASS 
+single-11    PASS 
+single-12    PASS 
+select-01    PASS 
+select-02    PASS 
+select-03    PASS 
+select-04    PASS 
+select-05    PASS 
+select-06    PASS 
+typed-01     PASS 
+typed-02     PASS 
+typed-03     PASS 
+typed-04     PASS 
+nocall-01    PASS 
+nocall-02    PASS 
+nocall-03    PASS 
+nocall-04    PASS 
+parallel-01  FAIL expected 2 call(s), got 1
+parallel-02  FAIL expected 2 call(s), got 1
+parallel-03  FAIL expected 2 call(s), got 1
+followup-01  PASS 
+followup-02  PASS 
+followup-03  PASS 
+coding-01    PASS 
+coding-02    PASS 
+coding-03    PASS 
+coding-04    PASS 
+coding-05    PASS 
+coding-06    PASS 
+coding-07    PASS 
+coding-08    PASS 
+{
+  "tasks": 40,
+  "passed": 37,
+  "score": 0.925,
+  "tool_use_score": 0.9062,
+  "coding_score": 1.0,
+  "by_category": {
+    "single": {
+      "passed": 12,
+      "total": 12
+    },
+    "select": {
+      "passed": 6,
+      "total": 6
+    },
+    "typed": {
+      "passed": 4,
+      "total": 4
+    },
+    "nocall": {
+      "passed": 4,
+      "total": 4
+    },
+    "parallel": {
+      "passed": 0,
+      "total": 3
+    },
+    "followup": {
+      "passed": 3,
+      "total": 3
+    },
+    "coding": {
+      "passed": 8,
+      "total": 8
+    }
+  },
+  "tasks_sha256": "9080875e782699913bcf20d0e630b3083a78a8f02b8372464ce4b9cbcebfcf26"
+}
+
+PASS  agentic eval ran
+
+SUMMARY: 19 checks, 0 failed

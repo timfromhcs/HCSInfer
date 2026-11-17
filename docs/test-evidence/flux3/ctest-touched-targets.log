@@ -1,0 +1,30 @@
+== hcs_test_api_image
+
+[----------] Global test environment tear-down
+[==========] 17 tests from 3 test suites ran. (637 ms total)
+[  PASSED  ] 17 tests.
+== hcs_test_mcp_image
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 1 test suite ran. (396 ms total)
+[  PASSED  ] 7 tests.
+== hcs_test_api_http
+
+[----------] Global test environment tear-down
+[==========] 12 tests from 2 test suites ran. (4278 ms total)
+[  PASSED  ] 12 tests.
+== hcs_test_mcp
+
+[----------] Global test environment tear-down
+[==========] 27 tests from 4 test suites ran. (1973 ms total)
+[  PASSED  ] 27 tests.
+== hcs_test_cli
+
+[----------] Global test environment tear-down
+[==========] 13 tests from 1 test suite ran. (186 ms total)
+[  PASSED  ] 13 tests.
+== hcs_test_api
+
+[----------] Global test environment tear-down
+[==========] 49 tests from 8 test suites ran. (743 ms total)
+[  PASSED  ] 49 tests.

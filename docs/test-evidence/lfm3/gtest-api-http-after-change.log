@@ -1,0 +1,36 @@
+Running main() from D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\build\lfm3-unit\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 12 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 9 tests from ApiSocket
+[ RUN      ] ApiSocket.HealthIsReachableWithoutToken
+[       OK ] ApiSocket.HealthIsReachableWithoutToken (18 ms)
+[ RUN      ] ApiSocket.AuthIsEnforcedOverTheWire
+[       OK ] ApiSocket.AuthIsEnforcedOverTheWire (30 ms)
+[ RUN      ] ApiSocket.ForeignOriginRejectedOverTheWire
+[       OK ] ApiSocket.ForeignOriginRejectedOverTheWire (15 ms)
+[ RUN      ] ApiSocket.OversizeBodyRejectedByTransportBeforeReadingIt
+[       OK ] ApiSocket.OversizeBodyRejectedByTransportBeforeReadingIt (15 ms)
+[ RUN      ] ApiSocket.ChatCompletionOverTheWire
+[       OK ] ApiSocket.ChatCompletionOverTheWire (29 ms)
+[ RUN      ] ApiSocket.SseStreamsIncrementallyOverTheWire
+[       OK ] ApiSocket.SseStreamsIncrementallyOverTheWire (270 ms)
+[ RUN      ] ApiSocket.ClientAbortMidStreamCancelsGeneration
+[       OK ] ApiSocket.ClientAbortMidStreamCancelsGeneration (127 ms)
+[ RUN      ] ApiSocket.BindsLoopbackOnlyByDefault
+[       OK ] ApiSocket.BindsLoopbackOnlyByDefault (16 ms)
+[ RUN      ] ApiSocket.ServerStopsCleanly
+[       OK ] ApiSocket.ServerStopsCleanly (313 ms)
+[----------] 9 tests from ApiSocket (839 ms total)
+
+[----------] 3 tests from ApiSocketAudit
+[ RUN      ] ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob
+[       OK ] ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob (222 ms)
+[ RUN      ] ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded
+[       OK ] ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded (2049 ms)
+[ RUN      ] ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout
+[       OK ] ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout (1025 ms)
+[----------] 3 tests from ApiSocketAudit (3297 ms total)
+
+[----------] Global test environment tear-down
+[==========] 12 tests from 2 test suites ran. (4137 ms total)
+[  PASSED  ] 12 tests.

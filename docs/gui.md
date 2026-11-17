@@ -1,4 +1,4 @@
-# HCSInfer local web UI (M4, ADR-009)
+# HCS Studio: the embedded web UI (M4, ADR-009, AGENTS.md 26.5)
 
 Status: **Experimental**. `HCSInfer serve` serves the UI on the same loopback listener as the API: `GET /` and
 `/ui/*` are answered by `ApiHandler::handle()` (hook wired, see "Wiring"), after the Host/Origin checks and before bearer
@@ -7,23 +7,30 @@ auth. Evidence: `docs/test-evidence/M4-gui/` (asset/unit tests, headless-browser
 
 ## What it is
 
-A single-page UI written in vanilla HTML/CSS/JS (no framework, no build step, no CDN, no external fonts). The three
-assets in `src/gui/assets/` are compiled into the binary as C++ byte arrays by `src/gui/embed_assets.cmake` (a CMake
-custom command, so editing an asset rebuilds the generated `.cpp`). The UI is only a client of the public API: it
-calls `/v1/*` and `/hcs/v1/*` with the bearer token, so auth, Host/Origin checks, path guard and limits all apply to it
-exactly as to any other client (AGENTS.md 3.2).
+HCS Studio is a single-page workbench in vanilla HTML/CSS/JS (no framework, no build step, no CDN, no external fonts or
+images). It has its own HCSmedia identity (inline-SVG mark and wordmark, a teal/ink token palette with a dark variant,
+system font stack) and a layout in the spirit of a model workbench: left sidebar navigation, a top bar with connection and
+loaded-model pills and a theme switch, and one work area. No third-party UI assets or code are used. The three assets in
+`src/gui/assets/` are compiled into the binary as C++ byte arrays by `src/gui/embed_assets.cmake` (editing an asset
+rebuilds the generated `.cpp`). The UI is only a client of the public API: it calls `/v1/*` and `/hcs/v1/*` with the
+bearer token, so auth, Host/Origin checks, path guard and limits apply exactly as to any other client (AGENTS.md 3.2).
 
 | Section | Calls | Notes |
 |---|---|---|
-| Chat | `POST /v1/chat/completions` (SSE), `POST /hcs/v1/jobs/{id}/cancel` | streams tokens; Stop = job cancel, then connection drop; first-token time and token count shown; selecting a model that is not loaded makes the server load it first (banner says so) |
-| Vision | same route with an `image_url` data-URI part | one image, PNG/JPEG/GIF/BMP, 32 MiB client check; server body cap (default 1 MiB) still applies and its 413 is explained |
-| Image Studio | `POST /v1/images/generations` | real route (stable-diffusion.cpp). When the build has no image engine the route answers `501` and the banner shows **Unsupported** with the server's reason, never a fake image. Cancel drops the request, which cancels the render server-side (no job id is known to the client until the response arrives) |
-| Models | `GET /hcs/v1/models`, `POST .../{id}/load`, `.../unload`, `GET /hcs/v1/jobs/{id}` | load is the real asynchronous job (polled every 500 ms) with a Cancel button wired to job cancel |
+| Chat | `POST /v1/chat/completions` (SSE), `POST /hcs/v1/jobs/{id}/cancel` | streams tokens; Stop = job cancel, then connection drop; first-token time and token count; selecting a model that is not loaded makes the server load it first (banner says so). Streamed `delta.tool_calls` are shown as expandable blocks (name and arguments); they are displayed only and never executed |
+| Image Studio | `POST /v1/images/generations` (text to image), `POST /v1/images/edits` (image to image) | model, prompt, size, steps with presets (Draft 4, Fast 8, Standard 16, Fine 28), seed (empty = random, always sent so a result is reproducible), strength for image to image, drag-and-drop or file input for the input image, negative prompt and guidance scale in Advanced. Result panel with Save PNG, Use as input image, Copy seed; session gallery (24 images, in memory only). While rendering: elapsed seconds and an indeterminate bar. When the build has no image engine the server answers `501` and the banner shows **Unsupported** with its reason, never a fake image |
+| Vision | same chat route with an `image_url` data-URI part | one image, PNG/JPEG/GIF/BMP, 32 MiB client check; server body cap (default 1 MiB) still applies and its 413 is explained |
+| Models | `GET /hcs/v1/models`, `POST .../{id}/load`, `.../unload`, `GET /hcs/v1/jobs/{id}`, `GET /hcs/v1/memory` | load is the real asynchronous job (polled every 500 ms) with Cancel wired to job cancel. **Memory split** bar: budget entries grouped by category against the budget total, free remainder, and measured available physical memory. Unknown totals stay "unknown". Folders are registered on the server (`HCSInfer models scan <dir>`); there is no scan endpoint yet, so the button is **Refresh list** and the page says so |
 | Performance | `GET /hcs/v1/{runtime,memory,devices}` | auto-refresh (default 3 s, paused while the tab is hidden), plus jobs started from this page |
-| Settings | local only | Simple/Advanced mode, refresh interval, forget token. Server-side settings (model roots, backends) are not editable here |
+| Settings | local only | Simple/Advanced mode, appearance (system/light/dark), refresh interval, forget token. Server-side settings (model roots, backends) are not editable here |
+| Agent, Train | none | **Planned** (labelled in the sidebar and on the page). They show the real roadmap status (AGENTS.md 26.3, 26.4) and contain no controls at all, enforced by a unit test |
 
-Simple mode shows model + message/prompt only. Advanced mode adds system prompt, temperature, max tokens, seed (Chat),
-max tokens/temperature (Vision), steps/seed (Image), each section with a **Reset to defaults** button.
+Simple mode shows model + message/prompt (+ the image fields that are always useful). Advanced mode adds system prompt,
+temperature, max tokens, seed (Chat), max tokens/temperature (Vision), negative prompt and guidance (Image), each section
+with a **Reset to defaults** button.
+
+The step presets only set the step count. The UI makes no LoRA or "fast model" claim: few-step quality needs a
+step-distilled checkpoint (AGENTS.md 26.1) and there is no LoRA control in the image API.
 
 ### States
 
@@ -54,8 +61,12 @@ to every response. The JS uses only `textContent` (no `innerHTML`/`eval`), no in
 
 ### Accessibility / responsive
 
-Skip link, WAI-ARIA tabs with arrow/Home/End keys, labelled controls, `aria-live` banners and log, visible focus ring,
-light/dark via `prefers-color-scheme`, reduced-motion respected, layout works from ~320 px width (tables scroll).
+Skip link, WAI-ARIA vertical tabs with arrow/Home/End keys, labelled controls, `aria-live` banners and log, visible focus
+ring, reduced-motion respected. Colours are tokens on `:root` with a dark set under `prefers-color-scheme` (guarded by
+`:root:not([data-theme="light"])`) and under `[data-theme="dark"]`; the header button and Settings switch between system,
+light and dark (stored in `localStorage` as a convenience, the page works without it). Below 860 px the sidebar becomes a
+slide-over opened by the menu button (Escape or choosing a tab closes it); tables scroll inside their own container and
+the page never scrolls horizontally (checked at 1360, 820 and 390 px by `studio_shots.py`).
 
 ## C++ API
 
@@ -82,21 +93,29 @@ over static storage.
 
 ## Tests
 
-* `tests/unit/gui` (`hcs_test_gui_assets`, 11 tests): CSP present and strict, every asset served with the right type,
-  embedded bytes identical to the source files, no external URLs / inline code / dangerous JS APIs, token from fragment
-  only, traversal and malformed paths rejected, method handling, non-UI paths untouched.
+* `tests/unit/gui` (`hcs_test_gui_assets`): CSP present and strict, every asset served with the right type, embedded bytes
+  identical to the source files, no external URLs / inline code / dangerous JS APIs, token from fragment only, traversal
+  and malformed paths rejected, method handling, non-UI paths untouched, and `StudioStructure` (all eight tabs present,
+  the Agent and Train panels contain no controls, image edits route and tool-call display wired, dark tokens present).
 * `tests/e2e/gui_real/e2e_gui.py`: boots `HCSInfer serve`, checks the UI over HTTP, then a headless Edge/Chrome boot
   check (`--dump-dom`), then python-playwright interaction (load, chat, stop) when available.
-* `tests/e2e/gui_real/ui_proxy_dev.py`: **development harness only**. Serves the assets and proxies everything else to a
-  running `HCSInfer serve`, so the UI can be tried against real inference before the hook is wired.
+* `tests/e2e/gui_real/studio_shots.py`: drives headless Edge over the DevTools protocol (needs the `websockets` package)
+  against a running server: layout checks (no horizontal scroll on any tab at three widths), the Planned tabs, real model
+  load through the Models tab, streamed chat plus Stop, text to image and image to image on a real diffusion model, and a
+  screenshot of every tab at desktop and phone width in light and dark. Output and results: `docs/test-evidence/studio/`.
+* `tests/e2e/gui_real/ui_proxy_dev.py`: **development harness only**. Serves the assets from disk and proxies everything
+  else to a running `HCSInfer serve`, so the UI can be edited and tried without rebuilding.
 
 ## Known limitations
 
-* Image Studio sends `model, prompt, n, size, response_format=b64_json, steps, seed` and reads `data[0].b64_json`, which
-  is exactly what `/v1/images/generations` implements. There is no progress bar (the engine reports none) and image
-  edit is not in the UI (the route and the MCP tool exist). The size menu offers 256/384/512 squares only.
-* No progress percentage for model load (the job API exposes state only), no jobs list endpoint (Performance shows
-  jobs started from this page plus `jobs_pending`).
+* No per-step image progress: the image routes are single blocking requests and the engine reports none, so the UI shows
+  elapsed seconds and an indeterminate bar. Cancel drops the request, which cancels the render server-side. Per-step
+  progress needs a streaming image route (API change, not part of the GUI).
+* No folder scan or settings endpoint: Models can load, unload and refresh, but folders are added with the CLI.
+* No progress percentage for model load (the job API exposes state only), no jobs list endpoint (Performance shows jobs
+  started from this page plus `jobs_pending`).
 * Model `kind` is reported as `text` for vision models today, so the Vision selector lists text models too; the server
   answers 501 for a model without projector. Projector files (`mmproj*`) are hidden from the selectors.
-* Chat history is kept in the page only (lost on reload); multi-turn uses the server's ChatML rendering.
+* Chat history and the image gallery are kept in the page only (lost on reload). Tool calls are displayed, not executed.
+* Image sizes offered: 256/384/512/640/768 squares, 512x768 and 768x512, and "match input image" for image to image; the
+  server's pixel budget decides what is accepted and its error is shown.

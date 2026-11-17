@@ -1,0 +1,56 @@
+Running main() from D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\build\lfm3-unit\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 19 tests from 4 test suites.
+[----------] Global test environment set-up.
+[----------] 7 tests from ChatToolsRequest
+[ RUN      ] ChatToolsRequest.NoToolsIsOff
+[       OK ] ChatToolsRequest.NoToolsIsOff (0 ms)
+[ RUN      ] ChatToolsRequest.ParsesToolsAndDefaultsToAuto
+[       OK ] ChatToolsRequest.ParsesToolsAndDefaultsToAuto (0 ms)
+[ RUN      ] ChatToolsRequest.ToolChoiceNoneAndAuto
+[       OK ] ChatToolsRequest.ToolChoiceNoneAndAuto (0 ms)
+[ RUN      ] ChatToolsRequest.RequiredAndNamedChoiceAreUnsupported
+[       OK ] ChatToolsRequest.RequiredAndNamedChoiceAreUnsupported (0 ms)
+[ RUN      ] ChatToolsRequest.LegacyFunctionsAreUnsupported
+[       OK ] ChatToolsRequest.LegacyFunctionsAreUnsupported (0 ms)
+[ RUN      ] ChatToolsRequest.RejectsMalformedDefinitions
+[       OK ] ChatToolsRequest.RejectsMalformedDefinitions (0 ms)
+[ RUN      ] ChatToolsRequest.RejectsTooManyAndTooLarge
+[       OK ] ChatToolsRequest.RejectsTooManyAndTooLarge (0 ms)
+[----------] 7 tests from ChatToolsRequest (1 ms total)
+
+[----------] 4 tests from ChatToolsRender
+[ RUN      ] ChatToolsRender.ToolsBlockUsesPythonJsonLayout
+[       OK ] ChatToolsRender.ToolsBlockUsesPythonJsonLayout (0 ms)
+[ RUN      ] ChatToolsRender.AssistantToolCallsAreXml
+[       OK ] ChatToolsRender.AssistantToolCallsAreXml (0 ms)
+[ RUN      ] ChatToolsRender.RejectsBadAssistantToolCalls
+[       OK ] ChatToolsRender.RejectsBadAssistantToolCalls (0 ms)
+[ RUN      ] ChatToolsRender.ToolResponseWrapsOnce
+[       OK ] ChatToolsRender.ToolResponseWrapsOnce (0 ms)
+[----------] 4 tests from ChatToolsRender (0 ms total)
+
+[----------] 5 tests from ChatToolsParse
+[ RUN      ] ChatToolsParse.PlainTextHasNoCalls
+[       OK ] ChatToolsParse.PlainTextHasNoCalls (0 ms)
+[ RUN      ] ChatToolsParse.XmlCallIsTypedBySchema
+[       OK ] ChatToolsParse.XmlCallIsTypedBySchema (0 ms)
+[ RUN      ] ChatToolsParse.MultipleCallsAndHermesJson
+[       OK ] ChatToolsParse.MultipleCallsAndHermesJson (0 ms)
+[ RUN      ] ChatToolsParse.UnparseableBlockStaysVisible
+[       OK ] ChatToolsParse.UnparseableBlockStaysVisible (0 ms)
+[ RUN      ] ChatToolsParse.TruncatedBlockWithoutFunctionEndIsKeptAsText
+[       OK ] ChatToolsParse.TruncatedBlockWithoutFunctionEndIsKeptAsText (0 ms)
+[----------] 5 tests from ChatToolsParse (0 ms total)
+
+[----------] 3 tests from ChatToolsStream
+[ RUN      ] ChatToolsStream.PlainTextStreamsWithoutLoss
+[       OK ] ChatToolsStream.PlainTextStreamsWithoutLoss (0 ms)
+[ RUN      ] ChatToolsStream.HoldsBackTagPrefixAndParsesCall
+[       OK ] ChatToolsStream.HoldsBackTagPrefixAndParsesCall (0 ms)
+[ RUN      ] ChatToolsStream.UnusableCallRegionIsReturnedAsContent
+[       OK ] ChatToolsStream.UnusableCallRegionIsReturnedAsContent (0 ms)
+[----------] 3 tests from ChatToolsStream (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 4 test suites ran. (1 ms total)
+[  PASSED  ] 19 tests.

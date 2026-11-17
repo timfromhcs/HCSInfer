@@ -20,6 +20,7 @@ struct ImageResult {
     std::uint32_t height = 0;
     std::uint32_t steps = 0;
     double generation_ms = 0.0;
+    std::string preset;  // preset that was applied ("" = none); `steps` is the effective count
 };
 
 class IImageStreamEngine : public IImageEngine {

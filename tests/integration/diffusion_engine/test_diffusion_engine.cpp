@@ -6,6 +6,8 @@
 #include <atomic>
 #include <chrono>
 #include <cstdlib>
+#include <filesystem>
+#include <fstream>
 #include <string>
 #include <thread>
 
@@ -144,5 +146,148 @@ TEST(DiffusionBlocking, NotLoadedIsAnErrorNotACrash) {
     DiffusionImageEngine engine(queue);
     auto r = engine.generate_image(small_request(), CancellationToken{});
     EXPECT_FALSE(r);
+    queue.shutdown();
+}
+
+// ---------------------------------------------------------------------------------------------
+// FLUX.3 Klein multi-file loading and presets (AGENTS.md 17.2). The structural tests below need no model.
+// ---------------------------------------------------------------------------------------------
+namespace {
+
+struct TempDir {
+    std::filesystem::path dir;
+    TempDir() {
+        dir = std::filesystem::temp_directory_path() / ("hcs-diff-test-" + std::to_string(std::rand()));
+        std::filesystem::create_directories(dir);
+    }
+    ~TempDir() {
+        std::error_code ec;
+        std::filesystem::remove_all(dir, ec);
+    }
+    std::string write(const std::string& name, const std::string& text) const {
+        const auto p = dir / name;
+        std::ofstream(p, std::ios::binary) << text;
+        return p.string();
+    }
+};
+
+}  // namespace
+
+TEST(DiffusionComponents, SidecarWithParentTraversalIsRejected) {
+    TempDir t;
+    const std::string model = t.write("m.gguf", "x");
+    t.write("m.components.json", R"({"llm": "../outside.gguf"})");
+    JobQueue queue;
+    DiffusionImageEngine engine(queue);
+    LoadRequest lr;
+    lr.model_path = model;
+    lr.backend = Backend::Cpu;
+    auto r = engine.load(lr);
+    ASSERT_FALSE(r);
+    EXPECT_EQ(r.error().code, ErrorCode::SecurityViolation) << r.error().message;
+    queue.shutdown();
+}
+
+TEST(DiffusionComponents, SidecarWithAbsolutePathIsRejected) {
+    TempDir t;
+    const std::string model = t.write("m.gguf", "x");
+    t.write("m.components.json", R"({"vae": "C:/Windows/notepad.exe"})");
+    JobQueue queue;
+    DiffusionImageEngine engine(queue);
+    LoadRequest lr;
+    lr.model_path = model;
+    lr.backend = Backend::Cpu;
+    auto r = engine.load(lr);
+    ASSERT_FALSE(r);
+    EXPECT_EQ(r.error().code, ErrorCode::SecurityViolation) << r.error().message;
+    queue.shutdown();
+}
+
+TEST(DiffusionComponents, SidecarWithMissingFileIsNotFound) {
+    TempDir t;
+    const std::string model = t.write("m.gguf", "x");
+    t.write("m.components.json", R"({"llm": "absent.gguf"})");
+    JobQueue queue;
+    DiffusionImageEngine engine(queue);
+    LoadRequest lr;
+    lr.model_path = model;
+    lr.backend = Backend::Cpu;
+    auto r = engine.load(lr);
+    ASSERT_FALSE(r);
+    EXPECT_EQ(r.error().code, ErrorCode::NotFound) << r.error().message;
+    queue.shutdown();
+}
+
+TEST(DiffusionComponents, MalformedSidecarIsInvalidArgument) {
+    TempDir t;
+    const std::string model = t.write("m.gguf", "x");
+    t.write("m.components.json", "{not json");
+    JobQueue queue;
+    DiffusionImageEngine engine(queue);
+    LoadRequest lr;
+    lr.model_path = model;
+    lr.backend = Backend::Cpu;
+    auto r = engine.load(lr);
+    ASSERT_FALSE(r);
+    EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument) << r.error().message;
+    queue.shutdown();
+}
+
+TEST(DiffusionComponents, UnknownParamsBackendIsInvalidArgument) {
+    TempDir t;
+    const std::string model = t.write("m.gguf", "x");
+    JobQueue queue;
+    DiffusionImageEngine engine(queue);
+    LoadRequest lr;
+    lr.model_path = model;
+    lr.backend = Backend::Cpu;
+    lr.params_backend = "vulkan0";
+    auto r = engine.load(lr);
+    ASSERT_FALSE(r);
+    EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument) << r.error().message;
+    queue.shutdown();
+}
+
+TEST(DiffusionPreset, UnknownPresetNameIsRejectedEvenWithoutAModel) {
+    JobQueue queue;
+    DiffusionImageEngine engine(queue);
+    ImageRequest q = small_request();
+    q.preset = "turbo";
+    auto r = engine.generate_image(q, CancellationToken{});
+    ASSERT_FALSE(r);
+    EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument) << r.error().message;
+    queue.shutdown();
+}
+
+// SD1.5 has no measured preset table: asking for one must fail loudly, never fall back to the request's steps.
+TEST(DiffusionPreset, PresetWithoutAFamilyTableIsAnErrorOnSd15) {
+    REQUIRE_MODEL_OR_SKIP(path);
+    Loaded m(path);
+    ImageRequest q = small_request();
+    q.preset = "fast";
+    auto r = m.engine.generate_image(q, CancellationToken{});
+    ASSERT_FALSE(r);
+    EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument) << r.error().message;
+}
+
+// Real FLUX.3 Klein (diffusion GGUF + sidecar to the Qwen3-VL encoder and VAE). NOT RUN without the files.
+TEST(DiffusionPreset, Flux3PresetsReplaceStepsAndReportThem) {
+    const std::string path = env("HCS_TEST_FLUX3_MODEL");
+    if (path.empty())
+        GTEST_SKIP() << "NOT RUN: HCS_TEST_FLUX3_MODEL is not set (needs the FLUX.3 Klein GGUF + components)";
+    JobQueue queue;
+    DiffusionImageEngine engine(queue);
+    LoadRequest lr;
+    lr.model_path = path;
+    lr.backend = Backend::Cpu;
+    ASSERT_TRUE(engine.load(lr));
+    ImageRequest q = small_request();
+    q.steps = 2;
+    q.preset = "quality";
+    auto r = engine.generate_image(q, CancellationToken{});
+    ASSERT_TRUE(r) << r.error().message;
+    EXPECT_EQ(r.value().steps, 16u);
+    EXPECT_EQ(r.value().preset, "quality");
+    (void)engine.unload();
     queue.shutdown();
 }

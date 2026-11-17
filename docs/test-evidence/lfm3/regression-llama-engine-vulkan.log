@@ -1,0 +1,56 @@
+Running main() from D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\build\lfm3-vk\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 16 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 6 tests from LlamaEngineErrors
+[ RUN      ] LlamaEngineErrors.GenerateBeforeLoadIsInvalidState
+[       OK ] LlamaEngineErrors.GenerateBeforeLoadIsInvalidState (0 ms)
+[ RUN      ] LlamaEngineErrors.MissingFileIsNotFound
+[       OK ] LlamaEngineErrors.MissingFileIsNotFound (118 ms)
+[ RUN      ] LlamaEngineErrors.NonGgufIsModelError
+[       OK ] LlamaEngineErrors.NonGgufIsModelError (2 ms)
+[ RUN      ] LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable
+[       OK ] LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable (3 ms)
+[ RUN      ] LlamaEngineErrors.BadArguments
+[       OK ] LlamaEngineErrors.BadArguments (0 ms)
+[ RUN      ] LlamaEngineErrors.VisionRequestValidation
+[       OK ] LlamaEngineErrors.VisionRequestValidation (0 ms)
+[----------] 6 tests from LlamaEngineErrors (126 ms total)
+
+[----------] 10 tests from LlamaEngineReal
+[ RUN      ] LlamaEngineReal.CpuGeneration
+[evidence] {"test":"CpuGeneration","backend":"cpu","device":"CPU","offloaded_layers":0,"total_layers":28,"load_ms":493.355900,"ttft_ms":74.550300,"prompt_tokens":20,"prompt_tps":299.114621,"decode_tokens":47,"decode_tps":73.023627,"output_chars":212}
+[output] <think>
+Okay, the user wants me to reply with exactly "HCSInfer smoke test passed." So first, I need to make sure that the response is exactly that string. Let me check the original query again. The user provided
+[       OK ] LlamaEngineReal.CpuGeneration (1326 ms)
+[ RUN      ] LlamaEngineReal.VulkanGeneration
+[backend-identity] device=AMD Radeon(TM) Graphics (Vulkan0) offloaded=29/28
+[evidence] {"test":"VulkanGeneration","backend":"vulkan","device":"AMD Radeon(TM) Graphics (Vulkan0)","offloaded_layers":29,"total_layers":28,"load_ms":473.699800,"ttft_ms":2452.273100,"prompt_tokens":20,"prompt_tps":8.236708,"decode_tokens":47,"decode_tps":68.617656,"output_chars":205}
+[output] <think>
+Okay, the user wants me to reply with exactly "HCSInfer smoke test passed." So first, I need to make sure that's the exact phrase they want. Let me check the original query again. The user provided
+[       OK ] LlamaEngineReal.VulkanGeneration (3673 ms)
+[ RUN      ] LlamaEngineReal.GreedyIsDeterministicOnCpu
+[       OK ] LlamaEngineReal.GreedyIsDeterministicOnCpu (1325 ms)
+[ RUN      ] LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly
+[       OK ] LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly (661 ms)
+[ RUN      ] LlamaEngineReal.CancellationMidGenerationCpu
+[evidence] {"test":"CancelCpu","chunks_at_cancel":5,"chunks_final":5,"stop_latency_ms":0.227500}
+[       OK ] LlamaEngineReal.CancellationMidGenerationCpu (928 ms)
+[ RUN      ] LlamaEngineReal.CancellationMidGenerationVulkan
+[evidence] {"test":"CancelVulkan","chunks_at_cancel":5,"chunks_final":6,"stop_latency_ms":3.393700}
+[       OK ] LlamaEngineReal.CancellationMidGenerationVulkan (626 ms)
+[ RUN      ] LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth
+[evidence] {"test":"Cycle10Cpu","cycles":10,"private_bytes_after_each_unload":[323260416,319864832,320737280,324882432,188948480,188182528,187920384,188030976,99651584,100139008],"working_set_after_each_unload":[217145344,216014848,216350720,217481216,217808896,217702400,217534464,218116096,130576384,130727936],"private_growth_after_cycle3":-220598272,"working_set_growth_after_cycle3":-85622784}
+[       OK ] LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth (6800 ms)
+[ RUN      ] LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth
+[evidence] {"test":"Cycle10Vulkan","cycles":10,"private_bytes_after_each_unload":[323067904,319471616,324222976,353456128,320827392,323112960,323678208,323436544,354103296,322424832],"working_set_after_each_unload":[217350144,216141824,218161152,246693888,216981504,218206208,218320896,218497024,246185984,218087424],"private_growth_after_cycle3":-1798144,"working_set_growth_after_cycle3":-73728}
+[       OK ] LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth (5193 ms)
+[ RUN      ] LlamaEngineReal.ModelSwitchBetweenBackendsAndModels
+[evidence] {"test":"ModelSwitch","auto_backend":"vulkan","second_model_distinct":false}
+[       OK ] LlamaEngineReal.ModelSwitchBetweenBackendsAndModels (1734 ms)
+[ RUN      ] LlamaEngineReal.LoadModesAreAccepted
+[       OK ] LlamaEngineReal.LoadModesAreAccepted (1261 ms)
+[----------] 10 tests from LlamaEngineReal (23532 ms total)
+
+[----------] Global test environment tear-down
+[==========] 16 tests from 2 test suites ran. (23658 ms total)
+[  PASSED  ] 16 tests.

@@ -270,9 +270,15 @@ TEST(ApiValidation, WrongContentTypeIs415) {
 
 TEST(ApiValidation, UnsupportedFeaturesAre501NotSilentlyIgnored) {
     Api a;
+    // Tool calling is implemented (tests/contract/api_chat_tools); what is not: a forced tool_choice and the
+    // legacy `functions` field - both must be a 501, never silently ignored.
     json b = a.chat_body();
-    b["tools"] = json::array();
+    b["tools"] = json::array({json{{"type", "function"}, {"function", {{"name", "f"}}}}});
+    b["tool_choice"] = "required";
     EXPECT_EQ(a.call("POST", "/v1/chat/completions", b.dump()).status, 501);
+    json f = a.chat_body();
+    f["functions"] = json::array();
+    EXPECT_EQ(a.call("POST", "/v1/chat/completions", f.dump()).status, 501);
     // Image input is implemented (tests/contract/api_vision); the OpenAI "input_image" shape is not, and
     // a data URI that is not a real image is a 400, never a silent ignore.
     json c = a.chat_body();
