@@ -10,6 +10,10 @@ Date: 2026-11-17. Machine: Windows 11 (26200), Ryzen 7 7735HS, Radeon 680M. Buil
 (`../M10-fixes/ctest-full-400-green.txt`). The run is `tests/e2e/gui_real/e2e_gui.py` against
 `build/img-api/bin/HCSInfer.exe`; its JSON is `e2e-gui.json`: **23 checks, 0 failed, 1 NOT RUN**.
 
+The same script against the **Vulkan build** (`build/windows-msvc-release-vulkan/bin/HCSInfer.exe`) is
+`vulkan-e2e-gui.json`: **22 checks, 0 failed, 1 NOT RUN** - 22 rather than 23 because the "Models table lists
+registered models" check only runs when a model is registered, and that run passed no model.
+
 Phase 1 (UI over HTTP, real socket): `GET /` -> 200 `text/html`; strict CSP (`default-src 'none'`,
 `script-src 'self'`, no `unsafe-inline`); `X-Frame-Options: DENY` + `Referrer-Policy: no-referrer`;
 `/ui/app.js` and `/ui/app.css` served with the right content type and their own CSP; the page and both assets carry
@@ -44,9 +48,8 @@ reaches the real route).
 
 * Phase 3 (python-`playwright` interaction: click Load, chat, press Stop, check Image Studio): **NOT RUN**, python
   `playwright` is not installed on this machine (the script reports it as a NOT RUN check, never a pass).
-* GUI on a Vulkan build (all UI runs here are CPU-only).
 * Vulkan-failed-but-UI-starts is covered by code review only (the page is static and the API 501/503 states are
   rendered); not run against a real Vulkan failure.
 * Image generation through the UI (Image Studio) with a real diffusion model in the UI itself; the route is proven in
-  `../M3-image` but the UI was not driven through it here.
+  `../M3-image` (CPU and Vulkan) but the UI was not driven through it here.
 * Narrow/wide browser matrix, light theme, and OOM state against a real out-of-memory.

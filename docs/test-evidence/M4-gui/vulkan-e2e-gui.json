@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "check": "GET / without token -> 200 html",
+      "status": "PASS",
+      "detail": "(200, 'text/html; charset=utf-8')"
+    },
+    {
+      "check": "CSP present and strict",
+      "status": "PASS",
+      "detail": "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; font-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    },
+    {
+      "check": "framing and referrer hardened",
+      "status": "PASS",
+      "detail": "{'content-security-policy': \"default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; font-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'\", 'x-frame-options': 'DENY', 'permissions-policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=()', "
+    },
+    {
+      "check": "index has no token embedded",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "/ui/app.js served (javascript)",
+      "status": "PASS",
+      "detail": "(200, 'text/javascript; charset=utf-8', 28065)"
+    },
+    {
+      "check": "/ui/app.js carries CSP",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "/ui/app.css served (text/css)",
+      "status": "PASS",
+      "detail": "(200, 'text/css; charset=utf-8', 4979)"
+    },
+    {
+      "check": "/ui/app.css carries CSP",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "traversal rejected: /ui/../x",
+      "status": "PASS",
+      "detail": "400"
+    },
+    {
+      "check": "traversal rejected: /ui/..%2f..%2fwindows",
+      "status": "PASS",
+      "detail": "400"
+    },
+    {
+      "check": "traversal rejected: /ui/%2e%2e/x",
+      "status": "PASS",
+      "detail": "400"
+    },
+    {
+      "check": "traversal rejected: /ui/a/b",
+      "status": "PASS",
+      "detail": "400"
+    },
+    {
+      "check": "traversal rejected: /ui/.env",
+      "status": "PASS",
+      "detail": "400"
+    },
+    {
+      "check": "POST / -> 405",
+      "status": "PASS",
+      "detail": "405"
+    },
+    {
+      "check": "API still requires the token",
+      "status": "PASS",
+      "detail": "401"
+    },
+    {
+      "check": "UI refuses foreign Host (DNS rebinding)",
+      "status": "PASS",
+      "detail": "403"
+    },
+    {
+      "check": "UI refuses foreign Origin",
+      "status": "PASS",
+      "detail": "403"
+    },
+    {
+      "check": "API works with token (UI's own call)",
+      "status": "PASS",
+      "detail": "200"
+    },
+    {
+      "check": "browser rendered the UI",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "UI connected to the API using the fragment token",
+      "status": "PASS",
+      "detail": "connected"
+    },
+    {
+      "check": "token not left in DOM",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "browser interaction (load / chat / stop / image state)",
+      "status": "NOT RUN",
+      "detail": "python playwright is not installed (ModuleNotFoundError)"
+    }
+  ],
+  "not_run": [
+    "browser interaction (load / chat / stop / image state)"
+  ],
+  "result_status": "PASS"
+}

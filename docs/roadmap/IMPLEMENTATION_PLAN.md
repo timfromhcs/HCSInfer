@@ -85,7 +85,8 @@ Next: push to a remote (CI has never run), then M5 Model Vault in the engine loa
 ## M5 Model Vault v1
 - [~] Approved root + path guard + header/size validation exist; full-file hash validation exists in `hcs_storage` (sha256), not in the registry scan
 - [~] Async sequential bounded reads implemented and tested in `src/storage`; engines do not load through it yet
-- [ ] Load modes from upstream capabilities (mmap/mlock/direct I/O) benchmarked, B4/B8 cold vs warm
+- [x] Load modes from upstream capabilities (mmap/mlock/mmap+mlock/none/direct_io) benchmarked on the real HDD model with peak RAM/commit - `docs/test-evidence/M5-loadmodes/`; `--load-mode` exposed by `benchmark` and `vision` as well
+- [ ] Stage B: bounded async read pipeline feeding the engine, cold vs warm on a storage-bound model (B4/B8) - BLOCKED on this machine (no model larger than RAM, no admin rights to flush the file cache)
 - [~] No HCS-owned decompressed SSD cache (design + code have none; ADR-005); USB-disconnect test NOT RUN
 - [x] Page-file caveat documented (`docs/model-vault.md`)
 

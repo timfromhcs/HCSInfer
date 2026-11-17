@@ -23,7 +23,7 @@ path, the single-file EXE, `tune`/`cache` and Streamable HTTP are not implemente
 | Model registry, lifecycle, job queue, cancellation, memory-budget arithmetic, approved-root path guard | Implemented | |
 | HTTP API: `/v1/models`, `/v1/chat/completions` (streaming), `/hcs/v1/*` | Experimental | loopback by default, bearer token, size limits; `docs/api.md` |
 | HTTP API: image input on chat (`image_url` data URIs, streaming, cancellation) | Experimental | needs a model + its mmproj in one folder; `docs/api.md` |
-| HTTP API: `/v1/images/generations`, `/v1/images/edits` | Experimental | real stable-diffusion.cpp render; `b64_json` only, no `url`/`mask` (`501`); JSON body only (`multipart` -> `415`); `docs/api.md` |
+| HTTP API: `/v1/images/generations`, `/v1/images/edits` | Experimental | real stable-diffusion.cpp render on CPU **and Vulkan** (47/47 checks on both builds); `b64_json` only, no `url`/`mask` (`501`); JSON body only (`multipart` -> `415`); `docs/api.md` |
 | HTTP API: `POST /hcs/v1/benchmarks` | Planned | return `501` today |
 | MCP stdio: models, chat, runtime, jobs tools | Experimental | `docs/mcp.md` |
 | MCP: `hcs.vision.analyze` | Experimental | real VLM, path guarded; `docs/mcp.md` |
@@ -66,6 +66,7 @@ $exe = '.\build\windows-msvc-release\bin\HCSInfer.exe'
 & $exe serve --model-root E:\models                                   # 127.0.0.1:8765, token printed on stderr
                                                                     # open the printed web UI URL, or use the API
 & $exe benchmark --suite quick --model E:\models\model.gguf --backend cpu --export bench.json
+& $exe benchmark --suite quick --model E:\models\model.gguf --backend cpu --load-mode auto   # or none|mmap|mlock|mmap+mlock|direct_io
 & $exe mcp stdio --model-root E:\models
 ```
 

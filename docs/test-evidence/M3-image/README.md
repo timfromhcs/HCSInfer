@@ -1,9 +1,18 @@
 # M3 image routes (HTTP + MCP) - real-model evidence
 
-Date: 2026-11-17. Machine: Windows 11 (26200), Ryzen 7 7735HS, Radeon 680M. Build: `build/img-api`, Release,
-**CPU-only** (`HCS_ENABLE_VULKAN=OFF`), MSVC 19.44 x64, Ninja, `/W4 /WX` on HCS targets, llama.cpp **and**
-stable-diffusion.cpp adapters linked (one GGUF each), embedded web UI (`HCS_HAVE_GUI`) enabled.
-Vulkan image paths are NOT RUN in this evidence set (see `docs/test-evidence/M2/image` for the earlier Vulkan runs).
+Date: 2026-11-17. Machine: Windows 11 (26200), Ryzen 7 7735HS, Radeon 680M. Builds: `build/img-api` (Release,
+**CPU-only**, `HCS_ENABLE_VULKAN=OFF`) and `build/windows-msvc-release-vulkan` (Release, `HCS_ENABLE_VULKAN=ON`), both
+MSVC 19.44 x64, Ninja, `/W4 /WX` on HCS targets, llama.cpp **and** stable-diffusion.cpp adapters linked (one GGUF
+each), embedded web UI (`HCS_HAVE_GUI`) enabled.
+
+## Vulkan run (same test, `windows-msvc-release-vulkan` binary)
+
+`vulkan-e2e-image.json` + `vulkan-e2e-image.log`: **47 checks, 0 failed**, the identical script against the Vulkan
+build. The renders therefore went through the Radeon 680M (`vulkan-doctor.json`, taken from that binary, reports
+Vulkan API 1.4.315, `AMD Radeon(TM) Graphics`, driver `26.6.1 (AMD proprietary shader compiler)`; the control plane
+resolves `Backend::Auto` to the GPU when one is visible). The four produced images are kept with a `vulkan-` prefix -
+they differ byte-wise from the CPU ones (expected: a different backend computes in a different order), which is why
+neither set is used as a numerical reference for the other.
 
 Real models used:
 
@@ -70,7 +79,7 @@ MCP phase (real `HCSInfer mcp stdio` child process, scripted JSON-RPC client):
 
 ## NOT RUN / limitations
 
-* Vulkan image paths in this evidence set (CPU-only build here); the Vulkan CLI runs are in `../M2/image`.
 * Only SD1.5 Q8_0 was exercised; other diffusion families (Flux/DiT/Qwen-Image) and FP8/INT8 paths are untested.
 * One image size (256x256) and 2 steps: this is a correctness/route smoke test, not a performance benchmark.
 * The image e2e takes ~86 s wall on this machine (a real 2-step render, plus the deliberately abandoned long render).
+* Run on one machine only (Ryzen 7 7735HS + Radeon 680M); no other GPU or driver.
