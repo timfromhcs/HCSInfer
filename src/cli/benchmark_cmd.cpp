@@ -65,6 +65,13 @@ const char* benchmark_help() {
            "planned\n"
            "  --model <path-or-id>   GGUF file path or model id from `models scan` (required)\n"
            "  --backend <b>          auto (default) | cpu | vulkan (no silent fallback when explicit)\n"
+           "  --load-mode <m>        auto (default) | none | mmap | mlock | mmap+mlock | direct_io\n"
+           "                         Weight-loading mode of the engine (AGENTS.md 11.2 Stage A). 'none' "
+           "reads the\n"
+           "                         weights into RAM, 'mmap' maps the file, 'mlock'/'mmap+mlock' lock pages "
+           "in RAM,\n"
+           "                         'direct_io' bypasses the OS file cache. Recorded in the JSON as "
+           "\"load_mode\".\n"
            "  --device <name>        GPU device substring\n"
            "  --ctx <n>              Context tokens (default 4096)\n"
            "  --max-tokens <n>       New tokens per generation (default 64, 1..4096)\n"
@@ -251,12 +258,13 @@ int run_benchmark(std::vector<std::string> args, const std::string& state_overri
         out << benchmark_help();
         return 0;
     }
-    std::string suite, model, backend = "auto", device, v_ctx, v_max, v_warm, v_iter, v_thr, v_seed,
-                              export_path;
+    std::string suite, model, backend = "auto", device, load_mode, v_ctx, v_max, v_warm, v_iter, v_thr,
+                              v_seed, export_path;
     bool bad = false;
     take_value(args, "--suite", suite, bad);
     take_value(args, "--model", model, bad);
     take_value(args, "--backend", backend, bad);
+    take_value(args, "--load-mode", load_mode, bad);
     take_value(args, "--device", device, bad);
     take_value(args, "--ctx", v_ctx, bad);
     take_value(args, "--max-tokens", v_max, bad);
@@ -338,6 +346,7 @@ int run_benchmark(std::vector<std::string> args, const std::string& state_overri
     else
         return fail(err, ErrorCode::InvalidArgument, "--backend must be auto, cpu or vulkan");
     lr.device = device;
+    lr.load_mode = load_mode;  // "" => engine default; the engine validates the value
     if (!export_path.empty()) {
         std::error_code ec;
         if (fs::exists(export_path, ec) && !force)
@@ -550,6 +559,7 @@ int run_benchmark(std::vector<std::string> args, const std::string& state_overri
         }
         j["context_tokens"] = lr.context_tokens;
         j["backend"] = backend_name;
+        j["load_mode"] = lr.load_mode.empty() ? "auto" : lr.load_mode;
         j["device"] = after_load.device;
         j["offloaded_layers"] = after_load.offloaded_layers;
         j["total_layers"] = after_load.total_layers;

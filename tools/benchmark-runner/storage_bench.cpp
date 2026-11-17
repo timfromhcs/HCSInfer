@@ -66,11 +66,12 @@ std::string cpu_brand() {
 #if defined(_WIN32) && (defined(_M_X64) || defined(_M_IX86))
     int r[4];
     char b[49] = {};
-    __cpuid(r, 0x80000000);
+    // __cpuid takes an int leaf; the extended leaves are >= 0x80000000, so the conversion is spelled out.
+    __cpuid(r, static_cast<int>(0x80000000u));
     if (static_cast<unsigned>(r[0]) < 0x80000004u)
         return "unknown";
-    for (int i = 0; i < 3; ++i) {
-        __cpuid(r, 0x80000002 + i);
+    for (std::size_t i = 0; i < 3; ++i) {
+        __cpuid(r, static_cast<int>(0x80000002u + static_cast<unsigned>(i)));
         std::memcpy(b + 16 * i, r, 16);
     }
     std::string s(b);

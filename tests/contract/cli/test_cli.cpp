@@ -86,6 +86,18 @@ TEST(Cli, BenchmarkHelpAndArgumentValidationBeforeLoadingAnything) {
     EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", "x", "--iterations", "0"}).code, 2);
     EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", "x", "--backend", "gpu"}).code, 2);
     EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model"}).code, 2);
+    EXPECT_TRUE(contains(run({"benchmark", "--help"}).out, "--load-mode"));
+    EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", "x", "--load-mode", "bogus"}).code,
+              7);  // no such file
+    {
+        // An existing file whose load mode is invalid: the engine rejects the mode before touching the file,
+        // so this is a deterministic InvalidArgument (exit 2) and never a "not a GGUF" model error.
+        TempDir dir;
+        const auto f = dir / "not-a-model.gguf";
+        hcs::test::write_file(f, "not a gguf");
+        EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", f.string(), "--load-mode", "bogus"}).code,
+                  2);
+    }
     const auto missing = run({"benchmark", "--suite", "quick", "--model", "does-not-exist"});
     EXPECT_TRUE(missing.code == 7 || missing.code == 10) << missing.code;  // not_found / no engine
 }

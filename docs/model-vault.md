@@ -146,6 +146,30 @@ benchmark was ~0.99 GB (includes the benchmark's own 0.46 GB destination buffer)
 and 128 MiB (compressed) for 4 slots of 16 MiB chunks. The format therefore stays experimental and off by default; it
 may pay off for less-quantized (F16/BF16) models, which were not measured here (NOT RUN).
 
+## Measured results: upstream load modes (AGENTS.md 11.2 Stage A)
+
+Before building an HCS-owned loading pipeline, the modes the pinned llama.cpp already offers were measured on the real
+model from the USB drive (`HCSInfer benchmark --suite quick --load-mode <m>`, raw JSONs and the full caveat list in
+`docs/test-evidence/M5-loadmodes/`):
+
+| mode | cold load ms | warm load ms | warm decode t/s | peak working set MB | peak commit MB |
+|---|---|---|---|---|---|
+| `auto` (= mmap here) | 630 | 664 | 60.8 | 1106 | 1096 |
+| `mmap` | 674 | 651 | 60.2 | 1106 | 1096 |
+| `none` (read into RAM) | 768 | 655 | 59.7 | 984 | 1347 |
+| `mlock` | 759 | 836 | 59.8 | 984 | 1347 |
+| `mmap+mlock` | 900 | 871 | 59.3 | 1170 | 1097 |
+| `direct_io` | **9538** | **9092** | 58.8 | 985 | 1348 |
+
+Conclusions that the data supports: all six modes work; `direct_io` really bypasses the OS file cache and therefore
+costs ~14x the load time on this drive (9.5 s vs 0.63 s, consistent with the 65 MiB/s raw device speed);
+mmap-backed weights commit ~250 MB less than read-into-RAM modes; while the 0.48 GB model fits in RAM there is no
+throughput difference to be found. The file cache was not controlled, so the load-time column is not a cold-cache
+comparison except for `direct_io`. Stage B of the vault - a bounded asynchronous pipeline feeding the engine - is
+**BLOCKED** on this machine: it needs a model that does not fit in RAM and/or an administrator-assisted cache flush to
+produce a meaningful measurement (see the evidence README). `--load-mode` is exposed by `chat`, `image`, `vision` and
+`benchmark`.
+
 ## Fuzzing
 
 - Always on: `tests/parser-fuzz/storage/test_mutation_fuzz.cpp` (deterministic mutation smoke test, label `parser`).

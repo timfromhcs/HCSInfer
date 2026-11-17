@@ -42,6 +42,7 @@ const char* vision_help() {
            "  --system <text>        System prompt\n"
            "  --backend <b>          auto (default) | cpu | vulkan (no silent fallback when explicit)\n"
            "  --device <name>        GPU device name/description substring\n"
+           "  --load-mode <m>        auto|none|mmap|mlock|mmap+mlock|direct_io (engine weight-loading mode)\n"
            "  --gpu-layers <n>       Layers to offload (default: all when using a GPU)\n"
            "  --ctx <n>              Context tokens (default 4096)\n"
            "  --max-tokens <n>       Max generated tokens (default 256)\n"
@@ -169,7 +170,7 @@ int run_vision(std::vector<std::string> args, const std::string& state_override,
         out << vision_help();
         return 0;
     }
-    std::string model, mmproj, image, prompt, system, backend = "auto", device;
+    std::string model, mmproj, image, prompt, system, backend = "auto", device, load_mode;
     std::string v_gpu, v_ctx, v_max, v_temp, v_seed, v_thr;
     bool bad = false;
     take_value(args, "--model", model, bad);
@@ -178,6 +179,7 @@ int run_vision(std::vector<std::string> args, const std::string& state_override,
     const bool has_prompt = take_value(args, "--prompt", prompt, bad);
     take_value(args, "--system", system, bad);
     take_value(args, "--backend", backend, bad);
+    take_value(args, "--load-mode", load_mode, bad);
     take_value(args, "--device", device, bad);
     take_value(args, "--gpu-layers", v_gpu, bad);
     take_value(args, "--ctx", v_ctx, bad);
@@ -198,6 +200,7 @@ int run_vision(std::vector<std::string> args, const std::string& state_override,
         return fail(err, ErrorCode::InvalidArgument, "--prompt is required");
 
     LoadRequest lr;
+    lr.load_mode = load_mode;  // "" => engine default; the engine validates the value
     VisionRequest vr;
     vr.text.temperature = 0.2f;
     try {
