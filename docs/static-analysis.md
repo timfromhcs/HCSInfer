@@ -66,7 +66,14 @@ completely, so the full set is one flag away and nothing is hidden.
 
 ## Not covered yet
 
-* `tests/` and `tools/` are not analysed (`-Scope all` exists, not used yet).
+* `tests/` and `tools/` are **report-only**: `.\scripts\static-analysis.ps1 -Scope all` finds 31 diagnostics there
+  (baseline, measured 2026-11-17 over 74 translation units) and the CI job runs `-Scope src` only. The classes:
+  `bugprone-unchecked-optional-access` (25) is the `ASSERT_TRUE(opt.has_value()); ... opt->x` idiom - gtest's `ASSERT_*`
+  returns from the test on failure, so the access is guarded and the check cannot see that;
+  `bugprone-implicit-widening-of-multiplication-result` (6) are constant
+  `1 << 30`-sized buffer offsets in test fixtures and one `16 * i` in `test_stream.cpp`. All are test/Tool code that
+  passes; none is a defect in shipped logic. Three real findings in `tools/benchmark-runner/storage_bench.cpp`
+  (two `bugprone-narrowing-conversions` on the `__cpuid` leaves and one pointer-offset widening) were fixed.
 * No `performance-*`, `modernize-*`, `portability-*` or `readability-*` checks; the goal so far was defects, not style.
 * Only the CPU Release preset is analysed. It still compiles `src/hardware/vulkan_info.cpp` (`HCS_ENABLE_VULKAN=OFF`
   guards the runtime paths, not the file), which is where one finding was fixed.

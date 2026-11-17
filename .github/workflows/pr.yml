@@ -106,11 +106,10 @@ jobs:
     name: clang-tidy (static analysis)
     runs-on: windows-latest
     timeout-minutes: 30
-    # The gate is clean locally with the script's documented default check set (0 diagnostics in 42 translation
-    # units, docs/static-analysis.md). Kept non-blocking for one cycle because it has not run on this runner yet;
-    # flip to blocking once it has been seen green there. Only a configure is needed: compile_commands.json exists
-    # without building, which keeps the job cheap.
-    continue-on-error: true
+    # BLOCKING since 2026-11-17: the gate is clean with the script's documented default check set, both locally
+    # (clang-tidy 19.1.5, 42 translation units) and on this runner (clang-tidy 20.1.8 from the LLVM install, 47
+    # units) - see docs/static-analysis.md. A finding now fails the job on purpose; the reason for every check that
+    # is excluded by default is documented there and in the script.
     steps:
       - uses: actions/checkout@v4
         with:

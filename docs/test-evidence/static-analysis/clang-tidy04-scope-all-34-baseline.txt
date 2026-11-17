@@ -1,0 +1,62 @@
+clang-tidy: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-tidy.exe (LLVM version 19.1.5)
+checks: -*,clang-analyzer-*,bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-casting-through-void,-bugprone-exception-escape,-clang-analyzer-optin.core.EnumCastOutOfRange
+MSVC environment: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
+compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64
+translation units: 74 (src, tests, tools)
+
+== tests/contract/api_http/test_http_socket.cpp
+D:\HCSInfer\tests\contract\api_http\test_http_socket.cpp:101:27: warning: performing an implicit widening conversion to type 'size_type' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+
+== tests/contract/api_vision/test_vision_contract.cpp
+D:\HCSInfer\tests\contract\api_vision\test_vision_contract.cpp:143:44: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+
+== tests/integration/llama_engine/test_llama_engine.cpp
+D:\HCSInfer\tests\integration\llama_engine\test_llama_engine.cpp:38:9: warning: macro argument should be enclosed in parentheses [bugprone-macro-parentheses]
+D:\HCSInfer\tests\integration\llama_engine\test_llama_engine.cpp:296:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+
+== tests/integration/llama_vision/test_llama_vision.cpp
+D:\HCSInfer\tests\integration\llama_vision\test_llama_vision.cpp:221:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\integration\llama_vision\test_llama_vision.cpp:221:61: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\integration\llama_vision\test_llama_vision.cpp:228:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\integration\llama_vision\test_llama_vision.cpp:229:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\integration\llama_vision\test_llama_vision.cpp:229:70: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\integration\llama_vision\test_llama_vision.cpp:237:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+
+== tests/unit/api_vision/test_image_input.cpp
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:17:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:18:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:19:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:20:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:27:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:28:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:35:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:36:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:37:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:44:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:45:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:46:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:53:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:54:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\api_vision\test_image_input.cpp:55:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+
+== tests/unit/core/test_job_queue.cpp
+D:\HCSInfer\tests\unit\core\test_job_queue.cpp:72:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+D:\HCSInfer\tests\unit\core\test_job_queue.cpp:81:15: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+
+== tests/unit/storage/test_hcsmodel_parser.cpp
+D:\HCSInfer\tests\unit\storage\test_hcsmodel_parser.cpp:185:24: warning: performing an implicit widening conversion to type 'std::uint64_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+
+== tests/unit/storage/test_roundtrip.cpp
+D:\HCSInfer\tests\unit\storage\test_roundtrip.cpp:127:61: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+D:\HCSInfer\tests\unit\storage\test_roundtrip.cpp:128:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+
+== tests/unit/storage/test_stream.cpp
+D:\HCSInfer\tests\unit\storage\test_stream.cpp:216:42: warning: result of multiplication in type 'int' is used as a pointer offset after an implicit widening conversion to type 'ptrdiff_t' [bugprone-implicit-widening-of-multiplication-result]
+
+== tools/benchmark-runner/storage_bench.cpp
+D:\HCSInfer\tools\benchmark-runner\storage_bench.cpp:69:16: warning: narrowing conversion from constant value 2147483648 (0x80000000) of type 'unsigned int' to signed type 'int' is implementation-defined [bugprone-narrowing-conversions]
+D:\HCSInfer\tools\benchmark-runner\storage_bench.cpp:73:20: warning: narrowing conversion from 'unsigned int' to signed type 'int' is implementation-defined [bugprone-narrowing-conversions]
+D:\HCSInfer\tools\benchmark-runner\storage_bench.cpp:74:21: warning: result of multiplication in type 'int' is used as a pointer offset after an implicit widening conversion to type 'ptrdiff_t' [bugprone-implicit-widening-of-multiplication-result]
+
+STATIC ANALYSIS: 34 diagnostic(s) in 74 translation units.
+Report-only run (-FailOnFindings to make this an error).
