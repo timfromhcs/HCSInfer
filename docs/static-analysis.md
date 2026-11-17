@@ -1,9 +1,10 @@
 # Static analysis (clang-tidy) - first run, triage and baseline
 
 Status: **gate is clean with its documented default check set**; the full check set is a triaged baseline.
-Tool: `clang-tidy` from the Visual Studio 2022 LLVM component (**19.1.5**), run by `scripts/static-analysis.ps1` over
-the HCS-owned translation units of `build/img-api` (Release, CPU build, `/W4 /WX`, MSVC 19.44.35228, compile database
-from CMake).
+Tool: `clang-tidy`, run by `scripts/static-analysis.ps1` over the HCS-owned translation units of `build/img-api`
+(Release, CPU build, `/W4 /WX`, MSVC 19.44.35228, compile database from CMake). Locally that is the
+Visual-Studio-2022-bundled **19.1.5**; on the CI runner the script falls back to the LLVM install, **20.1.8** - both
+were run and both are clean (see "The same gate on the CI runner").
 
 ```
 .\scripts\static-analysis.ps1 -Preset windows-msvc-release -Scope src -Parallel 4
@@ -24,6 +25,17 @@ always completes.
 
 The full test suite was re-run after the code changes: **400 tests, 396 passed, 0 failed, 4 skipped (Vulkan)**, 267 s
 (`.../ctest-after-fixes-400-green.txt`), and both the CPU and the Vulkan build compile and link.
+
+### The same gate on the CI runner
+
+The `clang-tidy (static analysis)` job of `.github/workflows/pr.yml` ran on 2026-11-17 in run 44114113997 and
+reported **`STATIC ANALYSIS OK: no diagnostic in 47 translation units`**. Worth recording: on the runner
+`Find-VsLlvmTool` fell back to the PATH/LLVM install and used **clang-tidy 20.1.8**
+(`C:\Program Files\LLVM\bin\clang-tidy.exe`), not the VS 2022-bundled 19.1.5 - i.e. two different clang-tidy
+versions, over 47 rather than 42 translation units (a fresh configure lists a few more), both clean with the same
+documented check set. The job is non-blocking for one cycle until that has been observed on the runner's own terms;
+the version used, the translation-unit count and the diagnostic count are all printed, so a version drift cannot
+hide.
 
 ## Fixed (real, or clearly worth having)
 
@@ -56,7 +68,8 @@ completely, so the full set is one flag away and nothing is hidden.
 
 * `tests/` and `tools/` are not analysed (`-Scope all` exists, not used yet).
 * No `performance-*`, `modernize-*`, `portability-*` or `readability-*` checks; the goal so far was defects, not style.
-* No CI job yet: the local gate is clean, and the runner has the same VS-bundled clang-tidy, so adding the job is the
-  next step.
 * Only the CPU Release preset is analysed. It still compiles `src/hardware/vulkan_info.cpp` (`HCS_ENABLE_VULKAN=OFF`
   guards the runtime paths, not the file), which is where one finding was fixed.
+* On the CI runner the analysis currently runs with **clang-tidy 20.1.8** (the LLVM install found via PATH), not the
+  VS 2022-bundled 19.1.5 the script prefers locally: both report 0 diagnostics with the same check set, so the gate is
+  version-robust here, but the version is worth pinning if a future finding differs between them.

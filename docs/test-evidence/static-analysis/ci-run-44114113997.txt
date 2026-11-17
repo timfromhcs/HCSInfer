@@ -1,0 +1,26 @@
+# CI clang-tidy job on the runner - relevant lines from run 44114113997
+
+Source: `gh run view 44114113997 --log`, job `clang-tidy (static analysis)` (2026-11-17, commit `5f41c79`).
+Runner: GitHub-hosted `windows-latest`, Windows Server 2025.
+
+```
+clang-tidy: C:\Program Files\LLVM\bin\clang-tidy.exe (LLVM version 20.1.8)
+checks: -*,clang-analyzer-*,bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-casting-through-void,-bugprone-exception-escape,-clang-analyzer-optin.core.EnumCastOutOfRange
+MSVC environment: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat
+compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64
+translation units: 47 (src)
+STATIC ANALYSIS OK: no diagnostic in 47 translation units.
+```
+
+Notes, recorded honestly:
+
+* The runner used **clang-tidy 20.1.8 from `C:\Program Files\LLVM`**, not the VS 2022-bundled 19.1.5 that
+  `Find-VsLlvmTool` prefers, i.e. the VS LLVM component was not found on this image (the fallback worked as designed).
+  Two different clang-tidy versions report 0 diagnostics over the same check set, so the gate is version-robust here.
+* 47 translation units instead of the local 42: the job configures a fresh build directory, so its compile database
+  lists a few sources that the local (older) database does not.
+* All four jobs of the run were green: `clang-format check` (16 s), `SBOM generation + schema sanity` (15 s),
+  `clang-tidy (static analysis)` (4 m 35 s), `build + ctest` Release (17 m 3 s) and Debug (9 m 21 s).
+* The job's artifact upload found no file in that run: the script reports with `Write-Host`, which does not reach a
+  `Tee-Object` in the same pipeline. Fixed in the next commit (`*>&1` before the tee) - the log lines above come from
+  the job log itself.

@@ -110,8 +110,10 @@ MSVC STL through the registry and would otherwise pick the newest Visual Studio 
 requires Clang 20+ and fails with `STL1000` under the VS 2022-bundled clang-tidy. `/WX` from the HCS targets is
 neutralised with `-Wno-error` so the analysis always completes; only the checks named in `-Checks` are reported.
 
-CI (`.github/workflows/`): `pr.yml` = hosted Windows quick gate (CPU presets, no models: model tests are reported as
-skipped = NOT RUN); `hardware.yml` = self-hosted Radeon 680M runner for nightly/manual/tag runs only, never for
-pull requests. First real run: 2026-11-17 on the public repository `timfromhcs/HCSInfer` - the format and SBOM jobs
-passed, both build legs failed before configuring because the runner's Visual Studio was not located, which is fixed in
-`fddc30d` (vswhere-based detection pinned to VS 2022).
+CI (`.github/workflows/`): `pr.yml` = hosted Windows quick gate. Jobs: `build + ctest` for the Release and Debug CPU
+presets (no models: model tests are reported as skipped = NOT RUN), a blocking `clang-format check`, a
+`clang-tidy (static analysis)` job that only configures for the compile database and uploads its log
+(non-blocking for one cycle), and the SBOM/schema job. `hardware.yml` = self-hosted Radeon 680M runner for
+nightly/manual/tag runs only, never for pull requests. First real runs: 2026-11-17 on the public repository
+`timfromhcs/HCSInfer` - run 44104062457 failed in the build legs (the runner's Visual Studio was not located; fixed
+in `fddc30d`), run 44105659773 was **fully green**.

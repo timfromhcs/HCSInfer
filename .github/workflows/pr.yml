@@ -124,8 +124,9 @@ jobs:
           cmake --preset windows-msvc-release
       - name: clang-tidy
         run: |
-          .\scripts\static-analysis.ps1 -Preset windows-msvc-release -Scope src -Parallel 4 2>&1 |
-            Tee-Object artifacts/clang-tidy.txt
+          # *>&1 merges every stream (the script reports with Write-Host) so Tee-Object actually captures the log.
+          .\scripts\static-analysis.ps1 -Preset windows-msvc-release -Scope src -Parallel 4 -FailOnFindings *>&1 |
+            Tee-Object -FilePath artifacts/clang-tidy.txt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@v4
         if: always()

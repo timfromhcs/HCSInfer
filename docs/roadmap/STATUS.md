@@ -83,11 +83,11 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 
 ## Exact next action
 
-1. First green CI run on the new public GitHub repository (`timfromhcs/HCSInfer`): run 1 failed in the build legs because
-   `Initialize-MsvcEnvironment` did not locate Visual Studio on the runner; that is fixed (vswhere-based detection,
-   pinned to VS 2022) and a re-run is in progress.
+1. Watch the new `clang-tidy (static analysis)` CI job on the runner; flip it to blocking once it has been seen
+   green there (the format gate is already blocking).
 2. M1/M2 leftovers: standalone upstream `llama-mtmd-cli` baseline run; more VLM families (Qwen-VL M-RoPE, Gemma3);
    sdcpp `--params-backend disk` vs CPU comparison (B7).
-3. M5: route engine model reads through the Model Vault, then cold/warm benchmarks and the USB-unplug test.
-4. clang-tidy / static analysis and a longer parser fuzz run (ASan) once CI is green; then M8 (one profiled Vulkan
-   kernel behind a flag) and the M10 soak tests.
+3. M5: route engine model reads through the Model Vault, then cold/warm benchmarks and the USB-unplug test. This is
+   the critical path to the remaining storage gates (B4/B5/B6/B8).
+4. Run `static-analysis.ps1 -Scope all` over `tests/` and `tools/`, then the M10 soak tests (100 load/unload,
+   30-minute generation, OOM/device-lost/HDD-unplug) and one profiled Vulkan kernel behind a flag (M8).
