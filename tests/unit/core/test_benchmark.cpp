@@ -225,6 +225,34 @@ TEST(BenchQuick, ColdNoteComesFromMeta) {
     EXPECT_EQ(r.value()["cold"]["note"], "first load of this benchmark job");
 }
 
+TEST(BenchFull, OneTokenPrefillPointIsNotAFailureWhenTheDecodeCountIsZero) {
+    // The adapter convention: decode_tokens = sampled - 1 (the first token is the TTFT sample). A prefill
+    // point requests exactly 1 token, so it reports 0 decoded tokens and must not be recorded as FAIL.
+    ScriptedTarget t;
+    t.hook = [&](int, const TextRequest& r) -> Result<Sample> {
+        Sample s;
+        s.prompt_tokens = r.prompt.size() / 4;
+        s.prompt_tps = 100.0;
+        s.ttft_ms = 5.0;
+        s.decode_tps = 20.0;
+        s.decode_tokens = r.max_tokens <= 1 ? 0 : (r.max_tokens - 1);
+        return s;
+    };
+    Plan p;
+    p.suite = Suite::Full;
+    p.iterations = 1;
+    p.warmup = 0;
+    p.sweep_sizes = {32};
+    auto r = run(t, p);
+    ASSERT_TRUE(r) << r.error().message;
+    const json& j = r.value();
+    EXPECT_EQ(j["prefill_sweep"][0]["max_new_tokens"], 1);
+    EXPECT_EQ(j["prefill_sweep"][0]["result_status"], "PASS") << j["prefill_sweep"][0].dump();
+    EXPECT_GT(j["prefill_sweep"][0]["ttft_ms_median"].get<double>(), 0.0);
+    EXPECT_EQ(j["decode_sweep"][0]["result_status"], "PASS");
+    EXPECT_EQ(j["result_status"], "PASS");
+}
+
 TEST(BenchQuick, LoadFailureAndZeroTokenGenerationAreErrors) {
     ScriptedTarget bad_load;
     bad_load.fail_load = true;

@@ -127,7 +127,11 @@ struct Runner {
             return r.error();
         Sample s = r.value();
         s.wall_ms = wall;
-        if (s.decode_tokens == 0)
+        // The llama adapter reports decode_tokens as (sampled tokens - 1): the first token is the TTFT
+        // sample. A 1-token request (the prefill sweep) therefore legitimately reports 0 decoded tokens;
+        // only a request for >= 2 tokens that decoded nothing is a real failure (the engine stopped
+        // immediately). See docs/test-evidence/benchmark/full-suite-real.json.
+        if (max_tokens > 1 && s.decode_tokens == 0)
             return make_error(ErrorCode::BackendError, "the generation produced no tokens");
         return s;
     }

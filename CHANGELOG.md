@@ -77,6 +77,13 @@ CTest: **783 registered, 0 failed** (CPU build; model-dependent tests skip = NOT
   `atomic_write_file` (6), `json_guard` / `base64` (8). Soak quick re-run: 12 gtest cases PASS (shutdown tests now
   destroy the `Runtime` directly), HttpStorm 18/18 PASS after the harness fixes. Full soak profile NOT RUN.
 
+- D-S6 (found by the first real-model `HCSInfer benchmark --suite full` run): every prefill sweep point was
+  recorded FAIL because the 1-token request correctly reports 0 decode tokens (`decode_tokens = sampled - 1`). The
+  benchmark now fails only a `max_tokens > 1` request that decoded nothing. Real LFM3-Omni-2B Q8_0 CPU run now
+  reports `result_status` **PASS** (prefill 558/1369/2639 ms TTFT, decode ~19.2-19.5 t/s,
+  `docs/test-evidence/benchmark/full-suite-real.json`). Regression test
+  `BenchFull.OneTokenPrefillPointIsNotAFailureWhenTheDecodeCountIsZero`.
+
 ### Changed
 - CI: the `web` job is a blocking gate (`d8a5e37`); format and clang-tidy gates repaired after wave 1 (`06cfbe4`).
   `pr.yml` run 44167798984 is green on all six jobs.

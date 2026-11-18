@@ -1,4 +1,4 @@
-# Soak defects (found by the ported soak harness, 2026-11-18) and their status after wave 3
+# Defects found by the soak harness, CI and the real-model runs (2026-11-18) and their status
 
 Original run: `scripts/soak.ps1 -BuildDir build/rel -ModelRoot D:\HCSModels -Profile quick -Label cpu-quick` on the
 target machine (Ryzen 7 7735HS, CPU-only Release build, LFM3-Omni-2B Q8_0 + mmproj and SD1.5 Q8_0, models read-only)
@@ -16,6 +16,7 @@ and D-S3). The **full** profile (100 cycles, 30 min generation) is NOT RUN.
 | D-S3 | **Harness problem (original symptom) + one genuine latent defect FIXED** | `Ctrl+C` during generation |
 | D-S4 | **FIXED** (new, found by the wave-3 transport tests) | slowloris: no overall request deadline |
 | D-S5 | **FIXED** (found by CI on the W3 `FsUtil` test) | `read_file_limited` could return torn content under a concurrent `atomic_write_file` |
+| D-S6 | **FIXED** (found by the first real-model `--suite full` run) | every prefill sweep point was recorded FAIL (`max_new_tokens=1` reports 0 decode tokens) |
 
 ## D-S1 - destroying `api::Runtime` while a job is running crashed (access violation) - FIXED
 
@@ -102,6 +103,21 @@ Triage, with evidence (`w3-ctrl-c/ctrl-c-manual.txt`, tool `tests/soak/http_stor
   rename is in flight. Bounds/error codes are unchanged (`InvalidArgument` when over the limit, before allocating).
 * Verified: `FsUtil.*` 25 consecutive runs green locally; full Release suite 783/783. `read_file_limited` backs the
   settings/registry/cache reads, so every state-file read benefits.
+
+## D-S6 - every prefill sweep point reported FAIL (`--suite full`) - FIXED (found by the first real-model run)
+
+* The first real-model `HCSInfer benchmark --suite full` (LFM3-Omni-2B Q8_0, CPU) returned `result_status`
+  `PARTIAL`: all three **decode** sweep points PASSed but all three **prefill** points were `FAIL` with
+  `backend_error: the generation produced no tokens`.
+* Cause: the prefill sweep requests `max_new_tokens = 1`. The llama adapter reports `decode_tokens = sampled - 1`
+  (the first token is the TTFT sample), so a 1-token request correctly reports 0 decoded tokens. The benchmark's
+  `one_generation` treated `decode_tokens == 0` as "no tokens" and failed the point, so the prefill sweep could
+  never pass on any real model.
+* Fix (`src/core/benchmark.cpp`): only `max_tokens > 1` with 0 decoded tokens is a failure. A 1-token generation is
+  a valid prefill measurement (TTFT + prompt tokens/s).
+* Regression test: `BenchFull.OneTokenPrefillPointIsNotAFailureWhenTheDecodeCountIsZero`. Re-run on the real model:
+  `result_status` **PASS**, prefill 558/1369/2639 ms TTFT at 43/151/277 real prompt tokens, decode ~19.2-19.5 t/s -
+  `docs/test-evidence/benchmark/full-suite-real.json`.
 
 ## Harness changes made while porting / in wave 3
 
