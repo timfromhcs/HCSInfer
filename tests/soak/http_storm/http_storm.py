@@ -93,10 +93,15 @@ def proc_sample(pid, label):
 
 # ---- server ---------------------------------------------------------------------------------------------
 class Server:
-    def __init__(self, exe, model_root, state_dir, extra=()):
+    def __init__(self, exe, model_root, state_dir, extra=(), new_group=False):
+        # new_group: own process group so CTRL_BREAK_EVENT can be addressed to this server only. (A plain
+        # CTRL_C_EVENT is NOT usable here: a harness started from a shell that disabled Ctrl+C hands that
+        # "ignore" flag to its children, so the event is silently dropped -- see DEFECTS.md D-S3.)
+        flags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) if new_group else 0
         self.proc = subprocess.Popen([exe, "--state-dir", state_dir, "serve", "--port", "0", "--model-root",
                                       model_root, "--timeout-s", "600"] + list(extra),
-                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8")
+                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8",
+                                     creationflags=flags)
         self.q = queue.Queue()
         self.lines = []
         threading.Thread(target=self._rd, daemon=True).start()
@@ -235,7 +240,25 @@ def main():
         pid = srv.proc.pid
         c, txt, dt = normal_chat(srv, model, 16)  # loads the model
         check("baseline chat (model auto-load) works", c == 200 and txt, (c, txt[:80], dt))
-        base = proc_sample(pid, "after-first-load")
+        # Warm the connection worker pool before the baseline: the pool is sized well above --max-inflight and
+        # each worker thread allocates a few kernel handles the first time it serves a connection (a one-time,
+        # pool-bounded cost, verified flat over repeated floods). Without this the handle-growth limit would
+        # measure pool warm-up instead of a leak.
+        warm = []
+        for _ in range(80):
+            try:
+                warm.append(socket.create_connection(("127.0.0.1", srv.port), timeout=5))
+            except Exception:
+                break
+        time.sleep(1.0)
+        for w in warm:
+            try:
+                w.close()
+            except Exception:
+                pass
+        wait_health(srv, 30)
+        time.sleep(3.0)
+        base = proc_sample(pid, "after-first-load-and-pool-warmup")
 
         # ---- Phase A: streaming client-disconnect storm (FIN and RST) ---------------------------------
         print("== A: streaming disconnect storm ==", flush=True)
@@ -351,7 +374,7 @@ def main():
             s.close()
         except Exception:
             pass
-        srv2 = Server(a.exe, a.model_root, state)  # same state dir: registry/settings must still be readable
+        srv2 = Server(a.exe, a.model_root, state, new_group=True)  # same state dir: registry/settings must still be readable
         try:
             check("E: restart after hard kill (same state dir)", srv2.port and srv2.token, srv2.lines[-4:])
             if srv2.port:
@@ -359,14 +382,14 @@ def main():
                 check("E: chat works after crash recovery", c == 200 and txt, (c, txt[:60], dt))
 
                 # ---- Phase F: graceful Ctrl+C while generating -------------------------------------------
-                print("== F: Ctrl+C during generation ==", flush=True)
+                print("== F: Ctrl+Break during generation ==", flush=True)
                 s = srv2.raw_post("/v1/chat/completions", chat_body(model, 1024, True))
                 s.settimeout(60)
                 s.recv(2048)
-                prev = signal.signal(signal.SIGINT, lambda *_: None)
+                prev = signal.getsignal(signal.SIGINT)
                 sent = True
                 try:
-                    os.kill(0, signal.CTRL_C_EVENT)
+                    os.kill(srv2.proc.pid, signal.CTRL_BREAK_EVENT)  # handled by serve as SIGBREAK
                 except Exception as e:
                     sent = False
                     print("  CTRL_C_EVENT not deliverable here:", e)
@@ -374,12 +397,12 @@ def main():
                     t0 = time.time()
                     try:
                         rc = srv2.proc.wait(timeout=60)
-                        check("F: server exits on Ctrl+C while generating (rc=%s, %.1fs)" % (rc, time.time() - t0),
+                        check("F: server exits on Ctrl+Break while generating (rc=%s, %.1fs)" % (rc, time.time() - t0),
                               rc is not None and time.time() - t0 < 60, rc)
                     except subprocess.TimeoutExpired:
-                        check("F: server exits on Ctrl+C while generating", False, "still running after 60 s")
+                        check("F: server exits on Ctrl+Break while generating", False, "still running after 60 s")
                 else:
-                    CHECKS.append({"check": "F: graceful Ctrl+C shutdown while generating", "pass": None,
+                    CHECKS.append({"check": "F: graceful Ctrl+Break shutdown while generating", "pass": None,
                                    "detail": "NOT RUN: no console to deliver CTRL_C_EVENT in this session; the in-process "
                                              "equivalent is Soak.ShutdownWhileGenerating"})
                 signal.signal(signal.SIGINT, prev)

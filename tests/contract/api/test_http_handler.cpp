@@ -944,3 +944,64 @@ TEST(ApiAudit, ControlTokensInUserTextAreNeutralised) {
     EXPECT_EQ(starts, 5u) << p;  // 4 messages + the assistant prompt
     EXPECT_EQ(ends, 4u) << p;
 }
+
+// ---- log redaction on failure paths and for image content (wave 3 test gaps) --------------------------
+#include "test_png.hpp"
+
+TEST(ApiPrivacy, FailurePathsNeverLogPromptsBodiesOrCredentials) {
+    Api a;
+    const std::string secret = "FAILPATH-SECRET-4471";
+    // Malformed JSON that contains the secret.
+    EXPECT_EQ(a.call("POST", "/v1/chat/completions", "{\"messages\":[{\"content\":\"" + secret + "\"").status,
+              400);
+    // Well-formed but invalid (unknown model, bad role, empty messages).
+    EXPECT_GE(
+        a.call("POST", "/v1/chat/completions", a.chat_body(secret, false, "no-such-model").dump()).status,
+        400);
+    json bad_role = a.chat_body(secret);
+    bad_role["messages"][0]["role"] = "wizard";
+    EXPECT_EQ(a.call("POST", "/v1/chat/completions", bad_role.dump()).status, 400);
+    // Wrong token, and the token value itself must not be logged either.
+    HttpRequest r = a.req("POST", "/v1/chat/completions", a.chat_body(secret).dump());
+    r.headers["authorization"] = "Bearer WRONG-TOKEN-VALUE-0000";
+    EXPECT_EQ(a.handler.handle(r).status, 401);
+    // Hostile Origin / Host headers carrying the secret.
+    HttpRequest o = a.req("GET", "/v1/models");
+    o.headers["origin"] = "http://" + secret + ".evil.example";
+    EXPECT_EQ(a.handler.handle(o).status, 403);
+    // Engine failure on load: error text may be logged, the prompt may not.
+    a.fx.engine.fail_load = true;
+    EXPECT_GE(a.call("POST", "/v1/chat/completions", a.chat_body(secret).dump()).status, 400);
+    const std::string log = a.fx.log_sink.str();
+    EXPECT_FALSE(log.empty()) << "the test must observe a populated log";
+    EXPECT_EQ(log.find(secret), std::string::npos) << "request content leaked into the log";
+    EXPECT_EQ(log.find("WRONG-TOKEN-VALUE"), std::string::npos)
+        << "a presented credential leaked into the log";
+    EXPECT_EQ(log.find(kToken), std::string::npos);
+}
+
+TEST(ApiPrivacy, ImageBytesAreNeverLogged) {
+    Api a;
+    const auto png = test::make_red_square_png(64);
+    const std::string uri = test::png_data_uri(png);
+    const std::string b64 = uri.substr(uri.find(',') + 1);
+    ASSERT_GT(b64.size(), 64u);
+    json body = {
+        {"model", "tiny"},
+        {"messages",
+         json::array({json{
+             {"role", "user"},
+             {"content", json::array({json{{"type", "text"}, {"text", "what is this"}},
+                                      json{{"type", "image_url"}, {"image_url", {{"url", uri}}}}})}}})}};
+    (void)a.call("POST", "/v1/chat/completions",
+                 body.dump());  // fake engine has no vision: an error is expected
+    // Image routes too.
+    json gen = {{"model", "tiny"}, {"prompt", "image-prompt-secret-5520"}};
+    (void)a.call("POST", "/v1/images/generations", gen.dump());
+    const std::string log = a.fx.log_sink.str();
+    EXPECT_FALSE(log.empty());
+    EXPECT_EQ(log.find(b64.substr(0, 48)), std::string::npos) << "base64 image data leaked into the log";
+    EXPECT_EQ(log.find("data:image"), std::string::npos);
+    EXPECT_EQ(log.find("image-prompt-secret-5520"), std::string::npos);
+    EXPECT_EQ(log.find("what is this"), std::string::npos);
+}

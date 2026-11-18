@@ -50,7 +50,11 @@ writes model files; a model only loads if its registered path resolves **inside 
   ever emitted**, so browsers cannot read responses cross-origin.
 * **Limits:** body cap (transport answers `413` before reading the body), JSON nesting depth 64, schema validation,
   `max_tokens` cap 4096, prompt cap 256 KiB, 128 messages, concurrency cap (`429` + `Retry-After`), request timeout
-  (`504`, the job is cancelled). Health and job cancellation are never throttled.
+  (`504`, the job is cancelled). Health and job cancellation are never throttled. Transport: connections that never send a
+  request are dropped after 2 s, a request must be received completely within 15 s (a client dripping header bytes is
+  disconnected), the worker pool (48+ threads) is sized well above `--max-inflight` so ~64 idle local sockets cannot
+  starve `GET /hcs/v1/health`, and connections beyond the pool plus a 32-entry queue are closed at accept time. A
+  `SIGINT`/`SIGTERM`/`SIGBREAK` cancels running jobs first, then stops the transport.
 * **No path input.** Models are addressed by id (`^[a-z0-9][a-z0-9._-]{0,63}$`); file paths come only from the
   registry and are re-checked against the approved roots (`PathGuard`: no `..`, junction/symlink escape, device paths).
 * **No shell/process/filesystem routes exist.** Prompts, completions and tokens are never logged (request log =

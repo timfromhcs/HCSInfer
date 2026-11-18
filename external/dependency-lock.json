@@ -131,7 +131,8 @@
       "role": "local HTTP transport (loopback only)",
       "licence": "MIT",
       "linked": true,
-      "source": "FetchContent (header-only)"
+      "source": "FetchContent (header-only)",
+      "local_patch": "cmake/HcsHttplib.cmake writes a copy of httplib.h to the build tree with ONE access specifier changed (Server::process_and_close_socket private -> protected) so HttpServer can enforce a per-request receive deadline (soak defect D-S4, slowloris); configure fails if the declaration is not found on a version bump"
     },
     {
       "name": "LZ4",

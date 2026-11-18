@@ -4,10 +4,12 @@
 #include <httplib.h>
 
 #include <atomic>
+#include <future>
 #include <thread>
 
 #include "api_fixture.hpp"
 #include "hcs/api/http_api.hpp"
+#include "hcs/api/runtime.hpp"
 
 using namespace hcs;
 using namespace hcs::api;
@@ -372,4 +374,145 @@ TEST(ApiSocketAudit, SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout) {
         << "an idle socket kept a worker for more than 3.5 s (read timeout is 1 s)";
     raw_close(c);
 #endif
+}
+
+// D-S2 (soak): a modest number of idle and half-written connections (below the connection budget) must not
+// make the unauthenticated health route fail: it is accepted (not refused) and answered as soon as the
+// first-byte timeout frees a worker, on the FIRST attempt (no client retry).
+TEST(ApiSocketAudit, HealthAnswersFirstTryWhileIdleAndHalfOpenConnectionsAreHeld) {
+#ifndef _WIN32
+    GTEST_SKIP() << "raw socket helper is Windows-only";
+#else
+    test::ApiFixture fx;
+    ApiHandler handler(*fx.cp, Server::opts(), fx.logger);
+    TransportOptions t;
+    t.host = "127.0.0.1";
+    t.port = 0;
+    t.threads = 8;
+    t.max_queued = 8;
+    t.idle_timeout_s = 1;
+    t.read_timeout_s = 2;
+    HttpServer server(handler, t, fx.logger);
+    auto bound = server.start();
+    ASSERT_TRUE(bound.ok());
+    std::vector<RawSock> held;
+    for (int i = 0; i < 12; ++i) {  // 12 <= threads + max_queued - 1 (one slot left for health)
+        RawSock c = raw_connect(bound.value());
+        ASSERT_NE(c, kNoSock);
+        if (i % 3 == 0)
+            raw_send(
+                c,
+                "POST /v1/chat/completions HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Length: 100000\r\n\r\n{");
+        held.push_back(c);
+    }
+    httplib::Client c("127.0.0.1", bound.value());
+    c.set_connection_timeout(5, 0);
+    c.set_read_timeout(8, 0);
+    const auto t0 = std::chrono::steady_clock::now();
+    auto r = c.Get("/hcs/v1/health");  // exactly one attempt
+    const auto ms =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - t0).count();
+    ASSERT_TRUE(r) << "health connection was refused or reset while idle sockets were held";
+    EXPECT_EQ(r->status, 200);
+    EXPECT_LT(ms, 6000);
+    for (auto s2 : held) raw_close(s2);
+    server.stop();
+#endif
+}
+
+// D-S2 with the REAL `serve` transport budget: 64 idle / half-written local sockets (what the soak harness
+// holds) must not stop GET /hcs/v1/health on its first attempt.
+TEST(ApiSocketAudit, ServeBudgetKeepsHealthAnsweringUnder64HeldConnections) {
+#ifndef _WIN32
+    GTEST_SKIP() << "raw socket helper is Windows-only";
+#else
+    test::ApiFixture fx;
+    ApiHandler handler(*fx.cp, Server::opts(), fx.logger);
+    const TransportOptions t = serve_transport_options(Server::opts(), "127.0.0.1", 0);
+    EXPECT_GE(t.threads + t.max_queued, 80u);
+    HttpServer server(handler, t, fx.logger);
+    auto bound = server.start();
+    ASSERT_TRUE(bound.ok());
+    std::vector<RawSock> held;
+    for (int i = 0; i < 64; ++i) {
+        RawSock c = raw_connect(bound.value());
+        ASSERT_NE(c, kNoSock);
+        if (i % 2)
+            raw_send(
+                c,
+                "POST /v1/chat/completions HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Length: 100000\r\n\r\n{");
+        held.push_back(c);
+    }
+    httplib::Client c("127.0.0.1", bound.value());
+    c.set_connection_timeout(5, 0);
+    c.set_read_timeout(15, 0);
+    auto r = c.Get("/hcs/v1/health");  // exactly one attempt
+    ASSERT_TRUE(r) << "health connection was refused or reset while 64 sockets were held";
+    EXPECT_EQ(r->status, 200);
+    for (auto s2 : held) raw_close(s2);
+    server.stop();
+#endif
+}
+
+// D-S3 (soak): graceful shutdown during a running generation must cancel it and return promptly, not wait for
+// the generation (here: endless until cancelled) or the per-request timeout.
+TEST(ApiSocketAudit, GracefulShutdownCancelsRunningGenerationPromptly) {
+    test::TempDir dir;
+    const auto root = dir.path() / "models";
+    test::write_file(root / "tiny.gguf", test::fake_gguf());
+    std::ostringstream sink;
+    Logger logger(&sink, LogLevel::Debug);
+    RuntimeOptions ro;
+    ro.state_dir = dir.path() / "state";
+    std::filesystem::create_directories(ro.state_dir);
+    ro.model_roots = {root.string()};
+    auto eng = std::make_unique<test::FakeTextEngine>();
+    eng->run_until_cancel = true;
+    eng->delay_ms = 2;
+    test::FakeTextEngine* fake = eng.get();
+    ro.engine = std::move(eng);
+    auto created = Runtime::create(std::move(ro), logger);
+    ASSERT_TRUE(created.ok());
+    auto rt = std::move(created.value());
+    ASSERT_TRUE(rt->registry.scan(root, rt->guard).ok());
+    const auto models = rt->registry.list();
+    ASSERT_FALSE(models.empty());
+    ApiOptions ao;
+    ao.token = kToken;
+    ao.request_timeout = std::chrono::seconds(300);  // the shutdown must not depend on this
+    ApiHandler handler(*rt->control, ao, logger);
+    HttpServer server(handler, serve_transport_options(ao, "127.0.0.1", 0), logger);
+    auto bound = server.start();
+    ASSERT_TRUE(bound.ok());
+
+    std::atomic<bool> client_done{false};
+    std::thread client([&] {
+        httplib::Client c("127.0.0.1", bound.value());
+        c.set_read_timeout(120, 0);
+        const json body = {{"model", models.front().id},
+                           {"stream", false},
+                           {"messages", json::array({json{{"role", "user"}, {"content", "hi"}}})}};
+        (void)c.Post("/v1/chat/completions",
+                     httplib::Headers{{"Authorization", std::string("Bearer ") + kToken}}, body.dump(),
+                     "application/json");
+        client_done = true;
+    });
+    for (int i = 0; i < 500 && !fake->generating; ++i)
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    ASSERT_TRUE(fake->generating) << "generation never started";
+
+    const auto t0 = std::chrono::steady_clock::now();
+    auto fut = std::async(std::launch::async, [&] { graceful_shutdown(server, *rt); });
+    const bool finished = fut.wait_for(std::chrono::seconds(15)) == std::future_status::ready;
+    const auto ms =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - t0).count();
+    if (!finished) {
+        // Unblock so the test process can exit; the failure below is what matters.
+        rt->queue->shutdown();
+        fut.wait();
+    }
+    EXPECT_TRUE(finished) << "graceful shutdown still blocked after 15 s (waits for the running generation)";
+    EXPECT_LT(ms, 15000);
+    client.join();
+    EXPECT_TRUE(client_done.load());
 }

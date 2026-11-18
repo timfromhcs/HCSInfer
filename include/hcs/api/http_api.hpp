@@ -104,6 +104,9 @@ struct TransportOptions {
     int idle_timeout_s = 2;  // wait for the first byte of a request (also the keep-alive wait)
     int read_timeout_s = 5;  // per read once bytes flow (headers, body)
     int write_timeout_s = 30;
+    // Overall deadline to receive one COMPLETE request (headers + body). The per-read timeouts above reset on
+    // every byte, so a client dripping bytes would otherwise hold a worker indefinitely (slowloris). 0 = off.
+    int request_deadline_s = 15;
 };
 
 class HttpServer {

@@ -715,3 +715,162 @@ TEST(McpAudit, ErrorsDoNotLeakAbsoluteLocalPaths) {
     EXPECT_NE(text.find("bad_f.gguf"), std::string::npos) << "the file name is kept for diagnosis: " << text;
     EXPECT_TRUE(r["result"]["isError"]);
 }
+
+// ---- stdio framing / JSON-RPC hardening (wave 3 test gaps) ---------------------------------------------
+namespace {
+std::vector<json> run_lines(Mcp& m, const std::string& input, std::size_t* raw_line_count = nullptr) {
+    std::stringstream in(input);
+    std::ostringstream out;
+    m.server.run(in, out);
+    std::vector<json> parsed;
+    std::istringstream lines(out.str());
+    std::string l;
+    std::size_t n = 0;
+    while (std::getline(lines, l)) {
+        ++n;
+        auto j = json::parse(l, nullptr, false);
+        EXPECT_FALSE(j.is_discarded()) << "non-JSON line on stdout: " << l;
+        parsed.push_back(std::move(j));
+    }
+    if (raw_line_count)
+        *raw_line_count = n;
+    return parsed;
+}
+}  // namespace
+
+TEST(McpFraming, CrLfTerminatorsAndBlankLinesAreTolerated) {
+    Mcp m;
+    const std::string input = "\r\n   \r\n\n" + modern_req(1, "server/discover").dump() + "\r\n\r\n" +
+                              modern_req(2, "tools/list").dump() + "\r\n";
+    auto out = run_lines(m, input);
+    ASSERT_EQ(out.size(), 2u) << "blank lines must produce no output";
+    EXPECT_EQ(out[0]["id"], 1);
+    EXPECT_EQ(out[1]["id"], 2);
+}
+
+TEST(McpFraming, FinalLineWithoutNewlineIsStillServed) {
+    Mcp m;
+    auto out = run_lines(m, modern_req(7, "server/discover").dump());  // no trailing '\n'
+    ASSERT_EQ(out.size(), 1u);
+    EXPECT_EQ(out[0]["id"], 7);
+}
+
+TEST(McpFraming, InvalidUtf8AndEmbeddedNulAreParseErrorsAndTheStreamContinues) {
+    Mcp m;
+    std::string input;
+    input += std::string("{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"\xff\xfe\"}\n");
+    input += std::string("{\"jsonrpc\":\"2.0\",\"id\":2,\"me\0thod\":\"x\"}\n", 38);
+    input += std::string("\x00\x00\x00\n", 4);
+    input += modern_req(3, "server/discover").dump() + "\n";
+    auto out = run_lines(m, input);
+    ASSERT_GE(out.size(), 2u);
+    EXPECT_EQ(out.back()["id"], 3) << "the stream did not resynchronise after bad bytes";
+    for (std::size_t i = 0; i + 1 < out.size(); ++i) {
+        ASSERT_TRUE(out[i].contains("error")) << out[i].dump();
+        EXPECT_TRUE(out[i]["error"]["code"] == -32700 || out[i]["error"]["code"] == -32600) << out[i].dump();
+    }
+}
+
+TEST(McpFraming, LineAtTheLimitIsServedOneByteOverIsRejected) {
+    McpOptions o;
+    o.max_line_bytes = 512;
+    Mcp m(o);
+    json req = modern_req(1, "server/discover");
+    req["params"]["pad"] = "";
+    std::string base = req.dump();
+    const std::size_t room = 512 - base.size();
+    req["params"]["pad"] = std::string(room, 'p');
+    const std::string exact = req.dump();
+    ASSERT_EQ(exact.size(), 512u);
+    req["id"] = 2;
+    req["params"]["pad"] = std::string(room + 1, 'p');
+    const std::string over = req.dump();
+    ASSERT_GT(over.size(), 512u);
+    auto out = run_lines(m, exact + "\n" + over + "\n" + modern_req(3, "server/discover").dump() + "\n");
+    ASSERT_EQ(out.size(), 3u);
+    EXPECT_EQ(out[0]["id"], 1);
+    EXPECT_TRUE(out[0].contains("result") || out[0].contains("error"));
+    EXPECT_EQ(out[1]["error"]["code"], -32600) << "an oversize line must be rejected";
+    EXPECT_EQ(out[2]["id"], 3);
+}
+
+TEST(McpFraming, ErrorStormKeepsStdoutOneJsonObjectPerLine) {
+    Mcp m;
+    std::string input;
+    constexpr int kBad = 400;
+    for (int i = 0; i < kBad; ++i) {
+        switch (i % 5) {
+            case 0:
+                input += "not json at all\n";
+                break;
+            case 1:
+                input += "{\"jsonrpc\":\"2.0\"\n";
+                break;
+            case 2:
+                input += "[1,2,3]\n";
+                break;
+            case 3:
+                input += "{\"jsonrpc\":\"1.0\",\"id\":1,\"method\":\"x\"}\n";
+                break;
+            default:
+                input += "42\n";
+                break;
+        }
+    }
+    input += modern_req(99, "server/discover").dump() + "\n";
+    std::size_t raw = 0;
+    auto out = run_lines(m, input, &raw);
+    EXPECT_EQ(raw, static_cast<std::size_t>(kBad + 1));
+    ASSERT_EQ(out.size(), static_cast<std::size_t>(kBad + 1));
+    for (int i = 0; i < kBad; ++i) {
+        ASSERT_TRUE(out[static_cast<std::size_t>(i)].contains("error")) << i;
+        EXPECT_EQ(out[static_cast<std::size_t>(i)]["jsonrpc"], "2.0");
+    }
+    EXPECT_EQ(out.back()["id"], 99);
+}
+
+TEST(McpFraming, ToolCallArgumentTypeConfusionIsAnErrorNeverACrash) {
+    Mcp m;
+    const json bad_params[] = {
+        {{"name", 5}, {"arguments", json::object()}},
+        {{"name", "hcs.models.list"}, {"arguments", "a string"}},
+        {{"name", "hcs.models.list"}, {"arguments", json::array({1, 2})}},
+        {{"name", "hcs.chat.generate"}, {"arguments", {{"prompt", json::array({1})}}}},
+        {{"name", "hcs.chat.generate"}, {"arguments", {{"prompt", "hi"}, {"max_tokens", "many"}}}},
+        {{"name", "hcs.models.load"}, {"arguments", {{"id", json::object()}}}},
+        {{"name", "hcs.models.inspect"}, {"arguments", {{"id", nullptr}}}},
+        {{"name", json::array({"hcs.models.list"})}, {"arguments", json::object()}},
+        {{"arguments", json::object()}},
+    };
+    int id = 100;
+    for (const auto& p : bad_params) {
+        json params = p;
+        params["_meta"] = meta();
+        json req = {{"jsonrpc", "2.0"}, {"id", ++id}, {"method", "tools/call"}, {"params", params}};
+        json r;
+        ASSERT_NO_THROW(r = json::parse(m.server.handle_line(req.dump()))) << req.dump();
+        const bool protocol_error = r.contains("error");
+        const bool tool_error = r.contains("result") && r["result"].value("isError", false);
+        EXPECT_TRUE(protocol_error || tool_error)
+            << "accepted malformed call: " << req.dump() << " -> " << r.dump();
+    }
+    // Still healthy afterwards.
+    EXPECT_TRUE(m.tool(500, "hcs.models.list").contains("result"));
+}
+
+TEST(McpFraming, UnusualRequestIdsDoNotBreakCorrelation) {
+    Mcp m;
+    const json ids[] = {std::string(10000, 'i'), "", 0, -1, 4294967296ll, 1.5, true};
+    for (const auto& id : ids) {
+        json req = modern_req(0, "server/discover");
+        req["id"] = id;
+        const std::string line = m.server.handle_line(req.dump());
+        ASSERT_FALSE(line.empty());
+        auto r = json::parse(line, nullptr, false);
+        ASSERT_FALSE(r.is_discarded());
+        if (r.contains("result"))
+            EXPECT_EQ(r["id"], id) << "a valid id must be echoed unchanged";
+        else
+            EXPECT_TRUE(r.contains("error"));
+    }
+}

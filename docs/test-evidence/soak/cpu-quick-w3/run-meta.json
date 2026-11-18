@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "label": "cpu-quick-w3",
+  "profile": "quick",
+  "timestamp_utc": "2026-11-18T07:54:14.3742612Z",
+  "git_commit": "5633450e5c31",
+  "git_dirty": true,
+  "os": "Microsoft Windows 11 Pro 26200",
+  "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics        ",
+  "ram_bytes": 21245952000,
+  "exe_test": "D:\\HCSInfer\\.claude\\worktrees\\repo-analysis-v1-stable-80f8d6\\build\\rel\\bin\\hcs_test_soak_core.exe",
+  "knobs": {
+    "HCS_SOAK_CANCEL_ROUNDS": 10,
+    "HCS_SOAK_UNPLUG_ROUNDS": 5,
+    "Storm": 12,
+    "HCS_SOAK_SWITCH_CYCLES": 3,
+    "HCS_SOAK_SHUTDOWN_ROUNDS": 2,
+    "HCS_SOAK_IMAGE_RUNS": 3,
+    "HCS_SOAK_CYCLES": 8,
+    "HCS_SOAK_GEN_SECONDS": 60,
+    "HCS_SOAK_VISION_RUNS": 4
+  }
+}

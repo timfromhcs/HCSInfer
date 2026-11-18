@@ -31,6 +31,20 @@ std::unique_ptr<IImageEngine> make_default_image_engine(JobQueue&) {
 }
 #endif
 
+Runtime::~Runtime() {
+    // Jobs of both queues run closures that reference control/engines/registry: stop and join the workers
+    // first.
+    try {
+        if (queue)
+            queue->shutdown();
+        if (engine_queue)
+            engine_queue->shutdown();
+    } catch (...) {
+        (void)0;  // a destructor must not throw; shutdown() already joins what it can
+    }
+    control.reset();  // drops its job handles/callbacks before the engines it points to
+}
+
 Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger& logger) {
     std::unique_ptr<Runtime> rt(new Runtime());
     const auto settings_file = options.state_dir / "settings.json";
@@ -148,6 +162,26 @@ bool parse_uint(const std::string& s, unsigned long long max, unsigned long long
 }
 }  // namespace
 
+TransportOptions serve_transport_options(const ApiOptions& api, const std::string& host, int port) {
+    TransportOptions to;
+    to.host = host;
+    to.port = port;
+    to.max_body_bytes = api.max_body_bytes;
+    // Worker threads only block on socket reads until the handler's inflight limit applies, so a generous
+    // pool is cheap. Connections beyond threads + max_queued are closed at accept time (M10 audit D2).
+    to.threads = std::max<std::size_t>(48, api.max_inflight + 40);
+    to.max_queued = 32;
+    to.idle_timeout_s = 2;  // first byte of a request; connections that never send one are dropped
+    to.read_timeout_s = 5;
+    return to;
+}
+
+void graceful_shutdown(HttpServer& server, Runtime& runtime) {
+    runtime.queue->shutdown();  // cancels running/queued jobs; blocked request threads get Cancelled
+    runtime.engine_queue->shutdown();
+    server.stop();  // now every connection thread can finish and be joined
+}
+
 int run_serve(const std::vector<std::string>& args, const std::filesystem::path& state_dir, std::ostream& out,
               std::ostream& err) {
     auto bad = [&](const std::string& m) {
@@ -257,12 +291,7 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     ao.request_timeout = std::chrono::seconds(timeout_s);
     ApiHandler handler(*rt.value()->control, ao, log);
 
-    TransportOptions to;
-    to.host = host;
-    to.port = static_cast<int>(port);
-    to.max_body_bytes = ao.max_body_bytes;
-    to.threads = std::max<std::size_t>(4, ao.max_inflight + 2);
-    to.max_queued = 16;  // connections beyond threads + 16 are refused at accept time (M10 audit D2)
+    const TransportOptions to = serve_transport_options(ao, host, static_cast<int>(port));
     HttpServer server(handler, to, log);
     auto bound = server.start();
     if (!bound) {
@@ -271,6 +300,9 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     }
     std::signal(SIGINT, on_signal);
     std::signal(SIGTERM, on_signal);
+#ifdef SIGBREAK
+    std::signal(SIGBREAK, on_signal);  // Windows: Ctrl+Break and console close
+#endif
     err << "HCSInfer API listening on http://" << host << ":" << bound.value() << "\n";
     if (!token_given)
         err << "HCSInfer API token: " << token << "\n";
@@ -289,9 +321,7 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     err.flush();
     while (!g_stop.load()) std::this_thread::sleep_for(std::chrono::milliseconds(100));
     err << "shutting down\n";
-    server.stop();
-    rt.value()->queue->shutdown();
-    rt.value()->engine_queue->shutdown();
+    graceful_shutdown(server, *rt.value());
     return 0;
 }
 

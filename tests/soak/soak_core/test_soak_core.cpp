@@ -537,17 +537,9 @@ namespace {
 // Destroys the rig on a helper thread with a watchdog: a hang is reported as a defect, not a stuck test.
 double destroy_with_watchdog(std::unique_ptr<Rig>& rig, const char* scenario) {
     const auto t0 = std::chrono::steady_clock::now();
-    // Same protocol as `HCSInfer serve` / `mcp stdio` (src/api/runtime.cpp, src/mcp/stdio.cpp): stop and join
-    // both job queues first, then destroy the Runtime. Destroying a Runtime with a job still running is NOT
-    // safe on its own (control is destroyed before the queue that still runs its job); see
-    // docs/test-evidence/soak/DEFECTS.md.
-    auto fut = std::async(std::launch::async, [&] {
-        if (rig && rig->rt) {
-            rig->rt->queue->shutdown();
-            rig->rt->engine_queue->shutdown();
-        }
-        rig.reset();
-    });
+    // Direct destruction: ~Runtime() joins both job queues itself (defect D-S1, fixed; the contract test
+    // RuntimeLifecycle.* in tests/contract/api covers it with a fake engine).
+    auto fut = std::async(std::launch::async, [&] { rig.reset(); });
     if (fut.wait_for(180s) != std::future_status::ready) {
         emit({{"test", "Shutdown"}, {"scenario", scenario}, {"kind", "hang"}, {"verdict", "FAIL"}});
         ADD_FAILURE() << scenario << ": Runtime destruction did not finish within 180 s (hang)";

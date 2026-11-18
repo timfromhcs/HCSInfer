@@ -76,16 +76,28 @@ Profiles `quick` / `full` in `scripts/soak.ps1` set these; defaults inside the g
 
 ## Evidence of an actual run
 
-`docs/test-evidence/soak/cpu-quick/` holds the one run executed so far (quick profile, CPU build, 2026-11-18, commit
-`902b41e` plus the uncommitted W2 port): 12 gtest cases PASS, `HttpStorm` FAIL (2 of 18 checks). The full profile has
-not been run. Open defects: `docs/test-evidence/soak/DEFECTS.md`.
+Runs executed so far (CPU build, target machine, models read-only), all `quick` profile; the **full** profile (100
+cycles, 30 min generation) has **not** been run:
+
+* `docs/test-evidence/soak/cpu-quick/` (2026-11-18, `902b41e` + the uncommitted W2 port): 12 gtest cases PASS,
+  `HttpStorm` FAIL (2 of 18 checks).
+* `docs/test-evidence/soak/cpu-quick-w3/` (2026-11-18, `5633450` + the wave-3 working tree, uncommitted): 12 gtest
+  cases PASS with the shutdown tests destroying the `Runtime` directly (D-S1 fixed); its `HttpStorm` failed only the
+  handle-growth check (`93 > 48`, pool warm-up, see DEFECTS.md D-S2).
+* `docs/test-evidence/soak/cpu-quick-w3-httpstorm-rerun/`: `HttpStorm` alone after the harness warms the connection
+  pool before its baseline: 18/18 PASS, including C (health under a 64-socket flood) and F (graceful shutdown while
+  generating, 0.3 s).
+* `docs/test-evidence/soak/w3-ctrl-c/`: manual real-`CTRL_C_EVENT` run (`tests/soak/http_storm/ctrl_c_manual.py`),
+  server exits rc=0 in 0.4 s during generation.
+
+Defects and their status: `docs/test-evidence/soak/DEFECTS.md` (D-S1..D-S4 fixed or explained).
 
 `tests/soak/http_storm/http_storm.py` runs `HCSInfer models scan <root>` into its private state directory before
-`serve` (on `main`, `serve` only loads the persisted registry). The shutdown tests follow the product protocol
-(`queue->shutdown()`, `engine_queue->shutdown()`, then destroy the `Runtime`), because destroying a `Runtime` with a
-running job is not safe on its own (D-S1).
+`serve` (on `main`, `serve` only loads the persisted registry). The shutdown tests destroy the `Runtime` directly:
+`~Runtime()` joins both job queues first (D-S1), and `RuntimeLifecycle.*` in `tests/contract/api` covers the same
+contract with a fake engine, without needing models.
 
 ## Defects
 
-Defects found by these tests are recorded in `docs/test-evidence/soak/DEFECTS.md` with a minimal reproducer
-(a filtered `hcs_test_soak_core` run) and a cause hypothesis; they are not fixed in the soak-owned paths.
+Defects found by these tests are recorded in `docs/test-evidence/soak/DEFECTS.md` with a minimal reproducer, the
+confirmed cause, the red -> green regression test and the status.

@@ -5,19 +5,82 @@
 #include <algorithm>
 #include <atomic>
 #include <cctype>
+#include <chrono>
+#include <condition_variable>
+#include <cstdint>
+#include <mutex>
 #include <thread>
+#include <vector>
 
 #include "hcs/api/http_api.hpp"
 
 namespace hcs::api {
+
+namespace {
+
+std::int64_t steady_ms() {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+               std::chrono::steady_clock::now().time_since_epoch())
+        .count();
+}
+
+// Per-connection bookkeeping for the request deadline (slowloris defence, AGENTS.md 19.1). cpp-httplib only
+// has a per-read timeout, so a client that drips one header byte every few seconds would hold a worker
+// forever. `reading_since_ms` is the time the server began waiting for a complete request on this connection
+// (0 while a request is being handled / its response is being written).
+struct ConnState {
+    socket_t sock;
+    std::atomic<std::int64_t> reading_since_ms;
+};
+thread_local ConnState* t_conn = nullptr;
+
+class GuardedServer final : public httplib::Server {
+public:
+    // Shuts down every connection that has been reading a request for longer than `deadline_ms`. The blocked
+    // recv() then fails and the worker returns to the pool.
+    void reap(std::int64_t deadline_ms) {
+        const auto now = steady_ms();
+        std::lock_guard lk(mu_);
+        for (auto* c : conns_) {
+            const auto since = c->reading_since_ms.load();
+            if (since != 0 && now - since > deadline_ms)
+                ::shutdown(c->sock, 2 /* SD_BOTH / SHUT_RDWR */);
+        }
+    }
+
+protected:
+    bool process_and_close_socket(socket_t sock) override {
+        ConnState st{sock, steady_ms()};
+        {
+            std::lock_guard lk(mu_);
+            conns_.push_back(&st);
+        }
+        t_conn = &st;
+        const bool ret = httplib::Server::process_and_close_socket(sock);
+        t_conn = nullptr;
+        std::lock_guard lk(mu_);
+        conns_.erase(std::remove(conns_.begin(), conns_.end(), &st), conns_.end());
+        return ret;
+    }
+
+private:
+    std::mutex mu_;
+    std::vector<ConnState*> conns_;
+};
+
+}  // namespace
 
 struct HttpServer::Impl {
     Impl(ApiHandler& h, TransportOptions o, Logger& l) : handler(h), opt(std::move(o)), log(l) {}
     ApiHandler& handler;
     TransportOptions opt;
     Logger& log;
-    httplib::Server svr;
+    GuardedServer svr;
     std::thread thread;
+    std::thread reaper;
+    std::mutex reaper_mu;
+    std::condition_variable reaper_cv;
+    bool reaper_stop = false;
     std::atomic<bool> running{false};
     int port = 0;
 };
@@ -58,13 +121,20 @@ void apply(HttpResponse resp, httplib::Response& res) {
     for (const auto& [k, v] : resp.headers) res.set_header(k, v);
     if (resp.stream) {
         auto fn = std::make_shared<std::function<void(const StreamWriter&)>>(std::move(resp.stream));
-        res.set_chunked_content_provider(resp.content_type, [fn](std::size_t, httplib::DataSink& sink) {
-            (*fn)([&sink](std::string_view chunk) {
-                return sink.is_writable() && sink.write(chunk.data(), chunk.size());
+        res.set_chunked_content_provider(
+            resp.content_type,
+            [fn](std::size_t, httplib::DataSink& sink) {
+                (*fn)([&sink](std::string_view chunk) {
+                    return sink.is_writable() && sink.write(chunk.data(), chunk.size());
+                });
+                sink.done();
+                return true;
+            },
+            [](bool) {
+                if (t_conn)
+                    t_conn->reading_since_ms =
+                        steady_ms();  // stream finished: next request gets a fresh deadline
             });
-            sink.done();
-            return true;
-        });
     } else {
         res.set_content(resp.body, resp.content_type);
     }
@@ -100,8 +170,18 @@ Result<int> HttpServer::start() {
     s.svr.set_keep_alive_timeout(std::max(1, s.opt.idle_timeout_s));
 
     auto handler = [&s](const httplib::Request& req, httplib::Response& res) {
+        if (t_conn)
+            t_conn->reading_since_ms = 0;  // the request is complete; the handler may run for minutes
         apply(s.handler.handle(convert(req)), res);
     };
+    // Called after the response (including a streamed one) was fully written: the next request on this
+    // keep-alive connection starts its own deadline.
+    // (cpp-httplib logs BEFORE it writes the response, so a streamed body restarts the clock in its resource
+    // releaser instead, see apply().)
+    s.svr.set_logger([](const httplib::Request&, const httplib::Response& res) {
+        if (t_conn && !res.content_provider_)
+            t_conn->reading_since_ms = steady_ms();
+    });
     s.svr.Get(".*", handler);
     s.svr.Post(".*", handler);
     s.svr.Put(".*", handler);
@@ -137,6 +217,21 @@ Result<int> HttpServer::start() {
         s.svr.listen_after_bind();
         s.running = false;
     });
+    if (s.opt.request_deadline_s > 0) {
+        s.reaper_stop = false;
+        s.reaper = std::thread([&s] {
+            const std::int64_t deadline_ms = static_cast<std::int64_t>(s.opt.request_deadline_s) * 1000;
+            std::unique_lock lk(s.reaper_mu);
+            while (!s.reaper_stop) {
+                s.reaper_cv.wait_for(lk, std::chrono::milliseconds(200));
+                if (s.reaper_stop)
+                    break;
+                lk.unlock();
+                s.svr.reap(deadline_ms);
+                lk.lock();
+            }
+        });
+    }
     // Wait until the accept loop is live so callers can connect immediately.
     for (int i = 0; i < 500 && !s.svr.is_running(); ++i)
         std::this_thread::sleep_for(std::chrono::milliseconds(2));
@@ -148,6 +243,13 @@ void HttpServer::stop() {
     if (!impl_)
         return;
     impl_->svr.stop();
+    {
+        std::lock_guard lk(impl_->reaper_mu);
+        impl_->reaper_stop = true;
+    }
+    impl_->reaper_cv.notify_all();
+    if (impl_->reaper.joinable())
+        impl_->reaper.join();
     if (impl_->thread.joinable())
         impl_->thread.join();
     impl_->running = false;

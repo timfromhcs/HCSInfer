@@ -1,0 +1,25 @@
+PASS  serve starts, prints port and token
+PASS  LFM3-Omni-2B Q8_0 is listed
+PASS  baseline chat (model auto-load) works
+== A: streaming disconnect storm ==
+PASS  A: server survived the streaming disconnect storm
+PASS  A: engine is free again after the storm (short chat promptly served)
+== B: abandoned non-streaming requests ==
+PASS  B: server alive after abandoned non-streaming requests
+PASS  B: abandoned requests were cancelled (engine free, not stuck generating 512 tokens each)
+== C: idle and half-written connection flood ==
+PASS  C: health still answers while ~64 idle/half-open connections are held
+PASS  C: server alive after the flood
+PASS  C: health recovers promptly after the flood is released
+== D: model load/unload churn with vanishing clients ==
+PASS  D: unload during a live stream / reload churn gave only clean statuses
+PASS  D: chat works after churn
+PASS  server private-bytes growth within limit (192 MB)
+FAIL  server handle growth within limit (48) -- 93
+PASS  server thread growth within limit (8)
+== E: hard kill during generation, restart ==
+PASS  E: restart after hard kill (same state dir)
+PASS  E: chat works after crash recovery
+== F: Ctrl+Break during generation ==
+PASS  F: server exits on Ctrl+Break while generating (rc=0, 0.4s)
+verdict: FAIL failed: ['server handle growth within limit (48)']

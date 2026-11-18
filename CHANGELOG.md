@@ -36,6 +36,25 @@ feature is in `docs/roadmap/STATUS.md`.
   `docs/soak.md`) with CTest registration off by default (`-DHCS_SOAK_REGISTER=ON`). Release CTest: 735 registered,
   0 failed (was 550). A real `prime-agent` session, a real trainer run and the Jinja parity check stay NOT RUN.
 
+### Fixed (wave 3, uncommitted; soak defects, see `docs/test-evidence/soak/DEFECTS.md`)
+- D-S1: `~Runtime()` now cancels and joins both job queues before any member is destroyed (destroying a `Runtime` with
+  a running job used to crash). Red -> green with `RuntimeLifecycle.*`.
+- D-S2: `serve` connection budget raised to 48+ workers + 32 queued so ~64 idle / half-open local sockets no longer
+  starve `GET /hcs/v1/health` (`serve_transport_options()`).
+- D-S3: `serve` shutdown cancels running jobs before stopping the transport (it used to wait for the generation or the
+  300 s request timeout) and also handles `SIGBREAK`; the harness's original "Ctrl+C not honoured" was an inherited
+  console ignore flag, not the server.
+- D-S4 (new): overall request-receive deadline (`TransportOptions::request_deadline_s`, default 15 s) against
+  slowloris; needs a one-line access patch of a build-tree copy of `httplib.h` (`cmake/HcsHttplib.cmake`).
+
+### Tests (wave 3, uncommitted)
+- Release CTest 735 -> 779 registered, 0 failed (model-dependent tests skip = NOT RUN): runtime destruction (4), real-socket
+  transport negatives (slowloris, oversized header, malformed request line, bad Content-Length, pipelining, request
+  smuggling, long-running request vs deadline, 429 over the wire, health under 64 idle sockets, graceful shutdown: 11),
+  storage read-failure/unplug (6), MCP stdio framing (7), log redaction on failure paths and for images (2),
+  `atomic_write_file` (6), `json_guard` / `base64` (8). Soak quick re-run: 12 gtest cases PASS (shutdown tests now
+  destroy the `Runtime` directly), HttpStorm 18/18 PASS after the harness fixes. Full soak profile NOT RUN.
+
 ### Changed
 - CI: the `web` job is a blocking gate (`d8a5e37`); format and clang-tidy gates repaired after wave 1 (`06cfbe4`).
   `pr.yml` run 44167798984 is green on all six jobs.

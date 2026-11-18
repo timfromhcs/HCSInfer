@@ -1,0 +1,10 @@
+ctrl+c ignored in parent before reset: True
+port 63247
+model lfm3-omni-2b-q8_0
+client stream ended after 150 reads
+EXIT rc=0 after 0.4s
+method":"GET","path":"/v1/models","status":"200","rid":"req-974684bee9e181a5"}
+{"ts":"2026-11-18T08:03:26.544Z","level":"info","component":"control","msg":"model loaded","model":"lfm3-omni-2b-q8_0","kind":"text"}
+{"ts":"2026-11-18T08:03:26.909Z","level":"info","component":"api","msg":"request","method":"POST","path":"/v1/chat/completions","status":"200","rid":"req-ba5140b642622caf"}
+shutting down
+
