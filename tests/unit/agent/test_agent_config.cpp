@@ -205,3 +205,56 @@ TEST(AgentConfig, LaunchPlanRejectsUnsafeInputs) {
         EXPECT_FALSE(build_launch_plan(r));
     }
 }
+
+TEST(AgentConfig, TokenViaEnvKeepsTheSecretOutOfModelsJsonAndArgv) {
+    ProviderConfig p = valid_provider();
+    p.api_key = "super-secret-token-0123456789";
+    p.api_key_env = "HCS_AGENT_TOKEN";
+    auto doc = provider_config_json(p);
+    ASSERT_TRUE(doc) << doc.error().message;
+    EXPECT_EQ(doc.value().find(p.api_key), std::string::npos)
+        << "the secret must not be written to models.json";
+    EXPECT_EQ(json::parse(doc.value())["providers"]["hcs"]["apiKey"], "HCS_AGENT_TOKEN");
+
+    TempDir t;
+    LaunchRequest req = valid_request(t.path());
+    req.provider = p;
+    auto plan = build_launch_plan(req);
+    ASSERT_TRUE(plan) << plan.error().message;
+    EXPECT_FALSE(args_contain(plan.value().args, "--api-key"));
+    for (const auto& a : plan.value().args)
+        EXPECT_EQ(a.find(p.api_key), std::string::npos) << "token leaked into argv: " << a;
+    EXPECT_EQ(plan.value().env.at("HCS_AGENT_TOKEN"), p.api_key);
+}
+
+TEST(AgentConfig, LiteralTokenBehaviourIsUnchangedWithoutApiKeyEnv) {
+    TempDir t;
+    auto plan = build_launch_plan(valid_request(t.path()));
+    ASSERT_TRUE(plan);
+    EXPECT_TRUE(args_contain(plan.value().args, "--api-key"));
+    EXPECT_TRUE(args_contain(plan.value().args, "run-token-abc123"));
+    EXPECT_EQ(plan.value().env.count("HCS_AGENT_TOKEN"), 0u);
+}
+
+TEST(AgentConfig, ApiKeyEnvMustBeAnUpperCaseVariableName) {
+    const std::vector<std::string> bad_names = {"lower",     "1BAD",   "HAS SPACE",         "HAS=EQ",
+                                                "WITH-DASH", "PATH\n", std::string(65, 'A')};
+    for (const std::string& bad : bad_names) {
+        ProviderConfig p = valid_provider();
+        p.api_key_env = bad;
+        EXPECT_FALSE(provider_config_json(p)) << bad;
+    }
+    ProviderConfig ok = valid_provider();
+    ok.api_key_env = "HCS_AGENT_TOKEN_2";
+    EXPECT_TRUE(provider_config_json(ok));
+}
+
+TEST(AgentConfig, LocalServerCompatAddsTheCompatBlockOnlyWhenAsked) {
+    ProviderConfig p = valid_provider();
+    EXPECT_FALSE(json::parse(provider_config_json(p).value())["providers"]["hcs"].contains("compat"));
+    p.local_server_compat = true;
+    const json compat = json::parse(provider_config_json(p).value())["providers"]["hcs"]["compat"];
+    EXPECT_EQ(compat["supportsStore"], false);
+    EXPECT_EQ(compat["supportsDeveloperRole"], false);
+    EXPECT_EQ(compat["maxTokensField"], "max_tokens");
+}

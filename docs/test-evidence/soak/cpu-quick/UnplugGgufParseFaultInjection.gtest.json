@@ -1,0 +1,32 @@
+{
+  "tests": 1,
+  "failures": 0,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2026-11-18T08:19:24Z",
+  "time": "3.197s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "Soak",
+      "tests": 1,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-18T08:19:24Z",
+      "time": "3.197s",
+      "testsuite": [
+        {
+          "name": "UnplugGgufParseFaultInjection",
+          "file": "D:\\HCSInfer\\.claude\\worktrees\\repo-analysis-v1-stable-80f8d6\\tests\\soak\\soak_core\\test_soak_core.cpp",
+          "line": 677,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-18T08:19:24Z",
+          "time": "3.197s",
+          "classname": "Soak"
+        }
+      ]
+    }
+  ]
+}

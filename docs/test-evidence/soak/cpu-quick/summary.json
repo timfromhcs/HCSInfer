@@ -1,0 +1,118 @@
+{
+  "meta": {
+    "schema_version": 1,
+    "label": "cpu-quick",
+    "profile": "quick",
+    "timestamp_utc": "2026-11-18T07:19:22.5966292Z",
+    "git_commit": "902b41e90368",
+    "git_dirty": true,
+    "os": "Microsoft Windows 11 Pro 26200",
+    "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics        ",
+    "ram_bytes": 21245952000,
+    "exe_test": "D:\\HCSInfer\\.claude\\worktrees\\repo-analysis-v1-stable-80f8d6\\build\\rel\\bin\\hcs_test_soak_core.exe",
+    "knobs": {
+      "HCS_SOAK_SHUTDOWN_ROUNDS": 2,
+      "HCS_SOAK_CYCLES": 8,
+      "HCS_SOAK_IMAGE_RUNS": 3,
+      "HCS_SOAK_VISION_RUNS": 4,
+      "Storm": 12,
+      "HCS_SOAK_GEN_SECONDS": 60,
+      "HCS_SOAK_CANCEL_ROUNDS": 10,
+      "HCS_SOAK_UNPLUG_ROUNDS": 5,
+      "HCS_SOAK_SWITCH_CYCLES": 3
+    }
+  },
+  "results": [
+    {
+      "test": "Soak.UnplugGgufParseFaultInjection",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 3.2,
+      "log": "UnplugGgufParseFaultInjection.log"
+    },
+    {
+      "test": "Soak.UnplugTruncatedHcsModelStream",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 0.3,
+      "log": "UnplugTruncatedHcsModelStream.log"
+    },
+    {
+      "test": "Soak.UnplugEngineLoadTruncatedAndVanishedFile",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 5.5,
+      "log": "UnplugEngineLoadTruncatedAndVanishedFile.log"
+    },
+    {
+      "test": "Soak.LoadUnloadCycles",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 12.4,
+      "log": "LoadUnloadCycles.log"
+    },
+    {
+      "test": "Soak.ModelSwitchCycles",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 6.8,
+      "log": "ModelSwitchCycles.log"
+    },
+    {
+      "test": "Soak.VisionRepeat",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 12.3,
+      "log": "VisionRepeat.log"
+    },
+    {
+      "test": "Soak.DiffusionRepeat",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 29.6,
+      "log": "DiffusionRepeat.log"
+    },
+    {
+      "test": "Soak.CancelStorm",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 7.9,
+      "log": "CancelStorm.log"
+    },
+    {
+      "test": "Soak.ShutdownWhileLoading",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 8.1,
+      "log": "ShutdownWhileLoading.log"
+    },
+    {
+      "test": "Soak.ShutdownWhileGenerating",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 10.0,
+      "log": "ShutdownWhileGenerating.log"
+    },
+    {
+      "test": "Soak.ShutdownWhileRenderingImage",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 17.1,
+      "log": "ShutdownWhileRenderingImage.log"
+    },
+    {
+      "test": "Soak.ContinuousGeneration",
+      "status": "PASS",
+      "exit_code": 0,
+      "seconds": 67.0,
+      "log": "ContinuousGeneration.log"
+    },
+    {
+      "test": "HttpStorm",
+      "status": "FAIL",
+      "exit_code": 1,
+      "seconds": 87.0,
+      "log": "http-storm.log"
+    }
+  ]
+}

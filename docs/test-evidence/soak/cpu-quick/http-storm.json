@@ -1,0 +1,152 @@
+{
+ "schema_version": 1,
+ "timestamp_utc": "2026-11-18T07:23:50Z",
+ "rounds": 12,
+ "checks": [
+  {
+   "check": "serve starts, prints port and token",
+   "pass": true,
+   "detail": "['HCSInfer API token: e9f6aa02b880964f29f88f79ae2f550aef4ca4060959634e79eb1f1ac8863292', 'HCSInfer API listening on http://127.0.0.1:54469', 'HCSInfer API token: e9f6aa02b880964f29f88f79ae2f550aef4ca4060959634e79eb1f1ac8863292']"
+  },
+  {
+   "check": "LFM3-Omni-2B Q8_0 is listed",
+   "pass": true,
+   "detail": "['lfm3-omni-2b-q8_0', 'lfm3-omni-2b-q8_0-2', 'mmproj-lfm3-omni-2b-q8_0', 'mmproj-lfm3-omni-2b-q8_0-2', 'mmproj-smolvlm2-500m-video-instruct-q8_0', 'smolvlm2-500m-video-instruct-q8_0']"
+  },
+  {
+   "check": "baseline chat (model auto-load) works",
+   "pass": true,
+   "detail": "(200, 'The wind howled through the open doors of the Old Mariner\u2019s Lighthouse', 2.2274906635284424)"
+  },
+  {
+   "check": "A: server survived the streaming disconnect storm",
+   "pass": true,
+   "detail": "['{\"ts\":\"2026-11-18T07:22:33.685Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"request\",\"method\":\"POST\",\"path\":\"/v1/chat/completions\",\"status\":\"200\",\"rid\":\"req-eebf8364bab3988e\"}', '{\"ts\":\"2026-11-18T07:22:34.138Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"request\",\"method\":\"POST\",\"path\":\"/v1/chat/completions\",\"status\":\"200\",\"rid\":\"req-60c0bfdaa106f284\"}', '{\"ts\":\"2026-11-18T07:22:34.673Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"request\",\"method\":\"POST\",\"path\":\"/v1/chat/completions\",\"status\":\"200\",\"ri"
+  },
+  {
+   "check": "A: engine is free again after the storm (short chat promptly served)",
+   "pass": true,
+   "detail": "(0.5486795902252197, 0.5486981868743896)"
+  },
+  {
+   "check": "B: server alive after abandoned non-streaming requests",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "B: abandoned requests were cancelled (engine free, not stuck generating 512 tokens each)",
+   "pass": true,
+   "detail": "(0.6395969390869141, 0.6396074295043945)"
+  },
+  {
+   "check": "C: health still answers while ~64 idle/half-open connections are held",
+   "pass": false,
+   "detail": "('error', '[WinError 10053] Eine bestehende Verbindung wurde softwaregesteuert\\r\\ndurch den Hostcomputer abgebrochen')"
+  },
+  {
+   "check": "C: server alive after the flood",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "C: health recovers promptly after the flood is released",
+   "pass": true,
+   "detail": "0.0007987022399902344"
+  },
+  {
+   "check": "D: unload during a live stream / reload churn gave only clean statuses",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "D: chat works after churn",
+   "pass": true,
+   "detail": "(1.4770097732543945, 1.4770138263702393)"
+  },
+  {
+   "check": "server private-bytes growth within limit (192 MB)",
+   "pass": true,
+   "detail": "2.5859375"
+  },
+  {
+   "check": "server handle growth within limit (48)",
+   "pass": true,
+   "detail": "17"
+  },
+  {
+   "check": "server thread growth within limit (8)",
+   "pass": true,
+   "detail": "0"
+  },
+  {
+   "check": "E: restart after hard kill (same state dir)",
+   "pass": true,
+   "detail": "['HCSInfer API token: 2d3e415cbe32b5922f7aa5786a51848fed8922e8324a2580d6b727305cb1fdd0', 'HCSInfer web UI: http://127.0.0.1:54573/  (enter the token on the page, or open it with #token=<token> appended; the fragment is never sent to the server)', 'HCSInfer API listening on http://127.0.0.1:54573', 'HCSInfer API token: 2d3e415cbe32b5922f7aa5786a51848fed8922e8324a2580d6b727305cb1fdd0']"
+  },
+  {
+   "check": "E: chat works after crash recovery",
+   "pass": true,
+   "detail": "(200, 'The wind howled through the open doors of the Old Mariner\u2019s ', 2.245250940322876)"
+  },
+  {
+   "check": "F: server exits on Ctrl+C while generating",
+   "pass": false,
+   "detail": "still running after 60 s"
+  }
+ ],
+ "server_samples": [
+  {
+   "label": "after-first-load",
+   "t": 1794986549.8131108,
+   "private_bytes": 2151342080,
+   "working_set": 2544349184,
+   "handles": 98,
+   "threads": 24
+  },
+  {
+   "label": "A-round-10",
+   "t": 1794986554.8524175,
+   "private_bytes": 2153168896,
+   "working_set": 2546184192,
+   "handles": 115,
+   "threads": 24
+  },
+  {
+   "label": "after-A",
+   "t": 1794986556.6891823,
+   "private_bytes": 2151788544,
+   "working_set": 2544742400,
+   "handles": 114,
+   "threads": 24
+  },
+  {
+   "label": "after-B",
+   "t": 1794986561.194465,
+   "private_bytes": 2151825408,
+   "working_set": 2544787456,
+   "handles": 114,
+   "threads": 24
+  },
+  {
+   "label": "after-C",
+   "t": 1794986561.830995,
+   "private_bytes": 2151968768,
+   "working_set": 2544914432,
+   "handles": 115,
+   "threads": 24
+  },
+  {
+   "label": "after-D",
+   "t": 1794986567.4328206,
+   "private_bytes": 2154053632,
+   "working_set": 2546642944,
+   "handles": 115,
+   "threads": 24
+  }
+ ],
+ "verdict": "FAIL",
+ "failed": [
+  "C: health still answers while ~64 idle/half-open connections are held",
+  "F: server exits on Ctrl+C while generating"
+ ]
+}

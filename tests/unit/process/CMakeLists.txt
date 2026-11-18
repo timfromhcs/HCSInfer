@@ -5,7 +5,7 @@ target_link_libraries(hcs_child_probe PRIVATE hcs_warnings)
 # The test locates the probe in the build's runtime output directory. The build path is embedded at configure
 # time; a build directory containing spaces is not supported by this define (the repository default has none).
 hcs_add_gtest(process
-  SOURCES test_child_process.cpp
+  SOURCES test_child_process.cpp test_child_process_stream.cpp
   LINK hcs_process hcs_core
   LABELS unit
   DEFINES HCS_CHILD_PROBE="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")

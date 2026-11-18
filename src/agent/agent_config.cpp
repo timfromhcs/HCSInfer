@@ -40,6 +40,14 @@ bool is_model_id(std::string_view s) {
     });
 }
 
+bool is_env_name(std::string_view s) {
+    if (s.empty() || s.size() > 64 || !(std::isupper(static_cast<unsigned char>(s.front())) != 0)) {
+        return false;
+    }
+    return std::all_of(s.begin(), s.end(),
+                       [](unsigned char c) { return std::isupper(c) || std::isdigit(c) || c == '_'; });
+}
+
 bool is_capability(std::string_view s) {
     return s == "text" || s == "image";
 }
@@ -136,6 +144,10 @@ Result<void> validate_provider(const ProviderConfig& config) {
     if (config.api_key.empty() || config.api_key.size() > 512 || has_control_or_space(config.api_key)) {
         return invalid("provider api_key must be a non-empty token without whitespace or control characters");
     }
+    if (!config.api_key_env.empty() && !is_env_name(config.api_key_env)) {
+        return invalid(
+            "provider api_key_env must be an upper-case environment variable name ([A-Z][A-Z0-9_]*)");
+    }
     if (config.api != "openai-completions") {
         return invalid("provider api must be 'openai-completions'");
     }
@@ -178,10 +190,17 @@ Result<std::string> provider_config_json(const ProviderConfig& config) {
                               {"input", model.input}});
     }
     json provider{{"baseUrl", config.base_url},
-                  {"apiKey", config.api_key},
+                  {"apiKey", config.api_key_env.empty() ? config.api_key : config.api_key_env},
                   {"api", config.api},
-                  {"authHeader", config.auth_header},
-                  {"models", std::move(models)}};
+                  {"authHeader", config.auth_header}};
+    if (config.local_server_compat) {
+        provider["compat"] = json{{"supportsStore", false},
+                                  {"supportsDeveloperRole", false},
+                                  {"supportsReasoningEffort", false},
+                                  {"supportsUsageInStreaming", true},
+                                  {"maxTokensField", "max_tokens"}};
+    }
+    provider["models"] = std::move(models);
     const json document{{"providers", json{{config.name, std::move(provider)}}}};
     return document.dump(2);
 }
@@ -212,9 +231,14 @@ Result<LaunchPlan> build_launch_plan(const LaunchRequest& request) {
     LaunchPlan plan;
     plan.program = request.program;
     plan.cwd = workspace.value();
-    plan.args = {"--offline",      "--provider", request.provider.name,   "--model",
-                 request.model_id, "--api-key",  request.provider.api_key};
+    plan.args = {"--offline", "--provider", request.provider.name, "--model", request.model_id};
     plan.env = {{"PRIME_AGENT_CODING_AGENT_DIR", request.agent_dir.string()}, {"PI_OFFLINE", "1"}};
+    if (request.provider.api_key_env.empty()) {
+        plan.args.push_back("--api-key");
+        plan.args.push_back(request.provider.api_key);
+    } else {
+        plan.env[request.provider.api_key_env] = request.provider.api_key;
+    }
     return plan;
 }
 

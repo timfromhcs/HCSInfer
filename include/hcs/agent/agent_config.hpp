@@ -31,6 +31,16 @@ struct ProviderConfig {
     std::string api = "openai-completions";
     bool auth_header = true;
     std::vector<ProviderModel> models;  // at least one
+
+    // When non-empty (an upper-case environment-variable name such as HCS_AGENT_TOKEN) the token travels ONLY
+    // through the child's environment: models.json carries the variable NAME as `apiKey`, the launch plan
+    // adds the variable to `env` and does not put the token on the command line (argv is visible to every
+    // local process). Empty keeps the literal-token behaviour (`apiKey` = token, `--api-key <token>`).
+    std::string api_key_env;
+
+    // Adds the `compat` block that tells prime-agent not to send OpenAI-only request fields (store, developer
+    // role, reasoning effort) that a llama.cpp-style local server does not implement.
+    bool local_server_compat = false;
 };
 
 // True only for http://127.0.0.1[:port]/v1, http://localhost[:port]/v1 or http://[::1][:port]/v1.
@@ -58,7 +68,8 @@ struct LaunchPlan {
     std::map<std::string, std::string> env;  // PRIME_AGENT_CODING_AGENT_DIR, PI_OFFLINE
 };
 
-// Builds the launch plan (never runs it): `--offline`, only the HCS provider, the workspace as cwd.
+// Builds the launch plan (never runs it): `--offline`, only the HCS provider, the workspace as cwd. The token
+// is passed through `env` (never argv) when `provider.api_key_env` is set.
 Result<LaunchPlan> build_launch_plan(const LaunchRequest& request);
 
 }  // namespace hcs::agent

@@ -208,3 +208,117 @@ TEST(AdapterBook, ManifestJsonRoundTripsAndRejectsDefects) {
     EXPECT_FALSE(parse_adapter_manifest(to_json(m).substr(0, 20)));
     EXPECT_FALSE(parse_adapter_manifest("{\"schema_version\":1}"));
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// Cases carried over from the retired AdapterStore tests (history walk, idempotence, fail-closed pointer
+// file), re-expressed against AdapterBook's actual semantics (one step of history: `previous`).
+// ---------------------------------------------------------------------------------------------------------------
+TEST(AdapterBook, ActivatingTheSameAdapterTwiceDoesNotErasePreviousFromHistory) {
+    TempDir dir;
+    AdapterBook book(dir / "train");
+    for (const char* id : {"v1", "v2"}) ASSERT_TRUE(book.install(make_manifest(id)));
+    ASSERT_TRUE(book.activate("v1"));
+    ASSERT_TRUE(book.activate("v2"));
+    ASSERT_TRUE(book.activate("v2"));  // idempotent: must not turn `previous` into v2 as well
+    ASSERT_TRUE(book.rollback(hex('a')));
+    EXPECT_EQ(book.active(hex('a')).value()->adapter_id, "v1");
+}
+
+TEST(AdapterBook, HistoryIsOneStepDeepAndRollbackSwapsActiveAndPrevious) {
+    TempDir dir;
+    AdapterBook book(dir / "train");
+    for (const char* id : {"v1", "v2", "v3"}) {
+        ASSERT_TRUE(book.install(make_manifest(id)));
+        ASSERT_TRUE(book.activate(id));
+    }
+    ASSERT_EQ(book.active(hex('a')).value()->adapter_id, "v3");
+    ASSERT_TRUE(book.rollback(hex('a')));
+    EXPECT_EQ(book.active(hex('a')).value()->adapter_id, "v2");  // v1 is no longer reachable by rollback
+    ASSERT_TRUE(book.rollback(hex('a')));
+    EXPECT_EQ(book.active(hex('a')).value()->adapter_id, "v3");  // a second rollback swaps back
+    // nothing was deleted along the way
+    auto all = book.list();
+    ASSERT_TRUE(all);
+    EXPECT_EQ(ids(all.value()), (std::vector<std::string>{"v1", "v2", "v3"}));
+}
+
+TEST(AdapterBook, RollbackFromTheFirstAdapterReturnsToTheBaseModel) {
+    TempDir dir;
+    AdapterBook book(dir / "train");
+    ASSERT_TRUE(book.install(make_manifest("only")));
+    ASSERT_TRUE(book.activate("only"));
+    ASSERT_TRUE(book.rollback(hex('a')));
+    auto active = book.active(hex('a'));
+    ASSERT_TRUE(active);
+    EXPECT_FALSE(active.value().has_value()) << "no adapter active means the bare base model";
+    EXPECT_TRUE(book.get("only")) << "the adapter itself is kept";
+}
+
+TEST(AdapterBook, BaseModelsAreIndependentAndHashCaseIsIgnored) {
+    TempDir dir;
+    AdapterBook book(dir / "train");
+    ASSERT_TRUE(book.install(make_manifest("for-a", 'a')));
+    ASSERT_TRUE(book.install(make_manifest("for-b", 'b')));
+    ASSERT_TRUE(book.activate("for-a"));
+    EXPECT_FALSE(book.active(hex('b')).value().has_value());
+    ASSERT_TRUE(book.activate("for-b"));
+    EXPECT_EQ(book.active(hex('a')).value()->adapter_id, "for-a");
+    EXPECT_EQ(book.active(hex('b')).value()->adapter_id, "for-b");
+    const std::string upper(64, 'A');
+    EXPECT_EQ(book.active(upper).value()->adapter_id, "for-a");
+}
+
+TEST(AdapterBook, CorruptPointerFileFailsClosedEverywhere) {
+    const char* bad_pointers[] = {
+        "{ not json",
+        "[]",
+        R"({"schema_version":2,"targets":{}})",
+        R"({"targets":{}})",
+        R"({"schema_version":1})",
+        R"({"schema_version":1,"targets":[]})",
+        R"({"schema_version":1,"targets":{"aaaa":5}})",
+        R"({"schema_version":1,"targets":{"aaaa":{"active":"x"}}})",
+        R"({"schema_version":1,"targets":{"aaaa":{"active":1,"previous":""}}})",
+    };
+    for (const char* pointer : bad_pointers) {
+        TempDir dir;
+        AdapterBook book(dir / "train");
+        ASSERT_TRUE(book.install(make_manifest("v1")));
+        hcs::test::write_file(dir / "train" / "active.json", pointer);
+        EXPECT_FALSE(book.active(hex('a'))) << pointer;
+        EXPECT_FALSE(book.activate("v1")) << pointer;
+        EXPECT_FALSE(book.rollback(hex('a'))) << pointer;
+    }
+}
+
+TEST(AdapterBook, OversizedPointerFileIsRefusedNotRead) {
+    TempDir dir;
+    AdapterBook book(dir / "train");
+    hcs::test::write_file(dir / "train" / "active.json", std::string((1u << 20) + 10, ' '));
+    EXPECT_FALSE(book.active(hex('a')));
+}
+
+TEST(AdapterBook, APointerNamingAnUnsafeOrMissingAdapterIsAnErrorNotAPathEscape) {
+    for (const char* target : {"../../etc/passwd", "missing-adapter", "a/b"}) {
+        TempDir dir;
+        AdapterBook book(dir / "train");
+        hcs::test::write_file(dir / "train" / "active.json",
+                              std::string(R"({"schema_version":1,"targets":{")") + hex('a') +
+                                  R"(":{"active":")" + target + R"(","previous":""}}})");
+        auto active = book.active(hex('a'));
+        EXPECT_FALSE(active) << target;
+    }
+}
+
+TEST(AdapterBook, OverwriteReplacesTheManifestButNotTheActivationPointer) {
+    TempDir dir;
+    AdapterBook book(dir / "train");
+    ASSERT_TRUE(book.install(make_manifest("v1")));
+    ASSERT_TRUE(book.activate("v1"));
+    AdapterManifest worse = make_manifest("v1", 'a', GateDecision::Rollback);
+    ASSERT_TRUE(book.install(worse, /*overwrite=*/true));
+    EXPECT_EQ(book.get("v1").value().gate.decision, GateDecision::Rollback);
+    // an active adapter whose manifest no longer says Keep is still what the pointer names; a later activate
+    // of it is refused, so the downgrade cannot be silently re-promoted
+    EXPECT_FALSE(book.activate("v1"));
+}

@@ -1,0 +1,12 @@
+Running main() from D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-80f8d6\build\rel\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = Soak.ShutdownWhileRenderingImage
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from Soak
+[ RUN      ] Soak.ShutdownWhileRenderingImage
+[       OK ] Soak.ShutdownWhileRenderingImage (17088 ms)
+[----------] 1 test from Soak (17088 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (17089 ms total)
+[  PASSED  ] 1 test.

@@ -2,6 +2,7 @@
 # Pure logic and bounded file I/O: it never runs a trainer and never downloads anything.
 hcs_add_library(train
   SOURCES
-    dataset_validator.cpp eval_gate.cpp eval_report.cpp adapter_book.cpp pipeline.cpp
-  PUBLIC_LINK hcs_core
-  PRIVATE_LINK nlohmann_json::nlohmann_json)
+    dataset_validator.cpp eval_gate.cpp eval_report.cpp adapter_book.cpp pipeline.cpp rsi_loop.cpp chat_template.cpp
+    dataset_prep.cpp
+  PUBLIC_LINK hcs_core nlohmann_json::nlohmann_json
+  PRIVATE_LINK hcs_storage)

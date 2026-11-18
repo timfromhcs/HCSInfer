@@ -25,6 +25,17 @@ feature is in `docs/roadmap/STATUS.md`.
   `--preset fast|quality`; the render is BLOCKED on gated files); the HCS Studio UI redesign; agent/train foundations.
 - V1.1 scope addendum and verified model selection (`e0ff7d4`, `a7527e9`).
 
+- Agent/train port from the stopped `flux3-agent-engine` session, re-based on `main`'s better modules (uncommitted):
+  `agent_redact`, `event_parser` (hardened: wrongly typed JSON fields no longer throw), `tool_audit` (python tripwire,
+  hardened against escapes, f-string expressions, unicode identifiers, aliasing; documented as a tripwire, not a
+  sandbox), `session_manager` (consumes `build_launch_plan`, injected launcher, token only via the child environment),
+  `chat_template` / `dataset_prep` (bounded against deep JSON, turn-token injection and overwrites) and a rewritten
+  `rsi_loop` on the existing `EvalReport`/`AdapterBook`/gate. `hcs::process` gained streaming reads, a replaced
+  environment, Job Object process/memory caps and a thread-safe `terminate()`, behind the `IProcessLauncher` seam.
+  `ProviderConfig` gained `api_key_env` and `local_server_compat`. Soak harness (`scripts/soak.ps1`, `tests/soak/`,
+  `docs/soak.md`) with CTest registration off by default (`-DHCS_SOAK_REGISTER=ON`). Release CTest: 735 registered,
+  0 failed (was 550). A real `prime-agent` session, a real trainer run and the Jinja parity check stay NOT RUN.
+
 ### Changed
 - CI: the `web` job is a blocking gate (`d8a5e37`); format and clang-tidy gates repaired after wave 1 (`06cfbe4`).
   `pr.yml` run 44167798984 is green on all six jobs.
