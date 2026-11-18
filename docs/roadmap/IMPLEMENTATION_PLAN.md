@@ -1,7 +1,7 @@
 # HCSInfer implementation plan (derived from AGENTS.md section 5)
 
 Checklist legend: `[x]` done with evidence in `docs/test-evidence/` or an inspected test, `[~]` partial,
-`[ ]` open. Per-gate status and evidence live in `STATUS.md`. Updated 2026-11-17 from the inspected tree.
+`[ ]` open. Per-gate status and evidence live in `STATUS.md`. Updated 2026-11-18 from the inspected tree.
 
 ## Dependency graph
 
@@ -30,10 +30,12 @@ graph TD
 
 Critical path to V1: vision adapter -> image routes in API/MCP -> GUI (ADR-009) -> Model Vault in the load path ->
 hardening/soak -> release package. M7 single-EXE and M8 kernels gate only the single-file and custom-kernel claims.
-Last completed milestone: V1.1 wave 1 (commit `6a390b8`) plus the wave-2 browser demo `web/` (ADR-013) and the HCS
-Train pipeline (ADR-012; logic + CLI green, a real training run NOT RUN). Earlier: M3 image routes + M4 embedded UI
-+ `benchmark` command + M10 audit fixes (`docs/test-evidence/M3-image`, `M4-gui`, `benchmark`, `M10-fixes`).
-Next: the last V1.1 wave-2 item (HCS Agent adapter), then M5 Model Vault in the engine load path.
+Last completed milestone: V1.1 wave 2 on `main` (`35bd39d`): the browser demo `web/` (ADR-013), the HCS Train pipeline
+(ADR-012; logic + CLI green, a real training run NOT RUN) and the HCS Agent policy/provider/launch-plan/process
+supervisor (ADR-011; a real `prime-agent` session NOT RUN). Earlier: V1.1 wave 1 (`6a390b8`), M3 image routes + M4
+embedded UI + `benchmark` command + M10 audit fixes (`docs/test-evidence/M3-image`, `M4-gui`, `benchmark`,
+`M10-fixes`).
+Next: the V1-stable wave plan W1..W6 at the end of this file (the release checklist is in `STATUS.md`).
 
 ## M0 Repository and hardware baseline
 - [x] Repo inspected, scaffold + build/test scripts
@@ -61,14 +63,14 @@ Next: the last V1.1 wave-2 item (HCS Agent adapter), then M5 Model Vault in the 
 - [~] Budget checked before eviction: `MemoryBudget` is unit-tested and fed by a live memory probe (`src/hardware/memory_probe.cpp`); verifying it against real engine loads is NOT RUN
 - [x] `src/engines/llama` adapter implementing `ITextEngine` (text + vision)
 - [x] `src/engines/diffusion` adapter implementing `IImageEngine` (text-to-image, img2img; CPU + Vulkan)
-- [~] CLI `tune`, `cache` (exit code 10 today; `benchmark` is implemented)
+- [~] CLI `models load|unload`, `tune` (exit code 10 today; `cache stats|clear` is implemented; `benchmark --suite quick` and `train` are implemented; load/unload work over HTTP and MCP)
 - [x] Cancellation mid-generation and 10x load/unload on the llama adapter (`M2/llama-engine-integration.txt`); [x] the diffusion adapter has blocking/cancellation integration tests (`DiffusionBlocking.*`)
 - [~] ADR-001..004: finalised with the evidence available; open items are listed inside each ADR
 
 ## M3 Unified API and MCP
 - [x] HTTP: `/v1/models`, `/v1/chat/completions` (+streaming), `/hcs/v1/{health,runtime,devices,memory,models,models/{id},jobs}`
 - [x] `/v1/images/generations`, `/v1/images/edits` (real render, `M3-image/` 47/47)
-- [ ] `POST /hcs/v1/benchmarks` (`501` today; the CLI `benchmark` command is the supported path)
+- [x] `POST /hcs/v1/benchmarks` (job, contract-tested; real-model run NOT RUN). [ ] MCP `hcs.runtime.benchmark` tool still open
 - [x] Loopback bind, token auth, body limits, request IDs, structured errors, inflight cap (`tests/contract/api*`)
 - [x] MCP stdio tools: models list/inspect/load/unload, chat.generate, runtime.status, jobs.status/cancel; stdout clean; real run in `e2e_real.py`
 - [x] MCP `hcs.vision.analyze`, `hcs.image.generate`, `hcs.image.edit` (real render, image content block, `M3-image/`)
@@ -120,14 +122,33 @@ Next: the last V1.1 wave-2 item (HCS Agent adapter), then M5 Model Vault in the 
 - [x] 001 GGML topology (accepted with scope limits); 002 process model; 003 Vulkan ownership; 004 memory budget (accepted with open validation items)
 - [x] 005 Vault/no-SSD cache; 006 chunk container; 007 API/MCP security
 - [x] 008 static CRT (decision: deferred, evidence plan); 009 GUI (accepted and implemented); 010 benchmark methodology (accepted, first B0 run recorded)
+- [x] 011 coding agent (sidecar), 012 HCS Train + RSI loop, 013 web demo (WebGPU/WASM) - all accepted; index in `docs/decisions/README.md`
 
 ## CI
-- [x] `.github/workflows/pr.yml`: windows-latest configure/build/ctest + format check (created; never executed, repo has no commits or remote)
-- [x] `.github/workflows/hardware.yml`: self-hosted Radeon runner, manual dispatch / trusted branch only (created; never executed)
-- [ ] First green hosted run; first hardware run on the self-hosted runner
+- [x] `.github/workflows/pr.yml` (`pr-quick-gate`): six jobs - Release + Debug `build + ctest`, `clang-format`, `clang-tidy`, `SBOM`, `web`. Green on `main`, run 44167798984 (commit `d8a5e37`); model-dependent tests skip there (NOT RUN)
+- [x] `.github/workflows/hardware.yml`: self-hosted Radeon runner, manual dispatch / trusted branch / `v*` tags only; written, **never executed**
+- [ ] First hardware run on the self-hosted runner (NOT RUN; needs the runner and the model variables)
 
 ## M11 V1.1 (2026-11-17 addendum, see AGENTS.md section 26)
 - [x] Wave 1: FLUX.3 Klein engine + step presets, LFM3-Omni Q8 default LLM + tool calls + agentic eval, HCS Studio UI, prime-agent/train foundations (commit `6a390b8`)
-- [~] Wave 2: `web/` browser WebGPU/WASM demo (ADR-013) **done** - shell + logic green (46 tests, 14 e2e checks on a real headless Chrome), real WebGPU inference NOT RUN, Vercel deploy NOT RUN; HCS Train pipeline + eval gate + adapter book + `train` CLI (ADR-012) **done** - logic + CLI green (30 new tests), a real training run NOT RUN; HCS Agent adapter `[~]` - policy, loopback provider document, launch plan and the Windows process supervisor done (tests green); a real `prime-agent` session and the `AgentSupervisor` composition are NOT RUN
-- [ ] Wave 3: RSI loop, single-EXE/packaging, soak + hardening, V1 stable release candidate
-- Merge to `main` after each green wave.
+- [x] Wave 2 (merged on `main`, `35bd39d`): `web/` browser WebGPU/WASM demo (ADR-013) - shell + logic green (46 tests, 14 e2e checks on a real headless Chrome), real WebGPU inference NOT RUN, Vercel deploy NOT RUN; HCS Train pipeline + eval gate + adapter book + `train` CLI (ADR-012) - logic + CLI green (30 new tests), a real training run NOT RUN; HCS Agent policy, loopback provider document, launch plan and the Windows process supervisor (ADR-011) - tests green; a real `prime-agent` session and the `AgentSupervisor` composition are NOT RUN
+- [~] Remaining V1.1 items are folded into the V1-stable wave plan below (RSI loop in W2, single-EXE in W4, soak/hardening in W3, release candidate in W6)
+- Merge to `main` after each green wave (fast-forward or merge commit, never force-push).
+
+## V1-stable wave plan (W1..W6)
+
+Every wave ends with the full CTest suite green plus its own new tests, an updated `STATUS.md` and the evidence under
+`docs/test-evidence/`. Real-hardware items stay BLOCKED / NOT RUN unless an evidence file exists.
+
+| Wave | Scope | Exit criteria |
+|---|---|---|
+| **W1 (DONE, uncommitted; MCP `hcs.runtime.benchmark` still open)** honest docs + small gaps | Docs match the tree (this pass). Implement `POST /hcs/v1/benchmarks` (currently `501`), `cache stats` / `cache clear` (CLI, only HCS-owned state; never touches model files) and `benchmark --suite full`. `tune` stays Planned and returns exit code 10 - no fake stub. | Contract tests for each new route/command; `docs/api.md`, README matrix and STATUS updated in the same change; `--suite full` JSON validates against the AGENTS.md 21.1 fields |
+| **W2** salvage agent/train | Port the unique work from the local branch `claude/flux3-agent-engine-v1-665ab0` selectively: `agent_redact`, `event_parser`, `tool_audit`, `session_manager`, `chat_template`, `dataset_prep`, `rsi_loop`, soak. Nothing is merged wholesale; each piece comes with unit tests and an ADR-011 / ADR-012 note. | Tests green on a clean checkout of `main`; a real `prime-agent` session and a real training run stay NOT RUN unless executed and recorded |
+| **W3** resource/lifecycle hardening | `soak`-labelled tests (100 load/unload cycles, long generation), fault injection (OOM at the allocator boundary, cancel during load, USB-disconnect simulation, device-lost where reproducible), shutdown while idle / loading / generating. | Leak/handle checks recorded; the 30-minute and 100-cycle runs are PASS only with evidence, otherwise NOT RUN |
+| **W4** single-EXE attempt | Static CRT (`/MT`) build of HCS + both engines (ADR-008), embedded assets, then a clean-machine run without the Vulkan SDK or MSVC redistributable. | PASS only if the clean-machine test passes; otherwise the release stays a portable folder and says so |
+| **W5** M8 profiling | Profile the upstream Vulkan backend on the 680M; land **at most one** HCS Vulkan kernel (quantised GEMV first) behind a feature flag with a CPU reference, upstream baseline, SPIR-V validation and a repeatable benefit. | A kernel is default-on only with measured, repeatable benefit; otherwise M8 is reported as profiled-only |
+| **W6** release candidate | `CHANGELOG.md` finalised, release notes, support matrix, SBOM + SHA-256 produced by CI, dependency/licence audit, README matches the binary, tag. | Every STATUS checklist row is PASS, or explicitly listed as excluded / BLOCKED in the release notes |
+
+Outside the waves (owner-dependent, stay BLOCKED / NOT RUN): FLUX.3 render (gated encoder/VAE access), M5 Stage B
+(a model larger than RAM and an administrator cache flush), real WebGPU inference and the Vercel deploy of `web/`,
+the self-hosted hardware runner.

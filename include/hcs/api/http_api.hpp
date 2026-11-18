@@ -72,6 +72,7 @@ private:
     HttpResponse dispatch(const HttpRequest& req, const std::string& rid,
                           const std::shared_ptr<Inflight>& guard);
     HttpResponse chat(const HttpRequest& req, const std::string& rid, const std::shared_ptr<Inflight>& guard);
+    HttpResponse benchmarks(const HttpRequest& req, const std::string& rid);
     HttpResponse images(const HttpRequest& req, const std::string& rid,
                         const std::shared_ptr<Inflight>& guard, bool edit);
     HttpResponse error(int status, const std::string& type, const std::string& code, const std::string& msg,

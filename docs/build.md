@@ -3,6 +3,13 @@
 Known-good environment (verified 2026-11-17 on the target machine): Windows 11 10.0.26200, MSVC 19.44.35228
 (Visual Studio 2022 Community), CMake 4.4.0, Ninja 1.13.2, GoogleTest v1.17.0, nlohmann/json v3.12.0.
 
+## Presets
+
+`CMakePresets.json` defines the configure/build/test presets `windows-msvc-debug`, `windows-msvc-release` (both CPU,
+`HCS_ENABLE_VULKAN=OFF`) and `windows-msvc-release-vulkan` (needs the LunarG Vulkan SDK at build time). All use Ninja
+and `cl`. There are no Linux or ASan presets yet. Local test builds of this project also used ad-hoc build
+directories (for example `build/img-api`); those are not presets.
+
 ## Commands
 
 All commands from the repository root. The presets use the Ninja generator and `cl`, so they need the MSVC
@@ -17,6 +24,8 @@ prompt or `call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxi
 .\scripts\build.ps1 -Preset windows-msvc-debug -CleanBuildDir # removes only <repo>/build/<preset> (path-guarded)
 .\scripts\test.ps1  -Preset windows-msvc-debug -Label unit    # labels: unit, contract, ...
 .\scripts\doctor.ps1 -Preset windows-msvc-release -Json
+
+# web/ (HCS Studio Web) is separate and needs only Node: cd web; npm test; node tests/e2e/boot.mjs
 
 # manual equivalent (inside an MSVC x64 environment)
 cmake --preset windows-msvc-debug
@@ -37,7 +46,8 @@ CMake options: `HCS_BUILD_TESTS` (ON), `HCS_WARNINGS_AS_ERRORS` (ON, HCS targets
 The top-level `CMakeLists.txt` discovers modules; you normally do not edit it.
 
 1. **Location:** `src/<module>/CMakeLists.txt` for one of the pre-registered names
-   `core hardware storage memory scheduler telemetry engines/llama engines/diffusion api mcp gui cli app`.
+   `core hardware storage memory scheduler telemetry process agent train engines/llama engines/diffusion gui api mcp cli app`
+   (`memory`, `scheduler` and `telemetry` have no sources yet).
    Discovery order is exactly that list (cli and app last). A brand-new module name needs ONE added word in
    `HCS_MODULE_DIRS` in the top-level file.
 2. **Target name:** `hcs_<name>` (static library) with alias `hcs::<name>`; for `engines/llama` use
@@ -102,18 +112,17 @@ reports differently.
 Formatting status: the whole tree is clang-formatted as of 2026-11-17 (139 files, clang-format **19.1.5**, the VS
 2022-bundled build; `format.ps1` reports OK). `.clang-format` sets `SortIncludes: Never` and `IncludeBlocks: Preserve`
 because several translation units depend on include order (`windows.h` before `psapi.h`; `NOMINMAX` before
-`windows.h`). The CI format job keeps `continue-on-error` for one release cycle as protection against the runner image
-updating its bundled LLVM; flip it to blocking once a CI run has confirmed the current state on the runner.
+`windows.h`). The CI format job is blocking (confirmed green on the runner); if a future runner image changes its bundled LLVM
+the job can fail on pure re-wrapping, which is then handled deliberately.
 
 clang-tidy: `static-analysis.ps1` loads the Visual Studio 2022 environment before analysing, because clang resolves the
 MSVC STL through the registry and would otherwise pick the newest Visual Studio on the machine - a VS 18 BuildTools STL
 requires Clang 20+ and fails with `STL1000` under the VS 2022-bundled clang-tidy. `/WX` from the HCS targets is
 neutralised with `-Wno-error` so the analysis always completes; only the checks named in `-Checks` are reported.
 
-CI (`.github/workflows/`): `pr.yml` = hosted Windows quick gate. Jobs: `build + ctest` for the Release and Debug CPU
-presets (no models: model tests are reported as skipped = NOT RUN), a blocking `clang-format check`, a
-`clang-tidy (static analysis)` job that only configures for the compile database and uploads its log
-(non-blocking for one cycle), and the SBOM/schema job. `hardware.yml` = self-hosted Radeon 680M runner for
-nightly/manual/tag runs only, never for pull requests. First real runs: 2026-11-17 on the public repository
-`timfromhcs/HCSInfer` - run 44104062457 failed in the build legs (the runner's Visual Studio was not located; fixed
-in `fddc30d`), run 44105659773 was **fully green**.
+CI (`.github/workflows/`): `pr.yml` (`pr-quick-gate`) = hosted Windows quick gate on pull requests and pushes to
+`main`. Six jobs, all blocking: `build + ctest` for the Release and Debug CPU presets (no models: model tests are
+reported as skipped = NOT RUN), `clang-format check`, `clang-tidy (static analysis)` (`static-analysis.ps1 -Scope src
+-FailOnFindings`), `SBOM generation + schema sanity`, and `web` (`npm test` plus the headless Chrome boot check).
+Green on `main`: run 44167798984 (2026-11-17, commit `d8a5e37`). `hardware.yml` = self-hosted Radeon 680M runner for
+nightly / manual / `v*` tag runs only, never for pull requests; it has never been executed (NOT RUN).

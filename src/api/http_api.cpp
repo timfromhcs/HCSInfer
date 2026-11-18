@@ -447,7 +447,7 @@ HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid
             if (a == "benchmarks") {
                 if (!is_post)
                     return not_allowed("POST");
-                return error(501, "server_error", "unsupported", "benchmarks are not implemented yet", rid);
+                return benchmarks(req, rid);
             }
         }
         if (a == "models" && seg.size() == 4) {
@@ -502,6 +502,71 @@ HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid
         }
     }
     return error(404, "not_found_error", "not_found", "no such route", rid);
+}
+
+static json benchmarks_schema() {
+    static const char* kSchema = R"JSON({
+  "type": "object",
+  "required": ["model"],
+  "additionalProperties": false,
+  "properties": {
+    "suite": {"type": "string", "enum": ["quick", "full"]},
+    "model": {"type": "string", "minLength": 1, "maxLength": 64},
+    "max_tokens": {"type": "integer", "minimum": 1, "maximum": 4096},
+    "warmup": {"type": "integer", "minimum": 0, "maximum": 20},
+    "iterations": {"type": "integer", "minimum": 1, "maximum": 50},
+    "seed": {"type": "integer", "minimum": 0},
+    "sweep_sizes": {"type": "array", "minItems": 1, "maxItems": 8,
+                    "items": {"type": "integer", "minimum": 16, "maximum": 1048576}}
+  }
+})JSON";
+    return json::parse(kSchema);
+}
+
+// POST /hcs/v1/benchmarks: validates a tiny, strict body, then starts the benchmark as a job.
+HttpResponse ApiHandler::benchmarks(const HttpRequest& req, const std::string& rid) {
+    constexpr std::size_t kMaxBenchmarkBody = 4096;
+    auto ct = req.headers.find("content-type");
+    if (ct == req.headers.end() || lower(ct->second).rfind("application/json", 0) != 0)
+        return error(415, "invalid_request_error", "unsupported_media_type",
+                     "Content-Type must be application/json", rid);
+    if (req.body.size() > std::min(opt_.max_body_bytes, kMaxBenchmarkBody))
+        return error(413, "invalid_request_error", "payload_too_large",
+                     "request body exceeds the benchmark limit of 4096 bytes", rid);
+    if (!json_depth_ok(req.body, kMaxJsonDepth))
+        return error(400, "invalid_request_error", "invalid_json", "JSON nesting too deep", rid);
+    json body = json::parse(req.body, nullptr, false);
+    if (body.is_discarded())
+        return error(400, "invalid_request_error", "invalid_json", "malformed JSON body", rid);
+    static const json schema = benchmarks_schema();
+    if (auto v = validate_json(schema, body); !v)
+        return error(400, "invalid_request_error", "invalid_request", v.error().message, rid);
+
+    BenchmarkParams p;
+    p.model = body["model"].get<std::string>();
+    p.suite = body.value("suite", std::string("quick")) == "full" ? bench::Suite::Full : bench::Suite::Quick;
+    if (body.contains("max_tokens"))
+        p.max_tokens = body["max_tokens"].get<std::uint32_t>();
+    if (body.contains("warmup"))
+        p.warmup = body["warmup"].get<std::uint32_t>();
+    if (body.contains("iterations"))
+        p.iterations = body["iterations"].get<std::uint32_t>();
+    if (body.contains("seed"))
+        p.seed = body["seed"].get<std::uint64_t>();
+    if (body.contains("sweep_sizes")) {
+        if (p.suite != bench::Suite::Full)
+            return error(400, "invalid_request_error", "invalid_request",
+                         "sweep_sizes is only valid with suite \"full\"", rid);
+        p.sweep_sizes = body["sweep_sizes"].get<std::vector<std::uint32_t>>();
+    }
+    auto id = cp_.submit_benchmark(p);
+    if (!id)
+        return from_error(id.error(), rid);
+    json j = {{"job_id", to_string(id.value())},
+              {"status_url", "/hcs/v1/jobs/" + to_string(id.value())},
+              {"suite", std::string(bench::to_string(p.suite))},
+              {"model", p.model}};
+    return json_ok(j, 202);
 }
 
 HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,

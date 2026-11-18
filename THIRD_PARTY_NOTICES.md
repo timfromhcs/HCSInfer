@@ -1,4 +1,4 @@
-# Third-party notices (updated 2026-11-17 from the submodule and fetched LICENSE files; SBOM: `scripts/sbom.ps1`)
+# Third-party notices (updated 2026-11-18 from the submodule and fetched LICENSE files; SBOM: `scripts/sbom.ps1`)
 
 Dependencies linked into or fetched by the current build. Exact pins and CMake options:
 `external/dependency-lock.json`. Licence texts must be reproduced in release packages.
@@ -32,8 +32,20 @@ LZ4 and Zstandard licence texts and copyright notices must be reproduced in rele
 `lib/`, `zstd: LICENSE`). The SHA-256 implementation in `src/storage/sha256.cpp` is original HCSInfer code written
 against FIPS 180-4 (the SHA-NI round structure follows the publicly documented Intel instruction sequence).
 
-Model weights are not distributed with HCSInfer; each model has its own licence. The SD1.5 Q8_0 GGUF used in
-local tests has no verified provenance and is never redistributed.
+## Model licences (weights are never distributed or bundled)
+
+Model weights are not distributed with HCSInfer; each model has its own licence, and you must accept it yourself.
+This list only records what the repository evidence says; it is not legal advice and a model licence is not a code
+licence.
+
+| Model | Licence as recorded in the repository | Source of the statement |
+|---|---|---|
+| LiquidAI LFM3-Omni-2B Q8_0 + mmproj (default local LLM) | LFM Open License v1.0 (`license: other`, `license_name: lfm1.0`): Apache-style grant; section 5 limits commercial use to legal entities below US$ 10,000,000 annual revenue. Read the model's `LICENSE` before any redistribution. | `docs/test-evidence/lfm3/README.md`, `docs/research/v1.1-model-selection.md` |
+| FLUX.3 Image Klein (black-forest-labs, gated; unsloth/leejet GGUF conversions) | FLUX Kommunity License: non-commercial plus a qualifying-output exception; the repository is gated. Qwen3-VL-4B-Instruct (text encoder) and the FLUX.2 VAE are separate files with their own licences that have not been verified here. | `docs/research/v1.1-model-selection.md`, `docs/supported-models.md` |
+| SmolVLM2-500M-Video-Instruct Q8_0 + mmproj | Recorded as Apache-2.0 by Hugging Face, **not re-verified**; the download source was not recorded | `docs/test-evidence/M2-vision/README.md` |
+| Qwen3-0.6B Q4_K_M (test and benchmark model) | **No licence verification is recorded in the repository** (NOT RUN); check the model card before use | n/a |
+| Stable Diffusion 1.5 Q8_0 GGUF (test model) | Unknown provenance and licence (never verified) | `docs/test-evidence/M1/sd/README.md` |
+
 
 The separate browser deliverable `web/` (HCS Studio Web, ADR-013) loads `@huggingface/transformers` and its
 transitive `onnxruntime-web` at run time from a version-pinned CDN URL, inside the visitor's browser. Those bytes

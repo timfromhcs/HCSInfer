@@ -22,6 +22,7 @@
 #include "hcs/api/image_stream.hpp"
 #include "hcs/api/text_stream.hpp"
 #include "hcs/api/vision_stream.hpp"
+#include "hcs/benchmark.hpp"
 #include "hcs/job_queue.hpp"
 #include "hcs/logger.hpp"
 #include "hcs/memory_budget.hpp"
@@ -63,6 +64,17 @@ struct ImageParams {
     float cfg_scale = 0.0f;  // 0 => engine default
     std::string preset;      // "" | "fast" | "quality" (replaces steps/cfg, model-family specific)
     std::optional<ImageInput> init_image;  // edit / img2img
+};
+
+// Benchmark job request. Bounds are the shared bench::validate_plan() bounds.
+struct BenchmarkParams {
+    std::string model;  // registered text model id (required)
+    bench::Suite suite = bench::Suite::Quick;
+    std::uint32_t max_tokens = 64;
+    std::uint32_t warmup = 1;
+    std::uint32_t iterations = 3;
+    std::optional<std::uint64_t> seed;
+    std::vector<std::uint32_t> sweep_sizes;  // full suite only; empty => the runner's defaults
 };
 
 struct ModelView {
@@ -160,6 +172,15 @@ public:
     Result<Submitted> submit_image(const ImageParams& p, bool require_init);
     Result<ImageResult> image_result(JobId id) const;  // NotFound until the job produced one
 
+    // --- benchmark (POST /hcs/v1/benchmarks) ---------------------------------------------------
+    // Runs the shared benchmark runner (hcs/benchmark.hpp) against a registered text model as a cancellable
+    // job "benchmark.run". The job holds the engine for its whole duration (the measurement needs an idle
+    // engine), loads/unloads through the normal lifecycle and budget rules, and leaves the benchmarked model
+    // loaded. The finished document is retrievable via job_json() ("result") / benchmark_result().
+    Result<void> validate_benchmark(const BenchmarkParams& p) const;
+    Result<JobId> submit_benchmark(const BenchmarkParams& p);
+    Result<nlohmann::json> benchmark_result(JobId id) const;  // NotFound until the job produced one
+
     // --- jobs -----------------------------------------------------------------------------
     static std::optional<JobId> parse_job_id(const std::string& text);
     Result<JobStatus> job_status(JobId id) const;
@@ -191,6 +212,8 @@ private:
     Result<Submitted> submit_with_channel(const std::string& name, JobFn fn);
     void note_result(JobId id, const TextResult& r);
     void note_image_result(JobId id, const ImageResult& r);
+    void note_benchmark_result(JobId id, nlohmann::json doc);
+    class BenchTarget;  // IBenchTarget over this control plane (control_plane_benchmark.cpp)
 
     ModelRegistry& registry_;
     PathGuard& guard_;
@@ -216,6 +239,7 @@ private:
     mutable std::mutex results_mutex_;
     std::map<std::uint64_t, TextResult> results_;
     std::map<std::uint64_t, ImageResult> image_results_;
+    std::map<std::uint64_t, nlohmann::json> benchmark_results_;
     mutable std::mutex devices_mutex_;
     mutable std::optional<nlohmann::json> devices_cache_;
 };

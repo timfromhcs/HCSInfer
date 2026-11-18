@@ -1,18 +1,34 @@
 # Architecture (current implementation + target)
 
-Target architecture: AGENTS.md section 3. This document records what exists now (M2 scaffold) and the rules
-other modules must follow.
+Target architecture: AGENTS.md section 3. This document records what exists in the tree on 2026-11-18 and the rules
+other modules must follow. Modules **absent** from the tree: `memory`, `scheduler`, `telemetry`, `kernels`, `shaders`
+(their names are reserved in `HCS_MODULE_DIRS` but have no sources).
 
 ## Layers
 
 ```
-HCSInfer.exe (src/app)            -> hcs::cli::run(args, out, err)
-  src/cli  (hcs_cli)              command router, --help at every level, stable exit codes
-    |  optional: hcs_hardware (doctor)   [later: hcs_api, hcs_mcp, hcs_gui]
-  src/core (hcs_core)             control-plane primitives (below)
-  include/hcs/engine.hpp          ITextEngine / IImageEngine (opaque value types)
-  engine adapters (planned)       src/engines/llama, src/engines/diffusion -> only place upstream types may appear
+HCSInfer.exe (src/app)              -> hcs::cli::run(args, out, err)
+  src/cli      (hcs_cli)            command router, --help at every level, stable exit codes
+                                    (doctor, models, chat, vision, image, serve, mcp, benchmark, train)
+  src/api      (hcs_api)            ControlPlane (registry + JobQueue + engines), ApiHandler (all HTTP rules),
+                                    HttpServer (cpp-httplib transport), chat tool calling, image/vision input guards
+  src/mcp      (hcs_mcp)            MCP server over stdio (dual protocol era), same ControlPlane
+  src/gui      (hcs_gui)            embedded HCS Studio assets served by the API listener (GET /, /ui/*)
+  src/core     (hcs_core)           control-plane primitives (below)
+  src/hardware (hcs_hardware)       doctor: CPU/RAM/OS/GPU/Vulkan/storage, memory probe
+  src/storage  (hcs_storage)        Model Vault: GGUF header probe, bounded async reads, SHA-256, HCSMODEL container
+  src/agent    (hcs_agent)          tool-call sandbox policy, prime-agent provider document, launch plan
+  src/process  (hcs_process)        child process supervisor (no shell, bounded capture, Job Object tree-kill)
+  src/train    (hcs_train)          dataset validator, eval report/gate, adapter book, pipeline
+  src/engines/llama     (hcs_engine_llama)      ITextEngine (text + libmtmd vision) over llama.cpp
+  src/engines/diffusion (hcs_engine_diffusion)  IImageEngine (txt2img, img2img) over stable-diffusion.cpp
+  include/hcs/engine.hpp            ITextEngine / IImageEngine (opaque value types)
+  web/                              separate browser deliverable (HCS Studio Web), outside the CMake graph
 ```
+
+Upstream types (`llama_*`, `ggml_*`, `sd_*`) appear only inside the two engine adapters. One GGML (llama.cpp's) is built
+for both engines (`SD_USE_UPSTREAM_GGML=ON`, ADR-001). Everything runs in one process; the agent sidecar
+(`prime-agent`, not built by CMake) would be a child process that talks to the loopback HTTP API only (ADR-011).
 
 ## hcs_core contents
 
@@ -93,5 +109,5 @@ Public header: `include/hcs/engines/llama_engine.hpp` (class `hcs::engines::Llam
 
 ## Decisions
 
-ADR-002 (process model), ADR-003 (Vulkan ownership), ADR-004 (memory budget): `docs/decisions/`.
-Remaining ADRs from AGENTS.md section 4 (001, 005-010) are listed in the implementation plan.
+ADR-001 to ADR-013 are indexed in `docs/decisions/README.md`. Roadmap and per-gate status:
+`docs/roadmap/IMPLEMENTATION_PLAN.md`, `docs/roadmap/STATUS.md`.

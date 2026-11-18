@@ -1,7 +1,7 @@
 include(HcsHttplib)
 
 hcs_add_library(api
-  SOURCES control_plane.cpp http_api.cpp json_schema.cpp runtime.cpp http_server.cpp control_plane_vision.cpp control_plane_image.cpp image_probe.cpp data_uri.cpp chat_tools.cpp
+  SOURCES control_plane.cpp http_api.cpp json_schema.cpp runtime.cpp http_server.cpp control_plane_vision.cpp control_plane_image.cpp control_plane_benchmark.cpp image_probe.cpp data_uri.cpp chat_tools.cpp
   PUBLIC_LINK hcs_core nlohmann_json::nlohmann_json)
 
 # cpp-httplib is third-party code confined to http_server.cpp: relaxed warnings for that file only.

@@ -23,6 +23,12 @@ next to it.
 | `static-analysis/` | first clang-tidy run, its triage, the clean default-gate run and the CI job's result |
 | `package/` | first real `scripts/package.ps1` run: portable folder + ZIP, SBOM, SHA-256, licence texts, standalone run |
 | `ci/` | what the CI gates check and which tool versions they were verified with (clang-format pinning) |
+| `lfm3/` | LFM3-Omni-2B Q8_0: chat, streaming, cancellation, vision, OpenAI tool calling, 40-task agentic eval, quick benchmarks (CPU + Vulkan) |
+| `flux3/` | FLUX.3 Image Klein plumbing and SD1.5 regression; the render itself is BLOCKED (gated encoder/VAE) |
+| `studio/` | HCS Studio UI screenshots (desktop and phone, light and dark), real model loads through the UI |
+| `agent/` | HCS Agent policy/provider/launch-plan/process-supervisor build and test logs (a real agent session is NOT RUN) |
+| `train/` | HCS Train CLI demo and test notes (a real training run is NOT RUN) |
+| `web/` | `web/` headless Chrome boot check (`web-boot.json/.txt`, `web-chat.png`); real WebGPU inference is NOT RUN |
 
 ## Redaction policy
 

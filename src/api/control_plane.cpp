@@ -563,6 +563,8 @@ json ControlPlane::job_json(const JobStatus& st) const {
                        {"bytes", ir.value().bytes.size()},
                        {"generation_ms", ir.value().generation_ms}};
     }
+    if (auto br = benchmark_result(st.id))
+        j["result"] = br.value();  // the AGENTS.md 21.1 document: numbers only, never prompt text
     return j;
 }
 

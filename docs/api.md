@@ -93,7 +93,8 @@ Body schema (enforced): `messages` (required, 1..128 of `{role: system|user|assi
 `model` (id; if it is not the loaded model it is **loaded first**, which can take seconds; omit to use the loaded model,
 `409 invalid_state` if none), `max_tokens` / `max_completion_tokens` (1..4096, default 256), `temperature` (0..2),
 `seed` (>= 0), `stream` (bool), `n` (only 1). Accepted but **ignored**: `top_p`, `frequency_penalty`,
-`presence_penalty`, `stop`, `user`, `stream_options`. `tools`/`functions` and non-text `response_format` -> `501`.
+`presence_penalty`, `stop`, `user`, `stream_options`. Non-text `response_format` -> `501`. Tool calling is implemented
+(see "Tool calling" below); legacy `functions`, `tool_choice` `required` and a named-function `tool_choice` -> `501`.
 
 **Image input (vision)**: a `user` message may carry one `{"type":"image_url","image_url":{"url":"data:image/png;base64,..."}}`
 content part next to its text part(s). Only `data:image/{png,jpeg,gif,bmp};base64,` URIs are accepted: remote
@@ -114,6 +115,20 @@ Streaming (`"stream": true`): `text/event-stream`, standard `chat.completion.chu
 `role`, then `content` deltas, a final chunk with `finish_reason` and `usage`, then `data: [DONE]`). Errors before the first
 token are normal HTTP errors; later failures are sent as a `data: {"error":...}` event followed by `[DONE]`.
 **Client disconnect cancels the generation job.**
+
+#### Tool calling (`tools`, `tool_calls`)
+
+**Experimental, implemented** in `src/api/chat_tools.cpp` (tested with LFM3-Omni-2B on CPU and Vulkan,
+`docs/test-evidence/lfm3/`). Request: `tools` (<= 64 entries, <= 64 KiB, function names `[A-Za-z0-9_.-]{1,64}`, unique),
+`tool_choice` `"auto"` (default when `tools` is present) or `"none"`, assistant messages with `tool_calls`
+(string-encoded `arguments`, `content` may be `null`) and `tool` role messages with the results. The prompt follows the
+model's chat template (`<tools>` block in the system turn; `<tool_call>` / `<tool_response>` turns), so the model
+family must use that format; LFM3 is the verified one. Response: the generated text is parsed (XML form and Hermes JSON
+form) into `choices[0].message.tool_calls` with schema-typed arguments and `finish_reason: "tool_calls"`; in streaming
+mode a single `delta.tool_calls` chunk is sent and text that may start a `<tool_call>` block is held back so no tag text
+leaks into `content`. Tool output cannot forge a turn (control tokens are neutralised). Limits seen in the evidence:
+one call per turn; `tool_choice` `required` or a named function (nothing constrains the sampler) and legacy
+`functions` answer `501`; a `tool` message without `tools` is `400`.
 
 ### `POST /v1/images/generations`, `POST /v1/images/edits`
 
@@ -166,7 +181,19 @@ Behaviour shared by both routes:
 | `POST /hcs/v1/models/{id}/unload` | `200`; cancels a running generation first; `409` if that model is not loaded |
 | `GET /hcs/v1/jobs/{id}` | `{id,name,state,error,event_count,result?}`; states `queued running succeeded failed cancelled` |
 | `POST /hcs/v1/jobs/{id}/cancel` | cancels (queued: immediately; running: cooperatively); returns the job |
-| `POST /hcs/v1/benchmarks` | `501` (not implemented; use `HCSInfer benchmark --suite quick`, see README) |
+| `POST /hcs/v1/benchmarks` | `202 {"job_id","status_url","suite","model"}`; asynchronous text benchmark, see "Benchmarks" below |
+
+### Benchmarks
+
+`POST /hcs/v1/benchmarks` runs the same runner as `HCSInfer benchmark` (`src/core/benchmark.cpp`) as a job. Body
+(`Content-Type: application/json`, at most 4096 bytes, no unknown keys): `model` (required, a registered model id),
+`suite` (`quick` default, or `full`), `max_tokens` (1..4096), `warmup` (0..20), `iterations` (1..50), `seed`,
+`sweep_sizes` (1..8 integers of 16..1048576; `full` only). The answer is `202` with `job_id` and `status_url`; poll
+`GET /hcs/v1/jobs/{id}` for progress and the result record (AGENTS.md 21.1 JSON; `full` adds `prefill_sweep` and
+`decode_sweep`, points that do not fit the context are `SKIPPED`, a failed point makes `result_status` `PARTIAL`).
+`POST /hcs/v1/jobs/{id}/cancel` stops it. Errors: unknown model `404`, malformed or invalid body or an image model
+`400`, body over 4 KiB `413`, wrong content type `415`, no text engine linked `501`. A real-model run of this route is
+NOT RUN (the contract tests in `tests/contract/api/test_http_benchmarks.cpp` run without a model).
 
 Model states: `discovered validating ready_to_load loading loaded running unloading unloaded failed`.
 

@@ -23,6 +23,9 @@ Run run(std::vector<std::string> args) {
 bool contains(const std::string& s, const std::string& what) {
     return s.find(what) != std::string::npos;
 }
+std::string root_help_text() {
+    return run({"--help"}).out;
+}
 }  // namespace
 
 TEST(Cli, HelpWorksAtEveryLevel) {
@@ -66,11 +69,16 @@ TEST(Cli, UnknownCommandIsInvalidArgument) {
 }
 
 TEST(Cli, PlannedCommandsReturnUnsupported) {
-    for (const char* c : {"tune", "cache"}) {
-        auto r = run({c});
-        EXPECT_EQ(r.code, 10) << c;
-        EXPECT_TRUE(contains(r.err, "planned")) << c;
-    }
+    // `tune` is deliberately not implemented and must never be faked: exit 10, help says Planned.
+    auto r = run({"tune"});
+    EXPECT_EQ(r.code, 10);
+    EXPECT_TRUE(contains(r.err, "planned"));
+    EXPECT_EQ(run({"tune", "--device", "radeon-680m"}).code, 10);
+    auto h = run({"tune", "--help"});
+    EXPECT_EQ(h.code, 0);
+    EXPECT_TRUE(contains(h.out, "Planned"));
+    EXPECT_TRUE(contains(root_help_text(), "tune"));
+    EXPECT_TRUE(contains(root_help_text(), "Planned"));
     EXPECT_EQ(run({"models", "load", "x"}).code, 10);
     EXPECT_EQ(run({"models", "unload"}).code, 10);
 }
@@ -80,9 +88,24 @@ TEST(Cli, BenchmarkHelpAndArgumentValidationBeforeLoadingAnything) {
     EXPECT_TRUE(contains(run({"benchmark", "--help"}).out, "schema_version 1"));
     EXPECT_EQ(run({"benchmark"}).code, 2);  // --suite required
     EXPECT_EQ(run({"benchmark", "--suite", "bogus", "--model", "x"}).code, 2);
-    EXPECT_EQ(run({"benchmark", "--suite", "quick"}).code, 2);                  // --model required
-    EXPECT_EQ(run({"benchmark", "--suite", "full", "--model", "x"}).code, 10);  // planned, not faked
-    EXPECT_TRUE(contains(run({"benchmark", "--suite", "full", "--model", "x"}).err, "planned"));
+    EXPECT_EQ(run({"benchmark", "--suite", "quick"}).code, 2);  // --model required
+    // 'full' is implemented now: it passes argument validation and then fails to resolve the model (7), or
+    // reports that this build has no engine (10) - never "planned".
+    {
+        const auto full = run({"benchmark", "--suite", "full", "--model", "does-not-exist"});
+        EXPECT_TRUE(full.code == 7 || full.code == 10) << full.code;
+        EXPECT_FALSE(contains(full.err, "planned"));
+    }
+    EXPECT_TRUE(contains(run({"benchmark", "--help"}).out, "--sweep-sizes"));
+    EXPECT_TRUE(contains(run({"benchmark", "--help"}).out, "full"));
+    EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", "x", "--sweep-sizes", "128"}).code, 2);
+    EXPECT_EQ(run({"benchmark", "--suite", "full", "--model", "x", "--sweep-sizes", "8"}).code, 2);
+    EXPECT_EQ(run({"benchmark", "--suite", "full", "--model", "x", "--sweep-sizes", "128,,256"}).code, 2);
+    EXPECT_EQ(run({"benchmark", "--suite", "full", "--model", "x", "--sweep-sizes", "abc"}).code, 2);
+    EXPECT_EQ(
+        run({"benchmark", "--suite", "full", "--model", "x", "--sweep-sizes", "16,16,16,16,16,16,16,16,16"})
+            .code,
+        2);
     EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", "x", "--iterations", "0"}).code, 2);
     EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model", "x", "--backend", "gpu"}).code, 2);
     EXPECT_EQ(run({"benchmark", "--suite", "quick", "--model"}).code, 2);

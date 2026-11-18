@@ -1,5 +1,5 @@
 hcs_add_library(cli
-  SOURCES cli.cpp chat_cmd.cpp image_cmd.cpp vision_cmd.cpp benchmark_cmd.cpp train_cmd.cpp
+  SOURCES cli.cpp cache_cmd.cpp chat_cmd.cpp image_cmd.cpp vision_cmd.cpp benchmark_cmd.cpp train_cmd.cpp
   PUBLIC_LINK hcs_core
   PRIVATE_LINK nlohmann_json::nlohmann_json)
 
