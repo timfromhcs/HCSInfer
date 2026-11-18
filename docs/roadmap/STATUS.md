@@ -6,14 +6,15 @@ NOT RUN or BLOCKED.
 
 ## Repository state
 
-- Public remote `https://github.com/timfromhcs/HCSInfer`. The checked-out `main` is **3 commits ahead of
-  `origin/main`** (`origin/main` == `35bd39d` "feat(v1.1-agent): wave 2 ..."): `902b41e` (V1-stable W1:
-  `POST /hcs/v1/benchmarks`, `cache stats|clear`, `benchmark --suite full`), `5633450` (W2: the agent/train salvage
-  with tests) and `b02075f` (W3: soak defects D-S1..D-S4 fixed + transport/storage/MCP test gaps). These three are
-  committed locally and **not yet pushed**. The history starts at `d5baf76` "Initial commit" (2026-11-17).
-- CI: `.github/workflows/pr.yml` run **44185469463** (commit `35bd39d`, the tip of `origin/main`) is green on all six
-  jobs; the three local W1-W3 commits have no CI run yet (not pushed). `hardware.yml` (self-hosted Radeon runner) has
-  never been executed.
+- Public remote `https://github.com/timfromhcs/HCSInfer`. `main` == `origin/main` == `dd9be7a`. The V1-stable wave
+  commits are `902b41e` (W1: `POST /hcs/v1/benchmarks`, `cache stats|clear`, `benchmark --suite full`), `5633450`
+  (W2: agent/train salvage), `b02075f` (W3: soak defects D-S1..D-S4 + transport/storage/MCP test gaps), `af884c3`
+  (MCP `hcs.runtime.benchmark`), `7287554` (W4 static-CRT experiment) and `dd9be7a` (D-S5 `read_file_limited` fix).
+  The history starts at `d5baf76` "Initial commit" (2026-11-17).
+- CI: `.github/workflows/pr.yml` run **44272921951** (commit `af884c3`) failed the Release leg on one **real** defect
+  (`FsUtil.ConcurrentWritersNeverProduceMixedContent`, now fixed as D-S5, `dd9be7a`); the earlier run **44185469463**
+  (`35bd39d`) was green on all six jobs. The `dd9be7a` run is the current gate. `hardware.yml` (self-hosted Radeon
+  runner) has never been executed.
 - Branches: `main` and the docs worktree branch `claude/repo-analysis-v1-stable-80f8d6` (== `main`). The local branch
   `claude/flux3-agent-engine-v1-665ab0` is now an **ancestor of `main`**; its unique work was salvaged selectively and
   committed in W2 (`5633450`), with the web/ and CMake differences deliberately not taken.
