@@ -4,13 +4,19 @@ Derived from `git log` (all 28 commits are dated 2026-11-17). No release has bee
 by `scripts/package.ps1` is named `0.1.0`. Entries describe what the commits changed; PASS/NOT RUN state of each
 feature is in `docs/roadmap/STATUS.md`.
 
-## Unreleased - V1.1 / V1-stable waves (committed locally on `main`, 3 commits ahead of `origin/main`)
+## Unreleased - V1.1 / V1-stable waves (on `main`, several commits ahead of the V1.1-wave-2 tag `35bd39d`)
 
-`origin/main` is at `35bd39d` (V1.1 wave 2). The three commits below are committed locally and not yet pushed:
-`902b41e` (W1), `5633450` (W2), `b02075f` (W3). Release CTest: **783 registered, 0 failed** (CPU-only build; the
-model-dependent tests skip = NOT RUN).
+`origin/main` was at `35bd39d` (V1.1 wave 2) before W1-W3; the V1-stable wave commits since are `902b41e` (W1),
+`5633450` (W2), `b02075f` (W3), `af884c3` (MCP `hcs.runtime.benchmark`) and the W4 static-CRT experiment. Release
+CTest: **783 registered, 0 failed** (CPU build; model-dependent tests skip = NOT RUN).
 
 ### Added
+- Static-CRT single-EXE **experiment** (W4, ADR-008): preset `windows-msvc-release-static` (`CMAKE_MSVC_RUNTIME_LIBRARY=
+  MultiThreaded` for every target + `GGML_OPENMP=OFF`). Fresh tree builds, **783/783** Release tests pass, and
+  `dumpbin /dependents` shows only system DLLs (`ADVAPI32`/`WS2_32`/`KERNEL32`) - the default `/MD` build also imports
+  `MSVCP140`/`VCRUNTIME140`/`VCOMP140`/`api-ms-win-crt-*`. Real llama (CPU) and SD1.5 (CPU) runs succeed. The
+  clean-machine test and a `/MT` Vulkan build are NOT RUN, so the single-EXE claim is not made -
+  `docs/test-evidence/W4-static-exe/`.
 - MCP tool `hcs.runtime.benchmark` (`suite` quick/full, `model`, `max_tokens`/`warmup`/`iterations`/`seed`/
   `sweep_sizes`): runs the shared text benchmark (the same runner as `HCSInfer benchmark` and
   `POST /hcs/v1/benchmarks`) as a cancellable job and returns the AGENTS.md 21.1 JSON document. Real end-to-end run

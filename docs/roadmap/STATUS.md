@@ -67,7 +67,7 @@ NOT RUN or BLOCKED.
 | M5 Model Vault v1 | PARTIAL | Stage A (upstream load modes) **measured**: all six llama.cpp modes work; `direct_io` costs ~14x load time on the USB HDD because it bypasses the file cache, mmap-backed modes commit ~250 MB less than read-into-RAM, no throughput difference while the model fits in RAM - `M5-loadmodes/`. Stage B (bounded async pipeline feeding the engine) **BLOCKED**: no model larger than the 21 GB RAM is available locally and the OS file cache cannot be flushed without administrator rights, so a controlled storage-bound comparison cannot be produced on this machine; `src/storage` reads are tested read-only on a real GGUF, engines do not load through the vault. USB-unplug test NOT RUN |
 | M6 HCSMODEL container (header, chunk table, Raw/LZ4/Zstd, hashes, random access) | PASS (experimental) / PARTIAL for fuzz | 59 unit + 3 parser + 2 integration tests; libFuzzer smoke only 60 s with UBSan, no ASan (`M6-storage/`). Throughput benefit on a real HDD NOT proven |
 | M7 shared GGML ABI (llama.cpp GGML + sd.cpp via `SD_USE_UPSTREAM_GGML=ON` in one binary) | PASS for build + SD1.5 + llama text in one binary | `HCSInfer.exe` links both; coverage for Flux/DiT/Qwen-Image, FP8/INT8 NOT RUN |
-| M7 single `HCSInfer.exe`, static CRT, clean-machine test | NOT RUN | CRT is the default dynamic `/MD`; packaging is a portable folder only (ADR-008) |
+| M7 single `HCSInfer.exe`, static CRT, clean-machine test | **PARTIAL** (static CRT build proven; clean-machine NOT RUN) | The `windows-msvc-release-static` preset (`/MT` everywhere + `GGML_OPENMP=OFF`) builds a fresh tree, passes **783/783** tests and its `HCSInfer.exe` imports **only system DLLs** (`ADVAPI32`, `WS2_32`, `KERNEL32`); real llama (CPU) and SD1.5 (CPU) runs succeed - `docs/test-evidence/W4-static-exe/`. The clean-machine test (no VC++ redistributable, no Vulkan SDK) is NOT RUN and there is no `/MT` Vulkan build, so the single-EXE claim is not made (ADR-008); the default `/MD` build and the portable folder package remain the shipped artefacts |
 | M8 HCS Vulkan kernels | NOT RUN | no `src/kernels`, no `shaders/` |
 | M9 research features | NOT RUN | |
 | M10 hardening: audit fixes (D1-D7) | PASS | `M10-fixes/` (red/green pairs): deep-JSON stack guard, connection budget/starvation, abandoned-request cancellation, runaway-job cap, reserved Windows device names, duplicate security headers, loopback literal parsing |
@@ -116,7 +116,7 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 | Reproducible dependency pins and build command | PASS | `external/dependency-lock.json`, `docs/build.md`; caveat: Vulkan-Headers (FetchContent) is not in the lock file |
 | No unexplained compiler/linker warnings in HCS code | PASS | `/W4 /WX` on HCS targets; clang-tidy gate reports 0 findings |
 | Shader compilation and SPIR-V validation | NOT RUN | no shaders exist |
-| One-EXE requirement on a clean machine (or no single-file label) | NOT RUN | dynamic CRT; only a portable folder exists and it is not labelled single-file (ADR-008); W4 |
+| One-EXE requirement on a clean machine (or no single-file label) | **PARTIAL** (clean-machine NOT RUN) | A static-CRT `/MT` build now exists and its EXE depends on system DLLs only (`W4-static-exe/`), but the clean-machine test is NOT RUN and the release stays a portable folder not labelled single-file (ADR-008); W4 |
 | No Vulkan SDK needed on the end-user machine | NOT RUN | Vulkan loads from the system driver by design, but no machine without the SDK was tested |
 | External models and system AMD/Vulkan driver documented | PASS | `README.md`, `docs/hardware-support.md` |
 | SHA-256 checksum and SBOM generated | PASS | `package/` (SHA256SUMS, CycloneDX SBOM); not produced by a release CI job yet (W6) |
@@ -197,10 +197,11 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 ## Exact next action
 
 Execute the V1-stable wave plan in `IMPLEMENTATION_PLAN.md` in order. **W1** is done and committed (`902b41e`):
-`POST /hcs/v1/benchmarks`, `cache stats|clear`, `benchmark --suite full`, and now the MCP `hcs.runtime.benchmark` tool
-(the last open W1 item); `tune` stays Planned. **W2** (agent/train salvage) and **W3** (soak defects + test gaps) are
-done and committed (`5633450`, `b02075f`). The three local commits still need a push to `origin/main` and a CI run.
-Next: **W4** (single-EXE static-CRT attempt, ADR-008), then **W5** (M8 profiling, at most one feature-flagged kernel)
-and **W6** (release candidate). These stay BLOCKED / NOT RUN until the owner acts: the FLUX.3 render (gated encoder/VAE
-access), M5 Stage B (model larger than RAM, administrator cache flush), a real `prime-agent` session, real WebGPU
-inference and the Vercel deploy.
+`POST /hcs/v1/benchmarks`, `cache stats|clear`, `benchmark --suite full`, and the MCP `hcs.runtime.benchmark` tool
+(`af884c3`). **W2** (agent/train salvage) and **W3** (soak defects + test gaps) are done and committed (`5633450`,
+`b02075f`). **W4** (static-CRT single-EXE attempt, ADR-008) is done as far as this machine allows: the
+`windows-msvc-release-static` preset builds a system-DLL-only EXE that passes 783/783 tests and runs real llama/SD1.5
+(`docs/test-evidence/W4-static-exe/`); the **clean-machine test and a `/MT` Vulkan build stay NOT RUN**. Next: **W5**
+(M8 profiling, at most one feature-flagged kernel) and **W6** (release candidate). These stay BLOCKED / NOT RUN until
+the owner acts: the FLUX.3 render (gated encoder/VAE access), M5 Stage B (model larger than RAM, administrator cache
+flush), a real `prime-agent` session, real WebGPU inference, the Vercel deploy and a clean Windows machine.

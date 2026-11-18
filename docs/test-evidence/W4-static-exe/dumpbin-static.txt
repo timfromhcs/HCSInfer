@@ -1,0 +1,12 @@
+Dump of file build\windows-msvc-release-static\bin\HCSInfer.exe   (static CRT /MT + GGML_OPENMP=OFF)
+
+Image has the following dependencies:
+    ADVAPI32.dll
+    WS2_32.dll
+    KERNEL32.dll
+
+Summary: only Windows system DLLs. No VCRUNTIME/MSVCP/UCRT-redistributable and no vcomp140.dll (OpenMP) import.
+
+Command:
+  dumpbin /dependents build\windows-msvc-release-static\bin\HCSInfer.exe
+Toolchain: MSVC 19.44.35228 (VS 2022 Community), CMake 4.4.0, Ninja 1.13.2.

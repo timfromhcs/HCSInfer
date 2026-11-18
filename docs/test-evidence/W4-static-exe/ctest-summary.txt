@@ -1,0 +1,18 @@
+Release CTest for the static-CRT single-EXE experiment (build/windows-msvc-release-static),
+preset windows-msvc-release-static = CMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded + GGML_OPENMP=OFF.
+
+Run 1 (preset with GGML_OPENMP=ON, /MT only):        100% tests passed out of 783
+Run 2 (preset with GGML_OPENMP=OFF, /MT + no OpenMP): 100% tests passed out of 783
+
+Label summary (run 2):
+  contract    =  46.92 s   (203 tests)
+  e2e         =   1.52 s   (5 tests)
+  integration =   1.41 s   (43 tests)
+  parser      =   2.17 s   (3 tests)
+  unit        =  48.11 s   (529 tests)
+  Total Test time (real) = 102.62 s
+
+Model-dependent and Vulkan tests skip (NOT RUN) on this CPU-only build; they are reported as skipped, never as
+passes. Command:
+  ctest --test-dir build\windows-msvc-release-static
+Toolchain: MSVC 19.44.35228, CMake 4.4.0, Ninja 1.13.2.

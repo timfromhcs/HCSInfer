@@ -29,16 +29,29 @@
       "displayName": "Windows MSVC x64 Release + Vulkan modules",
       "inherits": "base",
       "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "HCS_ENABLE_VULKAN": "ON" }
+    },
+    {
+      "name": "windows-msvc-release-static",
+      "displayName": "Windows MSVC x64 Release, static CRT (/MT) + single-EXE experiment",
+      "description": "Static CRT (/MT) for every target plus GGML_OPENMP=OFF so the linked EXE depends on system DLLs only (ADR-008). Experimental; CPU kernels then use ggml's own thread pool.",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded",
+        "GGML_OPENMP": "OFF"
+      }
     }
   ],
   "buildPresets": [
     { "name": "windows-msvc-debug", "configurePreset": "windows-msvc-debug" },
     { "name": "windows-msvc-release", "configurePreset": "windows-msvc-release" },
-    { "name": "windows-msvc-release-vulkan", "configurePreset": "windows-msvc-release-vulkan" }
+    { "name": "windows-msvc-release-vulkan", "configurePreset": "windows-msvc-release-vulkan" },
+    { "name": "windows-msvc-release-static", "configurePreset": "windows-msvc-release-static" }
   ],
   "testPresets": [
     { "name": "windows-msvc-debug", "configurePreset": "windows-msvc-debug", "output": { "outputOnFailure": true } },
     { "name": "windows-msvc-release", "configurePreset": "windows-msvc-release", "output": { "outputOnFailure": true } },
-    { "name": "windows-msvc-release-vulkan", "configurePreset": "windows-msvc-release-vulkan", "output": { "outputOnFailure": true } }
+    { "name": "windows-msvc-release-vulkan", "configurePreset": "windows-msvc-release-vulkan", "output": { "outputOnFailure": true } },
+    { "name": "windows-msvc-release-static", "configurePreset": "windows-msvc-release-static", "output": { "outputOnFailure": true } }
   ]
 }

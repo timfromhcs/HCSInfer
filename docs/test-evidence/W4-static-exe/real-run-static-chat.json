@@ -1,0 +1,23 @@
+{
+  "backend": "cpu",
+  "device": "CPU",
+  "model": "lfm3-omni-2b-q8_0",
+  "offloaded_layers": 0,
+  "results": [
+    {
+      "metrics": {
+        "decode_tokens": 7,
+        "decode_tokens_per_second": 16.40279644246778,
+        "load_ms": 825.0897,
+        "prompt_tokens": 23,
+        "prompt_tokens_per_second": 59.90321203627426,
+        "ttft_ms": 503.4474
+      },
+      "prompt_chars": 48,
+      "state": "succeeded",
+      "text": "HCSInfer static build works."
+    }
+  ],
+  "schema_version": 1,
+  "total_layers": 24
+}

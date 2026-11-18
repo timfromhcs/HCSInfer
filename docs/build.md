@@ -6,8 +6,9 @@ Known-good environment (verified 2026-11-17 on the target machine): Windows 11 1
 ## Presets
 
 `CMakePresets.json` defines the configure/build/test presets `windows-msvc-debug`, `windows-msvc-release` (both CPU,
-`HCS_ENABLE_VULKAN=OFF`) and `windows-msvc-release-vulkan` (needs the LunarG Vulkan SDK at build time). All use Ninja
-and `cl`. There are no Linux or ASan presets yet. Local test builds of this project also used ad-hoc build
+`HCS_ENABLE_VULKAN=OFF`), `windows-msvc-release-vulkan` (needs the LunarG Vulkan SDK at build time) and
+`windows-msvc-release-static` (static CRT `/MT` plus `GGML_OPENMP=OFF` for the single-EXE experiment, ADR-008). All use
+Ninja and `cl`. There are no Linux or ASan presets yet. Local test builds of this project also used ad-hoc build
 directories (for example `build/img-api`); those are not presets.
 
 ## Commands

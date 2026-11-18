@@ -1,0 +1,29 @@
+Dump of file build\windows-msvc-release\bin\HCSInfer.exe   (default dynamic CRT /MD, GGML_OPENMP=ON)
+
+Image has the following dependencies:
+    ADVAPI32.dll
+    WS2_32.dll
+    KERNEL32.dll
+    MSVCP140.dll
+    MSVCP140_CODECVT_IDS.dll
+    VCOMP140.DLL
+    VCRUNTIME140.dll
+    VCRUNTIME140_1.dll
+    api-ms-win-crt-runtime-l1-1-0.dll
+    api-ms-win-crt-string-l1-1-0.dll
+    api-ms-win-crt-stdio-l1-1-0.dll
+    api-ms-win-crt-heap-l1-1-0.dll
+    api-ms-win-crt-math-l1-1-0.dll
+    api-ms-win-crt-convert-l1-1-0.dll
+    api-ms-win-crt-environment-l1-1-0.dll
+    api-ms-win-crt-locale-l1-1-0.dll
+    api-ms-win-crt-filesystem-l1-1-0.dll
+    api-ms-win-crt-time-l1-1-0.dll
+    api-ms-win-crt-utility-l1-1-0.dll
+
+Summary: needs the MSVC runtime (MSVCP140/VCRUNTIME140/ucrt) from the Visual C++ Redistributable and vcomp140.dll
+(OpenMP) - i.e. it is NOT runnable on a bare Windows machine without the redistributable.
+
+Command:
+  dumpbin /dependents build\windows-msvc-release\bin\HCSInfer.exe
+Toolchain: MSVC 19.44.35228 (VS 2022 Community), CMake 4.4.0, Ninja 1.13.2.

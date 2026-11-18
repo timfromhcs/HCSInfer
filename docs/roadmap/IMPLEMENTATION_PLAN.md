@@ -30,13 +30,14 @@ graph TD
 
 Critical path to V1: vision adapter -> image routes in API/MCP -> GUI (ADR-009) -> Model Vault in the load path ->
 hardening/soak -> release package. M7 single-EXE and M8 kernels gate only the single-file and custom-kernel claims.
-Last completed milestone: V1-stable **W1-W3** (committed locally on `main`, not yet pushed): `902b41e` (W1:
-`POST /hcs/v1/benchmarks`, `cache stats|clear`, `benchmark --suite full`), `5633450` (W2: the agent/train salvage with
-tests) and `b02075f` (W3: soak defects D-S1..D-S4 + transport/storage/MCP test gaps). `origin/main` is still `35bd39d`
-(V1.1 wave 2: the `web/` browser demo, the HCS Train pipeline, the HCS Agent supervisor). Earlier: V1.1 wave 1
-(`6a390b8`), M3 image routes + M4 embedded UI + `benchmark` command + M10 audit fixes (`docs/test-evidence/M3-image`,
+Last completed: V1-stable **W1-W3** (pushed to `origin/main` as `902b41e`, `5633450`, `b02075f`) plus the W1 follow-up
+MCP `hcs.runtime.benchmark` tool (`af884c3`) and the **W4** static-CRT single-EXE experiment (preset
+`windows-msvc-release-static`; the EXE is system-DLL-only and passes 783/783, but the clean-machine test is NOT RUN -
+`docs/test-evidence/W4-static-exe/`, ADR-008). `origin/main` is now `af884c3`. Earlier: V1.1 wave 2 (`35bd39d`), wave
+1 (`6a390b8`), M3 image routes + M4 embedded UI + `benchmark` command + M10 audit fixes (`docs/test-evidence/M3-image`,
 `M4-gui`, `benchmark`, `M10-fixes`).
-Next: the V1-stable wave plan W1..W6 at the end of this file (the release checklist is in `STATUS.md`); W4 next.
+Next: **W5** (M8 profiling, at most one feature-flagged kernel) and **W6** (release candidate); the full wave plan is
+at the end of this file (the release checklist is in `STATUS.md`).
 
 ## M0 Repository and hardware baseline
 - [x] Repo inspected, scaffold + build/test scripts
@@ -102,7 +103,7 @@ Next: the V1-stable wave plan W1..W6 at the end of this file (the release checkl
 ## M7 Shared GGML ABI + single EXE
 - [x] `SD_USE_UPSTREAM_GGML=ON` builds, matches patched output for SD1.5; HCSInfer links one GGML for both engines
 - [ ] Operator coverage vs patched for Flux/DiT/Qwen-Image/FP8/INT8 models
-- [ ] Static CRT, embedded assets, one EXE, clean-machine test (ADR-008). Portable folder package via `scripts/package.ps1` is the interim deliverable
+- [~] Static CRT `/MT` build of HCS + both engines (preset `windows-msvc-release-static`, `GGML_OPENMP=OFF`): builds, 783/783 tests, system-DLL-only EXE, real llama/SD1.5 CPU runs - `docs/test-evidence/W4-static-exe/`; `/MT` Vulkan build, embedded-asset packaging and the clean-machine test are still open (ADR-008). Portable folder package via `scripts/package.ps1` is the interim deliverable
 
 ## M8 Vulkan kernels (one at a time, feature-flagged)
 - [ ] Profile upstream; per-kernel CPU reference, validation layers, SPIR-V validation, benchmark vs upstream, fallback
@@ -146,7 +147,7 @@ Every wave ends with the full CTest suite green plus its own new tests, an updat
 | **W1 (DONE, committed `902b41e`)** honest docs + small gaps | Docs match the tree (this pass). Implement `POST /hcs/v1/benchmarks` (currently `501`), `cache stats` / `cache clear` (CLI, only HCS-owned state; never touches model files), `benchmark --suite full` and the MCP `hcs.runtime.benchmark` tool. `tune` stays Planned and returns exit code 10 - no fake stub. | Contract tests for each new route/command; `docs/api.md`, `docs/mcp.md`, README matrix and STATUS updated in the same change; `--suite full` JSON validates against the AGENTS.md 21.1 fields |
 | **W2** salvage agent/train | Port the unique work from the local branch `claude/flux3-agent-engine-v1-665ab0` selectively: `agent_redact`, `event_parser`, `tool_audit`, `session_manager`, `chat_template`, `dataset_prep`, `rsi_loop`, soak. Nothing is merged wholesale; each piece comes with unit tests and an ADR-011 / ADR-012 note. | Tests green on a clean checkout of `main`; a real `prime-agent` session and a real training run stay NOT RUN unless executed and recorded |
 | **W3** resource/lifecycle hardening | `soak`-labelled tests (100 load/unload cycles, long generation), fault injection (OOM at the allocator boundary, cancel during load, USB-disconnect simulation, device-lost where reproducible), shutdown while idle / loading / generating. | Leak/handle checks recorded; the 30-minute and 100-cycle runs are PASS only with evidence, otherwise NOT RUN |
-| **W4** single-EXE attempt | Static CRT (`/MT`) build of HCS + both engines (ADR-008), embedded assets, then a clean-machine run without the Vulkan SDK or MSVC redistributable. | PASS only if the clean-machine test passes; otherwise the release stays a portable folder and says so |
+| **W4** single-EXE attempt | Static CRT (`/MT`) build of HCS + both engines (ADR-008), embedded assets, then a clean-machine run without the Vulkan SDK or MSVC redistributable. | PASS only if the clean-machine test passes; otherwise the release stays a portable folder and says so. **Done in part (2026-11-18):** preset `windows-msvc-release-static` ( `/MT` + `GGML_OPENMP=OFF`) builds, 783/783 tests, system-DLL-only EXE, real llama/SD1.5 CPU runs (`docs/test-evidence/W4-static-exe/`); clean-machine test and `/MT` Vulkan build NOT RUN |
 | **W5** M8 profiling | Profile the upstream Vulkan backend on the 680M; land **at most one** HCS Vulkan kernel (quantised GEMV first) behind a feature flag with a CPU reference, upstream baseline, SPIR-V validation and a repeatable benefit. | A kernel is default-on only with measured, repeatable benefit; otherwise M8 is reported as profiled-only |
 | **W6** release candidate | `CHANGELOG.md` finalised, release notes, support matrix, SBOM + SHA-256 produced by CI, dependency/licence audit, README matches the binary, tag. | Every STATUS checklist row is PASS, or explicitly listed as excluded / BLOCKED in the release notes |
 
