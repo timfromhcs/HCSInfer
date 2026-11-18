@@ -53,7 +53,11 @@ CTest: **783 registered, 0 failed** (CPU build; model-dependent tests skip = NOT
   `docs/soak.md`) with CTest registration off by default (`-DHCS_SOAK_REGISTER=ON`). Release CTest: 735 registered,
   0 failed (was 550). A real `prime-agent` session, a real trainer run and the Jinja parity check stay NOT RUN.
 
-### Fixed (wave 3, committed `b02075f`; soak defects, see `docs/test-evidence/soak/DEFECTS.md`)
+### Fixed (wave 3, committed `b02075f`; plus a defect found by CI afterwards; see `docs/test-evidence/soak/DEFECTS.md`)
+- D-S5 (found by the hosted CI run on the wave-3 `FsUtil.ConcurrentWritersNeverProduceMixedContent` test, fixed after
+  the W4 commit): `read_file_limited` did a `file_size` then a separate open, so a concurrent `atomic_write_file`
+  rename could make it return a torn prefix of another writer's content. Size and bytes now come from one handle.
+  Verified with 25 consecutive `FsUtil.*` runs and the full 783/783 suite.
 - D-S1: `~Runtime()` now cancels and joins both job queues before any member is destroyed (destroying a `Runtime` with
   a running job used to crash). Red -> green with `RuntimeLifecycle.*`.
 - D-S2: `serve` connection budget raised to 48+ workers + 32 queued so ~64 idle / half-open local sockets no longer

@@ -15,6 +15,7 @@ and D-S3). The **full** profile (100 cycles, 30 min generation) is NOT RUN.
 | D-S2 | **FIXED** (red -> green, real server re-verified) | ~64 idle/half-open sockets made `GET /hcs/v1/health` fail |
 | D-S3 | **Harness problem (original symptom) + one genuine latent defect FIXED** | `Ctrl+C` during generation |
 | D-S4 | **FIXED** (new, found by the wave-3 transport tests) | slowloris: no overall request deadline |
+| D-S5 | **FIXED** (found by CI on the W3 `FsUtil` test) | `read_file_limited` could return torn content under a concurrent `atomic_write_file` |
 
 ## D-S1 - destroying `api::Runtime` while a job is running crashed (access violation) - FIXED
 
@@ -87,6 +88,20 @@ Triage, with evidence (`w3-ctrl-c/ctrl-c-manual.txt`, tool `tests/soak/http_stor
 * Known residual: the reaper's `shutdown()` on a socket races, in a microsecond window, with httplib closing that
   same socket when the connection ends on its own at the exact moment the deadline expires; the worst case is one
   extra reset of a connection that was ending anyway.
+
+## D-S5 - `read_file_limited` could return torn content - FIXED (found by CI)
+
+* Found by the hosted CI runner: `FsUtil.ConcurrentWritersNeverProduceMixedContent` (a wave-3 unit test) failed once
+  with `mixed.load() == 1` ("a reader saw a torn/mixed file"); it passes on the development machine. This is a real
+  TOCTOU defect, not a flaky test.
+* Cause (confirmed by reading `src/core/fs_util.cpp`): `read_file_limited` called `fs::file_size(path)` and then
+  opened `path` - two different file objects. A concurrent `atomic_write_file` rename between the two steps makes the
+  reader read the *old* length from the *new* file, i.e. a torn prefix of another writer's payload.
+* Fix: open the file once and take both the size (`seekg`/`tellg`) and the bytes from that single handle; an open
+  handle keeps the file version it opened, so the result is exactly one writer's payload or a clean error while a
+  rename is in flight. Bounds/error codes are unchanged (`InvalidArgument` when over the limit, before allocating).
+* Verified: `FsUtil.*` 25 consecutive runs green locally; full Release suite 783/783. `read_file_limited` backs the
+  settings/registry/cache reads, so every state-file read benefits.
 
 ## Harness changes made while porting / in wave 3
 
