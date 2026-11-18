@@ -12,6 +12,7 @@ next to it.
 | `M2/` | control-plane facade, llama adapter, diffusion adapter, M7 shared-GGML proof |
 | `M2-vision/` | libmtmd vision adapter (SmolVLM2-500M Q8_0 + mmproj), CPU + Vulkan, and the HTTP/MCP vision end-to-end |
 | `M3-api-mcp/` | HTTP API + MCP stdio end-to-end with a real text model |
+| `mcp-benchmark/` | MCP `hcs.runtime.benchmark` tool: real GGUF over stdio, AGENTS.md 21.1 document returned |
 | `M3-image/` | HTTP image routes + MCP image tools with a real diffusion model (47/47 checks) |
 | `M4-gui/` | embedded web UI: unit + contract + socket + headless-browser checks |
 | `M6-storage/` | HCSMODEL container, chunk codecs, parser mutation tests, storage benchmark |

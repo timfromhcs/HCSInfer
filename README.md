@@ -32,7 +32,8 @@ for the evidence behind every row below.
 | HTTP API: `/v1/images/generations`, `/v1/images/edits` | Experimental | real stable-diffusion.cpp render on CPU **and Vulkan** (47/47 checks on both builds); `b64_json` only, no `url`/`mask` (`501`); JSON body only (`multipart` -> `415`); `docs/api.md` |
 | HTTP API: OpenAI tool calling (`tools`, `tool_calls`, `tool_choice` auto/none; non-stream and SSE) | Experimental | real LFM3-Omni run on CPU and Vulkan, 37/40 on the project's own 40-task eval; `tool_choice` required / named function and legacy `functions` answer `501`; `docs/api.md`, `docs/test-evidence/lfm3/` |
 | HTTP API: `POST /hcs/v1/benchmarks` | Implemented | asynchronous job (`202` + `status_url`), cancellable; contract-tested, real-model run NOT RUN |
-| MCP stdio: models, chat, runtime, jobs tools | Experimental | `docs/mcp.md` |
+| MCP stdio: models, chat, runtime, jobs, benchmark tools | Experimental | `docs/mcp.md` |
+| MCP: `hcs.runtime.benchmark` | Experimental | shared benchmark runner as a job; real LFM3-Omni-2B run recorded |
 | MCP: `hcs.vision.analyze` | Experimental | real VLM, path guarded; `docs/mcp.md` |
 | MCP: `hcs.image.generate`, `hcs.image.edit` | Experimental | real render, image returned as an MCP image content block; `docs/mcp.md` |
 | MCP Streamable HTTP | Planned | intentionally not implemented |

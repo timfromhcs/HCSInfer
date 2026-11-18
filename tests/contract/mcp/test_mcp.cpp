@@ -250,9 +250,10 @@ TEST(McpTools, ListHasNarrowSchemasForEveryRequiredTool) {
         EXPECT_TRUE(t.contains("description"));
         EXPECT_TRUE(t["annotations"].contains("readOnlyHint"));
     }
-    for (const char* want : {"hcs.models.list", "hcs.models.inspect", "hcs.models.load", "hcs.models.unload",
-                             "hcs.chat.generate", "hcs.runtime.status", "hcs.jobs.status", "hcs.jobs.cancel",
-                             "hcs.vision.analyze", "hcs.image.generate", "hcs.image.edit"})
+    for (const char* want :
+         {"hcs.models.list", "hcs.models.inspect", "hcs.models.load", "hcs.models.unload",
+          "hcs.chat.generate", "hcs.runtime.status", "hcs.runtime.benchmark", "hcs.jobs.status",
+          "hcs.jobs.cancel", "hcs.vision.analyze", "hcs.image.generate", "hcs.image.edit"})
         EXPECT_TRUE(names.count(want)) << want;
     // deterministic order across calls
     EXPECT_EQ(m.rpc(modern_req(2, "tools/list"))["result"]["tools"], r["result"]["tools"]);
@@ -394,6 +395,81 @@ TEST(McpTools, NoEngineIsReportedAsUnsupported) {
     EXPECT_EQ(
         m.tool(2, "hcs.chat.generate", {{"prompt", "x"}})["result"]["structuredContent"]["error"]["code"],
         "unsupported");
+}
+
+// ---- hcs.runtime.benchmark (plumbing only: FakeTextEngine numbers are not benchmark evidence,
+// AGENTS.md 16.2)
+TEST(McpTools, BenchmarkQuickSuiteReturnsTheAgentsDocument) {
+    Mcp m;
+    auto r =
+        m.tool(1, "hcs.runtime.benchmark",
+               {{"model", "tiny"}, {"suite", "quick"}, {"warmup", 0}, {"iterations", 1}, {"max_tokens", 8}});
+    ASSERT_FALSE(r["result"]["isError"].get<bool>()) << r.dump();
+    const json& doc = r["result"]["structuredContent"];
+    EXPECT_EQ(doc["schema_version"], 1);
+    EXPECT_EQ(doc["suite"], "quick");
+    EXPECT_EQ(doc["result_status"], "PASS");
+    EXPECT_EQ(doc["model_file"], "tiny.gguf");
+    EXPECT_EQ(doc["measured_iterations"], 1);
+    ASSERT_TRUE(doc["samples"]["ttft_ms"]["samples"].is_array());
+    EXPECT_EQ(doc["samples"]["ttft_ms"]["samples"].size(), 1u);
+    // Cold load + one warm reload through the control plane; the benchmarked model is left loaded.
+    EXPECT_EQ(m.fx.engine.loads.load(), 2);
+    EXPECT_EQ(m.fx.cp->loaded_model().value_or(""), "tiny");
+}
+
+TEST(McpTools, BenchmarkFullSuiteReturnsSweepsAndSweepSizesRequireFull) {
+    Mcp m;
+    auto full = m.tool(1, "hcs.runtime.benchmark",
+                       {{"model", "tiny"},
+                        {"suite", "full"},
+                        {"sweep_sizes", json::array({16, 32})},
+                        {"warmup", 0},
+                        {"iterations", 1},
+                        {"max_tokens", 8}});
+    ASSERT_FALSE(full["result"]["isError"].get<bool>()) << full.dump();
+    const json& doc = full["result"]["structuredContent"];
+    EXPECT_EQ(doc["suite"], "full");
+    ASSERT_EQ(doc["prefill_sweep"].size(), 2u);
+    ASSERT_EQ(doc["decode_sweep"].size(), 2u);
+    EXPECT_EQ(doc["prefill_sweep"][0]["target_prompt_tokens"], 16);
+    // sweep_sizes is only meaningful for the full suite.
+    auto bad = m.tool(2, "hcs.runtime.benchmark",
+                      {{"model", "tiny"}, {"suite", "quick"}, {"sweep_sizes", json::array({16})}});
+    EXPECT_TRUE(bad["result"]["isError"].get<bool>());
+    EXPECT_EQ(bad["result"]["structuredContent"]["error"]["code"], "invalid_argument");
+}
+
+TEST(McpTools, BenchmarkValidationAndNoEngineAreHonestErrors) {
+    Mcp m;
+    EXPECT_EQ(m.tool(1, "hcs.runtime.benchmark",
+                     {{"model", "../x"}})["result"]["structuredContent"]["error"]["code"],
+              "invalid_argument");
+    EXPECT_EQ(m.tool(2, "hcs.runtime.benchmark",
+                     {{"model", "nope"}})["result"]["structuredContent"]["error"]["code"],
+              "not_found");
+    EXPECT_EQ(m.tool(3, "hcs.runtime.benchmark",
+                     {{"model", "tiny"}, {"suite", "wrong"}})["result"]["structuredContent"]["error"]["code"],
+              "invalid_argument");
+    Mcp none({}, false);
+    EXPECT_EQ(none.tool(4, "hcs.runtime.benchmark",
+                        {{"model", "tiny"}})["result"]["structuredContent"]["error"]["code"],
+              "unsupported");
+}
+
+TEST(McpTools, BenchmarkCallTimeoutCancelsTheUnderlyingJob) {
+    McpOptions o;
+    o.call_timeout = std::chrono::milliseconds(120);
+    Mcp m(o);
+    m.fx.engine.delay_ms = 30;  // ~150 ms per generation; the whole suite cannot finish in 120 ms
+    auto r = m.tool(1, "hcs.runtime.benchmark",
+                    {{"model", "tiny"}, {"warmup", 5}, {"iterations", 10}, {"max_tokens", 64}});
+    EXPECT_TRUE(r["result"]["isError"].get<bool>());
+    EXPECT_EQ(r["result"]["structuredContent"]["error"]["code"], "timeout");
+    EXPECT_TRUE(wait_for([&] {
+        auto st = m.fx.cp->job_status(JobId{1});
+        return st && (st.value().state == JobState::Cancelled || st.value().state == JobState::Succeeded);
+    })) << "the benchmark job was left running after the tool timed out";
 }
 
 // ---- stdio loop

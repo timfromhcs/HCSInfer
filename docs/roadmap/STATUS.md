@@ -6,15 +6,17 @@ NOT RUN or BLOCKED.
 
 ## Repository state
 
-- Public remote `https://github.com/timfromhcs/HCSInfer`. Local `main` == `origin/main` == `35bd39d`
-  ("feat(v1.1-agent): wave 2 - Windows process supervisor for the agent sidecar (ADR-011)"). The history starts at
-  `d5baf76` "Initial commit" (2026-11-17) and has 28 commits, all dated 2026-11-17.
-- CI: `.github/workflows/pr.yml` run **44167798984** (commit `d8a5e37`) is green on all six jobs (see the `CI workflows`
-  row). `hardware.yml` (self-hosted Radeon runner) has never been executed.
+- Public remote `https://github.com/timfromhcs/HCSInfer`. The checked-out `main` is **3 commits ahead of
+  `origin/main`** (`origin/main` == `35bd39d` "feat(v1.1-agent): wave 2 ..."): `902b41e` (V1-stable W1:
+  `POST /hcs/v1/benchmarks`, `cache stats|clear`, `benchmark --suite full`), `5633450` (W2: the agent/train salvage
+  with tests) and `b02075f` (W3: soak defects D-S1..D-S4 fixed + transport/storage/MCP test gaps). These three are
+  committed locally and **not yet pushed**. The history starts at `d5baf76` "Initial commit" (2026-11-17).
+- CI: `.github/workflows/pr.yml` run **44185469463** (commit `35bd39d`, the tip of `origin/main`) is green on all six
+  jobs; the three local W1-W3 commits have no CI run yet (not pushed). `hardware.yml` (self-hosted Radeon runner) has
+  never been executed.
 - Branches: `main` and the docs worktree branch `claude/repo-analysis-v1-stable-80f8d6` (== `main`). The local branch
-  `claude/flux3-agent-engine-v1-665ab0` is **8 commits behind `main`** and its worktree holds **uncommitted work**
-  that was salvaged selectively into this worktree (uncommitted; the source worktree itself was not modified). Its web/ and
-  CMake files were deliberately not taken.
+  `claude/flux3-agent-engine-v1-665ab0` is now an **ancestor of `main`**; its unique work was salvaged selectively and
+  committed in W2 (`5633450`), with the web/ and CMake differences deliberately not taken.
 - Submodule pins: `external/llama.cpp` d3c3e242c16b8cbf51400fad410cd69b22d64f35, `external/stable-diffusion.cpp`
   532d2c15c430a785a712b2d94281f04e733008a4, `external/prime-agent` 8980e66f2f07762d62a6c1d73b347a4cac5275cc
   (see `external/dependency-lock.json`).
@@ -32,7 +34,7 @@ NOT RUN or BLOCKED.
 
 | Gate | Status | Evidence / reason |
 |---|---|---|
-| Full Release CTest suite (CPU-only, Vulkan=OFF) | **PASS** | **779 registered, 0 failed at the last run** (wave 3 on top of the W2 port, uncommitted, CPU build, `-j4`; 735 before wave 3; model-dependent tests skip = NOT RUN; before the port 550, at W1; earlier: 518 at wave 2, `docs/test-evidence/agent/README.md`). The last archived raw log is the earlier 400-test run: 396 passed, 0 failed, 4 skipped (Vulkan real tests = NOT RUN on a CPU build), 223 s - `M10-fixes/ctest-full-400-green.txt`; the 518-test raw log is not archived in `docs/test-evidence/`. Model-dependent tests skip (NOT RUN) unless `HCS_TEST_*` is set |
+| Full Release CTest suite (CPU-only, Vulkan=OFF) | **PASS** | **783 registered, 0 failed at the last run** (W3 committed as `b02075f` plus the MCP `hcs.runtime.benchmark` tool, CPU build, `-j4`; 779 before the MCP tool; 735 before wave 3; model-dependent tests skip = NOT RUN; before the port 550, at W1; earlier: 518 at wave 2, `docs/test-evidence/agent/README.md`). The last archived raw log is the earlier 400-test run: 396 passed, 0 failed, 4 skipped (Vulkan real tests = NOT RUN on a CPU build), 223 s - `M10-fixes/ctest-full-400-green.txt`; the 518-test raw log is not archived in `docs/test-evidence/`. Model-dependent tests skip (NOT RUN) unless `HCS_TEST_*` is set |
 | Configure + build Debug / Release (MSVC x64, Ninja, `/W4 /WX` on HCS targets) | PASS | `M2-core/`, `M3-api-mcp/ctest-debug.txt`; the Vulkan preset configures and builds (`M2/image/README.md`) |
 | M0 hardware doctor (CPU features, RAM, OS, Vulkan devices/heaps, GPU adapters, drive info, read bench) | PASS | `M0/` (`doctor.json`, `doctor-no-vulkan.json`, `readbench-usb-hdd.json`, `vulkaninfo-summary.txt`) |
 | M1 llama.cpp independent baseline, CPU + Vulkan, real GGUF from USB drive | PASS | `M1/llama/README.md`; qwen3-0.6b Q4_K_M, sha256 `4ea79412...` |
@@ -49,10 +51,11 @@ NOT RUN or BLOCKED.
 | M3 HTTP API: `/v1/models`, `/v1/chat/completions` (+streaming, OpenAI `tools` / `tool_calls`, `tool_choice` auto or none), `/hcs/v1/{health,runtime,devices,memory,models,jobs}`, auth, loopback, limits | PASS (experimental) | `tests/contract/api*`, `M3-api-mcp/`, `M10-fixes/e2e-api-mcp-real-after-fix.json`; tool calling: `lfm3/` (19 unit + 12 contract tests, real model in `e2e-lfm3-*.json`; `tool_choice` required / named function and legacy `functions` answer 501) |
 | M3 HTTP image routes `/v1/images/generations`, `/v1/images/edits` | **PASS (experimental)** | `M3-image/`: 47/47 checks over a real socket with SD1.5 Q8_0 on the **CPU build and the Vulkan build** (`vulkan-e2e-image.json`, plus the four `vulkan-*.png` renders) - real PNG of the requested size (not blank), edit keeps the input size, validation/limits, `multipart` -> 415, abandoned request cancels the render |
 | HTTP vision input on `/v1/chat/completions` (`image_url` data URI, streaming, cancel) | PASS (experimental; SmolVLM2 only) | `M2-vision/` (`e2e_vision.py` 27/27), `tests/contract/api_vision`, `e2e_vision_real` |
-| M3 MCP stdio (models, chat, runtime, jobs tools; path guard) | PASS (experimental) | `tests/contract/mcp`, `M10-fixes/e2e-api-mcp-real-after-fix.json` |
+| M3 MCP stdio (models, chat, runtime, jobs, benchmark tools; path guard) | PASS (experimental) | `tests/contract/mcp`, `M10-fixes/e2e-api-mcp-real-after-fix.json`; `hcs.runtime.benchmark` runs the shared benchmark runner as a job - `docs/test-evidence/mcp-benchmark/` (real LFM3-Omni-2B Q8_0 over stdio, AGENTS.md 21.1 document) |
 | MCP `hcs.vision.analyze` | PASS (experimental; real VLM over stdio) | `M2-vision/`, `tests/contract/api_vision` |
 | MCP `hcs.image.generate`, `hcs.image.edit` | **PASS (experimental)** | `M3-image/`: real render, image returned as an MCP image content block, size kept, approved-root enforcement, cancellation |
 | `POST /hcs/v1/benchmarks` | PASS (contract tests, no model) | `202` + job, result via `GET /hcs/v1/jobs/{id}`, cancel, `404`/`400`/`501`, body <= 4 KiB (`tests/contract/api/test_http_benchmarks.cpp`); real-model run NOT RUN |
+| MCP `hcs.runtime.benchmark` | **PASS (experimental; real-model run recorded)** | `tests/contract/mcp` (`McpTools.Benchmark*`); real LFM3-Omni-2B Q8_0 over stdio: `PASS`, CPU, cold load 4404 ms, warm TTFT 2574 ms, 18.85 decode t/s, peak RAM 2.42 GiB - `docs/test-evidence/mcp-benchmark/` |
 | MCP Streamable HTTP | NOT RUN (intentionally not implemented) | `docs/mcp.md` |
 | M4 GUI (embedded local web UI, ADR-009 accepted) | **PASS (experimental)** for the HTTP/browser-boot phases, on both builds | `M4-gui/`: 23 checks 0 failed over a real socket (CSP, traversal, Host/Origin, 405, token not embedded) **plus a real headless-Chrome boot** that connects with the fragment token and lists the models; the same script against the **Vulkan build** is `vulkan-e2e-gui.json` (22 checks, 0 failed - one check needs a registered model). Python-`playwright` interaction phase NOT RUN (playwright not installed) |
 | M4 normal-user workflow without a terminal | PARTIAL | manual run recorded in `M4-gui/README.md` (load, streamed chat, Stop/cancel, vision, Performance); not automated |
@@ -193,9 +196,11 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 
 ## Exact next action
 
-Execute the V1-stable wave plan in `IMPLEMENTATION_PLAN.md` in order: **W1** (done in the working tree, uncommitted: `POST /hcs/v1/benchmarks`, `cache stats|clear`, `benchmark --suite full`; `tune` stays Planned), **W2** (salvage the
-unique agent/train work from the `flux3-agent-engine` worktree, with tests), **W3** (lifecycle hardening, soak, fault
-injection), **W4** (single-EXE static-CRT attempt, ADR-008), **W5** (M8 profiling, at most one feature-flagged
-kernel), **W6** (release candidate). These stay BLOCKED / NOT RUN until the owner acts: the FLUX.3 render (gated
-encoder/VAE access), M5 Stage B (model larger than RAM, administrator cache flush), a real `prime-agent` session,
-real WebGPU inference and the Vercel deploy.
+Execute the V1-stable wave plan in `IMPLEMENTATION_PLAN.md` in order. **W1** is done and committed (`902b41e`):
+`POST /hcs/v1/benchmarks`, `cache stats|clear`, `benchmark --suite full`, and now the MCP `hcs.runtime.benchmark` tool
+(the last open W1 item); `tune` stays Planned. **W2** (agent/train salvage) and **W3** (soak defects + test gaps) are
+done and committed (`5633450`, `b02075f`). The three local commits still need a push to `origin/main` and a CI run.
+Next: **W4** (single-EXE static-CRT attempt, ADR-008), then **W5** (M8 profiling, at most one feature-flagged kernel)
+and **W6** (release candidate). These stay BLOCKED / NOT RUN until the owner acts: the FLUX.3 render (gated encoder/VAE
+access), M5 Stage B (model larger than RAM, administrator cache flush), a real `prime-agent` session, real WebGPU
+inference and the Vercel deploy.

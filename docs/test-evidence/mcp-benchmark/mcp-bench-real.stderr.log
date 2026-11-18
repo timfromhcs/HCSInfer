@@ -1,0 +1,5 @@
+{"ts":"2026-11-18T08:52:22.079Z","level":"info","component":"mcp","msg":"stdio server started","protocol":"2026-07-28"}
+{"ts":"2026-11-18T08:52:26.485Z","level":"info","component":"control","msg":"model loaded","model":"lfm3-omni-2b-q8_0","kind":"text"}
+{"ts":"2026-11-18T08:53:06.065Z","level":"info","component":"control","msg":"model loaded","model":"lfm3-omni-2b-q8_0","kind":"text"}
+{"ts":"2026-11-18T08:53:06.214Z","level":"info","component":"control","msg":"benchmark finished","model":"lfm3-omni-2b-q8_0"}
+

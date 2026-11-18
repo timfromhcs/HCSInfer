@@ -30,12 +30,13 @@ graph TD
 
 Critical path to V1: vision adapter -> image routes in API/MCP -> GUI (ADR-009) -> Model Vault in the load path ->
 hardening/soak -> release package. M7 single-EXE and M8 kernels gate only the single-file and custom-kernel claims.
-Last completed milestone: V1.1 wave 2 on `main` (`35bd39d`): the browser demo `web/` (ADR-013), the HCS Train pipeline
-(ADR-012; logic + CLI green, a real training run NOT RUN) and the HCS Agent policy/provider/launch-plan/process
-supervisor (ADR-011; a real `prime-agent` session NOT RUN). Earlier: V1.1 wave 1 (`6a390b8`), M3 image routes + M4
-embedded UI + `benchmark` command + M10 audit fixes (`docs/test-evidence/M3-image`, `M4-gui`, `benchmark`,
-`M10-fixes`).
-Next: the V1-stable wave plan W1..W6 at the end of this file (the release checklist is in `STATUS.md`).
+Last completed milestone: V1-stable **W1-W3** (committed locally on `main`, not yet pushed): `902b41e` (W1:
+`POST /hcs/v1/benchmarks`, `cache stats|clear`, `benchmark --suite full`), `5633450` (W2: the agent/train salvage with
+tests) and `b02075f` (W3: soak defects D-S1..D-S4 + transport/storage/MCP test gaps). `origin/main` is still `35bd39d`
+(V1.1 wave 2: the `web/` browser demo, the HCS Train pipeline, the HCS Agent supervisor). Earlier: V1.1 wave 1
+(`6a390b8`), M3 image routes + M4 embedded UI + `benchmark` command + M10 audit fixes (`docs/test-evidence/M3-image`,
+`M4-gui`, `benchmark`, `M10-fixes`).
+Next: the V1-stable wave plan W1..W6 at the end of this file (the release checklist is in `STATUS.md`); W4 next.
 
 ## M0 Repository and hardware baseline
 - [x] Repo inspected, scaffold + build/test scripts
@@ -70,7 +71,7 @@ Next: the V1-stable wave plan W1..W6 at the end of this file (the release checkl
 ## M3 Unified API and MCP
 - [x] HTTP: `/v1/models`, `/v1/chat/completions` (+streaming), `/hcs/v1/{health,runtime,devices,memory,models,models/{id},jobs}`
 - [x] `/v1/images/generations`, `/v1/images/edits` (real render, `M3-image/` 47/47)
-- [x] `POST /hcs/v1/benchmarks` (job, contract-tested; real-model run NOT RUN). [ ] MCP `hcs.runtime.benchmark` tool still open
+- [x] `POST /hcs/v1/benchmarks` (job, contract-tested; real-model run NOT RUN). [x] MCP `hcs.runtime.benchmark` tool (contract-tested; real LFM3-Omni-2B run in `docs/test-evidence/mcp-benchmark/`)
 - [x] Loopback bind, token auth, body limits, request IDs, structured errors, inflight cap (`tests/contract/api*`)
 - [x] MCP stdio tools: models list/inspect/load/unload, chat.generate, runtime.status, jobs.status/cancel; stdout clean; real run in `e2e_real.py`
 - [x] MCP `hcs.vision.analyze`, `hcs.image.generate`, `hcs.image.edit` (real render, image content block, `M3-image/`)
@@ -142,7 +143,7 @@ Every wave ends with the full CTest suite green plus its own new tests, an updat
 
 | Wave | Scope | Exit criteria |
 |---|---|---|
-| **W1 (DONE, uncommitted; MCP `hcs.runtime.benchmark` still open)** honest docs + small gaps | Docs match the tree (this pass). Implement `POST /hcs/v1/benchmarks` (currently `501`), `cache stats` / `cache clear` (CLI, only HCS-owned state; never touches model files) and `benchmark --suite full`. `tune` stays Planned and returns exit code 10 - no fake stub. | Contract tests for each new route/command; `docs/api.md`, README matrix and STATUS updated in the same change; `--suite full` JSON validates against the AGENTS.md 21.1 fields |
+| **W1 (DONE, committed `902b41e`)** honest docs + small gaps | Docs match the tree (this pass). Implement `POST /hcs/v1/benchmarks` (currently `501`), `cache stats` / `cache clear` (CLI, only HCS-owned state; never touches model files), `benchmark --suite full` and the MCP `hcs.runtime.benchmark` tool. `tune` stays Planned and returns exit code 10 - no fake stub. | Contract tests for each new route/command; `docs/api.md`, `docs/mcp.md`, README matrix and STATUS updated in the same change; `--suite full` JSON validates against the AGENTS.md 21.1 fields |
 | **W2** salvage agent/train | Port the unique work from the local branch `claude/flux3-agent-engine-v1-665ab0` selectively: `agent_redact`, `event_parser`, `tool_audit`, `session_manager`, `chat_template`, `dataset_prep`, `rsi_loop`, soak. Nothing is merged wholesale; each piece comes with unit tests and an ADR-011 / ADR-012 note. | Tests green on a clean checkout of `main`; a real `prime-agent` session and a real training run stay NOT RUN unless executed and recorded |
 | **W3** resource/lifecycle hardening | `soak`-labelled tests (100 load/unload cycles, long generation), fault injection (OOM at the allocator boundary, cancel during load, USB-disconnect simulation, device-lost where reproducible), shutdown while idle / loading / generating. | Leak/handle checks recorded; the 30-minute and 100-cycle runs are PASS only with evidence, otherwise NOT RUN |
 | **W4** single-EXE attempt | Static CRT (`/MT`) build of HCS + both engines (ADR-008), embedded assets, then a clean-machine run without the Vulkan SDK or MSVC redistributable. | PASS only if the clean-machine test passes; otherwise the release stays a portable folder and says so |

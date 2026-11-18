@@ -4,14 +4,24 @@ Derived from `git log` (all 28 commits are dated 2026-11-17). No release has bee
 by `scripts/package.ps1` is named `0.1.0`. Entries describe what the commits changed; PASS/NOT RUN state of each
 feature is in `docs/roadmap/STATUS.md`.
 
-## Unreleased - V1.1 (work in progress on `main`, `35bd39d`)
+## Unreleased - V1.1 / V1-stable waves (committed locally on `main`, 3 commits ahead of `origin/main`)
+
+`origin/main` is at `35bd39d` (V1.1 wave 2). The three commits below are committed locally and not yet pushed:
+`902b41e` (W1), `5633450` (W2), `b02075f` (W3). Release CTest: **783 registered, 0 failed** (CPU-only build; the
+model-dependent tests skip = NOT RUN).
 
 ### Added
+- MCP tool `hcs.runtime.benchmark` (`suite` quick/full, `model`, `max_tokens`/`warmup`/`iterations`/`seed`/
+  `sweep_sizes`): runs the shared text benchmark (the same runner as `HCSInfer benchmark` and
+  `POST /hcs/v1/benchmarks`) as a cancellable job and returns the AGENTS.md 21.1 JSON document. Real end-to-end run
+  over stdio with LFM3-Omni-2B Q8_0: `PASS`, CPU, cold load 4404 ms, warm TTFT 2574 ms, 18.85 decode t/s, peak RAM
+  2.42 GiB - `docs/test-evidence/mcp-benchmark/`. 4 new contract tests; `docs/mcp.md`, README matrix and STATUS
+  updated in the same change.
 - `POST /hcs/v1/benchmarks` (asynchronous job, `202` + `status_url`, cancellable), `benchmark --suite full`
   (prefill/decode sweeps, `--sweep-sizes`, `SKIPPED`/`FAIL` points, `result_status` `PARTIAL`) and
-  `cache stats|clear [--yes] [--json]` (HCS-owned state-dir cache, scratch and orphaned temp files only). Uncommitted
-  at the time of writing; CPU-build ctest 550 registered, 0 failed; a real-model run of the new benchmark paths is
-  NOT RUN. `tune` and `models load|unload` stay Planned (exit code 10).
+  `cache stats|clear [--yes] [--json]` (HCS-owned state-dir cache, scratch and orphaned temp files only). Committed in
+  W1 (`902b41e`, CPU-build ctest green); a real-model run of the new benchmark paths is NOT RUN. `tune` and
+  `models load|unload` stay Planned (exit code 10).
 - HCS Agent: process supervisor `hcs_process` (spawn without a shell, bounded output capture, timeout, whole-tree kill
   through a kill-on-close Job Object) (`35bd39d`); prime-agent provider document and launch plan, loopback-only
   (`712b6fa`). A real `prime-agent` session is NOT RUN (ADR-011).
@@ -25,7 +35,8 @@ feature is in `docs/roadmap/STATUS.md`.
   `--preset fast|quality`; the render is BLOCKED on gated files); the HCS Studio UI redesign; agent/train foundations.
 - V1.1 scope addendum and verified model selection (`e0ff7d4`, `a7527e9`).
 
-- Agent/train port from the stopped `flux3-agent-engine` session, re-based on `main`'s better modules (uncommitted):
+- Agent/train port from the stopped `flux3-agent-engine` session, re-based on `main`'s better modules (committed in
+  W2, `5633450`):
   `agent_redact`, `event_parser` (hardened: wrongly typed JSON fields no longer throw), `tool_audit` (python tripwire,
   hardened against escapes, f-string expressions, unicode identifiers, aliasing; documented as a tripwire, not a
   sandbox), `session_manager` (consumes `build_launch_plan`, injected launcher, token only via the child environment),
@@ -36,7 +47,7 @@ feature is in `docs/roadmap/STATUS.md`.
   `docs/soak.md`) with CTest registration off by default (`-DHCS_SOAK_REGISTER=ON`). Release CTest: 735 registered,
   0 failed (was 550). A real `prime-agent` session, a real trainer run and the Jinja parity check stay NOT RUN.
 
-### Fixed (wave 3, uncommitted; soak defects, see `docs/test-evidence/soak/DEFECTS.md`)
+### Fixed (wave 3, committed `b02075f`; soak defects, see `docs/test-evidence/soak/DEFECTS.md`)
 - D-S1: `~Runtime()` now cancels and joins both job queues before any member is destroyed (destroying a `Runtime` with
   a running job used to crash). Red -> green with `RuntimeLifecycle.*`.
 - D-S2: `serve` connection budget raised to 48+ workers + 32 queued so ~64 idle / half-open local sockets no longer
@@ -47,8 +58,9 @@ feature is in `docs/roadmap/STATUS.md`.
 - D-S4 (new): overall request-receive deadline (`TransportOptions::request_deadline_s`, default 15 s) against
   slowloris; needs a one-line access patch of a build-tree copy of `httplib.h` (`cmake/HcsHttplib.cmake`).
 
-### Tests (wave 3, uncommitted)
-- Release CTest 735 -> 779 registered, 0 failed (model-dependent tests skip = NOT RUN): runtime destruction (4), real-socket
+### Tests (wave 3, committed `b02075f`; plus the MCP benchmark tool)
+- Release CTest 735 -> 779 with wave 3, then **783** with the MCP `hcs.runtime.benchmark` tool, 0 failed
+  (model-dependent tests skip = NOT RUN): runtime destruction (4), real-socket
   transport negatives (slowloris, oversized header, malformed request line, bad Content-Length, pipelining, request
   smuggling, long-running request vs deadline, 429 over the wire, health under 64 idle sockets, graceful shutdown: 11),
   storage read-failure/unplug (6), MCP stdio framing (7), log redaction on failure paths and for images (2),

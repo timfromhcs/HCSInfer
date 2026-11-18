@@ -162,6 +162,25 @@ json tool_list(std::uint32_t cap) {
         {{"include_devices",
           {{"type", "boolean"}, {"description", "Include the hardware/device report (may take a moment)."}}}},
         {}, true));
+    tools.push_back(tool(
+        "hcs.runtime.benchmark", "Run benchmark",
+        "Run the shared text-inference benchmark (the same runner `HCSInfer benchmark` and "
+        "POST /hcs/v1/benchmarks use) against a registered text model as a cancellable job. The model is "
+        "loaded/unloaded through the normal lifecycle and left loaded. Returns the AGENTS.md 21.1 JSON "
+        "document (the measurement itself, not content). 'full' adds prefill/decode sweeps; 'sweep_sizes' "
+        "is only valid with 'full'. Reports 'unsupported' when no text engine is linked.",
+        {{"model", str_schema(64, "Registered text model id from hcs.models.list.")},
+         {"suite", {{"type", "string"}, {"enum", json::array({"quick", "full"})}}},
+         {"max_tokens", {{"type", "integer"}, {"minimum", 1}, {"maximum", cap}}},
+         {"warmup", {{"type", "integer"}, {"minimum", 0}, {"maximum", 20}}},
+         {"iterations", {{"type", "integer"}, {"minimum", 1}, {"maximum", 50}}},
+         {"seed", {{"type", "integer"}, {"minimum", 0}}},
+         {"sweep_sizes",
+          {{"type", "array"},
+           {"minItems", 1},
+           {"maxItems", 8},
+           {"items", {{"type", "integer"}, {"minimum", 16}, {"maximum", 1048576}}}}}},
+        {"model"}, false));
     tools.push_back(tool("hcs.jobs.status", "Job status",
                          "State of a job returned by another tool or the HTTP API.",
                          {{"job_id", str_schema(24, "e.g. job-12")}}, {"job_id"}, true));
@@ -358,6 +377,55 @@ json McpServer::wait_image(const api::Submitted& sub, const std::string& req_key
             {"isError", false}};
 }
 
+// Waits for a benchmark job (no streaming channel: the benchmark runner reports through job progress, and the
+// finished document is retrieved from the control plane). Honours MCP cancellation and the hard timeout. The
+// document is the same AGENTS.md 21.1 JSON the HTTP route and the CLI produce.
+json McpServer::wait_benchmark(const JobId& id, const std::string& req_key) {
+    using clock = std::chrono::steady_clock;
+    {
+        std::lock_guard lk(mu_);
+        running_jobs_[req_key] = id.value;
+    }
+    auto is_cancelled = [&] {
+        std::lock_guard lk(mu_);
+        auto it = cancelled_.find(req_key);
+        return it != cancelled_.end() && it->second;
+    };
+    if (is_cancelled())
+        (void)cp_.cancel_job(id);
+    const auto deadline = clock::now() + opt_.call_timeout;
+    bool timed_out = false;
+    while (!cp_.wait_job(id, std::chrono::milliseconds(100))) {
+        if (is_cancelled()) {
+            (void)cp_.cancel_job(id);
+            break;
+        }
+        if (clock::now() >= deadline) {
+            (void)cp_.cancel_job(id);
+            timed_out = true;
+            break;
+        }
+    }
+    {
+        std::lock_guard lk(mu_);
+        running_jobs_.erase(req_key);
+    }
+    if (timed_out)
+        return tool_err("tool call timed out", "timeout");
+    auto st = cp_.job_status(id);
+    if (!st)
+        return tool_err(st.error());
+    if (st.value().state != JobState::Succeeded) {
+        if (st.value().error)
+            return tool_err(*st.value().error);
+        return tool_err("benchmark was cancelled", "cancelled");
+    }
+    auto doc = cp_.benchmark_result(id);
+    if (!doc)
+        return tool_err(doc.error());
+    return tool_ok(doc.value());
+}
+
 json McpServer::call_tool(const std::string& name, const json& args, const std::string& req_key) {
     using api::ControlPlane;
     if (name == "hcs.models.list") {
@@ -520,6 +588,29 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
         if (args.value("include_devices", false))
             j["devices"] = cp_.devices_json();
         return tool_ok(std::move(j));
+    }
+    if (name == "hcs.runtime.benchmark") {
+        api::BenchmarkParams p;
+        p.model = args["model"].get<std::string>();
+        p.suite =
+            args.value("suite", std::string("quick")) == "full" ? bench::Suite::Full : bench::Suite::Quick;
+        if (args.contains("max_tokens"))
+            p.max_tokens = args["max_tokens"].get<std::uint32_t>();
+        if (args.contains("warmup"))
+            p.warmup = args["warmup"].get<std::uint32_t>();
+        if (args.contains("iterations"))
+            p.iterations = args["iterations"].get<std::uint32_t>();
+        if (args.contains("seed"))
+            p.seed = args["seed"].get<std::uint64_t>();
+        if (args.contains("sweep_sizes")) {
+            if (p.suite != bench::Suite::Full)
+                return tool_err("sweep_sizes is only valid with suite \"full\"", "invalid_argument");
+            p.sweep_sizes = args["sweep_sizes"].get<std::vector<std::uint32_t>>();
+        }
+        auto job = cp_.submit_benchmark(p);
+        if (!job)
+            return tool_err(job.error());
+        return wait_benchmark(job.value(), req_key);
     }
     if (name == "hcs.jobs.status" || name == "hcs.jobs.cancel") {
         auto id = ControlPlane::parse_job_id(args["job_id"].get<std::string>());
