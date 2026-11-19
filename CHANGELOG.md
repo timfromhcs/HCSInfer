@@ -101,8 +101,8 @@ CTest: **783 registered, 0 failed** (CPU build; model-dependent tests skip = NOT
   Zstandard `COPYING` and LZ4 `programs/` are excluded). Findings: Vulkan-Headers is `Apache-2.0 OR MIT` with no
   `NOTICE` (MIT elected); `prime-agent`'s licence file is absent from the uninitialised submodule but verified at the
   pinned commit. Open: the prime-agent Rust crate tree and the model cards.
-- CI: the `web` job is a blocking gate (`d8a5e37`); format and clang-tidy gates repaired after wave 1 (`06cfbe4`).
-  `pr.yml` run 44167798984 is green on all six jobs.
+- CI: the `web` job is a blocking gate (`d8a5e37`); format and clang-tidy gates repaired after wave 1 (`06cfbe4`); the
+  Release leg now also produces and verifies the portable package. `pr.yml` run 44607088082 is green on all six jobs.
 
 ## 0.1.0 - baseline (alpha, not released)
 

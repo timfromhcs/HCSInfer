@@ -11,11 +11,13 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
   `b02075f` (W3 soak defects + test gaps), `af884c3` (MCP `hcs.runtime.benchmark`), `7287554` (W4 static-CRT
   experiment), `dd9be7a` (D-S5 `read_file_limited`), `f9d03a5` (D-S6 benchmark prefill), `926c47c` (M8 Q8_0 GEMV
   kernel) and the docs/evidence commits after them. The history starts at `d5baf76` "Initial commit" (2026-11-17).
-- CI: `.github/workflows/pr.yml` run **44588729030** (commit `294ce9e`) is green on all six jobs (2026-11-19). It
-  follows a green run **44286335229** (`c55a43e`) and a red-then-fixed run **44272921951** (`af884c3`, D-S5).
-  Model-dependent tests skip on the hosted runner (NOT RUN), so CI proves configure/build/unit/contract/parser on a
-  clean hosted machine, not Vulkan or real-model behaviour; the M8 kernel is built and tested locally (the preset is
-  off in CI). `hardware.yml` (self-hosted Radeon runner) has never been executed.
+- CI: `.github/workflows/pr.yml` run **44607088082** (commit `427d70e`) is green on all six jobs (2026-11-19),
+  including the Release leg's new package step (portable folder + ZIP + SBOM + `SHA256SUMS.txt` verified and uploaded
+  as artifacts). It follows green runs **44598980056** (`6010bb2`), **44592044647** (`0bff2ef`) and a red-then-fixed run
+  **44272921951** (`af884c3`, D-S5). Model-dependent tests skip on the hosted runner (NOT RUN), so CI proves
+  configure/build/unit/contract/parser and packaging on a clean hosted machine, not Vulkan or real-model behaviour; the
+  M8 kernel is built and tested locally (the preset is off in CI). `hardware.yml` (self-hosted Radeon runner) has never
+  been executed.
 - Branches: `main` and the docs worktree branch `claude/repo-analysis-v1-stable-80f8d6` (== `main`). The local branch
   `claude/flux3-agent-engine-v1-665ab0` is now an **ancestor of `main`**; its unique work was salvaged selectively and
   committed in W2 (`5633450`), with the web/ and CMake differences deliberately not taken.

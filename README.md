@@ -52,7 +52,7 @@ for the evidence behind every row below.
 | `tune`, `models load`, `models unload` CLI commands | Planned | exit code 10 (model load/unload works over HTTP and MCP) |
 | HCS Vulkan kernel: Q8_0 GEMV (`src/kernels/vulkan`, `shaders/llm/`) | Experimental | feature-flagged **OFF**, not on the model load path; independent CPU reference + `spirv-val`'d SPIR-V + real-device correctness (4/4 on the Radeon 680M); **not** default-enabled (no measured benefit over the real baseline); `docs/vulkan-kernels.md` |
 | Scheduler, further custom kernels, advanced research features | Planned | only with measured benefit |
-| CI (GitHub Actions) | Green | `.github/workflows/`; public repo `timfromhcs/HCSInfer`. `pr-quick-gate` run 44598980056 is green on `main` (clang-format, clang-tidy, SBOM, `web`, Release and Debug build+ctest); model/GPU tests skip there and stay NOT RUN, and the feature-flagged Vulkan kernel is not built in CI. The self-hosted `hardware.yml` has never run |
+| CI (GitHub Actions) | Green | `.github/workflows/`; public repo `timfromhcs/HCSInfer`. `pr-quick-gate` run 44607088082 is green on `main` (clang-format, clang-tidy, SBOM, `web`, Release and Debug build+ctest, and the Release leg builds + verifies + uploads the portable package); model/GPU tests skip there and stay NOT RUN, and the feature-flagged Vulkan kernel is not built in CI. The self-hosted `hardware.yml` has never run |
 
 Legend: Implemented / Experimental / Planned / Unsupported.
 
