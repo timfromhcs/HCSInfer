@@ -102,7 +102,7 @@ CTest: **783 registered, 0 failed** (CPU build; model-dependent tests skip = NOT
   `NOTICE` (MIT elected); `prime-agent`'s licence file is absent from the uninitialised submodule but verified at the
   pinned commit. Open: the prime-agent Rust crate tree and the model cards.
 - CI: the `web` job is a blocking gate (`d8a5e37`); format and clang-tidy gates repaired after wave 1 (`06cfbe4`); the
-  Release leg now also produces and verifies the portable package. `pr.yml` run 44607088082 is green on all six jobs.
+  Release leg now also produces and verifies the portable package. `pr.yml` run 44621025517 is green on all six jobs.
 - Tooling fix: a hosted-runner image change (VS 2022 gone, VS 18 / MSVC 14.52 present) made `clang-tidy` hard-error with
   `STL1000` on every translation unit. `Find-VsLlvmTool` now searches every installed Visual Studio for a bundled LLVM
   (2022 first), and the analyser passes `-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH` (`docs/static-analysis.md`).
