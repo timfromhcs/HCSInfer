@@ -110,15 +110,29 @@ function Find-VsLlvmTool {
     param([Parameter(Mandatory)][string]$Name)
     $pf = [Environment]::GetEnvironmentVariable('ProgramFiles')
     $pf86 = [Environment]::GetEnvironmentVariable('ProgramFiles(x86)')
-    $candidates = @()
+    # Every installed Visual Studio, but with 2022 first: that is the toolchain every result in
+    # docs/test-evidence/ was produced with and the one the GitHub windows-latest image used when this
+    # script was written. The editions are then tried in order. A newer VS (e.g. a VS 18 that also ships
+    # LLVM) is used only when no VS 2022 has the component - never silently preferred over it.
+    $installRoots = [System.Collections.Generic.List[string]]::new()
     foreach ($base in @($pf, $pf86)) {
         if (-not $base) { continue }
-        foreach ($edition in 'Community', 'Professional', 'Enterprise', 'BuildTools') {
-            $candidates += (Join-Path $base "Microsoft Visual Studio\2022\$edition\VC\Tools\Llvm\x64\bin\$Name.exe")
+        $root = Join-Path $base 'Microsoft Visual Studio'
+        if (-not (Test-Path -LiteralPath $root)) { continue }
+        $versions = @(Get-ChildItem -LiteralPath $root -Directory -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -match '^[0-9]+' } | Sort-Object Name -Descending)
+        $ordered = @($versions | Where-Object { $_.Name -eq '2022' }) +
+                   @($versions | Where-Object { $_.Name -ne '2022' })
+        foreach ($v in $ordered) {
+            foreach ($edition in 'Community', 'Professional', 'Enterprise', 'BuildTools', 'Preview', 'Insiders') {
+                $installRoots.Add((Join-Path $v.FullName $edition))
+            }
         }
     }
-    $hit = $candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
-    if ($hit) { return $hit }
+    foreach ($vs in $installRoots) {
+        $cand = Join-Path $vs "VC\Tools\Llvm\x64\bin\$Name.exe"
+        if (Test-Path -LiteralPath $cand) { return $cand }
+    }
     $cmd = Get-Command "$Name.exe" -ErrorAction SilentlyContinue
     if ($cmd) { return $cmd.Source }
     if ($pf) {

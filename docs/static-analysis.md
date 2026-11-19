@@ -11,9 +11,12 @@ were run and both are clean (see "The same gate on the CI runner").
 ```
 
 The script loads the Visual Studio 2022 environment before analysing: clang resolves the MSVC STL through the
-registry and would otherwise pick the newest Visual Studio on this machine (a VS 18 BuildTools whose STL demands
-Clang 20+ and fails with `STL1000`). `/WX` from the HCS targets is neutralised with `-Wno-error` so the analysis
-always completes.
+registry and would otherwise pick the newest Visual Studio on this machine (a VS 18 whose STL demands a newer Clang
+and fails with `STL1000`). `/WX` from the HCS targets is neutralised with `-Wno-error` so the analysis always
+completes. Two further guards were added on 2026-11-19 after a runner-image change (see "The VS 18 runner image"):
+the script searches **every** installed Visual Studio for a bundled LLVM (2022 first, never silently preferring a
+newer one) and passes `-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH`, the MSVC STL's own documented escape hatch, so a
+toolchain-version mismatch cannot fail the gate on the STL banner instead of on HCS code.
 
 ## Result
 
@@ -107,3 +110,24 @@ completely, so the full set is one flag away and nothing is hidden.
 * On the CI runner the analysis currently runs with **clang-tidy 20.1.8** (the LLVM install found via PATH), not the
   VS 2022-bundled 19.1.5 the script prefers locally: both report 0 diagnostics with the same check set, so the gate is
   version-robust here, but the version is worth pinning if a future finding differs between them.
+
+## The VS 18 runner image (2026-11-19)
+
+The hosted `windows-latest` image changed: VS 2022 was gone and **Visual Studio 18 Enterprise (MSVC 14.52.37025)** was
+present, and the PATH LLVM was 20.1.8. `clang-tidy` then failed on every translation unit with
+`yvals_core.h: error STL1000: Unexpected compiler version, expected Clang 22 or newer` (69 diagnostics) - the gate
+failed on the STL's compiler-version banner, not on HCS code. The build/ctest legs were unaffected (MSVC 14.52
+compiles the project fine); only the analyser pairing broke.
+
+Fixes (`scripts/common.ps1`, `scripts/static-analysis.ps1`):
+
+* `Find-VsLlvmTool` now enumerates **every** `Microsoft Visual Studio\<version>\<edition>` install, 2022 first and then
+  the others newest-first, so a `VC\Tools\Llvm\x64\bin\clang-tidy.exe` bundled with the installed Visual Studio is
+  found and used - the STL and the analyser then come from the same toolchain. PATH/`C:\Program Files\LLVM` remain the
+  last fallback.
+* The clang-tidy invocation adds `--extra-arg=-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH`, so a version mismatch is
+  tolerated instead of hard-erroring; the checks, `--header-filter` and the exit-on-finding behaviour are unchanged.
+
+Verified locally after the change (VS 2022 + bundled clang-tidy 19.1.5): `format.ps1` -> `FORMAT CHECK OK: 217 files`;
+`static-analysis.ps1 -Scope src -FailOnFindings` -> `STATIC ANALYSIS OK: no diagnostic in 69 translation units`. The
+gate is re-run by the `clang-tidy` CI job on every push.

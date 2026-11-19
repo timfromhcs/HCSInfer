@@ -95,7 +95,11 @@ Write-Host "translation units: $($tu.Count) ($($scopes -join ', '))"
 
 $headerFilter = '.*[\\/](src|include)[\\/]hcs[\\/].*'
 function Invoke-TidyOne([string]$File) {
-    $out = & $exe -p $buildDir --checks=$Checks --header-filter=$headerFilter --extra-arg=-Wno-error $File 2>&1 | Out-String
+    # -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH: a Windows runner can carry a Visual Studio newer than the
+    # clang-tidy that analyses it (e.g. VS 18's MSVC 14.52 STL hard-errors STL1000 under Clang < 22). The macro
+    # is the MSVC STL's own documented escape hatch; without it the gate fails on the STL banner, not on HCS code.
+    $out = & $exe -p $buildDir --checks=$Checks --header-filter=$headerFilter `
+        --extra-arg=-Wno-error --extra-arg=-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH $File 2>&1 | Out-String
     [pscustomobject]@{ file = $File; text = $out }
 }
 if ($PSVersionTable.PSVersion.Major -ge 7) {
