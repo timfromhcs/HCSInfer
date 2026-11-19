@@ -77,44 +77,57 @@ int main(int argc, char** argv) {
                                        {4096, 4096}, {4096, 11008}, {11008, 4096}};
     nlohmann::json results = nlohmann::json::array();
     bool any_fail = false;
+    const std::vector<hcs::kernels::vulkan::Variant> variants = {hcs::kernels::vulkan::Variant::Scalar,
+                                                                 hcs::kernels::vulkan::Variant::Tiled};
     for (const Shape s : shapes) {
         const auto wf = hcs::test::random_vec(static_cast<std::size_t>(s.m) * s.k, 1);
         const auto w = hcs::test::to_q8_0(wf, s.m, s.k);
         const auto x = hcs::test::random_vec(s.k, 2);
         std::vector<float> y_cpu(s.m, 0.0f), y_vk(s.m, 0.0f);
         hcs::kernels::cpu::gemv_q8_0(x.data(), w.data(), y_cpu.data(), s.m, s.k);
-        auto r = hcs::kernels::vulkan::gemv_q8_0({x.data(), w.data(), y_vk.data(), s.m, s.k}, device);
         nlohmann::json e;
         e["m"] = s.m;
         e["k"] = s.k;
-        if (!r.ok()) {
-            e["result_status"] = "FAIL";
-            e["error"] = r.error().message;
-            any_fail = true;
-            results.push_back(std::move(e));
-            continue;
-        }
-        double max_err = 0.0;
-        for (std::uint32_t i = 0; i < s.m; ++i)
-            max_err = std::max(max_err, static_cast<double>(std::fabs(y_vk[i] - y_cpu[i])));
-        // warm-up
-        (void)hcs::kernels::vulkan::gemv_q8_0({x.data(), w.data(), y_vk.data(), s.m, s.k}, device);
         e["cpu_ms_median"] = median_ms(
             [&] { hcs::kernels::cpu::gemv_q8_0(x.data(), w.data(), y_cpu.data(), s.m, s.k); }, reps);
-        e["vulkan_ms_median"] = median_ms(
-            [&] {
-                (void)hcs::kernels::vulkan::gemv_q8_0({x.data(), w.data(), y_vk.data(), s.m, s.k}, device);
-            },
-            reps);
-        e["max_abs_err"] = max_err;
-        e["speedup_cpu_over_vulkan"] = e["cpu_ms_median"].get<double>() / e["vulkan_ms_median"].get<double>();
-        // Effective weight bandwidth (Q8_0 bytes read once).
         const double bytes = static_cast<double>(hcs::kernels::cpu::q8_0_bytes(s.m, s.k));
-        e["vulkan_gib_s"] =
-            bytes / (e["vulkan_ms_median"].get<double>() / 1000.0) / (1024.0 * 1024.0 * 1024.0);
-        const bool ok = max_err < 1e-2 * (1.0 + std::fabs(*std::max_element(y_cpu.begin(), y_cpu.end())));
-        e["result_status"] = ok ? "PASS" : "FAIL";
-        any_fail = any_fail || !ok;
+        bool shape_ok = true;
+        for (const auto variant : variants) {
+            const std::string name = hcs::kernels::vulkan::to_string(variant);
+            auto r =
+                hcs::kernels::vulkan::gemv_q8_0({x.data(), w.data(), y_vk.data(), s.m, s.k}, device, variant);
+            nlohmann::json v;
+            if (!r.ok()) {
+                v["result_status"] = "FAIL";
+                v["error"] = r.error().message;
+                shape_ok = false;
+                any_fail = true;
+                e[name] = std::move(v);
+                continue;
+            }
+            double max_err = 0.0;
+            for (std::uint32_t i = 0; i < s.m; ++i)
+                max_err = std::max(max_err, static_cast<double>(std::fabs(y_vk[i] - y_cpu[i])));
+            // warm-up
+            (void)hcs::kernels::vulkan::gemv_q8_0({x.data(), w.data(), y_vk.data(), s.m, s.k}, device,
+                                                  variant);
+            const double ms = median_ms(
+                [&] {
+                    (void)hcs::kernels::vulkan::gemv_q8_0({x.data(), w.data(), y_vk.data(), s.m, s.k}, device,
+                                                          variant);
+                },
+                reps);
+            v["ms_median"] = ms;
+            v["max_abs_err"] = max_err;
+            v["speedup_cpu_over_vulkan"] = e["cpu_ms_median"].get<double>() / ms;
+            v["gib_s"] = bytes / (ms / 1000.0) / (1024.0 * 1024.0 * 1024.0);
+            const bool ok = max_err < 1e-2 * (1.0 + std::fabs(*std::max_element(y_cpu.begin(), y_cpu.end())));
+            v["result_status"] = ok ? "PASS" : "FAIL";
+            shape_ok = shape_ok && ok;
+            any_fail = any_fail || !ok;
+            e[name] = std::move(v);
+        }
+        e["result_status"] = shape_ok ? "PASS" : "FAIL";
         results.push_back(std::move(e));
     }
     out["shapes"] = std::move(results);

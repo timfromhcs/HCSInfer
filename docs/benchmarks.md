@@ -136,6 +136,10 @@ Small shapes lose to per-call buffer/dispatch overhead; large shapes win by ~2.1
 feature-flagged **OFF** and has **no upstream-Vulkan (GGML) baseline** yet, so it is not default-enabled
 (`docs/vulkan-kernels.md`, AGENTS.md 16.6 B3).
 
+A second variant (v2, shared-memory tiling of the activation vector) was measured against v1 (`--reps 30`,
+`test-evidence/vulkan-kernels/gemv-q8_0-variants-bench.json`): **no benefit** (within noise on every shape), so the
+hypothesis was rejected and v1 stays the default (`docs/research/vulkan-gemv-v2-shared-memory.md`).
+
 ## Earlier provisional numbers
 
 `test-evidence/M1/llama/` (llama-bench, uncontrolled, few samples; for example qwen3 0.6B Q4_K CPU pp128 416.65 t/s,

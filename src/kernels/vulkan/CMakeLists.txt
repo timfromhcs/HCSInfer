@@ -18,6 +18,7 @@ hcs_add_library(kernels_vulkan
 # Dynamic loader: no Vulkan import library, nothing Vulkan at run time until the kernel is used.
 target_compile_definitions(hcs_kernels_vulkan PRIVATE VK_NO_PROTOTYPES HCS_HAVE_VULKAN_KERNELS=1)
 hcs_add_shader(hcs_kernels_vulkan GemvQ8_0 compute "${CMAKE_SOURCE_DIR}/shaders/llm/gemv_q8_0.comp")
+hcs_add_shader(hcs_kernels_vulkan GemvQ8_0Tiled compute "${CMAKE_SOURCE_DIR}/shaders/llm/gemv_q8_0_tiled.comp")
 
 # Kernel benchmark (AGENTS.md 12.5 / 16.6 B3): CPU reference vs the HCS Vulkan kernel, JSON out.
 add_executable(hcs_kernel_bench "${CMAKE_SOURCE_DIR}/tools/kernel-bench/kernel_bench.cpp")

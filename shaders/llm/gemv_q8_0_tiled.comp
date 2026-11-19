@@ -1,0 +1,82 @@
+#version 450
+// HCSInfer experimental Vulkan kernel v2: Q8_0 GEMV (decode), tiled.
+//
+//   y[m] = sum_k dequant_q8_0(W[m, k]) * x[k]
+//
+// Same contract and weight layout as v1 (ggml block_q8_0, 34 bytes / 32 values), but the activation vector
+// x is staged in workgroup shared memory per K-tile. v1 re-reads the whole x vector once per output row, so
+// its x traffic is m * k floats (m times the weights for a square matrix). v2 reads x once per workgroup per
+// tile, cutting that to about (m / local_size) * k floats.
+//
+// One invocation computes one row; the tile loop and both barriers are outside the `active` branch so every
+// invocation in the workgroup reaches them.
+//
+// Author: HCSInfer. Not derived from any third-party source. See docs/vulkan-kernels.md.
+layout(local_size_x = 64) in;
+
+layout(std430, binding = 0) readonly buffer XBuf { float x[]; };
+layout(std430, binding = 1) readonly buffer WBuf { uint w[]; };
+layout(std430, binding = 2) writeonly buffer YBuf { float y[]; };
+
+layout(push_constant) uniform Push {
+    uint m;  // number of rows (weights) = length of y
+    uint k;  // number of columns = length of x (multiple of 32)
+} pc;
+
+const uint QK = 32u;          // values per Q8_0 block
+const uint Q8_0_SIZE = 34u;   // bytes per Q8_0 block
+const uint TILE = 2048u;      // floats of x staged per barrier (multiple of QK)
+
+shared float xs[TILE];
+
+uint load4(uint off) {
+    uint base = off >> 2u;
+    uint shift = (off & 3u) * 8u;
+    uint lo = w[base];
+    uint hi = w[base + 1u];
+    return (shift == 0u) ? lo : ((lo >> shift) | (hi << (32u - shift)));
+}
+
+uint load2(uint off) { return load4(off) & 0xFFFFu; }
+
+float half_to_float(uint h) { return unpackHalf2x16(h).x; }
+
+float q8_from_word(uint word, uint i) {
+    uint b = (word >> (i * 8u)) & 0xFFu;
+    int v = (b >= 128u) ? int(b) - 256 : int(b);
+    return float(v);
+}
+
+void main() {
+    const uint row = gl_GlobalInvocationID.x;
+    const uint lid = gl_LocalInvocationID.x;
+    const bool in_range = row < pc.m;
+    const uint blocks_per_row = pc.k / QK;
+    float acc = 0.0;
+
+    for (uint base = 0u; base < pc.k; base += TILE) {
+        const uint n = min(TILE, pc.k - base);
+        for (uint i = lid; i < n; i += 64u) xs[i] = x[base + i];
+        barrier();
+        if (in_range) {
+            const uint row_byte = row * blocks_per_row * Q8_0_SIZE;
+            const uint blocks = n / QK;
+            const uint x0 = 0u;
+            for (uint b = 0u; b < blocks; ++b) {
+                const uint block_byte = row_byte + (base / QK + b) * Q8_0_SIZE;
+                const float d = half_to_float(load2(block_byte));
+                const uint q_byte0 = block_byte + 2u;
+                const uint xb = x0 + b * QK;
+                for (uint j = 0u; j < QK; j += 4u) {
+                    const uint word = load4(q_byte0 + j);
+                    acc += d * q8_from_word(word, 0u) * xs[xb + j + 0u];
+                    acc += d * q8_from_word(word, 1u) * xs[xb + j + 1u];
+                    acc += d * q8_from_word(word, 2u) * xs[xb + j + 2u];
+                    acc += d * q8_from_word(word, 3u) * xs[xb + j + 3u];
+                }
+            }
+        }
+        barrier();
+    }
+    if (in_range) y[row] = acc;
+}

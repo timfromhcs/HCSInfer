@@ -15,7 +15,9 @@ CTest: **783 registered, 0 failed** (CPU build; model-dependent tests skip = NOT
   `shaders/llm/gemv_q8_0.comp`) with an independent CPU reference, `glslc` + `spirv-val` at build time (SPIR-V
   embedded), and a new preset `windows-msvc-release-kernels`. Real-device correctness 4/4 (`kernel-vulkan`, max abs
   err ~1e-5) and 6/6 `kernel-cpu`; isolated benchmark 2.1-2.5x vs the single-threaded CPU reference at ~3.6 GiB/s on
-  large shapes, slower on small ones, so it is **not** default-enabled. Full suite 790/790.
+  large shapes, slower on small ones, so it is **not** default-enabled. A second variant (v2, shared-memory tiling of
+  the activation vector) was measured against v1 and gave **no benefit** (within noise), so the hypothesis was rejected
+  and v1 stays the default (`docs/research/vulkan-gemv-v2-shared-memory.md`). Full suite 790/790.
   `docs/vulkan-kernels.md`, `docs/test-evidence/vulkan-kernels/`, ADR-003 deviation note.
 - Static-CRT single-EXE **experiment** (W4, ADR-008): preset `windows-msvc-release-static` (`CMAKE_MSVC_RUNTIME_LIBRARY=
   MultiThreaded` for every target + `GGML_OPENMP=OFF`). Fresh tree builds, **783/783** Release tests pass, and

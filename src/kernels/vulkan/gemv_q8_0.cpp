@@ -17,6 +17,7 @@
 
 #include "hcs/kernels/cpu.hpp"
 #include "hcs/shaders/GemvQ8_0.hpp"
+#include "hcs/shaders/GemvQ8_0Tiled.hpp"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -145,6 +146,8 @@ struct Ctx {
     VkPipelineLayout playout = VK_NULL_HANDLE;
     VkShaderModule shader = VK_NULL_HANDLE;
     VkPipeline pipeline = VK_NULL_HANDLE;
+    VkShaderModule shader_tiled = VK_NULL_HANDLE;
+    VkPipeline pipeline_tiled = VK_NULL_HANDLE;
     VkCommandPool cmd_pool = VK_NULL_HANDLE;
     VkFence fence = VK_NULL_HANDLE;
 };
@@ -247,8 +250,12 @@ void destroy_context(Ctx& c) {
             a.destroy_cmd_pool(c.device, c.cmd_pool, nullptr);
         if (c.pipeline)
             a.destroy_pipeline(c.device, c.pipeline, nullptr);
+        if (c.pipeline_tiled)
+            a.destroy_pipeline(c.device, c.pipeline_tiled, nullptr);
         if (c.shader)
             a.destroy_shader(c.device, c.shader, nullptr);
+        if (c.shader_tiled)
+            a.destroy_shader(c.device, c.shader_tiled, nullptr);
         if (c.playout)
             a.destroy_pl(c.device, c.playout, nullptr);
         if (c.dpool)
@@ -441,28 +448,38 @@ Result<Ctx*> create_context(const std::string& substr) {
         destroy_context(c);
         return make_error(ErrorCode::BackendError, "vkCreatePipelineLayout failed");
     }
-    VkShaderModuleCreateInfo smi{};
-    smi.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    smi.codeSize = hcs::shaders::kGemvQ8_0Size;
-    smi.pCode = reinterpret_cast<const std::uint32_t*>(hcs::shaders::kGemvQ8_0);
-    if (VkResult r = a.create_shader(c.device, &smi, nullptr, &c.shader); r != VK_SUCCESS) {
-        destroy_context(c);
-        return make_error(ErrorCode::BackendError, "vkCreateShaderModule failed");
-    }
-    VkPipelineShaderStageCreateInfo stage{};
-    stage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-    stage.module = c.shader;
-    stage.pName = "main";
-    VkComputePipelineCreateInfo cpi{};
-    cpi.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-    cpi.stage = stage;
-    cpi.layout = c.playout;
-    if (VkResult r = a.create_pipeline(c.device, VK_NULL_HANDLE, 1, &cpi, nullptr, &c.pipeline);
+    auto make_pipeline = [&](const unsigned char* code, std::size_t code_size, VkShaderModule* module_out,
+                             VkPipeline* pipeline_out) -> VkResult {
+        VkShaderModuleCreateInfo smi{};
+        smi.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+        smi.codeSize = code_size;
+        smi.pCode = reinterpret_cast<const std::uint32_t*>(code);
+        if (VkResult r = a.create_shader(c.device, &smi, nullptr, module_out); r != VK_SUCCESS)
+            return r;
+        VkPipelineShaderStageCreateInfo stage{};
+        stage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        stage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+        stage.module = *module_out;
+        stage.pName = "main";
+        VkComputePipelineCreateInfo cpi{};
+        cpi.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+        cpi.stage = stage;
+        cpi.layout = c.playout;
+        return a.create_pipeline(c.device, VK_NULL_HANDLE, 1, &cpi, nullptr, pipeline_out);
+    };
+    if (VkResult r =
+            make_pipeline(hcs::shaders::kGemvQ8_0, hcs::shaders::kGemvQ8_0Size, &c.shader, &c.pipeline);
         r != VK_SUCCESS) {
         destroy_context(c);
         return make_error(ErrorCode::BackendError,
-                          "vkCreateComputePipelines failed (" + std::to_string(r) + ")");
+                          "vkCreateComputePipelines (v1) failed (" + std::to_string(r) + ")");
+    }
+    if (VkResult r = make_pipeline(hcs::shaders::kGemvQ8_0Tiled, hcs::shaders::kGemvQ8_0TiledSize,
+                                   &c.shader_tiled, &c.pipeline_tiled);
+        r != VK_SUCCESS) {
+        destroy_context(c);
+        return make_error(ErrorCode::BackendError,
+                          "vkCreateComputePipelines (v2) failed (" + std::to_string(r) + ")");
     }
     VkCommandPoolCreateInfo cpci{};
     cpci.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -493,7 +510,7 @@ Result<Ctx*> ensure_context(const std::string& substr) {
     return create_context(substr);
 }
 
-Result<void> run_gemv(const GemvRequest& req) {
+Result<void> run_gemv(const GemvRequest& req, Variant variant) {
     VkApi& a = api();
     Ctx* cp = nullptr;
     {
@@ -563,7 +580,8 @@ Result<void> run_gemv(const GemvRequest& req) {
         cbbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         cbbi.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
         a.begin_cmd(cmd, &cbbi);
-        a.cmd_bind_pipeline(cmd, VK_PIPELINE_BIND_POINT_COMPUTE, c.pipeline);
+        a.cmd_bind_pipeline(cmd, VK_PIPELINE_BIND_POINT_COMPUTE,
+                            variant == Variant::Tiled ? c.pipeline_tiled : c.pipeline);
         a.cmd_bind_sets(cmd, VK_PIPELINE_BIND_POINT_COMPUTE, c.playout, 0, 1, &set, 0, nullptr);
         std::uint32_t pc[2] = {req.m, req.k};
         a.cmd_push(cmd, c.playout, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(pc), pc);
@@ -637,7 +655,11 @@ Result<DeviceInfo> device_info(std::string_view device_name_substr) {
     return r.value()->info;
 }
 
-Result<void> gemv_q8_0(const GemvRequest& req, std::string_view device_name_substr) {
+const char* to_string(Variant v) noexcept {
+    return v == Variant::Scalar ? "scalar" : "tiled";
+}
+
+Result<void> gemv_q8_0(const GemvRequest& req, std::string_view device_name_substr, Variant variant) {
     if (!enabled())
         return make_error(ErrorCode::Unsupported, "the HCS Vulkan kernels are disabled (feature flag off)");
     if (req.x == nullptr || req.w_q8_0 == nullptr || req.y == nullptr)
@@ -648,7 +670,7 @@ Result<void> gemv_q8_0(const GemvRequest& req, std::string_view device_name_subs
         return make_error(ErrorCode::InvalidArgument, "k must be a positive multiple of 32");
     std::lock_guard lk(ctx_mutex());
     (void)device_name_substr;  // the creation path selects the default device; device_info() selects by name
-    return run_gemv(req);
+    return run_gemv(req, variant);
 }
 
 void shutdown() noexcept {

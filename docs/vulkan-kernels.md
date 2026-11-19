@@ -71,6 +71,10 @@ if (!r) {
 
 * `gemv_q8_0` returns `Unsupported` while the flag is off, so a caller that tries the GPU first keeps a valid
   CPU path. The dispatch is the caller's decision; this module never silently changes an operator's backend.
+* Two variants exist (`Variant::Scalar` = v1, the default; `Variant::Tiled` = a shared-memory experiment). The tiling
+  hypothesis (x traffic dominates) was **rejected** on the 680M: v2 measured the same as v1 within noise
+  (`hcs_kernel_bench`, `docs/research/vulkan-gemv-v2-shared-memory.md`). v1 stays the default; v2 stays behind the flag
+  so the A/B is reproducible.
 * Shape rules: `m > 0`, `k` a positive multiple of 32; null buffers are `InvalidArgument`.
 * Invalid usage (`k % 32 != 0`, the flag off, no device) is rejected **before** any Vulkan object is created.
 

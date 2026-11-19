@@ -57,17 +57,23 @@ TEST(KernelVulkanGemv, MatchesTheCpuReferenceAcrossShapes) {
     struct Shape {
         std::uint32_t m, k;
     };
-    for (const Shape s : {Shape{1, 32}, Shape{7, 160}, Shape{64, 256}, Shape{129, 512}, Shape{512, 1024}}) {
-        const auto wf = test::random_vec(static_cast<std::size_t>(s.m) * s.k, 100 + s.m + s.k);
-        const auto w = test::to_q8_0(wf, s.m, s.k);
-        const auto x = test::random_vec(s.k, 200 + s.m + s.k);
-        std::vector<float> y_cpu(s.m, 0.0f), y_vk(s.m, 0.0f);
-        cpu::gemv_q8_0(x.data(), w.data(), y_cpu.data(), s.m, s.k);
-        auto r = vulkan::gemv_q8_0(vulkan::GemvRequest{x.data(), w.data(), y_vk.data(), s.m, s.k});
-        ASSERT_TRUE(r.ok()) << "m=" << s.m << " k=" << s.k << ": " << r.error().message;
-        for (std::uint32_t i = 0; i < s.m; ++i) {
-            const float tol = 1e-3f * (1.0f + std::fabs(y_cpu[i]));
-            EXPECT_NEAR(y_vk[i], y_cpu[i], tol) << "row " << i << " m=" << s.m << " k=" << s.k;
+    for (const auto variant : {vulkan::Variant::Tiled, vulkan::Variant::Scalar}) {
+        for (const Shape s : {Shape{1, 32}, Shape{7, 160}, Shape{64, 256}, Shape{129, 512}, Shape{512, 1024},
+                              Shape{1024, 2048}}) {
+            const auto wf = test::random_vec(static_cast<std::size_t>(s.m) * s.k, 100 + s.m + s.k);
+            const auto w = test::to_q8_0(wf, s.m, s.k);
+            const auto x = test::random_vec(s.k, 200 + s.m + s.k);
+            std::vector<float> y_cpu(s.m, 0.0f), y_vk(s.m, 0.0f);
+            cpu::gemv_q8_0(x.data(), w.data(), y_cpu.data(), s.m, s.k);
+            auto r = vulkan::gemv_q8_0(vulkan::GemvRequest{x.data(), w.data(), y_vk.data(), s.m, s.k}, {},
+                                       variant);
+            ASSERT_TRUE(r.ok()) << vulkan::to_string(variant) << " m=" << s.m << " k=" << s.k << ": "
+                                << r.error().message;
+            for (std::uint32_t i = 0; i < s.m; ++i) {
+                const float tol = 1e-3f * (1.0f + std::fabs(y_cpu[i]));
+                EXPECT_NEAR(y_vk[i], y_cpu[i], tol)
+                    << vulkan::to_string(variant) << " row " << i << " m=" << s.m << " k=" << s.k;
+            }
         }
     }
 }

@@ -28,6 +28,15 @@ struct GemvRequest {
     std::uint32_t k = 0;
 };
 
+// Kernel variants (AGENTS.md M8: keep the known-good implementation and feature-flag experiments).
+//   Scalar : v1, one invocation per row, x read from global memory per row (simple). Default.
+//   Tiled  : v2 experiment, x staged in workgroup shared memory per K-tile. On the Radeon 680M it measured
+//            the same as Scalar (within noise) for the shapes tested, so it is NOT the default. Kept behind
+//            this flag so the A/B stays reproducible (`hcs_kernel_bench`); see
+//            docs/test-evidence/vulkan-kernels/.
+enum class Variant { Scalar = 1, Tiled = 2 };
+const char* to_string(Variant v) noexcept;
+
 // Feature flag (AGENTS.md M8: "keep it behind a feature flag"). Default false.
 bool enabled() noexcept;
 void set_enabled(bool on) noexcept;
@@ -40,7 +49,8 @@ bool available() noexcept;
 Result<DeviceInfo> device_info(std::string_view device_name_substr = {});
 
 // y[m] = sum_k dequant_q8_0(W[m, k]) * x[k] on the GPU. Validates the shape and the feature flag first.
-Result<void> gemv_q8_0(const GemvRequest& req, std::string_view device_name_substr = {});
+Result<void> gemv_q8_0(const GemvRequest& req, std::string_view device_name_substr = {},
+                       Variant variant = Variant::Scalar);
 
 // Releases the cached Vulkan device/pipeline. Optional; also runs at process exit.
 void shutdown() noexcept;
