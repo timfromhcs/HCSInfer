@@ -17,7 +17,9 @@ Ninja 1.13.2, Vulkan SDK 1.4.357.0 (build time). Target machine, 2026-11-19.
   `AMD Radeon(TM) Graphics` (integrated_gpu) — CPU-vs-Vulkan match over shapes 1x32, 7x160, 64x256, 129x512,
   512x1024 (max abs err ~1e-5), the feature flag default-off path, shape validation, and determinism over 20
   repeated calls.
-* `HCSInfer benchmark --suite quick/full` regression in the default build: **790/790 CTest PASS**.
+* `HCSInfer benchmark --suite quick/full` regression in the default build: **790/790 CTest PASS**; the
+  `windows-msvc-release-kernels` preset runs the whole suite as **794/794** (adds the 4 `kernel-vulkan` tests),
+  and `ctest -L "kernel-cpu|kernel-vulkan"` is **10/10 PASS**.
 
 ## Benchmark (isolated kernel, `hcs_kernel_bench --reps 20 --device Radeon`)
 
