@@ -93,6 +93,9 @@ CTest: **783 registered, 0 failed** (CPU build; model-dependent tests skip = NOT
   `BenchFull.OneTokenPrefillPointIsNotAFailureWhenTheDecodeCountIsZero`.
 
 ### Changed
+- CI now produces the **portable package** on the Release leg: `scripts/package.ps1 -Zip` runs after `ctest`, the job
+  verifies every `SHA256SUMS.txt` entry, checks the packaged CycloneDX SBOM and starts the packaged `HCSInfer.exe`, then
+  uploads the package + SBOM as artifacts. Docs: `docs/support-matrix.md` (W6 hardware/backend/model matrix).
 - Licence/dependency audit (`docs/licence-audit.md`, AGENTS.md 7.3/19.6): every code dependency linked into or shipped
   with HCSInfer was verified against its licence file (MIT / BSD-2 / BSD-3 / Apache-2.0-or-MIT; the GPL components
   Zstandard `COPYING` and LZ4 `programs/` are excluded). Findings: Vulkan-Headers is `Apache-2.0 OR MIT` with no

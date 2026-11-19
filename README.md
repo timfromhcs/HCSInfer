@@ -225,7 +225,7 @@ No performance claim is made beyond those files.
 
 `docs/architecture.md`, `docs/build.md`, `docs/api.md`, `docs/mcp.md`, `docs/model-vault.md`,
 `docs/hardware-support.md`, `docs/gui.md`, `docs/supported-models.md`, `docs/benchmarks.md`, `docs/train.md`,
-`docs/licence-audit.md`,
+`docs/licence-audit.md`, `docs/support-matrix.md`,
 `docs/agent.md`, `docs/static-analysis.md`, `web/README.md`, `CHANGELOG.md`, `SECURITY.md`, `CONTRIBUTING.md`,
 `docs/roadmap/IMPLEMENTATION_PLAN.md`, `docs/roadmap/STATUS.md` (with the V1 release checklist),
 `docs/decisions/README.md` (ADR index), `docs/test-evidence/README.md`, `AGENTS.md` (binding engineering specification).

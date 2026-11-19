@@ -1,11 +1,12 @@
 # PR quick gate (AGENTS.md section 18.3) on GitHub-hosted Windows.
 #
-# What this proves: the CPU preset configures, builds and passes every test that needs no model.
+# What this proves: the CPU preset configures, builds and passes every test that needs no model; the Release leg
+# also produces and verifies the portable package (licences + SBOM + SHA256SUMS) and runs the packaged EXE.
 # What it does NOT prove (they are NOT RUN here, see hardware.yml): Vulkan/Radeon 680M execution, real-model
-# inference, soak, packaging on a clean machine. Tests that need HCS_TEST_GGUF report "Skipped" and must be read as
-# NOT RUN, not PASS.
+# inference, soak, the feature-flagged Vulkan kernel, and the package on a CLEAN machine (this runner has the
+# MSVC redistributable). Tests that need HCS_TEST_GGUF report "Skipped" and must be read as NOT RUN, not PASS.
 #
-# Status: written but never executed (the repository had no commits or remote when this was created).
+# Status: green on `main` (see docs/roadmap/STATUS.md for the run id).
 # Hardening TODO: pin actions/* to full commit SHAs once the repository is hosted and the SHAs can be verified.
 name: pr-quick-gate
 
@@ -86,6 +87,47 @@ jobs:
           name: ci-evidence-${{ matrix.preset }}
           path: artifacts/*.txt
           if-no-files-found: warn
+
+      # W6: the portable package, its licences, SBOM and SHA-256 are produced by CI, not only locally.
+      - name: Package (Release only)
+        if: matrix.preset == 'windows-msvc-release'
+        run: |
+          . .\scripts\common.ps1
+          Initialize-MsvcEnvironment
+          .\scripts\package.ps1 -Preset windows-msvc-release -Zip *>&1 | Tee-Object artifacts/package.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Verify package (checksums + standalone run)
+        if: matrix.preset == 'windows-msvc-release'
+        run: |
+          $pkg = Get-ChildItem artifacts/package -Directory -Filter 'HCSInfer-*-portable' | Select-Object -First 1
+          if (-not $pkg) { throw 'no package directory was produced' }
+          $sums = Get-Content (Join-Path $pkg.FullName 'SHA256SUMS.txt')
+          foreach ($line in $sums) {
+            if ($line -notmatch '^([0-9a-f]{64})\s\s(.+)$') { throw "malformed checksum line: $line" }
+            $expected = $Matches[1]; $rel = $Matches[2]
+            $actual = (Get-FileHash -Algorithm SHA256 (Join-Path $pkg.FullName $rel)).Hash.ToLowerInvariant()
+            if ($actual -ne $expected) { throw "checksum mismatch for $rel" }
+          }
+          if (@($sums).Count -lt 10) { throw "SHA256SUMS covers too few files: $(@($sums).Count)" }
+          $sbom = Get-Content (Join-Path $pkg.FullName 'sbom.cdx.json') -Raw | ConvertFrom-Json
+          if ($sbom.bomFormat -ne 'CycloneDX' -or @($sbom.components).Count -lt 1) { throw 'packaged SBOM malformed' }
+          & (Join-Path $pkg.FullName 'HCSInfer.exe') --version
+          if ($LASTEXITCODE -ne 0) { throw 'the packaged HCSInfer.exe failed to start' }
+          "package verified: $(@($sums).Count) files, SBOM $(@($sbom.components).Count) components" |
+            Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+
+      - uses: actions/upload-artifact@v4
+        if: matrix.preset == 'windows-msvc-release'
+        with:
+          name: package-${{ matrix.preset }}
+          path: |
+            artifacts/package/*.zip
+            artifacts/package/*.sha256
+            artifacts/package/HCSInfer-*-portable/SHA256SUMS.txt
+            artifacts/package/HCSInfer-*-portable/sbom.cdx.json
+            artifacts/package/HCSInfer-*-portable/manifest.json
+          if-no-files-found: error
 
   format:
     name: clang-format check

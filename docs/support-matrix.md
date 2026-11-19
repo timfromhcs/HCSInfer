@@ -1,0 +1,60 @@
+# Support matrix (tested hardware, OS and models)
+
+Status: **one machine, one OS** — exactly what the evidence files show. This is not a compatibility guarantee; it is
+the list of configurations HCSInfer has actually been built and run on, with the status of each. AGENTS.md 20:
+general RDNA/Radeon or Windows claims are **not** made from one device.
+
+Test machine (target hardware, AGENTS.md 1.3):
+
+| Component | Value | Source |
+|---|---|---|
+| CPU | AMD Ryzen 7 7735HS, 8 cores / 16 threads, Zen 3+, AVX2 + FMA3 | `docs/test-evidence/M0/doctor.json` |
+| RAM | ~21.2 GB (21,245,952,000 bytes) shared with the iGPU | `doctor.json`, benchmark JSON |
+| GPU | AMD Radeon(TM) Graphics (Radeon 680M), vendor `0x1002`, device `0x1681`, integrated GPU | `doctor.json`, `M0/vulkaninfo-summary.txt` |
+| Graphics driver | AMD `32.0.21043.12001`; Vulkan API `1.4.315`; shader compiler `26.6.1` | `doctor.json` |
+| Vulkan device features | UMA `1`, fp16 `1`, subgroup/warp size `32` | `M0/vulkaninfo-summary.txt` |
+| OS | Windows 11, build `10.0.26200.9974` | `doctor.json` |
+| Toolchain | MSVC 19.44.35228 (VS 2022), CMake 4.4.0, Ninja 1.13.2, Vulkan SDK 1.4.357.0 (build time only) | `docs/build.md` |
+
+## Backends
+
+| Backend | Status | Evidence |
+|---|---|---|
+| GGML CPU (text, vision, diffusion) | PASS | `M1/llama`, `M2-vision`, `M1/sd`, `benchmark/` |
+| GGML Vulkan — text | PASS | `benchmark/` (B1), `M2/`, `lfm3/` |
+| GGML Vulkan — vision (libmtmd) | PASS | `M2-vision/` |
+| GGML Vulkan — diffusion (SD1.5) | PASS | `M3-image/` (Vulkan build), `B7-params/` |
+| HCS Vulkan kernel (Q8_0 GEMV, feature-flagged OFF) | PASS for correctness; not default-enabled | `vulkan-kernels/` |
+| CPU-only fallback (Vulkan unavailable) | PASS | `M0/doctor-no-vulkan.json`, CPU runs of text/vision/diffusion |
+| Linux / Mesa RADV | **NOT RUN** | no Linux build or run in the repository |
+| ROCm | **NOT RUN** (explicitly out of V1 scope, AGENTS.md 1.2) | — |
+| Other AMD GPUs / discrete GPUs / NVIDIA / Intel | **NOT RUN** | one device only |
+
+## Models actually run (weights never distributed)
+
+| Model | Kind | Backend | Status | Evidence |
+|---|---|---|---|---|
+| qwen3-0.6B Q4_K_M | text | CPU + Vulkan | PASS | `benchmark/`, `M1/llama` |
+| LiquidAI LFM3-Omni-2B Q8_0 (+ mmproj) | text, tool calls, vision | CPU + Vulkan | PASS | `lfm3/` |
+| SmolVLM2-500M-Video-Instruct Q8_0 (+ mmproj) | vision | CPU + Vulkan | PASS | `M2-vision/` |
+| SD 1.5 Q8_0 | diffusion (t2i, i2i) | CPU + Vulkan | PASS | `M1/sd`, `M3-image/` |
+| FLUX.3 Image Klein (unsloth UD-Q4_K_XL) | diffusion | — | **BLOCKED** (gated text encoder/VAE) | `flux3/` |
+
+## Feature status by area
+
+| Area | Status | Notes |
+|---|---|---|
+| Chat, HTTP API, MCP stdio | PASS | `M3-api-mcp/`, `mcp-benchmark/` |
+| Vision (one image, single turn) | PASS | SmolVLM2 + LFM3-VL only |
+| Image generation / editing | PASS | SD1.5-class only; `url`/`mask`/multipart rejected by design |
+| Embedded web UI (HCS Studio) | PASS (HTTP + headless boot) | interactive playwright phase NOT RUN |
+| Model Vault (bounded reads) | PARTIAL | engines do not load through it; HDD-bound case BLOCKED |
+| HCSMODEL container | PASS (experimental) | no measured HDD benefit |
+| Single `HCSInfer.exe` (static CRT) | **NOT RUN** on a clean machine | static build proven offline (`W4-static-exe/`) |
+| Training / agent sidecar / web demo | logic-tested only | real runs NOT RUN (`train/`, `agent/`, `web/`) |
+
+## How to extend this matrix
+
+A new row is only added with an evidence file under `docs/test-evidence/` that records the exact device id, driver,
+OS build, Vulkan version and model hash, following AGENTS.md 21.1. Untested combinations are listed as NOT RUN, never
+as PASS by association.

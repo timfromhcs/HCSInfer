@@ -122,7 +122,7 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 | One-EXE requirement on a clean machine (or no single-file label) | **PARTIAL** (clean-machine NOT RUN) | A static-CRT `/MT` build now exists and its EXE depends on system DLLs only (`W4-static-exe/`), but the clean-machine test is NOT RUN and the release stays a portable folder not labelled single-file (ADR-008); W4 |
 | No Vulkan SDK needed on the end-user machine | PASS for the kernels (SPIR-V embedded, `vulkan-1.dll` loaded dynamically); NOT RUN as a machine test | the kernel needs no SDK or import library at run time; no machine without the SDK was tested |
 | External models and system AMD/Vulkan driver documented | PASS | `README.md`, `docs/hardware-support.md` |
-| SHA-256 checksum and SBOM generated | PASS | `package/` (SHA256SUMS, CycloneDX SBOM); not produced by a release CI job yet (W6) |
+| SHA-256 checksum and SBOM generated | **PASS (CI now produces + verifies them)** | the Release CI leg runs `scripts/package.ps1 -Zip`, verifies every `SHA256SUMS.txt` entry and starts the packaged `HCSInfer.exe`, and uploads the package + SBOM as artifacts (`package-*`); locally `docs/test-evidence/package/` (`SHA256SUMS`, CycloneDX SBOM) |
 | Licence and third-party notices complete | **PARTIAL** | code dependencies verified against their licence files in `docs/licence-audit.md` (MIT/BSD/Apache-2.0-or-MIT; GPL components excluded); still open: the prime-agent transitive Rust crate tree (`cargo deny` NOT RUN) and the per-model licence cards (weights never distributed) |
 
 ### Functional product
@@ -192,10 +192,10 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 | Troubleshooting | PASS | `README.md` |
 | API and MCP docs | PASS | `docs/api.md`, `docs/mcp.md` |
 | Model Vault docs | PASS | `docs/model-vault.md` |
-| Hardware-support matrix | PASS | `docs/hardware-support.md` (one tested device) |
+| Hardware-support matrix | PASS | `docs/support-matrix.md` (backends, models, feature areas, one tested device) and `docs/hardware-support.md` |
 | Benchmark methodology/results | PASS | `docs/benchmarks.md`, ADR-010 |
 | Known limitations and non-goals | PASS | `README.md`, this file |
-| Release notes | NOT RUN | `CHANGELOG.md` exists; release notes and the support matrix are W6 |
+| Release notes | PARTIAL | `docs/support-matrix.md` is done; formal release notes and the tag are still W6 (no release is tagged) |
 
 ## Exact next action
 
