@@ -131,3 +131,21 @@ Fixes (`scripts/common.ps1`, `scripts/static-analysis.ps1`):
 Verified locally after the change (VS 2022 + bundled clang-tidy 19.1.5): `format.ps1` -> `FORMAT CHECK OK: 217 files`;
 `static-analysis.ps1 -Scope src -FailOnFindings` -> `STATIC ANALYSIS OK: no diagnostic in 69 translation units`. The
 gate is re-run by the `clang-tidy` CI job on every push.
+
+### Second round: the newer analyser's three diagnostics
+
+With the pairing fixed, CI used VS 18's bundled **clang-tidy 22.1.3** and reported **3** diagnostics (all previously
+invisible to clang-tidy 19/20):
+
+1. two `clang-analyzer-core.StackAddressEscape` inside
+   `build/<preset>/hcs-httplib-patched/httplib.h` - the patched copy `cmake/HcsHttplib.cmake` writes into the **build
+   tree**, not `external/`. The script's third-party filter now excludes diagnostics located under the build directory
+   as well, not only `external/` (the gate still covers `src`, `include`, `tests`, `tools`).
+2. one `bugprone-invalid-enum-default-initialization` on `VkPhysicalDeviceVulkan12Properties p12{};` in
+   `src/hardware/vulkan_info.cpp` - value-initialising a Vulkan struct zeroes its `VkDriverId driverID`, which has no
+   zero enumerator. This is the required Vulkan idiom (`vkGetPhysicalDeviceProperties2` fills the struct before any
+   read), so it is suppressed **at that one line** with `// NOLINTNEXTLINE(...)` and the reason, not by disabling the
+   check for the whole code base.
+
+Both fixes keep the gate failing on any real HCS-owned diagnostic: the filter only drops lines whose file path is
+third-party, and the suppression is a single annotated line.

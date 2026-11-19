@@ -221,6 +221,7 @@ json device_report(const Api& api, VkPhysicalDevice pd, std::uint32_t index) {
         // --- properties ---
         VkPhysicalDeviceVulkan11Properties p11{};
         p11.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES;
+        // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization): Vulkan value-init, driver-filled
         VkPhysicalDeviceVulkan12Properties p12{};
         p12.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES;
         VkPhysicalDeviceVulkan13Properties p13{};

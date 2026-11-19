@@ -108,7 +108,8 @@ if ($PSVersionTable.PSVersion.Major -ge 7) {
             $dbDir = $using:buildDir
             $checks = $using:Checks
             $hf = $using:headerFilter
-            $out = & $ct -p $dbDir --checks=$checks --header-filter=$hf --extra-arg=-Wno-error $_ 2>&1 | Out-String
+            $out = & $ct -p $dbDir --checks=$checks --header-filter=$hf --extra-arg=-Wno-error `
+                --extra-arg=-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH $_ 2>&1 | Out-String
             [pscustomobject]@{ file = $_; text = $out }
         } -ThrottleLimit $Parallel)
 } else {
@@ -118,11 +119,16 @@ if ($PSVersionTable.PSVersion.Major -ge 7) {
 }
 
 $findings = 0
+# Third-party locations that must never count as HCS findings: the submodules under external/ and anything the
+# build generated, e.g. the patched httplib.h copy cmake/HcsHttplib.cmake writes into the build tree. The gate
+# covers src/, include/, tests/ and tools/ only.
+$thirdParty = @('[\\/]external[\\/]', [regex]::Escape($buildDir))
 foreach ($r in $results | Sort-Object file) {
-    # Only HCS-owned diagnostics count. clang-tidy's static analyzer can still report a location inside a
-    # third-party header (e.g. external/stable-diffusion.cpp/thirdparty/stb_image.h) even with --header-filter set
-    # to src|include/hcs; the gate covers src/, include/, tests/ and tools/ only, so those lines are not counted.
-    $lines = @($r.text -split "`r?`n" | Where-Object { $_ -match 'warning:|error:' -and $_ -notmatch '[\\/]external[\\/]' })
+    $lines = @($r.text -split "`r?`n" | Where-Object {
+            if ($_ -notmatch 'warning:|error:') { return $false }
+            foreach ($pattern in $thirdParty) { if ($_ -match $pattern) { return $false } }
+            return $true
+        })
     if ($lines.Count -gt 0) {
         Write-Host ""
         Write-Host "== $($r.file.Substring($root.Length + 1))"
