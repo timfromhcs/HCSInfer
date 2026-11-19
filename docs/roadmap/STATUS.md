@@ -123,7 +123,7 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 | No Vulkan SDK needed on the end-user machine | PASS for the kernels (SPIR-V embedded, `vulkan-1.dll` loaded dynamically); NOT RUN as a machine test | the kernel needs no SDK or import library at run time; no machine without the SDK was tested |
 | External models and system AMD/Vulkan driver documented | PASS | `README.md`, `docs/hardware-support.md` |
 | SHA-256 checksum and SBOM generated | PASS | `package/` (SHA256SUMS, CycloneDX SBOM); not produced by a release CI job yet (W6) |
-| Licence and third-party notices complete | NOT RUN | `THIRD_PARTY_NOTICES.md` is an inventory; the formal licence review and the prime-agent crate audit are open |
+| Licence and third-party notices complete | **PARTIAL** | code dependencies verified against their licence files in `docs/licence-audit.md` (MIT/BSD/Apache-2.0-or-MIT; GPL components excluded); still open: the prime-agent transitive Rust crate tree (`cargo deny` NOT RUN) and the per-model licence cards (weights never distributed) |
 
 ### Functional product
 

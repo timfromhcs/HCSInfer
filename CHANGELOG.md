@@ -93,6 +93,11 @@ CTest: **783 registered, 0 failed** (CPU build; model-dependent tests skip = NOT
   `BenchFull.OneTokenPrefillPointIsNotAFailureWhenTheDecodeCountIsZero`.
 
 ### Changed
+- Licence/dependency audit (`docs/licence-audit.md`, AGENTS.md 7.3/19.6): every code dependency linked into or shipped
+  with HCSInfer was verified against its licence file (MIT / BSD-2 / BSD-3 / Apache-2.0-or-MIT; the GPL components
+  Zstandard `COPYING` and LZ4 `programs/` are excluded). Findings: Vulkan-Headers is `Apache-2.0 OR MIT` with no
+  `NOTICE` (MIT elected); `prime-agent`'s licence file is absent from the uninitialised submodule but verified at the
+  pinned commit. Open: the prime-agent Rust crate tree and the model cards.
 - CI: the `web` job is a blocking gate (`d8a5e37`); format and clang-tidy gates repaired after wave 1 (`06cfbe4`).
   `pr.yml` run 44167798984 is green on all six jobs.
 

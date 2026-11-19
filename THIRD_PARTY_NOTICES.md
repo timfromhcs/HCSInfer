@@ -64,4 +64,7 @@ utf8proc, stb headers) and the FetchContent licences from the build tree (nlohma
 Components present in the submodule trees but NOT compiled into HCSInfer (llama.cpp `vendor/` except the pieces listed above that libmtmd links, `tools/` except `tools/mtmd`, `common`;
 stable-diffusion.cpp `examples/` and the bundled patched `ggml`, per the build options in
 `external/dependency-lock.json`; other vendored directories were not individually verified as unlinked) are not covered by the notices above. If a build option changes, review this file.
-This file is a notice inventory, not legal advice; a formal licence review (AGENTS.md 19.6) is still open (NOT RUN).
+This file is a notice inventory, not legal advice. The formal licence review (AGENTS.md 19.6) is recorded in
+`docs/licence-audit.md`: every code dependency linked into or shipped with HCSInfer was verified against its licence
+file. Still open there: the prime-agent transitive Rust crate tree (`cargo deny` NOT RUN) and the per-model licence
+cards (weights are never distributed).
