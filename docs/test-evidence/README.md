@@ -31,6 +31,7 @@ next to it.
 | `train/` | HCS Train CLI demo and test notes (a real training run is NOT RUN) |
 | `web/` | `web/` headless Chrome boot check (`web-boot.json/.txt`, `web-chat.png`); real WebGPU inference is NOT RUN |
 | `W4-static-exe/` | static-CRT `/MT` + `GGML_OPENMP=OFF` single-EXE experiment: build, 783/783 tests, `dumpbin` (system DLLs only), real llama/SD1.5 runs; clean-machine test NOT RUN |
+| `vulkan-kernels/` | M8 Q8_0 GEMV: SPIR-V validation, `kernel-cpu`/`kernel-vulkan` correctness (4/4 on the real 680M), isolated CPU-vs-Vulkan benchmark (feature-flagged, not default-enabled) |
 
 ## Redaction policy
 

@@ -15,6 +15,7 @@ list(PREPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 option(HCS_BUILD_TESTS "Build HCSInfer tests" ON)
 option(HCS_WARNINGS_AS_ERRORS "Treat warnings in HCS-owned targets as errors" ON)
 option(HCS_ENABLE_VULKAN "Enable Vulkan-dependent HCS modules (modules must honour this)" OFF)
+option(HCS_ENABLE_VULKAN_KERNELS "Build the experimental HCS Vulkan kernels (M8; needs the Vulkan SDK to build)" OFF)
 
 # Provenance for benchmark JSON (AGENTS.md 21.1): commit at configure time, "+dirty" when the tree has changes.
 set(HCS_GIT_COMMIT "unknown")
@@ -59,6 +60,7 @@ endif()
 set(HCS_MODULE_DIRS
   core hardware storage memory scheduler telemetry process agent train
   engines/llama engines/diffusion
+  kernels/cpu kernels/vulkan
   gui api mcp
   cli app)
 set(HCS_EXCLUDE_MODULES "" CACHE STRING "Semicolon list of src/<module> dirs to skip (isolated builds)")

@@ -30,14 +30,14 @@ graph TD
 
 Critical path to V1: vision adapter -> image routes in API/MCP -> GUI (ADR-009) -> Model Vault in the load path ->
 hardening/soak -> release package. M7 single-EXE and M8 kernels gate only the single-file and custom-kernel claims.
-Last completed: V1-stable **W1-W3** (pushed to `origin/main` as `902b41e`, `5633450`, `b02075f`) plus the W1 follow-up
-MCP `hcs.runtime.benchmark` tool (`af884c3`) and the **W4** static-CRT single-EXE experiment (preset
-`windows-msvc-release-static`; the EXE is system-DLL-only and passes 783/783, but the clean-machine test is NOT RUN -
-`docs/test-evidence/W4-static-exe/`, ADR-008). `origin/main` is now `af884c3`. Earlier: V1.1 wave 2 (`35bd39d`), wave
-1 (`6a390b8`), M3 image routes + M4 embedded UI + `benchmark` command + M10 audit fixes (`docs/test-evidence/M3-image`,
-`M4-gui`, `benchmark`, `M10-fixes`).
-Next: **W5** (M8 profiling, at most one feature-flagged kernel) and **W6** (release candidate); the full wave plan is
-at the end of this file (the release checklist is in `STATUS.md`).
+Last completed: V1-stable **W1-W3** (on `main`) plus the W1 follow-up MCP `hcs.runtime.benchmark` tool, the **W4**
+static-CRT single-EXE experiment (`windows-msvc-release-static`; system-DLL-only EXE, full suite green, clean-machine
+test NOT RUN - `docs/test-evidence/W4-static-exe/`, ADR-008) and the **first M8 kernel** (W5: Q8_0 GEMV,
+feature-flagged OFF, CPU reference + SPIR-V validation + real-device correctness + isolated benchmark -
+`docs/test-evidence/vulkan-kernels/`). Earlier: V1.1 wave 2 (`35bd39d`), wave 1 (`6a390b8`), M3 image routes + M4
+embedded UI + `benchmark` command + M10 audit fixes.
+Next: **W5** remainder (upstream Vulkan profiling + baseline, tuned kernel), then **W6** (release candidate); the full
+wave plan is at the end of this file (the release checklist is in `STATUS.md`).
 
 ## M0 Repository and hardware baseline
 - [x] Repo inspected, scaffold + build/test scripts
@@ -106,8 +106,8 @@ at the end of this file (the release checklist is in `STATUS.md`).
 - [~] Static CRT `/MT` build of HCS + both engines (preset `windows-msvc-release-static`, `GGML_OPENMP=OFF`): builds, 783/783 tests, system-DLL-only EXE, real llama/SD1.5 CPU runs - `docs/test-evidence/W4-static-exe/`; `/MT` Vulkan build, embedded-asset packaging and the clean-machine test are still open (ADR-008). Portable folder package via `scripts/package.ps1` is the interim deliverable
 
 ## M8 Vulkan kernels (one at a time, feature-flagged)
-- [ ] Profile upstream; per-kernel CPU reference, validation layers, SPIR-V validation, benchmark vs upstream, fallback
-- [ ] Order: quantized GEMV, GEMM, fused dequant+matmul, RMSNorm/residual, RoPE, SwiGLU, attention/KV, diffusion conv/attention/VAE
+- [~] Kernel 1 = **Q8_0 GEMV** (`src/kernels/vulkan`, `shaders/llm/gemv_q8_0.comp`): independent CPU reference, `glslc` + `spirv-val` at build time, SPIR-V embedded, feature-flagged **OFF**, real-device correctness (4/4 `kernel-vulkan`, max abs err ~1e-5) and an isolated benchmark (`tools/kernel-bench`). Open: **profile the upstream GGML Vulkan backend**, the upstream-Vulkan baseline comparison, validation-layer runs, a tuned version (staging/reduction), device-lost handling. Evidence `docs/test-evidence/vulkan-kernels/`, docs `docs/vulkan-kernels.md`
+- [x] Order item 1 (quantized GEMV, decode); [ ] GEMM, fused dequant+matmul, RMSNorm/residual, RoPE, SwiGLU, attention/KV, diffusion conv/attention/VAE
 - [ ] Autotuner/kernel registry cache with correctness gate
 
 ## M9 Advanced research (after V1 baseline)
@@ -148,7 +148,7 @@ Every wave ends with the full CTest suite green plus its own new tests, an updat
 | **W2** salvage agent/train | Port the unique work from the local branch `claude/flux3-agent-engine-v1-665ab0` selectively: `agent_redact`, `event_parser`, `tool_audit`, `session_manager`, `chat_template`, `dataset_prep`, `rsi_loop`, soak. Nothing is merged wholesale; each piece comes with unit tests and an ADR-011 / ADR-012 note. | Tests green on a clean checkout of `main`; a real `prime-agent` session and a real training run stay NOT RUN unless executed and recorded |
 | **W3** resource/lifecycle hardening | `soak`-labelled tests (100 load/unload cycles, long generation), fault injection (OOM at the allocator boundary, cancel during load, USB-disconnect simulation, device-lost where reproducible), shutdown while idle / loading / generating. | Leak/handle checks recorded; the 30-minute and 100-cycle runs are PASS only with evidence, otherwise NOT RUN |
 | **W4** single-EXE attempt | Static CRT (`/MT`) build of HCS + both engines (ADR-008), embedded assets, then a clean-machine run without the Vulkan SDK or MSVC redistributable. | PASS only if the clean-machine test passes; otherwise the release stays a portable folder and says so. **Done in part (2026-11-18):** preset `windows-msvc-release-static` ( `/MT` + `GGML_OPENMP=OFF`) builds, 783/783 tests, system-DLL-only EXE, real llama/SD1.5 CPU runs (`docs/test-evidence/W4-static-exe/`); clean-machine test and `/MT` Vulkan build NOT RUN |
-| **W5** M8 profiling | Profile the upstream Vulkan backend on the 680M; land **at most one** HCS Vulkan kernel (quantised GEMV first) behind a feature flag with a CPU reference, upstream baseline, SPIR-V validation and a repeatable benefit. | A kernel is default-on only with measured, repeatable benefit; otherwise M8 is reported as profiled-only |
+| **W5** M8 profiling | Profile the upstream Vulkan backend on the 680M; land **at most one** HCS Vulkan kernel (quantised GEMV first) behind a feature flag with a CPU reference, upstream baseline, SPIR-V validation and a repeatable benefit. | A kernel is default-on only with measured, repeatable benefit; otherwise M8 is reported as profiled-only. **Done in part (2026-11-19):** the Q8_0 GEMV is landed behind a flag with CPU reference + SPIR-V validation + real-device correctness + an isolated benchmark; it is **not** default-enabled (no upstream baseline benefit measured). Upstream profiling/baseline NOT RUN |
 | **W6** release candidate | `CHANGELOG.md` finalised, release notes, support matrix, SBOM + SHA-256 produced by CI, dependency/licence audit, README matches the binary, tag. | Every STATUS checklist row is PASS, or explicitly listed as excluded / BLOCKED in the release notes |
 
 Outside the waves (owner-dependent, stay BLOCKED / NOT RUN): FLUX.3 render (gated encoder/VAE access), M5 Stage B

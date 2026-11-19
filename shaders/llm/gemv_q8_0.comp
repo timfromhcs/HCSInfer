@@ -1,0 +1,75 @@
+#version 450
+// HCSInfer experimental Vulkan kernel: Q8_0 GEMV (decode).
+//
+//   y[m] = sum_k dequant_q8_0(W[m, k]) * x[k]
+//
+// W is a row-major Q8_0 weight matrix with M rows and K columns (K divisible by 32), in the ggml
+// block_q8_0 layout: 34 bytes per block of 32 values -> { float16 d; int8_t qs[32] }, value = d * qs[i].
+// x is an F32 vector (K elements), y is an F32 vector (M elements). One invocation computes one row.
+//
+// The raw weight bytes are read through a uint view; `load4` reconstructs four consecutive bytes starting
+// at any byte offset with at most two 32-bit loads, so the 34-byte block stride needs no repacking.
+//
+// Author: HCSInfer. Not derived from any third-party source. See docs/vulkan-kernels.md.
+layout(local_size_x = 64) in;
+
+layout(std430, binding = 0) readonly buffer XBuf { float x[]; };
+layout(std430, binding = 1) readonly buffer WBuf { uint w[]; };
+layout(std430, binding = 2) writeonly buffer YBuf { float y[]; };
+
+layout(push_constant) uniform Push {
+    uint m;  // number of rows (weights) = length of y
+    uint k;  // number of columns = length of x (multiple of 32)
+} pc;
+
+const uint QK = 32u;           // values per Q8_0 block
+const uint Q8_0_SIZE = 34u;    // bytes per Q8_0 block
+
+// Four consecutive bytes starting at byte offset `off` (little-endian).
+uint load4(uint off) {
+    uint base = off >> 2u;
+    uint shift = (off & 3u) * 8u;
+    uint lo = w[base];
+    uint hi = w[base + 1u];
+    return (shift == 0u) ? lo : ((lo >> shift) | (hi << (32u - shift)));
+}
+
+// Two consecutive bytes (little-endian) starting at byte offset `off`.
+uint load2(uint off) {
+    return load4(off) & 0xFFFFu;
+}
+
+float half_to_float(uint h) {
+    return unpackHalf2x16(h).x;
+}
+
+// Value of the int8 at byte index `i` (0..3) inside the word produced by load4.
+float q8_from_word(uint word, uint i) {
+    uint b = (word >> (i * 8u)) & 0xFFu;
+    int v = (b >= 128u) ? int(b) - 256 : int(b);
+    return float(v);
+}
+
+void main() {
+    uint row = gl_GlobalInvocationID.x;
+    if (row >= pc.m) return;
+
+    const uint blocks_per_row = pc.k / QK;
+    const uint row_byte0 = row * blocks_per_row * Q8_0_SIZE;
+
+    float acc = 0.0;
+    for (uint b = 0u; b < blocks_per_row; ++b) {
+        const uint block_byte = row_byte0 + b * Q8_0_SIZE;
+        const float d = half_to_float(load2(block_byte));
+        const uint q_byte0 = block_byte + 2u;  // qs starts right after the 2-byte fp16 scale
+        for (uint j = 0u; j < QK; j += 4u) {
+            const uint word = load4(q_byte0 + j);
+            const uint k0 = b * QK + j;
+            acc += d * q8_from_word(word, 0u) * x[k0 + 0u];
+            acc += d * q8_from_word(word, 1u) * x[k0 + 1u];
+            acc += d * q8_from_word(word, 2u) * x[k0 + 2u];
+            acc += d * q8_from_word(word, 3u) * x[k0 + 3u];
+        }
+    }
+    y[row] = acc;
+}

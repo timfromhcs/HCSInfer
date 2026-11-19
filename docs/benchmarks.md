@@ -12,9 +12,9 @@ hardware, models or drivers.
   `quick` is 1 warm-up, 3 measured iterations, 64 new tokens. `--suite full` adds a prefill sweep (TTFT and prompt
   tokens/s, 1 new token) and a decode sweep over `--sweep-sizes` (1..8 sizes of 16..1048576, default
   128,512,1024,2048); every point has its own median/p90 and samples, points that do not fit `--ctx` are `SKIPPED`,
-  failed points make `result_status` `PARTIAL`. The same runner is reachable as `POST /hcs/v1/benchmarks` (a job).
-  **No `full` run or API benchmark run on a real model has been recorded (NOT RUN); every table below is from the
-  `quick` suite.**
+  failed points make `result_status` `PARTIAL`. The same runner is reachable as `POST /hcs/v1/benchmarks` (a job) and
+  as the MCP tool `hcs.runtime.benchmark`. A real-model `full` run is recorded below; the `POST` API route has been
+  contract-tested but not run against a real model (NOT RUN).
 * Output: one AGENTS.md 21.1 JSON document (`schema_version 1`): machine, build, model SHA-256, quantization,
   backend/device, context, cold and warm phases, median/p90 and the raw samples. Unmeasurable values are the string
   `unknown` or `not_applicable`.
@@ -67,6 +67,23 @@ Model `LFM3-Omni-2B-Q8_0.gguf`, 1,846,240,768 bytes, SHA-256
 | model load (warm) | 391 ms | 982 ms |
 | peak process working set / commit | 2,057 MB / 528 MB | 514 MB / 2,790 MB |
 
+## LFM3-Omni-2B Q8_0 full-suite benchmark (`--suite full`)
+
+Source: `test-evidence/benchmark/full-suite-real.json`. Same model as above, CPU, context 4096, `--sweep-sizes
+32,128,256`, 0 warm-up, 1 measured iteration per point (a smoke run, not a baseline), seed 42. `result_status` PASS.
+
+| point | target tokens | real prompt tokens | TTFT ms | prompt tokens/s | decode tokens/s |
+|---|---|---|---|---|---|
+| prefill | 32 | 43 | 558 | 77.5 | - |
+| prefill | 128 | 151 | 1369 | 110.6 | - |
+| prefill | 256 | 277 | 2639 | 105.1 | - |
+| decode | 32 | 43 | - | - | 19.49 |
+| decode | 128 | 151 | - | - | 19.22 |
+| decode | 256 | 277 | - | - | 19.19 |
+
+The first run of this suite (before the W1 fix D-S6) recorded every prefill point as FAIL; the benchmark treated a
+1-token generation's "0 decoded tokens" (the adapter counts `sampled - 1`) as an error.
+
 ## Load modes (M5 Stage A, CPU)
 
 Source: `test-evidence/M5-loadmodes/README.md`. Same model and parameters as B0, `--no-hash`, build `build/img-api`
@@ -100,6 +117,24 @@ internal `D:` drive, 256x256, 2 steps, seed 42, **one sample per configuration**
 The output PNGs of the three runs differ byte-wise; equivalence is not verified. Disk parameter placement was faster
 here only because the model sat on fast local storage and in the file cache; a USB-HDD run is NOT RUN, and the
 ranking would very likely invert there.
+
+## M8 HCS kernel runtime (isolated, feature-flagged)
+
+`hcs_kernel_bench` (`test-evidence/vulkan-kernels/`) measures the single HCS Q8_0 GEMV kernel against its CPU
+reference, **not inside a model**. Radeon 680M, CPU reference single-threaded, 20 timed calls after warm-up.
+
+| m x k | CPU (ms) | Vulkan (ms) | CPU/Vulkan | max abs err | Vulkan GiB/s |
+|---|---|---|---|---|---|
+| 512x512 | 0.171 | 1.313 | 0.1x | 4.8e-06 | 0.20 |
+| 1024x1024 | 0.679 | 1.408 | 0.5x | 1.1e-05 | 0.74 |
+| 2048x2048 | 2.761 | 1.910 | 1.4x | 1.9e-05 | 2.17 |
+| 4096x4096 | 11.11 | 4.558 | 2.4x | 3.5e-05 | 3.64 |
+| 4096x11008 | 30.01 | 12.01 | 2.5x | 8.4e-05 | 3.71 |
+| 11008x4096 | 30.00 | 14.31 | 2.1x | 3.8e-05 | 3.12 |
+
+Small shapes lose to per-call buffer/dispatch overhead; large shapes win by ~2.1-2.5x at ~3.6 GiB/s. The kernel is
+feature-flagged **OFF** and has **no upstream-Vulkan (GGML) baseline** yet, so it is not default-enabled
+(`docs/vulkan-kernels.md`, AGENTS.md 16.6 B3).
 
 ## Earlier provisional numbers
 

@@ -26,10 +26,11 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 - Toolchain on the target machine: MSVC 19.44.35228 (toolset 14.44.35207) x64, CMake 4.4.0, Ninja 1.13.2,
   Vulkan SDK 1.4.357.0 (build time only), Windows 11 build 10.0.26200.9974, Ryzen 7 7735HS, Radeon 680M
   (device id 0x1681), ~21.2 GB RAM, AMD driver 32.0.21043.12001.
-- Modules present in `src/`: `core`, `hardware`, `storage`, `agent`, `train`, `process`, `engines/llama`,
-  `engines/diffusion`, `gui`, `api`, `mcp`, `cli`, `app`. **Still absent:** `memory`, `scheduler`, `telemetry`,
-  `kernels`, `shaders`. A separate browser deliverable `web/` (HCS Studio Web, ADR-013) exists outside `src/` and
-  outside the CMake graph.
+- Modules present in `src/`: `core`, `hardware`, `storage`, `kernels/cpu`, `kernels/vulkan` (the latter only with
+  `-DHCS_ENABLE_VULKAN_KERNELS=ON`), `agent`, `train`, `process`, `engines/llama`, `engines/diffusion`, `gui`, `api`,
+  `mcp`, `cli`, `app`. **Still absent:** `memory`, `scheduler`, `telemetry`. `shaders/` now exists
+  (`shaders/llm/gemv_q8_0.comp`). A separate browser deliverable `web/` (HCS Studio Web, ADR-013) exists outside
+  `src/` and outside the CMake graph.
 - The two smoke-test PNGs at the repository root (`cpu-256x256-2step.png`, `cpu-edit-256x256-2step.png`) are
   ignored by `.gitignore` (`/*.png`) and are not part of the product.
 
@@ -37,7 +38,7 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 
 | Gate | Status | Evidence / reason |
 |---|---|---|
-| Full Release CTest suite (CPU-only, Vulkan=OFF) | **PASS** | **784 registered, 0 failed at the last run** (W3 + MCP `hcs.runtime.benchmark` + the W4/D-S5 and benchmark-sweep fixes, CPU build, `-j4`; 783 before the sweep fix; 779 before the MCP tool; 735 before wave 3; model-dependent tests skip = NOT RUN; before the port 550, at W1; earlier: 518 at wave 2, `docs/test-evidence/agent/README.md`). The last archived raw log is the earlier 400-test run: 396 passed, 0 failed, 4 skipped (Vulkan real tests = NOT RUN on a CPU build), 223 s - `M10-fixes/ctest-full-400-green.txt`; the 518-test raw log is not archived in `docs/test-evidence/`. Model-dependent tests skip (NOT RUN) unless `HCS_TEST_*` is set |
+| Full Release CTest suite (CPU-only, Vulkan=OFF) | **PASS** | **790 registered, 0 failed at the last run** (784 + 6 `kernel-cpu`; the `windows-msvc-release-kernels` preset adds 4 `kernel-vulkan` tests, 4/4 PASS on the real 680M; CPU build, `-j4`; model-dependent tests skip = NOT RUN). The last archived raw log is the earlier 400-test run: 396 passed, 0 failed, 4 skipped (Vulkan real tests = NOT RUN on a CPU build), 223 s - `M10-fixes/ctest-full-400-green.txt`. Model-dependent tests skip (NOT RUN) unless `HCS_TEST_*` is set |
 | Configure + build Debug / Release (MSVC x64, Ninja, `/W4 /WX` on HCS targets) | PASS | `M2-core/`, `M3-api-mcp/ctest-debug.txt`; the Vulkan preset configures and builds (`M2/image/README.md`) |
 | M0 hardware doctor (CPU features, RAM, OS, Vulkan devices/heaps, GPU adapters, drive info, read bench) | PASS | `M0/` (`doctor.json`, `doctor-no-vulkan.json`, `readbench-usb-hdd.json`, `vulkaninfo-summary.txt`) |
 | M1 llama.cpp independent baseline, CPU + Vulkan, real GGUF from USB drive | PASS | `M1/llama/README.md`; qwen3-0.6b Q4_K_M, sha256 `4ea79412...` |
@@ -71,7 +72,7 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 | M6 HCSMODEL container (header, chunk table, Raw/LZ4/Zstd, hashes, random access) | PASS (experimental) / PARTIAL for fuzz | 59 unit + 3 parser + 2 integration tests; libFuzzer smoke only 60 s with UBSan, no ASan (`M6-storage/`). Throughput benefit on a real HDD NOT proven |
 | M7 shared GGML ABI (llama.cpp GGML + sd.cpp via `SD_USE_UPSTREAM_GGML=ON` in one binary) | PASS for build + SD1.5 + llama text in one binary | `HCSInfer.exe` links both; coverage for Flux/DiT/Qwen-Image, FP8/INT8 NOT RUN |
 | M7 single `HCSInfer.exe`, static CRT, clean-machine test | **PARTIAL** (static CRT build proven; clean-machine NOT RUN) | The `windows-msvc-release-static` preset (`/MT` everywhere + `GGML_OPENMP=OFF`) builds a fresh tree, passes **783/783** tests and its `HCSInfer.exe` imports **only system DLLs** (`ADVAPI32`, `WS2_32`, `KERNEL32`); real llama (CPU) and SD1.5 (CPU) runs succeed - `docs/test-evidence/W4-static-exe/`. The clean-machine test (no VC++ redistributable, no Vulkan SDK) is NOT RUN and there is no `/MT` Vulkan build, so the single-EXE claim is not made (ADR-008); the default `/MD` build and the portable folder package remain the shipped artefacts |
-| M8 HCS Vulkan kernels | NOT RUN | no `src/kernels`, no `shaders/` |
+| M8 HCS Vulkan kernels | **PARTIAL** (one kernel: correctness PASS, **not default-enabled**) | `src/kernels/{cpu,vulkan}` + `shaders/llm/gemv_q8_0.comp`: a Q8_0 GEMV, feature-flagged and OFF, with an independent CPU reference, SPIR-V compiled + `spirv-val`-validated + embedded at build time. 6/6 `kernel-cpu` + 4/4 `kernel-vulkan` on the real 680M; real-device CPU-vs-Vulkan match ~1e-5. Benchmark (isolated kernel): 2.1-2.5x faster than the single-threaded CPU reference at ~3.6 GiB/s on large shapes, slower on small ones - so it is **not** enabled. Upstream-GGML-Vulkan baseline, validation layers, a tuned version and the autotuner cache are NOT RUN - `docs/test-evidence/vulkan-kernels/`, `docs/vulkan-kernels.md` |
 | M9 research features | NOT RUN | |
 | M10 hardening: audit fixes (D1-D7) | PASS | `M10-fixes/` (red/green pairs): deep-JSON stack guard, connection budget/starvation, abandoned-request cancellation, runaway-job cap, reserved Windows device names, duplicate security headers, loopback literal parsing |
 | M10 soak: 100-cycle load/unload, 30-min generation, long fuzz (ASan), OOM/device-lost/HDD-unplug injection, signing | PARTIAL: quick profile executed twice on the target machine, full profile (100 cycles, 30 min generation, long fuzz, signing) NOT RUN | `docs/test-evidence/soak/cpu-quick/` (first run: 12 gtests PASS, HttpStorm FAIL 2/18) and, after the wave-3 fixes, `cpu-quick-w3/` (12 gtests PASS, shutdown tests destroy the `Runtime` directly) + `cpu-quick-w3-httpstorm-rerun/` (HttpStorm 18/18 PASS) + `w3-ctrl-c/` (manual real CTRL_C_EVENT: exit rc=0 in 0.4 s while generating). Defects D-S1 (Runtime destructor crash), D-S2 (health starved by idle sockets), D-S3 (Ctrl+C: harness env problem + latent shutdown-order defect), D-S4 (slowloris deadline, new) are **fixed with red -> green tests**; D-S5 (`read_file_limited` torn read vs. concurrent `atomic_write_file`, **found by CI** on the W3 `FsUtil` test) is fixed with a single-handle read; D-S6 (every `--suite full` prefill point FAILed because a 1-token request reports 0 decode tokens) is fixed in the benchmark runner; details in `docs/test-evidence/soak/DEFECTS.md`. Not proven: full profile, Vulkan soak, a SIGINT path inside the automated harness (phase F uses CTRL_BREAK; SIGINT is a manual run) |
@@ -80,7 +81,7 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 | B0/B1 + M5 load-mode matrix (B4/B8 partial) | PASS (measured) | `M5-loadmodes/`: `auto`, `mmap`, `none`, `mlock`, `mmap+mlock`, `direct_io` on the real model from the USB drive, each with peak working set/commit; `--load-mode` is now exposed by `benchmark` and `vision` too (contract test) |
 | B2/B5/B6 (best placement reference, LZ4/Zstd chunk loading) | NOT RUN | need the Model Vault in the load path (M5 Stage B) or a further implementation; B7 (diffusion compute vs parameter backend) is now measured in `B7-params/` |
 | clang-format / clang-tidy | **PASS** (after fixing a wave-1 regression) | `scripts/format.ps1` green over 152 files with clang-format 19.1.5 (VS-bundled, pinned); `scripts/static-analysis.ps1 -Scope src -FailOnFindings` reports **0 diagnostics in 51 translation units**. **V1.1 wave 1 (`6a390b8`) broke both gates on `main`** (CI run 44154743021): 4 files needed formatting and clang-tidy 20.1.8 found 6 `bugprone-implicit-widening-of-multiplication-result` sites in `include/hcs/{agent,api,train}` plus 1 `clang-analyzer` location inside `external/.../stb_image.h`. Fixed: widened the size constants first, and `static-analysis.ps1` now ignores diagnostics located under `external/` (the gate covers HCS-owned code). Evidence `docs/test-evidence/static-analysis/wave1-*`; triage in `docs/static-analysis.md` |
-| Shader / SPIR-V validation | n.a. / NOT RUN | no shaders exist |
+| Shader / SPIR-V validation | **PASS (one shader)** | `shaders/llm/gemv_q8_0.comp` is compiled by `glslc` and validated by `spirv-val --target-env vulkan1.2` as part of the `windows-msvc-release-kernels` build (fails the build otherwise); the SPIR-V is embedded. No CI job runs it yet (the GPU/SDK job `hardware.yml` is NOT RUN) |
 | CI workflows | **PASS (green on `main`)** | `.github/workflows/pr.yml` run 44167798984 (2026-11-17, commit `d8a5e37`): all six jobs green - `build + ctest` Release (18m38s) and Debug (9m59s), `clang-tidy` (5m53s), `clang-format` (17s), `SBOM` (17s), `web` (26s: 46 unit + static tests and the blocking headless boot check). Model-dependent tests skip on the hosted runner (NOT RUN), so CI proves configure/build/unit/contract/parser on a clean hosted machine, not Vulkan or real-model behaviour. History: run 44104062457 failed (Visual Studio not located, fixed in `fddc30d`); run 44154743021 (V1.1 wave 1) failed `clang-format` and `clang-tidy`, fixed in `06cfbe4` / `8b29907`. `hardware.yml` (self-hosted Radeon 680M runner): **NOT RUN, never executed** |
 | SBOM / checksums / package | PASS (portable folder + ZIP) / single-EXE NOT RUN | `scripts/package.ps1 -Preset img-api -Zip` produced `HCSInfer-0.1.0-img-api-portable` (21 files, 12 licence texts, manifest, CycloneDX SBOM with 13 components, SHA256SUMS over 20 files) and a 17.2 MiB ZIP with SHA-256 `527df693...`; the packaged `HCSInfer.exe` runs standalone (`doctor --json`, exit 0) - `M10-fixes/../package/`. Still open: clean-machine test without the MSVC redistributable, signing, single-EXE |
 | ADR-001..013 | all 13 written and accepted (001 scoped to SD1.5-class models, 004 with open validation items, 006 experimental, 008 a staged plan: the single-EXE claim is NOT made) | `docs/decisions/README.md` |
@@ -118,9 +119,9 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 | Debug build and tests | PASS | CI Debug leg; `M3-api-mcp/ctest-debug.txt` |
 | Reproducible dependency pins and build command | PASS | `external/dependency-lock.json`, `docs/build.md`; caveat: Vulkan-Headers (FetchContent) is not in the lock file |
 | No unexplained compiler/linker warnings in HCS code | PASS | `/W4 /WX` on HCS targets; clang-tidy gate reports 0 findings |
-| Shader compilation and SPIR-V validation | NOT RUN | no shaders exist |
+| Shader compilation and SPIR-V validation | PASS (one shader) | `glslc` + `spirv-val` run in the `windows-msvc-release-kernels` build; a failure fails the build (`docs/test-evidence/vulkan-kernels/`) |
 | One-EXE requirement on a clean machine (or no single-file label) | **PARTIAL** (clean-machine NOT RUN) | A static-CRT `/MT` build now exists and its EXE depends on system DLLs only (`W4-static-exe/`), but the clean-machine test is NOT RUN and the release stays a portable folder not labelled single-file (ADR-008); W4 |
-| No Vulkan SDK needed on the end-user machine | NOT RUN | Vulkan loads from the system driver by design, but no machine without the SDK was tested |
+| No Vulkan SDK needed on the end-user machine | PASS for the kernels (SPIR-V embedded, `vulkan-1.dll` loaded dynamically); NOT RUN as a machine test | the kernel needs no SDK or import library at run time; no machine without the SDK was tested |
 | External models and system AMD/Vulkan driver documented | PASS | `README.md`, `docs/hardware-support.md` |
 | SHA-256 checksum and SBOM generated | PASS | `package/` (SHA256SUMS, CycloneDX SBOM); not produced by a release CI job yet (W6) |
 | Licence and third-party notices complete | NOT RUN | `THIRD_PARTY_NOTICES.md` is an inventory; the formal licence review and the prime-agent crate audit are open |
@@ -161,10 +162,10 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 |---|---|---|
 | Upstream CPU baseline | PASS | `benchmark/` (B0) |
 | Upstream Vulkan baseline on the real Radeon 680M | PASS | `benchmark/` (B1), `B7-params/` |
-| Real HCS kernel tests for each default-enabled kernel | NOT RUN | no HCS kernel exists (W5) |
-| CPU/reference numeric correctness of HCS kernels | NOT RUN | no kernel exists |
-| No default HCS kernel slower than its fallback | NOT RUN | no kernel exists |
-| Scheduler decision and fallback observable | NOT RUN | no scheduler module |
+| Real HCS kernel tests for each default-enabled kernel | n.a. (no kernel is default-enabled) | the one existing kernel (Q8_0 GEMV) is feature-flagged OFF; its `kernel-vulkan` tests are 4/4 PASS on the real 680M - `docs/test-evidence/vulkan-kernels/` |
+| CPU/reference numeric correctness of HCS kernels | PASS (isolated kernel) | `hcs_kernels_cpu` reference + `KernelVulkanGemv.MatchesTheCpuReferenceAcrossShapes` (max abs err ~1e-5) |
+| No default HCS kernel slower than its fallback | n.a. (nothing default-enabled) | the Q8_0 GEMV is slower than the CPU reference on small shapes and faster on large ones; it stays OFF |
+| Scheduler decision and fallback observable | NOT RUN | no scheduler module; the kernel API returns `Unsupported` when off so a caller keeps the CPU path |
 | Performance results reproducible and metadata-complete | PASS for B0/B1 (one machine); B2/B5/B6/B8 NOT RUN | `benchmark/` (AGENTS.md 21.1 JSON) |
 
 ### Security and reliability
@@ -203,8 +204,11 @@ Execute the V1-stable wave plan in `IMPLEMENTATION_PLAN.md` in order. **W1** is 
 `POST /hcs/v1/benchmarks`, `cache stats|clear`, `benchmark --suite full`, and the MCP `hcs.runtime.benchmark` tool
 (`af884c3`). **W2** (agent/train salvage) and **W3** (soak defects + test gaps) are done and committed (`5633450`,
 `b02075f`). **W4** (static-CRT single-EXE attempt, ADR-008) is done as far as this machine allows: the
-`windows-msvc-release-static` preset builds a system-DLL-only EXE that passes 783/783 tests and runs real llama/SD1.5
-(`docs/test-evidence/W4-static-exe/`); the **clean-machine test and a `/MT` Vulkan build stay NOT RUN**. Next: **W5**
-(M8 profiling, at most one feature-flagged kernel) and **W6** (release candidate). These stay BLOCKED / NOT RUN until
-the owner acts: the FLUX.3 render (gated encoder/VAE access), M5 Stage B (model larger than RAM, administrator cache
-flush), a real `prime-agent` session, real WebGPU inference, the Vercel deploy and a clean Windows machine.
+`windows-msvc-release-static` preset builds a system-DLL-only EXE that passes the full suite and runs real
+llama/SD1.5 (`docs/test-evidence/W4-static-exe/`); the **clean-machine test and a `/MT` Vulkan build stay NOT RUN**.
+**W5** (M8) has its first, feature-flagged kernel: a Q8_0 GEMV with CPU reference, SPIR-V validation and a real
+device benchmark; it is **not default-enabled** (no measured benefit over the real baseline yet) and the upstream
+Vulkan baseline is NOT RUN (`docs/test-evidence/vulkan-kernels/`). Next: finish the M8 profiling/baseline and then
+**W6** (release candidate). These stay BLOCKED / NOT RUN until the owner acts: the FLUX.3 render (gated encoder/VAE
+access), M5 Stage B (model larger than RAM, administrator cache flush), a real `prime-agent` session, real WebGPU
+inference, the Vercel deploy and a clean Windows machine.

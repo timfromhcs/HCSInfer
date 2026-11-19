@@ -11,6 +11,12 @@ feature is in `docs/roadmap/STATUS.md`.
 CTest: **783 registered, 0 failed** (CPU build; model-dependent tests skip = NOT RUN).
 
 ### Added
+- First **M8 HCS Vulkan kernel** (W5): a feature-flagged (OFF) Q8_0 GEMV (`src/kernels/{cpu,vulkan}`,
+  `shaders/llm/gemv_q8_0.comp`) with an independent CPU reference, `glslc` + `spirv-val` at build time (SPIR-V
+  embedded), and a new preset `windows-msvc-release-kernels`. Real-device correctness 4/4 (`kernel-vulkan`, max abs
+  err ~1e-5) and 6/6 `kernel-cpu`; isolated benchmark 2.1-2.5x vs the single-threaded CPU reference at ~3.6 GiB/s on
+  large shapes, slower on small ones, so it is **not** default-enabled. Full suite 790/790.
+  `docs/vulkan-kernels.md`, `docs/test-evidence/vulkan-kernels/`, ADR-003 deviation note.
 - Static-CRT single-EXE **experiment** (W4, ADR-008): preset `windows-msvc-release-static` (`CMAKE_MSVC_RUNTIME_LIBRARY=
   MultiThreaded` for every target + `GGML_OPENMP=OFF`). Fresh tree builds, **783/783** Release tests pass, and
   `dumpbin /dependents` shows only system DLLs (`ADVAPI32`/`WS2_32`/`KERNEL32`) - the default `/MD` build also imports

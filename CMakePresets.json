@@ -40,18 +40,27 @@
         "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded",
         "GGML_OPENMP": "OFF"
       }
+    },
+    {
+      "name": "windows-msvc-release-kernels",
+      "displayName": "Windows MSVC x64 Release + experimental HCS Vulkan kernels (M8)",
+      "description": "Builds the feature-flagged HCS Vulkan kernels and their CPU reference/benchmark (needs the Vulkan SDK's glslc + spirv-val at build time). The engines stay CPU.",
+      "inherits": "base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "HCS_ENABLE_VULKAN_KERNELS": "ON" }
     }
   ],
   "buildPresets": [
     { "name": "windows-msvc-debug", "configurePreset": "windows-msvc-debug" },
     { "name": "windows-msvc-release", "configurePreset": "windows-msvc-release" },
     { "name": "windows-msvc-release-vulkan", "configurePreset": "windows-msvc-release-vulkan" },
-    { "name": "windows-msvc-release-static", "configurePreset": "windows-msvc-release-static" }
+    { "name": "windows-msvc-release-static", "configurePreset": "windows-msvc-release-static" },
+    { "name": "windows-msvc-release-kernels", "configurePreset": "windows-msvc-release-kernels" }
   ],
   "testPresets": [
     { "name": "windows-msvc-debug", "configurePreset": "windows-msvc-debug", "output": { "outputOnFailure": true } },
     { "name": "windows-msvc-release", "configurePreset": "windows-msvc-release", "output": { "outputOnFailure": true } },
     { "name": "windows-msvc-release-vulkan", "configurePreset": "windows-msvc-release-vulkan", "output": { "outputOnFailure": true } },
-    { "name": "windows-msvc-release-static", "configurePreset": "windows-msvc-release-static", "output": { "outputOnFailure": true } }
+    { "name": "windows-msvc-release-static", "configurePreset": "windows-msvc-release-static", "output": { "outputOnFailure": true } },
+    { "name": "windows-msvc-release-kernels", "configurePreset": "windows-msvc-release-kernels", "output": { "outputOnFailure": true } }
   ]
 }
