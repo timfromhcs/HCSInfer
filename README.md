@@ -45,13 +45,14 @@ for the evidence behind every row below.
 | Portable folder package + SHA-256 + SBOM (`scripts/package.ps1`, `scripts/sbom.ps1`) | Experimental | not a single-file EXE |
 | Single `HCSInfer.exe` | Planned, unproven | dynamic CRT today, no clean-machine test (ADR-008) |
 | `benchmark` CLI (`--suite quick`): real text benchmark, AGENTS.md 21.1 JSON | Implemented | cold+warm phases, median/p90, real metrics from the engine |
-| `benchmark --suite full` (prefill/decode sweeps, `--sweep-sizes`) | Implemented | `SKIPPED`/`FAIL` points, `result_status` `PARTIAL`; contract-tested, real-model run NOT RUN |
+| `benchmark --suite full` (prefill/decode sweeps, `--sweep-sizes`) | Implemented | `SKIPPED`/`FAIL` points, `result_status` `PARTIAL`; contract-tested and run on a real model (LFM3-Omni-2B Q8_0, CPU) |
 | `cache stats` / `cache clear [--yes] [--json]` | Implemented | only HCS-owned state-dir `cache/`, `scratch/` and orphaned `.tmp.<n>` files; exit 2 without `--yes`, 8 if partial |
 | HCS Train: `train validate\|gate\|adapter\|pipeline` (dataset validation, eval gate, adapter bookkeeping) | Implemented (logic) | a trainer is external (ADR-012) and has not been run; promotion is refused unless the gate kept the adapter; `docs/train.md` |
 | HCS Agent foundations: tool-call policy, loopback provider document, launch plan, process supervisor (Job Object tree-kill) | Implemented (logic + supervision) | a real `prime-agent` sidecar session is NOT RUN; `docs/agent.md`, ADR-011 |
 | `tune`, `models load`, `models unload` CLI commands | Planned | exit code 10 (model load/unload works over HTTP and MCP) |
-| Custom Vulkan kernels, scheduler, advanced research features | Planned | only with measured benefit |
-| CI (GitHub Actions) | Green | `.github/workflows/`; public repo `timfromhcs/HCSInfer`. `pr-quick-gate` run 44167798984 green on `main` (clang-format, clang-tidy, SBOM, `web`, Release and Debug build+ctest); model/GPU tests skip there and stay NOT RUN. The self-hosted `hardware.yml` has never run |
+| HCS Vulkan kernel: Q8_0 GEMV (`src/kernels/vulkan`, `shaders/llm/`) | Experimental | feature-flagged **OFF**, not on the model load path; independent CPU reference + `spirv-val`'d SPIR-V + real-device correctness (4/4 on the Radeon 680M); **not** default-enabled (no measured benefit over the real baseline); `docs/vulkan-kernels.md` |
+| Scheduler, further custom kernels, advanced research features | Planned | only with measured benefit |
+| CI (GitHub Actions) | Green | `.github/workflows/`; public repo `timfromhcs/HCSInfer`. `pr-quick-gate` run 44598980056 is green on `main` (clang-format, clang-tidy, SBOM, `web`, Release and Debug build+ctest); model/GPU tests skip there and stay NOT RUN, and the feature-flagged Vulkan kernel is not built in CI. The self-hosted `hardware.yml` has never run |
 
 Legend: Implemented / Experimental / Planned / Unsupported.
 
