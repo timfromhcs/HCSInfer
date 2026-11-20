@@ -1,0 +1,18 @@
+hcs-studio-web-dist.zip: OK
+HCSInfer-1.0.0-rc.1-windows-msvc-release-static-portable.zip: OK
+hcsinfer-1.0.0rc1-py3-none-win_amd64.whl: OK
+hcsinfer-1.0.0rc1.tar.gz: OK
+HCSInfer-vulkan.exe: OK
+hcsinfer.cdx.json: OK
+HCSInfer.exe: OK
+0
+70
+SHA256SUMS.txt:0
+../../artifacts/release/SHA256SUMS.txt:0
+HCSInfer 1.0.0-rc.1
+cpu doctor exit 0
+HCSInfer 1.0.0-rc.1
+vulkan doctor exit 0
+"git_commit": "76b75d43d7f1e866cdb298ca4609ecc1a4b9cdcf"
+"git_tree_dirty": false
+40 markdown files, 73 relative links checked, 7 external links not fetched, 0 broken

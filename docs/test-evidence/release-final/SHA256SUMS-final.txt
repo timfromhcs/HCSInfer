@@ -1,0 +1,7 @@
+5f1d086ed182c57da12fc41c28d0de248754b7e5f8b430e3b6e8de4f6eb55b80  hcs-studio-web-dist.zip
+a51d162a1410b477c9d4ab7496a6e905012473361fc503a34167a9203516d9d6  HCSInfer-1.0.0-rc.1-windows-msvc-release-static-portable.zip
+802549b8f02490b566446e30ce1a9d3af1433a8102b3ee547a6cbb69b2d6f934  hcsinfer-1.0.0rc1-py3-none-win_amd64.whl
+f35b7047b01eaea7b643a03b98d6d8c2ac50ba04caa97537def557f96875dc71  hcsinfer-1.0.0rc1.tar.gz
+a77cf42ac19b1fab3f3c13bc038c4142b54f2c02d4fb9e980d9ec1d3aa93f246  HCSInfer-vulkan.exe
+3bce452686eb32dafb3a2e277cec0bf332c023205b11ac272562b48690ec2467  hcsinfer.cdx.json
+d9b1a6bdcf8b5a545ff97e33cedd98c0c1f1f0675ce8a9ee56dc0de0527aa93f  HCSInfer.exe
