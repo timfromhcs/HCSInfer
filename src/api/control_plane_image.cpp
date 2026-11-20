@@ -138,7 +138,7 @@ Result<Submitted> ControlPlane::submit_image(const ImageParams& p, bool require_
                 r = require_init ? image_stream_->edit_image(ir, ctx.token())
                                  : image_stream_->generate_image(ir, ctx.token());
             } catch (const std::exception& e) {
-                r = make_error(ErrorCode::BackendError, std::string("engine exception: ") + e.what());
+                r = error_from_engine_exception(e);
             }
             active_job_.store(0);
             (void)registry_.transition(id, ModelState::Loaded);

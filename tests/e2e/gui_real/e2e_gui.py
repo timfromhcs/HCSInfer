@@ -65,6 +65,23 @@ def req(port, method, path, token=None, headers=None):
         c.close()
 
 
+def browser_boots(path):
+    """True only if this executable can actually dump the DOM of a trivial page headlessly. An installed but
+    non-functional browser (e.g. an Edge that exits immediately with no output) must not shadow a working one,
+    and a browser that cannot boot at all is reported by the caller, never counted as a pass."""
+    prof = tempfile.mkdtemp(prefix="hcs-e2e-probe-")
+    try:
+        r = subprocess.run([path, "--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
+                            f"--user-data-dir={prof}", "--virtual-time-budget=3000", "--dump-dom",
+                            "data:text/html,<title>probe</title>"],
+                           capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60)
+        return "<title>probe</title>" in r.stdout
+    except Exception:  # noqa: BLE001
+        return False
+    finally:
+        shutil.rmtree(prof, ignore_errors=True)
+
+
 def find_browser():
     cands = [
         os.path.join(os.environ.get("ProgramFiles(x86)", ""), "Microsoft", "Edge", "Application", "msedge.exe"),
@@ -72,13 +89,16 @@ def find_browser():
         os.path.join(os.environ.get("ProgramFiles", ""), "Google", "Chrome", "Application", "chrome.exe"),
         os.path.join(os.environ.get("ProgramFiles(x86)", ""), "Google", "Chrome", "Application", "chrome.exe"),
     ]
-    for c in cands:
-        if c and os.path.isfile(c):
-            return c
     for n in ("msedge", "chrome", "google-chrome", "chromium"):
         p = shutil.which(n)
         if p:
-            return p
+            cands.append(p)
+    tried = []
+    for c in cands:
+        if c and os.path.isfile(c) and c not in tried:
+            tried.append(c)
+            if browser_boots(c):
+                return c
     return None
 
 
@@ -117,7 +137,7 @@ def http_phase(port, token):
 def browser_boot_phase(port, token, browser, expect_models):
     print("== Phase 2: browser boot (headless --dump-dom) ==")
     if not browser:
-        not_run("browser boot", "no Edge/Chrome executable found")
+        not_run("browser boot", "no working headless Edge/Chrome found (each candidate is probed with a trivial page first)")
         return
     prof = tempfile.mkdtemp(prefix="hcs-e2e-browser-")
     try:

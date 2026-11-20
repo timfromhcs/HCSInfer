@@ -8,6 +8,7 @@
 #include "hcs/job_queue.hpp"
 #include "hcs/result.hpp"
 #include "hcs/storage/codec.hpp"
+#include "hcs/storage/file_source.hpp"
 #include "hcs/storage/hcsmodel.hpp"
 
 namespace hcs::storage {
@@ -40,5 +41,11 @@ struct WriteStats {
 // `src` is read sequentially (read-only). `dst` must not exist.
 Result<WriteStats> write_hcsmodel(const std::filesystem::path& src, const std::filesystem::path& dst,
                                   const WriteOptions& options);
+
+// Same, over any ByteSource (the seam the unplug tests use to make the source fail mid-read). `name_hint` is
+// the default model id when `options.model_id` is empty. A source read error aborts with that error and the
+// partially written destination is removed.
+Result<WriteStats> write_hcsmodel(const ByteSource& src, const std::string& name_hint,
+                                  const std::filesystem::path& dst, const WriteOptions& options);
 
 }  // namespace hcs::storage

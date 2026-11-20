@@ -43,7 +43,7 @@ public:
             r = cp_.stream_->generate_stream(
                 request, [&token](std::string_view) { return !token.cancelled(); }, token);
         } catch (const std::exception& e) {
-            r = make_error(ErrorCode::BackendError, std::string("engine exception: ") + e.what());
+            r = error_from_engine_exception(e);
         }
         cp_.active_job_.store(0);
         (void)cp_.registry_.transition(id_, ModelState::Loaded);
@@ -163,7 +163,7 @@ Result<JobId> ControlPlane::submit_benchmark(const BenchmarkParams& params) {
         try {
             doc = bench::run_suite(target, lr, plan, meta, ctx.token(), progress);
         } catch (const std::exception& e) {
-            doc = make_error(ErrorCode::BackendError, std::string("benchmark exception: ") + e.what());
+            doc = error_from_engine_exception(e, "benchmark exception");
         }
         if (!doc) {
             log_.warn("control", "benchmark failed",

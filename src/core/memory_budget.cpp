@@ -44,6 +44,15 @@ void MemoryBudget::update_budget(const MemoryMeasurements& m) {
     update_budget(compute_application_budget(m));
 }
 
+void MemoryBudget::set_fault_injector(FaultHook hook) {
+    std::lock_guard lock(mutex_);
+    fault_hook_ = std::move(hook);
+}
+std::uint64_t MemoryBudget::injected_failures() const {
+    std::lock_guard lock(mutex_);
+    return injected_failures_;
+}
+
 std::uint64_t MemoryBudget::total() const {
     std::lock_guard lock(mutex_);
     return total_;
@@ -76,6 +85,11 @@ Result<void> MemoryBudget::reserve(const std::string& key, MemoryCategory c, std
     if (entries_.count(key)) {
         return make_error(ErrorCode::AlreadyExists, "region already reserved (no double counting): " + key);
     }
+    if (fault_hook_ && fault_hook_(key, c, bytes)) {
+        ++injected_failures_;
+        return make_error(ErrorCode::OutOfMemory, "injected allocation failure for '" + key + "' (" +
+                                                      std::to_string(bytes) + " bytes)");
+    }
     auto sum = checked_add(reserved_, bytes);
     if (!sum || *sum > total_) {
         return make_error(ErrorCode::OutOfMemory, "reservation of " + std::to_string(bytes) + " bytes for '" +
@@ -95,6 +109,11 @@ Result<void> MemoryBudget::resize(const std::string& key, std::uint64_t new_byte
         return make_error(ErrorCode::NotFound, "unknown region: " + key);
     if (new_bytes == 0)
         return make_error(ErrorCode::InvalidArgument, "zero-byte resize; use release()");
+    if (new_bytes > it->second.bytes && fault_hook_ && fault_hook_(key, it->second.category, new_bytes)) {
+        ++injected_failures_;
+        return make_error(ErrorCode::OutOfMemory, "injected allocation failure growing '" + key + "' to " +
+                                                      std::to_string(new_bytes) + " bytes");
+    }
     const std::uint64_t without = reserved_ - it->second.bytes;
     auto sum = checked_add(without, new_bytes);
     if (!sum || *sum > total_) {

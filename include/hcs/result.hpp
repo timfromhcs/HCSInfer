@@ -1,5 +1,6 @@
 #pragma once
 // Result<T> / Error taxonomy. Exit codes are a STABLE public contract (docs/api.md, CLI).
+#include <new>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -138,6 +139,17 @@ private:
 
 inline Error make_error(ErrorCode c, std::string message) {
     return Error(c, std::move(message));
+}
+
+// Maps an exception that escaped an engine adapter to a structured error. An allocation failure
+// (std::bad_alloc, which includes std::bad_array_new_length) is an OutOfMemory error - the caller can then
+// tell the user to unload a model / reduce the context - never a generic backend failure.
+inline Error error_from_engine_exception(const std::exception& e,
+                                         std::string_view what = "engine exception") {
+    if (dynamic_cast<const std::bad_alloc*>(&e) != nullptr)
+        return Error(ErrorCode::OutOfMemory,
+                     std::string(what) + ": out of memory (allocation failed): " + e.what());
+    return Error(ErrorCode::BackendError, std::string(what) + ": " + e.what());
 }
 
 }  // namespace hcs

@@ -54,6 +54,14 @@ void process(Job& j, const WriteOptions& o) {
 
 Result<WriteStats> write_hcsmodel(const std::filesystem::path& src, const std::filesystem::path& dst,
                                   const WriteOptions& o) {
+    auto in = FileSource::open(src, true);
+    if (!in)
+        return in.error();
+    return write_hcsmodel(*in.value(), src.stem().string(), dst, o);
+}
+
+Result<WriteStats> write_hcsmodel(const ByteSource& in, const std::string& name_hint,
+                                  const std::filesystem::path& dst, const WriteOptions& o) {
     const auto t_start = Clock::now();
     if (o.chunk_size < kMinWriterChunkSize || o.chunk_size > kMaxChunkRawSize)
         return Error(ErrorCode::InvalidArgument, "chunk size must be within [64 KiB, 256 MiB]");
@@ -63,10 +71,7 @@ Result<WriteStats> write_hcsmodel(const std::filesystem::path& src, const std::f
         o.quantization.size() >= kTextFieldSize)
         return Error(ErrorCode::InvalidArgument, "model_id / architecture / quantization text too long");
 
-    auto in = FileSource::open(src, true);
-    if (!in)
-        return in.error();
-    const std::uint64_t total = in.value()->size();
+    const std::uint64_t total = in.size();
     if (total == 0)
         return Error(ErrorCode::InvalidArgument, "source file is empty");
     const std::uint64_t nchunks = (total + o.chunk_size - 1) / o.chunk_size;
@@ -130,7 +135,7 @@ Result<WriteStats> write_hcsmodel(const std::filesystem::path& src, const std::f
         for (std::size_t i = 0; i < n; ++i) {
             const std::uint64_t len = std::min<std::uint64_t>(o.chunk_size, total - done);
             batch[i].raw.resize(static_cast<std::size_t>(len));
-            if (auto r = in.value()->read_at(done, batch[i].raw.data(), batch[i].raw.size()); !r)
+            if (auto r = in.read_at(done, batch[i].raw.data(), batch[i].raw.size()); !r)
                 return r.error();
             manifest.update(batch[i].raw);
             batch[i].entry.raw_offset = done;
@@ -177,7 +182,7 @@ Result<WriteStats> write_hcsmodel(const std::filesystem::path& src, const std::f
     h.chunk_table_offset = file_pos;
     h.chunk_count = entries.size();
     h.total_raw_size = total;
-    h.model_id = o.model_id.empty() ? src.stem().string().substr(0, kIdFieldSize - 1) : o.model_id;
+    h.model_id = o.model_id.empty() ? name_hint.substr(0, kIdFieldSize - 1) : o.model_id;
     h.architecture = o.architecture.empty() ? "unknown" : o.architecture;
     h.quantization = o.quantization.empty() ? "unknown" : o.quantization;
     h.source_manifest_hash = manifest.finalize();

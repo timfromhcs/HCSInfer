@@ -317,7 +317,7 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
     try {
         er = image_model ? image_engine_->load(lr) : engine_->load(lr);
     } catch (const std::exception& e) {
-        er = make_error(ErrorCode::BackendError, std::string("engine exception: ") + e.what());
+        er = error_from_engine_exception(e);
     }
     if (!er) {
         (void)registry_.fail(id, FailureKind::Recoverable, er.error().message);
@@ -498,7 +498,7 @@ Result<Submitted> ControlPlane::submit_chat(const ChatParams& original) {
                 },
                 ctx.token());
         } catch (const std::exception& e) {
-            r = make_error(ErrorCode::BackendError, std::string("engine exception: ") + e.what());
+            r = error_from_engine_exception(e);
         }
         active_job_.store(0);
         (void)registry_.transition(id, ModelState::Loaded);

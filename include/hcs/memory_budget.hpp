@@ -6,6 +6,7 @@
 // region key. A UMA allocation visible to both CPU and Vulkan is reserved once
 // (placement = SharedUma), never as RAM plus VRAM.
 #include <cstdint>
+#include <functional>
 #include <map>
 #include <mutex>
 #include <optional>
@@ -74,11 +75,22 @@ public:
     std::uint64_t reserved_for(MemoryCategory c) const;
     std::vector<MemoryEntry> entries() const;
 
+    // Fault-injection seam at the allocator boundary (AGENTS.md 10.3 / 17.5; tests and `HCS_` diagnostics
+    // only). Every reserve() and every growing resize() asks the hook first; when it returns true the call
+    // fails with OutOfMemory exactly like a real refusal (ledger unchanged), without needing a huge model.
+    // The hook runs under the budget mutex: it must not call back into this MemoryBudget. An empty
+    // function (the default) disables injection.
+    using FaultHook = std::function<bool(const std::string& key, MemoryCategory c, std::uint64_t bytes)>;
+    void set_fault_injector(FaultHook hook);
+    std::uint64_t injected_failures() const;  // refusals produced by the hook since construction
+
 private:
     mutable std::mutex mutex_;
     std::uint64_t total_;
     std::uint64_t reserved_ = 0;
     std::map<std::string, MemoryEntry> entries_;
+    FaultHook fault_hook_;
+    std::uint64_t injected_failures_ = 0;
 };
 
 }  // namespace hcs

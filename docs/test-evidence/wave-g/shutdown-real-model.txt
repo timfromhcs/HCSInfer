@@ -1,0 +1,15 @@
+Running main() from D:\HCSInfer\build\gui\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 3 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 3 tests from ShutdownReal
+[ RUN      ] ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine
+[       OK ] ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine (30761 ms)
+[ RUN      ] ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly
+[       OK ] ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly (1618 ms)
+[ RUN      ] ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe
+[       OK ] ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe (1012 ms)
+[----------] 3 tests from ShutdownReal (33393 ms total)
+
+[----------] Global test environment tear-down
+[==========] 3 tests from 1 test suite ran. (33393 ms total)
+[  PASSED  ] 3 tests.

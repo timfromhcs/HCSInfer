@@ -1,0 +1,45 @@
+Running main() from D:\HCSInfer\build\gui\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = OomInjection*
+[==========] Running 7 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 7 tests from OomInjection
+[ RUN      ] OomInjection.RefusedWeightsReservationRollsBackAndTheModelIsRetryable
+[       OK ] OomInjection.RefusedWeightsReservationRollsBackAndTheModelIsRetryable (6 ms)
+[ RUN      ] OomInjection.RefusedKvReservationReleasesTheAlreadyReservedWeights
+[       OK ] OomInjection.RefusedKvReservationReleasesTheAlreadyReservedWeights (6 ms)
+[ RUN      ] OomInjection.EngineReturnedOutOfMemoryRollsBackAndKeepsTheCode
+[       OK ] OomInjection.EngineReturnedOutOfMemoryRollsBackAndKeepsTheCode (5 ms)
+[ RUN      ] OomInjection.BadAllocEscapingTheEngineLoadIsAStructuredOutOfMemory
+Y:\tests\contract\api\test_oom_injection.cpp(135): error: Expected equality of these values:
+  r.error().code
+    Which is: 4-byte object <04-00 00-00>
+  ErrorCode::OutOfMemory
+    Which is: 4-byte object <05-00 00-00>
+engine exception: bad allocation
+
+Y:\tests\contract\api\test_oom_injection.cpp(136): error: Expected: (r.error().message.find("out of memory")) != (std::string::npos), actual: 18446744073709551615 vs 18446744073709551615
+
+[  FAILED  ] OomInjection.BadAllocEscapingTheEngineLoadIsAStructuredOutOfMemory (5 ms)
+[ RUN      ] OomInjection.BadAllocDuringGenerationFailsTheJobAndTheModelStaysLoaded
+Y:\tests\contract\api\test_oom_injection.cpp(152): error: Expected equality of these values:
+  text.error().code
+    Which is: 4-byte object <04-00 00-00>
+  ErrorCode::OutOfMemory
+    Which is: 4-byte object <05-00 00-00>
+engine exception: bad allocation
+
+[  FAILED  ] OomInjection.BadAllocDuringGenerationFailsTheJobAndTheModelStaysLoaded (4 ms)
+[ RUN      ] OomInjection.RefusedSwitchLeavesNoStaleReservationAndTheNextLoadWorks
+[       OK ] OomInjection.RefusedSwitchLeavesNoStaleReservationAndTheNextLoadWorks (4 ms)
+[ RUN      ] OomInjection.ManyRefusalsInARowNeverLeakBudget
+[       OK ] OomInjection.ManyRefusalsInARowNeverLeakBudget (7 ms)
+[----------] 7 tests from OomInjection (40 ms total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 1 test suite ran. (40 ms total)
+[  PASSED  ] 5 tests.
+[  FAILED  ] 2 tests, listed below:
+[  FAILED  ] OomInjection.BadAllocEscapingTheEngineLoadIsAStructuredOutOfMemory
+[  FAILED  ] OomInjection.BadAllocDuringGenerationFailsTheJobAndTheModelStaysLoaded
+
+ 2 FAILED TESTS

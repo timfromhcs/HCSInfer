@@ -210,7 +210,7 @@ Result<Submitted> ControlPlane::submit_vision_chat(const ChatParams& p) {
                 },
                 ctx.token());
         } catch (const std::exception& e) {
-            r = make_error(ErrorCode::BackendError, std::string("engine exception: ") + e.what());
+            r = error_from_engine_exception(e);
         }
         active_job_.store(0);
         (void)registry_.transition(id, ModelState::Loaded);
