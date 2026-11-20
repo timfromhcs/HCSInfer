@@ -219,6 +219,65 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 | Known limitations and non-goals | PASS | `README.md`, this file |
 | Release notes | PASS (RC notes written; **not tagged**) | `docs/release-notes-1.0.0-rc.1.md`, `CHANGELOG.md` 1.0.0-rc.1 entry; the tag/merge/push is the owner's step |
 
+## Version decision (wave R, AGENTS.md section 22)
+
+**Decision: `1.0.0-rc.1`, not `1.0.0`.** The rule was: 1.0.0 only if every core functional, security and packaging row of
+the checklist above is PASS and the only open rows are owner-dependent. That is not the case, so the version stays a
+release candidate. Classes of rows in the checklist tables above (a row with two statuses counts by its weaker half; no row count is claimed):
+
+| Class | Notes |
+|---|---|
+| PASS (core and supporting) | build, text/vision/diffusion, API/MCP, CPU fallback, path/limit/cancel tests, docs rows, benchmarks, SBOM/checksums |
+| PASS but simulated or partial coverage | USB disconnect (simulated), OOM (injected), shader validation (one shader), CI package |
+| **Core rows that are PARTIAL / BLOCKED / NOT RUN and not owner-dependent** | see below |
+| Owner-dependent or explicitly out of V1 scope | signing certificate, clean-machine VM, physical USB pull, hardware runner (`hardware.yml`), real WebGPU, Vercel deploy, hosted `release.yml` run, MCP Streamable HTTP + its Origin test (out of scope by design), literal `cargo deny` |
+
+The core rows that keep this at rc: (1) **bounded asynchronous loading/prefetch feeding the engines**: BLOCKED
+(M5 Stage B needs a model larger than RAM and an administrator page-cache flush); (2) **model switch / soak**: the full
+profile (100 cycles, 30 minutes, long ASan fuzz) is NOT RUN, only the quick profile; (3) **GUI normal-user workflow**:
+one manual run, the interactive automated phase is partial; (4) **no known critical vulnerability / licence notices**:
+PARTIAL (one vendored-library scan and the literal `cargo deny` are NOT RUN); (5) **memory actually returned after a
+model switch** and the scheduler row: NOT RUN (no scheduler module); (6) **parser fuzz**: 60 s smoke without ASan only.
+The Radeon 680M gate, both single-file EXEs (restricted-environment proxy), the wheel and the portable ZIP are PASS.
+Version strings are consistent: CMake `HCS_VERSION_SUFFIX=rc.1` (`HCSInfer --version` = `HCSInfer 1.0.0-rc.1`, both
+EXEs), wheel `1.0.0rc1`, `web/package.json` `1.0.0-rc.1`, README, CHANGELOG, release notes, SBOM.
+
+## Release-readiness report (AGENTS.md section 23 format, wave R final)
+
+```text
+HCSInfer engineering report
+- Current phase: wave R (release candidate) - final verification done
+- Commit: build/verification commit e8bd522 (clean tree, SBOM hcs:git_tree_dirty=false); later commits on this branch
+  only add documentation/evidence. Branch claude/repo-analysis-v1-stable-d7c553, NOT merged, NOT tagged, NOT pushed.
+- Build status: PASS - windows-msvc-release, -vulkan, -static (CPU) and -static-vulkan all build with /W4 /WX.
+- Tests: PASS - CPU build 815/815 passed (4 Vulkan-only skipped = NOT RUN); Vulkan build 809/814 first run, the 5
+  failures were out_of_memory refusals at ~1 GB free RAM and re-ran 6/6 PASS; web 46/46; wheel pytest 8/8;
+  format OK (221 files); clang-tidy 0 diagnostics in 69 TUs; links 0 broken.
+- Real Radeon 680M test: PASS (Vulkan CTest with the real models; benchmarks in docs/benchmarks.md).
+- Real text model: PASS (LFM3-Omni-2B Q8_0, qwen3-0.6b Q4_K_M).
+- Real VLM: PASS (SmolVLM2-500M, LFM3-Omni-2B; one image per request).
+- Real diffusion model: PASS (SD1.5 Q8_0; FLUX.3 Klein UD-Q4_K_XL with substitute encoder/VAE, single samples).
+- API/MCP: PASS (experimental; scripted stdio client, no third-party MCP client; Streamable HTTP not implemented).
+- Storage/HDD: PARTIAL - raw reads and load modes measured, container tested; Stage B in the engine path BLOCKED,
+  physical unplug NOT RUN.
+- Security/licence: PARTIAL - audits and injected-fault tests PASS; signing, cargo deny, vendored-lib scans NOT RUN.
+- Performance evidence: docs/benchmarks.md + docs/test-evidence/benchmarks/ (Vulkan about 2x decode, 7-8x TTFT vs CPU;
+  one machine, no thermal data).
+- Known limitations: docs/release-notes-1.0.0-rc.1.md, README "Limitations".
+- Remaining blockers: owner items (signing, clean-machine VM, hosted release.yml, hardware runner, WebGPU, Vercel,
+  PyPI/GitHub release) and the six core rows above.
+- Exact next action: owner reviews, merges the branch to main (fast-forward), tags v1.0.0-rc.1 and uploads the files in
+  artifacts/release (hashes: docs/test-evidence/release-final/SHA256SUMS.txt); then run the soak full profile and the
+  clean-machine test to move to 1.0.0.
+```
+
+Artefacts (built from the clean tree at `e8bd522` by `scripts/release-local.ps1`; hashes in
+`docs/test-evidence/release-final/SHA256SUMS.txt`, verified: 7/7 match, portable ZIP inner `SHA256SUMS.txt` 23/23 match,
+both packaged EXEs run `--version` and `doctor --json` with exit 0):
+`HCSInfer.exe` (static CPU, 44,228,608 B), `HCSInfer-vulkan.exe` (static CPU+Vulkan, 86,548,992 B), portable ZIP
+(49,830,637 B), `hcsinfer-1.0.0rc1-py3-none-win_amd64.whl` (48,991,129 B) + sdist, `hcs-studio-web-dist.zip`,
+`hcsinfer.cdx.json` (CycloneDX, 15 components). Nothing was uploaded.
+
 ## Exact next action
 
 **Wave R (1.0.0-rc.1) is done (2026-11-20)**, see the sections *Version decision* and *Release-readiness report* below, `docs/test-evidence/release-final/` and `docs/release-notes-1.0.0-rc.1.md`. Nothing is merged, tagged or pushed: the owner decides on merge to `main`, the tag and the push. The remaining BLOCKED / NOT RUN items are listed in the release notes.

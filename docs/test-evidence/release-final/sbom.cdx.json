@@ -1,0 +1,580 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:6e8b2cee-662d-4321-ac3c-5475124ef05b",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-11-20T21:56:31Z",
+    "tools": [
+      {
+        "name": "scripts/sbom.ps1",
+        "vendor": "HCSInfer"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "bom-ref": "hcs:HCSInfer",
+      "name": "HCSInfer",
+      "version": "1.0.0-rc.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:git_commit",
+          "value": "e8bd522e664b45bce7348c19c4f34e9542844f94"
+        }
+      ]
+    },
+    "properties": [
+      {
+        "name": "hcs:source_lock",
+        "value": "external/dependency-lock.json"
+      },
+      {
+        "name": "hcs:git_tree_dirty",
+        "value": "false"
+      },
+      {
+        "name": "hcs:build_dir",
+        "value": "build/windows-msvc-release-static-vulkan"
+      },
+      {
+        "name": "hcs:note",
+        "value": "Declared dependencies only; no vulnerability scan performed."
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "hcs:llama.cpp",
+      "name": "llama.cpp",
+      "version": "d3c3e242c16b8cbf51400fad410cd69b22d64f35",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "text + vision engine adapter (hcs_engine_llama): GGUF text inference, tokenizer, chat templates, GGML CPU/Vulkan backends, libmtmd image understanding (mmproj projector)",
+      "purl": "pkg:github/ggml-org/llama.cpp@d3c3e242c16b8cbf51400fad410cd69b22d64f35",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/ggml-org/llama.cpp"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "true"
+        },
+        {
+          "name": "hcs:source",
+          "value": "git submodule external/llama.cpp"
+        },
+        {
+          "name": "hcs:licence_file",
+          "value": "external/llama.cpp/LICENSE"
+        },
+        {
+          "name": "hcs:licence_file_sha256",
+          "value": "bcd8ec749126d45cb06737d0690295d73df4b6e7e194205bcf91190368f27285"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:stable-diffusion.cpp",
+      "name": "stable-diffusion.cpp",
+      "version": "532d2c15c430a785a712b2d94281f04e733008a4",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "image engine adapter (hcs_engine_diffusion): text-to-image and img2img through the pinned C API",
+      "purl": "pkg:github/leejet/stable-diffusion.cpp@532d2c15c430a785a712b2d94281f04e733008a4",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/leejet/stable-diffusion.cpp"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "true"
+        },
+        {
+          "name": "hcs:source",
+          "value": "git submodule external/stable-diffusion.cpp"
+        },
+        {
+          "name": "hcs:licence_file",
+          "value": "external/stable-diffusion.cpp/LICENSE"
+        },
+        {
+          "name": "hcs:licence_file_sha256",
+          "value": "4e76049398df734a97db46f3bd4b5cbc460cb5f6bfaf737cdc3d6fbb8ab3de27"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:stable-diffusion.cpp_bundled_patched_GGML",
+      "name": "stable-diffusion.cpp bundled patched GGML",
+      "version": "eeda9ec48fc84a3df0bb9dcc19ae9053075a2539",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "NOT linked in HCSInfer builds (SD_USE_UPSTREAM_GGML=ON). Recorded for provenance and for M7/M8 comparisons.",
+      "purl": "pkg:github/leejet/stable-diffusion.cpp@eeda9ec48fc84a3df0bb9dcc19ae9053075a2539",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/leejet/stable-diffusion.cpp (submodule ggml)"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "false"
+        },
+        {
+          "name": "hcs:source",
+          "value": "git submodule external/stable-diffusion.cpp/ggml"
+        },
+        {
+          "name": "hcs:licence_file",
+          "value": "external/stable-diffusion.cpp/ggml/LICENSE"
+        },
+        {
+          "name": "hcs:licence_file_sha256",
+          "value": "bcd8ec749126d45cb06737d0690295d73df4b6e7e194205bcf91190368f27285"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:stb_image___stb_image_write",
+      "name": "stb_image / stb_image_write",
+      "version": "vendored in external/stable-diffusion.cpp/thirdparty",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT or public domain (dual)"
+          }
+        }
+      ],
+      "description": "PNG encode of generated images, PNG/JPEG decode of edit inputs (src/engines/diffusion only)",
+      "purl": "pkg:github/nothings/stb@vendored in external/stable-diffusion.cpp/thirdparty",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/nothings/stb"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "true"
+        },
+        {
+          "name": "hcs:source",
+          "value": "header-only, compiled once in src/engines/diffusion/diffusion_engine.cpp"
+        },
+        {
+          "name": "hcs:licence_file",
+          "value": "external/stable-diffusion.cpp/thirdparty/stb_image.h"
+        },
+        {
+          "name": "hcs:licence_file_sha256",
+          "value": "2d264ec3e6ce404fc2d0cfff4476c982eb3edf5a61122b03884fdef7bacd9deb"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:libwebp",
+      "name": "libwebp",
+      "version": "0c9546f7efc61eac7f79ae115c3f99c91c21c443",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "description": "WebP image I/O. Linked only by stable-diffusion.cpp's own CLI/server examples (examples/*/CMakeLists.txt), which HCSInfer never builds; src/engines/diffusion/CMakeLists.txt pins SD_WEBP=OFF. NOT in the HCSInfer binary; the licence text is still shipped for provenance. scripts/sbom.ps1 re-derives 'linked' from the SD_WEBP value in the build's CMakeCache.txt.",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://chromium.googlesource.com/webm/libwebp"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked_evidence",
+          "value": "CMakeCache.txt SD_WEBP=OFF"
+        },
+        {
+          "name": "hcs:linked",
+          "value": "false"
+        },
+        {
+          "name": "hcs:licence_file",
+          "value": "external/stable-diffusion.cpp/thirdparty/libwebp/COPYING"
+        },
+        {
+          "name": "hcs:licence_file_sha256",
+          "value": "17c029a902ad45a199dfe8e3a1c39305ab28d302b0703360c4a27351a4673dcb"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:libwebm",
+      "name": "libwebm",
+      "version": "5bf12267eea773a32fcf4949de52b0add158a8d5",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "description": "WebM video muxing, used only by stable-diffusion.cpp's example programs; SD_WEBM is pinned OFF. NOT in the HCSInfer binary.",
+      "purl": "pkg:github/webmproject/libwebm@5bf12267eea773a32fcf4949de52b0add158a8d5",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/webmproject/libwebm"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked_evidence",
+          "value": "CMakeCache.txt SD_WEBM=OFF"
+        },
+        {
+          "name": "hcs:linked",
+          "value": "false"
+        },
+        {
+          "name": "hcs:licence_file",
+          "value": "external/stable-diffusion.cpp/thirdparty/libwebm/LICENSE.TXT"
+        },
+        {
+          "name": "hcs:licence_file_sha256",
+          "value": "17c029a902ad45a199dfe8e3a1c39305ab28d302b0703360c4a27351a4673dcb"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:oniguruma",
+      "name": "oniguruma",
+      "version": "vendored in external/stable-diffusion.cpp/thirdparty/oniguruma",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "description": "transitive dependency of the stable-diffusion.cpp static library (tokenizer regex)",
+      "purl": "pkg:github/kkos/oniguruma@vendored in external/stable-diffusion.cpp/thirdparty/oniguruma",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/kkos/oniguruma"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "true"
+        },
+        {
+          "name": "hcs:licence_file",
+          "value": "external/stable-diffusion.cpp/thirdparty/oniguruma/COPYING"
+        },
+        {
+          "name": "hcs:licence_file_sha256",
+          "value": "0dff717fb611b9c9bd9776a5df9c4e029030f8dbc023b77f3678cf495495b933"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:utf8proc",
+      "name": "utf8proc",
+      "version": "vendored in external/stable-diffusion.cpp/thirdparty/utf8proc",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "transitive dependency of the stable-diffusion.cpp static library",
+      "purl": "pkg:github/JuliaStrings/utf8proc@vendored in external/stable-diffusion.cpp/thirdparty/utf8proc",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/JuliaStrings/utf8proc"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "true"
+        },
+        {
+          "name": "hcs:licence_file",
+          "value": "external/stable-diffusion.cpp/thirdparty/utf8proc/LICENSE.md"
+        },
+        {
+          "name": "hcs:licence_file_sha256",
+          "value": "767edbcafb23016d7f203aaf2cbdef5690ad58bcede52ee241427dcb816cd644"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:GoogleTest",
+      "name": "GoogleTest",
+      "version": "52eb8108c5bdec04579160ae17225d66034bd723",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "description": "tests only",
+      "purl": "pkg:github/google/googletest@52eb8108c5bdec04579160ae17225d66034bd723",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/google/googletest"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "false"
+        },
+        {
+          "name": "hcs:source",
+          "value": "FetchContent (pinned)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:nlohmann_json",
+      "name": "nlohmann/json",
+      "version": "55f93686c01528224f448c19128836e7df245f72",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "settings/registry/API JSON",
+      "purl": "pkg:github/nlohmann/json@55f93686c01528224f448c19128836e7df245f72",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/nlohmann/json"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "true"
+        },
+        {
+          "name": "hcs:source",
+          "value": "FetchContent (pinned)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:cpp-httplib",
+      "name": "cpp-httplib",
+      "version": "811dd0b6f2382f50f801f3cfdb5ba349d08bb575",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "local HTTP transport (loopback only)",
+      "purl": "pkg:github/yhirose/cpp-httplib@811dd0b6f2382f50f801f3cfdb5ba349d08bb575",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/yhirose/cpp-httplib"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "true"
+        },
+        {
+          "name": "hcs:source",
+          "value": "FetchContent (header-only)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:LZ4",
+      "name": "LZ4",
+      "version": "ebb370ca83af193212df4dcbadcc5d87bc0de2f0",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-2-Clause (library); CLI programs are GPL-2.0+ and are not built"
+          }
+        }
+      ],
+      "description": "HCSMODEL chunk codec (optional storage layer)",
+      "purl": "pkg:github/lz4/lz4@ebb370ca83af193212df4dcbadcc5d87bc0de2f0",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/lz4/lz4"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "true"
+        },
+        {
+          "name": "hcs:source",
+          "value": "FetchContent (pinned, LZ4_BUILD_CLI=OFF)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:Zstandard",
+      "name": "Zstandard",
+      "version": "f8745da6ff1ad1e7bab384bd1f9d742439278e99",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause (HCSInfer selects the BSD option)"
+          }
+        }
+      ],
+      "description": "HCSMODEL chunk codec (optional storage layer)",
+      "purl": "pkg:github/facebook/zstd@f8745da6ff1ad1e7bab384bd1f9d742439278e99",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/facebook/zstd"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "true"
+        },
+        {
+          "name": "hcs:source",
+          "value": "FetchContent (pinned)"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:prime-agent",
+      "name": "prime-agent",
+      "version": "8980e66f2f07762d62a6c1d73b347a4cac5275cc",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "description": "coding agent candidate (ADR-011): separate Rust workspace built from source as a sidecar process (prime-agent.exe + pa-daemon.exe, Python kernel via uv); NOT linked into HCSInfer.exe and not part of the single-EXE target",
+      "purl": "pkg:github/PrimeIntellect-ai/prime-agent@8980e66f2f07762d62a6c1d73b347a4cac5275cc",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/PrimeIntellect-ai/prime-agent"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "false"
+        },
+        {
+          "name": "hcs:source",
+          "value": "git submodule external/prime-agent"
+        },
+        {
+          "name": "hcs:licence_file",
+          "value": "external/prime-agent/LICENSE"
+        },
+        {
+          "name": "hcs:licence_file_sha256",
+          "value": "cafce18c9774a282b03ea824236bace778f35726399ef1965f89b92f99e9d18e"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "hcs:Vulkan-Headers",
+      "name": "Vulkan-Headers",
+      "version": "e3b1eec08173d6b825cd3ac88c885a63b621504a",
+      "licenses": [
+        {
+          "expression": "Apache-2.0 OR MIT"
+        }
+      ],
+      "description": "header-only Vulkan declarations for src/hardware (vulkan-1.dll is loaded dynamically)",
+      "purl": "pkg:github/KhronosGroup/Vulkan-Headers@e3b1eec08173d6b825cd3ac88c885a63b621504a",
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/KhronosGroup/Vulkan-Headers"
+        }
+      ],
+      "properties": [
+        {
+          "name": "hcs:linked",
+          "value": "true"
+        },
+        {
+          "name": "hcs:source",
+          "value": "FetchContent (src/hardware/CMakeLists.txt)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+HEAD: e8bd522e664b45bce7348c19c4f34e9542844f94
+OK   hcs-studio-web-dist.zip
+OK   HCSInfer-1.0.0-rc.1-windows-msvc-release-static-portable.zip
+OK   hcsinfer-1.0.0rc1-py3-none-win_amd64.whl
+OK   hcsinfer-1.0.0rc1.tar.gz
+OK   HCSInfer-vulkan.exe
+OK   hcsinfer.cdx.json
+OK   HCSInfer.exe
+mismatches: 0
+SBOM version: 1.0.0-rc.1
+  hcs:source_lock=external/dependency-lock.json
+  hcs:git_tree_dirty=false
+  hcs:build_dir=build/windows-msvc-release-static-vulkan
+  hcs:note=Declared dependencies only; no vulnerability scan performed.
+components: 15
+portable root: licenses, HCSInfer-vulkan.exe, HCSInfer.exe, LICENSE, manifest.json, PACKAGE-README.txt, README.md, sbom.cdx.json, SECURITY.md, SHA256SUMS.txt, THIRD_PARTY_NOTICES.md
+portable inner SHA256SUMS: 23 entries, 0 mismatches
+HCSInfer 1.0.0-rc.1
+portable HCSInfer.exe doctor exit: 0
+HCSInfer 1.0.0-rc.1
+portable HCSInfer-vulkan.exe doctor exit: 0

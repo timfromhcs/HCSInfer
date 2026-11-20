@@ -1,0 +1,6 @@
+Name: hcsinfer
+Version: 1.0.0rc1
+Summary: Python launcher and client for HCSInfer, a local-first AI runtime (text, vision, image generation) for Windows.
+HCSInfer 1.0.0-rc.1
+........                                                                 [100%]
+8 passed in 7.95s

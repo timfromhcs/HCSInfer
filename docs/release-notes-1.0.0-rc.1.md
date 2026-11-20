@@ -1,23 +1,29 @@
 # HCSInfer 1.0.0-rc.1 (release candidate)
 
-Status: **release candidate, not tagged, not merged, not pushed.** This is an alpha-quality, single-machine-verified
-build. Every statement below is backed by a file under `docs/test-evidence/` or an inspected source file; anything
+Status: **release candidate, not tagged, not merged, not pushed.** This is a single-machine-verified
+release candidate. Every statement below is backed by a file under `docs/test-evidence/` or an inspected source file; anything
 without evidence is listed as NOT RUN or BLOCKED. The authoritative per-gate table is `docs/roadmap/STATUS.md`; the
 tested hardware/model list is `docs/support-matrix.md`.
 
 Verified machine: Ryzen 7 7735HS, Radeon 680M (AMD driver 32.0.21043.12001, Vulkan 1.4.315), ~21.2 GB RAM, Windows 11
 build 10.0.26200.9974, MSVC 19.44.35228, CMake 4.4.0. No other machine, GPU or OS was tested.
 
-## Wave R verification (this release candidate)
+## Wave R final verification (this release candidate)
+
+Built and verified from a clean tree at commit `e8bd522`; evidence in `docs/test-evidence/release-final/`.
 
 | Gate | Result | Evidence |
 |---|---|---|
-| clang-format (19.1.5, 221 files) | PASS (4 kernel files were unformatted after wave K; reformatted) | `docs/test-evidence/wave-r/format-red-before.txt`, `format-check.txt` |
-| clang-tidy `-Scope src -FailOnFindings` | PASS, 0 diagnostics in 69 translation units (the feature-flagged Vulkan kernel TU is not in the Release compile database) | `docs/test-evidence/wave-r/clang-tidy.txt` |
-| Full CTest, `windows-msvc-release` (CPU) | see `docs/test-evidence/wave-r/RESULTS.md` | `docs/test-evidence/wave-r/ctest-release-cpu.txt` |
-| `kernel-vulkan` CTest, `windows-msvc-release-kernels` | see `docs/test-evidence/wave-r/RESULTS.md` | `docs/test-evidence/wave-r/ctest-kernels.txt` |
-| `web/` `npm test` | see `docs/test-evidence/wave-r/RESULTS.md` | `docs/test-evidence/wave-r/npm-test.txt` |
-| Portable package + ZIP + SHA256SUMS + SBOM | see `docs/test-evidence/wave-r/RESULTS.md` | `docs/test-evidence/wave-r/` |
+| clang-format 19.1.5 | PASS, 221 files | `format-check.txt` |
+| clang-tidy `-Scope src -FailOnFindings` (run with PowerShell 7) | PASS, 0 diagnostics in 69 translation units | `clang-tidy.txt` |
+| Full CTest, CPU build, real models set | PASS: 815 registered, 815 passed, 4 skipped (Vulkan-only tests, NOT RUN on a CPU build) | `ctest-release-cpu.txt` |
+| Full CTest, Vulkan build, real models set | 809/814 on the first run; the 5 failures were `out_of_memory` refusals by the memory budget with about 1 GB free RAM. Re-run with about 9 GB free: 6/6 PASS | `ctest-release-vulkan.txt`, `ctest-release-vulkan-rerun-failed5.txt` |
+| `web/` `npm test` | PASS 46/46 | `web-npm-test.txt` |
+| Wheel in a fresh venv + `pytest` (real EXE, real model) | PASS 8/8 | `pytest-wheel.txt` |
+| Release set (`scripts/release-local.ps1`), `SHA256SUMS.txt` | PASS: 7/7 hashes match, portable ZIP inner sums 23/23, both packaged EXEs run `--version` and `doctor --json` | `release-local.txt`, `release-verify.txt`, `SHA256SUMS.txt`, `sbom.cdx.json` |
+| Doc links | PASS: 0 broken (`python tools/check_links.py`) | CI-less, offline check |
+
+Earlier wave R runs (kernel tests 12/12 on the real 680M, format red-before) are in `docs/test-evidence/wave-r/`.
 
 ## Wave B: distribution (2026-11-20)
 
