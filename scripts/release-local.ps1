@@ -41,7 +41,9 @@ $pk = @{ Preset = $CpuPreset; Zip = $true }
 if ($haveVk) { $pk.VulkanPreset = $VulkanPreset }
 & (Join-Path $PSScriptRoot 'package.ps1') @pk
 if ($LASTEXITCODE -ne 0) { throw 'package.ps1 failed' }
-Get-ChildItem (Join-Path $root 'artifacts\package') -Filter '*.zip' | Where-Object { $_.Name -like "*$CpuPreset*" } | Copy-Item -Destination $out
+# Newest matching ZIP only: an older version's package left in artifacts\package must not leak into the release set.
+Get-ChildItem (Join-Path $root 'artifacts\package') -Filter '*.zip' | Where-Object { $_.Name -like "*$CpuPreset*" } |
+    Sort-Object LastWriteTime -Descending | Select-Object -First 1 | Copy-Item -Destination $out
 
 # Python: build in a temp copy so the repository tree stays clean.
 $tmp = Join-Path ([IO.Path]::GetTempPath()) ('hcs-py-' + [Guid]::NewGuid().ToString('N'))
