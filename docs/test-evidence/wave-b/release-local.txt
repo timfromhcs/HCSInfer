@@ -1,0 +1,37 @@
+MSVC environment: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
+compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64
+SBOM written: D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\artifacts\package\HCSInfer-0.1.0-windows-msvc-release-static-portable\sbom.cdx.json (15 components, HCSInfer 0.1.0, commit cca2c6896c584217c32455f5914a46a783142bcd)
+Package: D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\artifacts\package\HCSInfer-0.1.0-windows-msvc-release-static-portable (23 files hashed)
+Zip: D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\artifacts\package\HCSInfer-0.1.0-windows-msvc-release-static-portable.zip  sha256 847bf57220ec4d204ef0dc842a229011b3435d9460828fdaae771377e3aa3fea
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - hatchling>=1.25
+* Getting build dependencies for sdist...
+* Installed build dependency versions:
+  - hatchling==1.33.0
+* Building sdist...
+Successfully built hcsinfer-0.1.0.tar.gz
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - hatchling>=1.25
+* Getting build dependencies for wheel...
+* Installed build dependency versions:
+  - hatchling==1.33.0
+* Building wheel...
+Successfully built hcsinfer-0.1.0-py3-none-win_amd64.whl
+Checking 
+D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\artifacts\release\
+_py\hcsinfer-0.1.0-py3-none-win_amd64.whl: PASSED
+Checking 
+D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\artifacts\release\
+_py\hcsinfer-0.1.0.tar.gz: PASSED
+web/dist ready: 12 files, 88875 bytes
+SBOM written: D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\artifacts\release\hcsinfer.cdx.json (15 components, HCSInfer 0.1.0, commit cca2c6896c584217c32455f5914a46a783142bcd)
+348c33cd314e5e15d6daed3f81d1340e654366c4f0f2990102825874cdf19a55  hcs-studio-web-dist.zip
+7120dbb0ac5805a68b783fd09af1cf9b84fbd24e1dbb5370c5c55994cc9c95ce  hcsinfer-0.1.0-py3-none-win_amd64.whl
+847bf57220ec4d204ef0dc842a229011b3435d9460828fdaae771377e3aa3fea  HCSInfer-0.1.0-windows-msvc-release-static-portable.zip
+c8e3dcb30d2c1b8a3a416e5be942c960845a4fb4a6415f1cd124ed1df64b6f3f  hcsinfer-0.1.0.tar.gz
+b94a6e06a3b0d469a9b05139cfc784a6134a371e72bf1049cc58cd9f3052cbe8  HCSInfer-vulkan.exe
+6e68770772581408c9f2f53765cf434ebe514c5c80a300787b676bd714892cfe  hcsinfer.cdx.json
+c3a613e665eca66c8ece71d35080d91d5fce618300540db46ed64b5199a9c717  HCSInfer.exe
+Release files: D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\artifacts\release

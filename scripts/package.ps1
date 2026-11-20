@@ -1,19 +1,22 @@
 <#
 .SYNOPSIS
-  Builds a PORTABLE FOLDER package (not a single-file EXE) from an existing build, with licences, SBOM and
+  Builds a PORTABLE FOLDER package from an existing build (the EXE is single-file only when the preset is static and its imports are system DLLs), with licences, SBOM and
   SHA256SUMS.txt. Does not build, sign, install or modify anything outside <repo>/artifacts/package.
 .PARAMETER Preset
   CMake preset whose build directory (<repo>/build/<Preset>) is packaged. Default windows-msvc-release.
 .PARAMETER Zip
   Also create <package>.zip and a .sha256 file next to it.
 .NOTES
-  The package is dynamic-CRT (ADR-008) and contains no model weights, no GPU driver and no Vulkan SDK.
+  The CRT depends on the preset (ADR-008: *static* presets use /MT). The package contains no model weights, no GPU driver and no Vulkan SDK.
   It is a development/alpha artefact: tests, the real-model suites and the clean-machine check are NOT run here.
 #>
 [CmdletBinding()]
 param(
     [string]$Preset = 'windows-msvc-release',
-    [switch]$Zip
+    [switch]$Zip,
+    # Optional second build (e.g. windows-msvc-release-static-vulkan) whose HCSInfer.exe is added as
+    # HCSInfer-vulkan.exe next to the primary (CPU) HCSInfer.exe.
+    [string]$VulkanPreset = ''
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -30,6 +33,8 @@ $m = Select-String -LiteralPath (Join-Path $root 'CMakeLists.txt') -Pattern 'pro
 if ($m) { $version = $m.Matches[0].Groups[1].Value }
 $commit = 'unknown'
 try { $c = (& git -C $root rev-parse HEAD 2>$null); if ($LASTEXITCODE -eq 0 -and $c) { $commit = $c.Trim() } } catch { }
+$dirty = 'unknown'
+try { $st = (& git -C $root status --porcelain --untracked-files=no 2>$null); if ($LASTEXITCODE -eq 0) { $dirty = [bool]$st } } catch { }
 
 $pkgRoot = [System.IO.Path]::GetFullPath((Join-Path $root 'artifacts\package'))
 $name = "HCSInfer-$version-$Preset-portable"
@@ -42,6 +47,12 @@ New-Item -ItemType Directory -Path (Join-Path $pkg 'licenses') | Out-Null
 # Runtime files only: the CLI/server executable and any DLLs next to it. Test executables and the storage
 # benchmark are excluded on purpose.
 Copy-Item -LiteralPath $exe -Destination $pkg
+$vkExeSrc = ''
+if ($VulkanPreset) {
+    $vkExeSrc = Join-Path (Get-BuildDir $VulkanPreset) 'bin\HCSInfer.exe'
+    if (-not (Test-Path -LiteralPath $vkExeSrc)) { throw "Vulkan HCSInfer.exe not found at $vkExeSrc" }
+    Copy-Item -LiteralPath $vkExeSrc -Destination (Join-Path $pkg 'HCSInfer-vulkan.exe')
+}
 Get-ChildItem -LiteralPath $bin -File -Filter *.dll | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination $pkg }
 
 foreach ($f in 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'README.md', 'SECURITY.md') {
@@ -75,24 +86,49 @@ foreach ($k in $fetched.Keys) {
     else { Write-Warning "FetchContent licence not found for $k at $src (configure the preset first)" }
 }
 
-& (Join-Path $PSScriptRoot 'sbom.ps1') -OutFile (Join-Path $pkg 'sbom.cdx.json')
+# Which DLLs does each shipped EXE import? dumpbin comes with the MSVC environment; without it the answer is 'unknown'.
+$systemDlls = @('KERNEL32.dll', 'ADVAPI32.dll', 'WS2_32.dll', 'USER32.dll', 'GDI32.dll', 'SHELL32.dll', 'OLE32.dll', 'OLEAUT32.dll',
+    'BCRYPT.dll', 'CRYPT32.dll', 'IPHLPAPI.DLL', 'SHLWAPI.dll', 'VERSION.dll', 'WINMM.dll', 'PSAPI.DLL', 'ntdll.dll', 'dxgi.dll', 'SETUPAPI.dll', 'ole32.dll', 'USERENV.dll', 'RPCRT4.dll', 'bcrypt.dll', 'cfgmgr32.dll', 'comdlg32.dll', 'IMM32.dll', 'WINSPOOL.DRV', 'MSVCRT.dll', 'NETAPI32.dll', 'SECHOST.dll', 'WINHTTP.dll', 'DWMAPI.DLL', 'UxTheme.dll', 'COMCTL32.dll', 'WTSAPI32.dll', 'api-ms-win-core-synch-l1-2-0.dll', 'dbghelp.dll')
+$loaderDlls = @('vulkan-1.dll')   # system Vulkan loader: installed by the GPU driver, never bundled
+$importReport = [ordered]@{}
+$dumpbin = Get-Command dumpbin.exe -ErrorAction SilentlyContinue
+foreach ($f in (Get-ChildItem -LiteralPath $pkg -File -Filter *.exe)) {
+    if (-not $dumpbin) { $importReport[$f.Name] = 'unknown (dumpbin not on PATH)'; continue }
+    $out = & $dumpbin.Source /nologo /dependents $f.FullName 2>&1
+    $dlls = @($out | ForEach-Object { if ($_ -match '^\s+(\S+\.(?:dll|DLL|drv|DRV))\s*$') { $Matches[1] } })
+    $importReport[$f.Name] = $dlls
+}
+$onlySystem = $true
+foreach ($k in $importReport.Keys) {
+    $v = $importReport[$k]
+    if ($v -is [string]) { $onlySystem = $false; continue }
+    foreach ($d in $v) { if (($systemDlls + $loaderDlls) -notcontains $d) { $onlySystem = $false } }
+}
+$isStatic = $Preset -match 'static'
+$singleExe = [bool]($isStatic -and $onlySystem)
 
+& (Join-Path $PSScriptRoot 'sbom.ps1') -OutFile (Join-Path $pkg 'sbom.cdx.json') -BuildDir $buildDir
+
+$crtText = if ($isStatic) { 'static MSVC runtime (/MT): no Visual C++ Redistributable needed' } else { 'default dynamic MSVC runtime: the Microsoft Visual C++ Redistributable (x64) must be installed' }
+$exeText = if ($singleExe) { "HCSInfer.exe imports only Windows system DLLs (checked with dumpbin /dependents at packaging time); no sidecar DLL is required.`n" } else { "Multi-file package: NOT a single-file executable (docs/decisions/ADR-008-static-crt-single-exe.md).`n" }
+$vkText = if ($VulkanPreset) { "- HCSInfer-vulkan.exe is the same program with the Vulkan backend linked in. It additionally imports the system Vulkan loader vulkan-1.dll (installed by your GPU driver); it will not start on a machine without it. Use HCSInfer.exe (CPU) there.`n" } else { '' }
 @"
 HCSInfer $version portable folder ($Preset)
 
-This is a portable multi-file package, NOT a single-file executable (docs/decisions/ADR-008-static-crt-single-exe.md).
-- Built with the default dynamic MSVC runtime: the Microsoft Visual C++ Redistributable (x64) must be installed.
-- No models, no graphics driver and no Vulkan SDK are included. Vulkan use needs the installed AMD/OEM driver.
+$exeText- Runtime: $crtText.
+$vkText- No models, no graphics driver and no Vulkan SDK are included. Vulkan use needs the installed AMD/OEM driver.
 - Run:  HCSInfer.exe --help   |   HCSInfer.exe doctor --json
 - Verify files:  Get-FileHash -Algorithm SHA256 <file>  and compare with SHA256SUMS.txt.
 - Third-party licences: THIRD_PARTY_NOTICES.md and the licenses/ folder. SBOM: sbom.cdx.json.
-Status: alpha. See README.md for what is implemented. Unsigned.
+Status: alpha. See README.md for what is implemented. Unsigned. A clean-machine run (no redistributable, fresh Windows) is NOT RUN.
 "@ | Set-Content -LiteralPath (Join-Path $pkg 'PACKAGE-README.txt') -Encoding utf8
 
 [ordered]@{
-    name = $name; version = $version; preset = $Preset; git_commit = $commit
+    name = $name; version = $version; preset = $Preset; git_commit = $commit; git_tree_dirty = $dirty
     created_utc = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')
-    single_exe = $false; crt = 'dynamic (/MD, default)'; signed = $false
+    single_exe = $singleExe; crt = $(if ($isStatic) { 'static (/MT)' } else { 'dynamic (/MD, default)' }); signed = $false
+    imports = $importReport; vulkan_exe = [bool]$VulkanPreset
+    clean_machine_test = 'NOT RUN'
     source_exe_sha256 = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant()
 } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $pkg 'manifest.json') -Encoding utf8
 

@@ -1,0 +1,18 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.13, pytest-9.2.0, pluggy-1.7.0 -- D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\build\devtools\pybuild\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\python
+configfile: pyproject.toml
+testpaths: tests
+collecting ... collected 8 items
+
+tests/test_client_unit.py::test_health_and_auth_header PASSED            [ 12%]
+tests/test_client_unit.py::test_chat_variants PASSED                     [ 25%]
+tests/test_client_unit.py::test_image_load_and_errors PASSED             [ 37%]
+tests/test_client_unit.py::test_rejects_non_http_url PASSED              [ 50%]
+tests/test_real_exe.py::test_version_and_help SKIPPED (no HCSInfer e...) [ 62%]
+tests/test_real_exe.py::test_doctor_json SKIPPED (no HCSInfer execut...) [ 75%]
+tests/test_real_exe.py::test_server_health_without_model SKIPPED (no...) [ 87%]
+tests/test_real_exe.py::test_real_chat_against_gguf SKIPPED (HCS_TES...) [100%]
+
+======================== 4 passed, 4 skipped in 1.66s =========================

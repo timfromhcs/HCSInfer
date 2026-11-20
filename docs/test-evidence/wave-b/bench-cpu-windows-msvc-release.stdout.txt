@@ -1,0 +1,187 @@
+[hcsinfer] cold load
+[hcsinfer] cold generation
+[hcsinfer] warm warm-up
+[hcsinfer] warm 1/5
+[hcsinfer] warm 2/5
+[hcsinfer] warm 3/5
+[hcsinfer] warm 4/5
+[hcsinfer] warm 5/5
+[hcsinfer] warm reload 1/5
+[hcsinfer] warm reload 2/5
+[hcsinfer] warm reload 3/5
+[hcsinfer] warm reload 4/5
+[hcsinfer] warm reload 5/5
+[hcsinfer] wrote bench-cpu-windows-msvc-release.json
+{
+  "backend": "CPU",
+  "benchmark_id": "B0-text",
+  "build_type": "Release",
+  "cmake_version": "4.4.0",
+  "cold": {
+    "backend": "CPU",
+    "build_type": "Release",
+    "cmake_version": "4.4.0",
+    "cold_or_warm": "cold",
+    "compiler": "MSVC 194435228",
+    "context_tokens": 4096,
+    "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+    "decode_tokens": 63,
+    "decode_tokens_per_second_median": 18.78584406139214,
+    "decompression_mib_s_median": "not_applicable",
+    "device": "CPU",
+    "driver_version": "32.0.21043.12001",
+    "file_cache": "not_controlled",
+    "git_commit": "165ef06be536+dirty",
+    "gpu": "AMD Radeon(TM) Graphics",
+    "gpu_device_id": "0x1681",
+    "gpu_vendor_id": "0x1002",
+    "hdd_read_mib_s_median": "unknown",
+    "load_mode": "auto",
+    "load_ms_median": 405.0287,
+    "load_ms_p90": 405.0287,
+    "max_new_tokens": 64,
+    "measured_iterations": 1,
+    "model_file": "LFM3-Omni-2B-Q8_0.gguf",
+    "model_format": "GGUF",
+    "model_sha256": "59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4",
+    "model_size_bytes": 1846240768,
+    "note": "process-cold: first load and first generation, OS file cache not flushed",
+    "offloaded_layers": 0,
+    "os_build": "10.0.26200.9974",
+    "peak_commit_bytes": 527953920,
+    "peak_ram_bytes": 2058190848,
+    "prompt_tokens": 223,
+    "prompt_tokens_per_second_median": 79.59280463913979,
+    "quantization": "Q8_0",
+    "quantization_source": "file name",
+    "ram_bytes": 21245952000,
+    "result_status": "PASS",
+    "schema_version": 1,
+    "seed": 42,
+    "storage_source": "usb (NTFS, rotational: unknown)",
+    "temperature": 0.0,
+    "timestamp_utc": "2026-11-20T16:54:48Z",
+    "total_layers": 24,
+    "ttft_ms_median": 2805.227,
+    "ttft_ms_p90": 2805.227,
+    "vulkan_api_version": "unknown",
+    "warmup_iterations": 0
+  },
+  "cold_or_warm": "warm",
+  "compiler": "MSVC 194435228",
+  "context_tokens": 4096,
+  "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+  "decode_tokens": 63,
+  "decode_tokens_per_second_median": 18.962716530143137,
+  "decode_tokens_per_second_p90": 18.9927390758513,
+  "decompression_mib_s_median": "not_applicable",
+  "device": "CPU",
+  "driver_version": "32.0.21043.12001",
+  "file_cache": "not_controlled",
+  "git_commit": "165ef06be536+dirty",
+  "gpu": "AMD Radeon(TM) Graphics",
+  "gpu_device_id": "0x1681",
+  "gpu_vendor_id": "0x1002",
+  "hcsinfer_version": "0.1.0",
+  "hdd_read_mib_s_median": "unknown",
+  "load_mode": "auto",
+  "load_ms_median": 387.1463,
+  "load_ms_p90": 389.5746,
+  "max_new_tokens": 64,
+  "measured_iterations": 5,
+  "model_file": "LFM3-Omni-2B-Q8_0.gguf",
+  "model_format": "GGUF",
+  "model_sha256": "59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4",
+  "model_size_bytes": 1846240768,
+  "offloaded_layers": 0,
+  "os_build": "10.0.26200.9974",
+  "peak_commit_bytes": 527958016,
+  "peak_ram_bytes": 2058280960,
+  "peak_ram_note": "process peak working set since start (includes the cold phase and the warm reloads)",
+  "prompt_tokens": 223,
+  "prompt_tokens_per_second_median": 77.67113380176342,
+  "prompt_tokens_per_second_p90": 79.85648178769084,
+  "quantization": "Q8_0",
+  "quantization_source": "file name",
+  "ram_bytes": 21245952000,
+  "result_status": "PASS",
+  "samples": {
+    "decode_tokens_per_second": {
+      "max": 18.9927390758513,
+      "median": 18.962716530143137,
+      "min": 18.654254264059023,
+      "p90": 18.9927390758513,
+      "samples": [
+        18.654254264059023,
+        18.9927390758513,
+        18.970304517651552,
+        18.962716530143137,
+        18.944667737591693
+      ]
+    },
+    "load_ms": {
+      "max": 389.5746,
+      "median": 387.1463,
+      "min": 380.5711,
+      "p90": 389.5746,
+      "samples": [
+        389.5746,
+        387.1463,
+        389.2008,
+        380.5711,
+        384.9315
+      ]
+    },
+    "prompt_tokens_per_second": {
+      "max": 79.85648178769084,
+      "median": 77.67113380176342,
+      "min": 77.62033457844936,
+      "p90": 79.85648178769084,
+      "samples": [
+        79.85648178769084,
+        77.63671337820526,
+        77.95626499718605,
+        77.67113380176342,
+        77.62033457844936
+      ]
+    },
+    "ttft_ms": {
+      "max": 2876.3736,
+      "median": 2874.4144,
+      "min": 2795.6384,
+      "p90": 2876.3736,
+      "samples": [
+        2795.6384,
+        2875.6542,
+        2864.171,
+        2874.4144,
+        2876.3736
+      ]
+    },
+    "wall_ms": {
+      "max": 6202.0503,
+      "median": 6192.8966,
+      "min": 6173.1083,
+      "p90": 6202.0503,
+      "samples": [
+        6173.1083,
+        6192.8966,
+        6185.3746,
+        6196.938,
+        6202.0503
+      ]
+    }
+  },
+  "schema_version": 1,
+  "seed": 42,
+  "storage_source": "usb (NTFS, rotational: unknown)",
+  "suite": "quick",
+  "temperature": 0.0,
+  "timestamp_utc": "2026-11-20T16:54:48Z",
+  "total_layers": 24,
+  "ttft_ms_median": 2874.4144,
+  "ttft_ms_p90": 2876.3736,
+  "vulkan_api_version": "unknown",
+  "wall_ms_median": 6192.8966,
+  "warmup_iterations": 1
+}

@@ -1,0 +1,15 @@
+PASS  server responds on 127.0.0.1 - HTTP 200
+PASS  Content-Security-Policy header present - default-src 'none'; script-src 'self' 'w...
+PASS  X-Content-Type-Options header present
+PASS  frame-ancestors denied
+PASS  index.html has the app shell
+PASS  app.css served as text/css - text/css; charset=utf-8
+PASS  js/app.js served as javascript - text/javascript; charset=utf-8
+PASS  path traversal is contained (cannot read outside the web root) - HTTP 404
+PASS  headless browser loaded a DOM - browser C:\Program Files\Google\Chrome\Application\chrome.exe
+PASS  app shell rendered (tabs present)
+PASS  capability probe ran (device pill updated) - detected: WebAssembly (CPU)
+PASS  chat model options populated
+PASS  no server-side template markers leaked
+
+PASS: 13/13 checks

@@ -10,7 +10,7 @@ real image generation/editing (CLI, HTTP, MCP, GUI; CPU and Vulkan, proven with 
 loopback HTTP API, an MCP stdio server, an embedded local web UI (HCS Studio), a browser-only WebGPU/WASM demo
 (`web/`, ADR-013), a local fine-tuning control plane (`HCSInfer train`, ADR-012), the HCS Agent policy and process
 supervisor (ADR-011) and a real text benchmark command run on the target machine.
-**The one custom Vulkan kernel (Q8_0 GEMV) is experimental, OFF by default and 18x slower than upstream GGML Vulkan. The Model Vault in the engine load path, the single-file EXE, `tune`,
+**The one custom Vulkan kernel (Q8_0 GEMV) is experimental, OFF by default and 18x slower than upstream GGML Vulkan. The Model Vault in the engine load path, `tune`,
 `models load|unload` as CLI commands and Streamable HTTP are not
 implemented. A real `prime-agent` session, a real training run and real WebGPU inference
 are NOT RUN / BLOCKED.** V1 is not released. See `docs/roadmap/STATUS.md` (it also holds the V1 release checklist)
@@ -42,7 +42,9 @@ for the evidence behind every row below.
 | Model Vault: bounded async sequential reads, SHA-256 (`src/storage`) | Experimental | tested read-only on a real GGUF; the engines do not load through it yet |
 | HCSMODEL chunk container (Raw/LZ4/Zstd, per-chunk hashes) | Experimental | a measured loading benefit on the HDD is not proven |
 | Shared GGML (one GGML for both engines, `SD_USE_UPSTREAM_GGML=ON`) | Experimental | SD1.5 output matched the patched build once; other models untested |
-| Portable folder package + SHA-256 + SBOM (`scripts/package.ps1`, `scripts/sbom.ps1`) | Experimental | not a single-file EXE |
+| Single-file `HCSInfer.exe` (static CRT, CPU) and `HCSInfer-vulkan.exe` (+ Vulkan; needs the system `vulkan-1.dll`) | Experimental | imports system DLLs only (`dumpbin`), restricted-environment run PASS (empty dir, empty PATH, real generation, `serve`, GUI page); **clean-machine test NOT RUN**, unsigned; `docs/packaging.md`, `docs/test-evidence/wave-b/` |
+| Python package `hcsinfer` (platform wheel with the EXEs, sdist, stdlib client, `hcsinfer` console script) | Experimental | built and `twine check`ed locally, installed into a fresh venv, real chat through `Client`; not uploaded to PyPI; `python/README.md` |
+| Portable folder/ZIP + SHA-256 + SBOM (`scripts/package.ps1`, `scripts/release-local.ps1`) | Experimental | contains both EXEs; draft release workflow `release.yml` never run (not pushed) |
 | Single `HCSInfer.exe` | Planned, unproven | dynamic CRT today, no clean-machine test (ADR-008) |
 | `benchmark` CLI (`--suite quick`): real text benchmark, AGENTS.md 21.1 JSON | Implemented | cold+warm phases, median/p90, real metrics from the engine |
 | `benchmark --suite full` (prefill/decode sweeps, `--sweep-sizes`) | Implemented | `SKIPPED`/`FAIL` points, `result_status` `PARTIAL`; contract-tested and run on a real model (LFM3-Omni-2B Q8_0, CPU) |
@@ -64,6 +66,19 @@ Legend: Implemented / Experimental / Planned / Unsupported.
 - Verified only on: Ryzen 7 7735HS, Radeon 680M (AMD proprietary driver), Windows 11 build 26200. Other GPUs are untested.
 - Radeon 680M uses shared system memory: CPU and GPU compete for RAM capacity and bandwidth. The Vulkan heap
   size reported by the driver is not extra RAM.
+
+## Install
+
+Download-based install (nothing is published yet; the files are produced by `scripts/release-local.ps1`): see
+[`docs/install.md`](docs/install.md). Short version:
+
+```powershell
+.\HCSInfer.exe doctor --json                  # single file, no Visual C++ Redistributable needed
+pip install .\hcsinfer-0.1.0-py3-none-win_amd64.whl ; hcsinfer --help   # Python wheel (bundles both EXEs)
+```
+
+`HCSInfer-vulkan.exe` is the same program with GPU support and additionally needs the `vulkan-1.dll` that your GPU driver
+installs. The binaries are unsigned. A run on a fresh machine is NOT RUN.
 
 ## Quick start
 
@@ -87,7 +102,7 @@ $exe = '.\build\windows-msvc-release\bin\HCSInfer.exe'
 ```
 
 The native CTest suite registered 518 tests at the last recorded run; the 46 `web/` tests run separately with `npm test`.
-Exact build commands and troubleshooting: `docs/build.md`. Tests that need a real model skip (and say so) unless the
+Exact build commands and troubleshooting: `docs/build.md`; single-file and wheel builds: `docs/packaging.md`. Tests that need a real model skip (and say so) unless the
 matching variable points at one: `HCS_TEST_GGUF` (text), `HCS_TEST_VLM` + `HCS_TEST_MMPROJ` (vision),
 `HCS_TEST_DIFFUSION_MODEL` (image).
 

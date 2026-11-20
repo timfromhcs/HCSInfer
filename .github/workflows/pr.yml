@@ -170,6 +170,12 @@ jobs:
       # deliberately, not a flake.
       - name: Headless boot check (page + capability probe)
         run: node tests/e2e/boot.mjs 2>&1 | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+      # Wave B: the deployable dist (no npm dependency, nothing is deployed) must build and boot too.
+      - name: Build dist and boot it
+        run: |
+          npm run build
+          $env:HCS_WEB_ROOT = (Resolve-Path dist).Path
+          node tests/e2e/boot.mjs 2>&1 | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
 
   static-analysis:
     name: clang-tidy (static analysis)
@@ -202,6 +208,32 @@ jobs:
           name: clang-tidy
           path: artifacts/clang-tidy.txt
           if-no-files-found: warn
+
+  python:
+    name: python package (unit tests, mypy --strict, sdist + wheel, twine check)
+    runs-on: windows-latest
+    timeout-minutes: 15
+    # Wave B. No executable is bundled here, so the "real" tests skip (NOT RUN); release.yml runs them against the
+    # freshly built EXE. This job proves the package builds, type-checks and its client logic works.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install tooling
+        run: python -m pip install --upgrade pip build twine pytest mypy
+      - name: mypy --strict
+        run: |
+          python -m pip install -e python
+          python -m mypy --config-file python/pyproject.toml
+      - name: pytest
+        run: python -m pytest python/tests -q
+      - name: Build + twine check
+        run: |
+          python -m build python --outdir dist
+          python -m twine check dist/*
 
   supply-chain:
     name: SBOM generation + schema sanity

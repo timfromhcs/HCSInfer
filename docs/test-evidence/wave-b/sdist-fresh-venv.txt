@@ -1,0 +1,4 @@
+hcsinfer: HCSInfer executable not found: this install has no bundled runtime for your platform. Set HCSINFER_EXE or put HCSInfer.exe on PATH.
+rc=127
+HCSInfer 0.1.0
+rc=0

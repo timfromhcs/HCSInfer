@@ -1,0 +1,14 @@
+== HCSINFER_BACKEND=auto
+exe: HCSInfer-vulkan.exe version: HCSInfer 0.1.0
+vulkan devices: 1
+models: [('lfm3-omni-2b-q8_0', 'discovered'), ('mmproj-lfm3-omni-2b-q8_0', 'discovered')]
+chat: 'wheel ok'
+stream: 'Hello!'
+runtime: {"chat_template": "auto", "image_engine": {"available": true, "metrics": {"backend": "unknown", "device": "unknown", "image_generation_ms": 0.0, "image_steps": 0, "load_ms": 0.0, "resident_bytes": 0}, "streaming": true}, "jobs_pending": 0, "loaded_model": "lfm3-omni-2b-q8_0", "text_engine": {"availa
+== HCSINFER_BACKEND=cpu
+exe: HCSInfer.exe version: HCSInfer 0.1.0
+vulkan devices: 1
+models: [('lfm3-omni-2b-q8_0', 'discovered'), ('mmproj-lfm3-omni-2b-q8_0', 'discovered')]
+chat: 'wheel ok'
+stream: 'Hello there!'
+runtime: {"chat_template": "auto", "image_engine": {"available": true, "metrics": {"backend": "unknown", "device": "unknown", "image_generation_ms": 0.0, "image_steps": 0, "load_ms": 0.0, "resident_bytes": 0}, "streaming": true}, "jobs_pending": 0, "loaded_model": "lfm3-omni-2b-q8_0", "text_engine": {"availa

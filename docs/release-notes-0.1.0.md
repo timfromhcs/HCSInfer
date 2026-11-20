@@ -19,6 +19,19 @@ build 10.0.26200.9974, MSVC 19.44.35228, CMake 4.4.0. No other machine, GPU or O
 | `web/` `npm test` | see `docs/test-evidence/wave-r/RESULTS.md` | `docs/test-evidence/wave-r/npm-test.txt` |
 | Portable package + ZIP + SHA256SUMS + SBOM | see `docs/test-evidence/wave-r/RESULTS.md` | `docs/test-evidence/wave-r/` |
 
+## Wave B: distribution (2026-11-20)
+
+| Item | Result | Evidence |
+|---|---|---|
+| Static CPU `HCSInfer.exe` (44,229,120 bytes, sha256 `c3a613e6...`) | imports ADVAPI32, WS2_32, KERNEL32 only; restricted-env run PASS incl. real LFM3-Omni-2B generation ("static ok"), `serve` health and GUI page 200 | `docs/test-evidence/wave-b/restricted-env-static-cpu.json`, `dumpbin-*.txt` |
+| Static Vulkan `HCSInfer-vulkan.exe` (86,548,992 bytes, sha256 `b94a6e06...`) | builds; imports the same plus `vulkan-1.dll`; restricted-env run PASS incl. real generation on the Radeon 680M (25 layers offloaded) | `restricted-env-static-vulkan.json`, `bench-vulkan-static-vulkan.json` |
+| Python wheel `py3-none-win_amd64` + sdist | `twine check` PASSED, fresh-venv install, `hcsinfer --help`, `Client`/`Server` real chat + streaming (CPU exe and Vulkan exe), pytest 8/8, `mypy --strict` clean | `pytest-real.txt`, `wheel-fresh-venv-client.txt`, `sdist-fresh-venv.txt`, `twine-check.txt`, `mypy.txt` |
+| Portable ZIP + `SHA256SUMS.txt` + CycloneDX SBOM (15 components) | produced by `scripts/release-local.ps1` | `release-local.txt`, `SHA256SUMS.txt`, `portable-manifest.json` |
+| Web demo dist (`web/dist`, not deployed) | builds; boots in real headless Chrome 13/13; `npm test` 46/46 | `web-dist-boot.txt` |
+| `release.yml`, `pr.yml` python + dist jobs | actionlint v1.7.7 clean; never executed | `actionlint.txt` |
+
+Details and limits: `docs/packaging.md`, `docs/install.md`.
+
 ## What works (evidence-backed)
 
 - **Hardware doctor** (`HCSInfer doctor [--json]`): CPU features, RAM, OS, Vulkan devices/heaps, drive info; unknown
@@ -51,8 +64,11 @@ build 10.0.26200.9974, MSVC 19.44.35228, CMake 4.4.0. No other machine, GPU or O
 
 | Item | Status | Why |
 |---|---|---|
-| Single-file `HCSInfer.exe`, clean-machine test | NOT RUN (static `/MT` build proven offline; restricted-environment run PASS) | no clean Windows VM without changing system features; the release is a portable folder, not labelled single-file (ADR-008) |
-| `/MT` Vulkan build | NOT RUN | only the CPU static build exists |
+| Clean-machine test of the single-file EXE | NOT RUN (restricted-environment run PASS for both EXEs) | Windows Sandbox is not installed and enabling it needs elevation; no clean VM exists on this machine |
+| Code signing of `HCSInfer.exe` / wheel | NOT RUN | no certificate; binaries are unsigned |
+| PyPI upload, GitHub release, Vercel deploy | NOT RUN | owner-side; nothing was pushed, tagged, uploaded or deployed |
+| `release.yml` on a hosted runner (incl. Vulkan SDK install step) | NOT RUN | workflow validated with actionlint only; never executed |
+| MSIX / installer | skipped | no free official packaging tool present on the build machine |
 | Model Vault in the engine load path (M5 Stage B), B2/B5/B6/B8 | BLOCKED | needs a model larger than RAM and an administrator page-cache flush |
 | Physical USB cable pull; real RAM exhaustion | NOT RUN | only simulated (injected) tests exist |
 | Full soak profile (100 cycles, 30 min, long ASan fuzz), Vulkan soak | NOT RUN | only the quick profile was run |

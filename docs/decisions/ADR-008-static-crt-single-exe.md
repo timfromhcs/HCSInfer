@@ -55,3 +55,20 @@ single-EXE claim is therefore **NOT** made yet.
 
 ## Migration
 Add the preset, rebuild everything in a fresh build directory (a CRT change needs a fresh cache), run the gates above.
+
+## Wave B update (2026-11-20): static Vulkan build, status of the single-EXE claim
+
+* New preset `windows-msvc-release-static-vulkan` (`/MT`, `GGML_OPENMP=OFF`, `HCS_ENABLE_VULKAN=ON`) configures and builds
+  (666 steps) with MSVC 19.44 / Vulkan SDK 1.4.357.0 without any link or CRT conflict (`docs/test-evidence/wave-b/`).
+* `dumpbin /dependents`: `HCSInfer.exe` (CPU) imports ADVAPI32, WS2_32, KERNEL32; `HCSInfer-vulkan.exe` additionally imports
+  `vulkan-1.dll` (GGML links the loader's import library). This is why the project ships **two** executables: a program
+  importing `vulkan-1.dll` cannot start on a PC without a GPU driver. A delay-loaded loader (one file for both cases) was
+  not attempted: ggml's registry would still call Vulkan during start-up and the missing-loader path cannot be tested on
+  this machine.
+* Restricted-environment runs (empty directory, empty PATH, `scripts/restricted-env-check.ps1`): both EXEs PASS `--help`,
+  `doctor --json`, a real LFM3-Omni-2B Q8_0 generation (CPU; Radeon 680M for the Vulkan EXE, 25 layers offloaded), `serve`
+  health 200, the GUI page 200, and every module the live server loaded lives under the Windows directory.
+* `GGML_OPENMP=OFF` costs about 2% decode / 4% prefill on this CPU in a single A/B run (`docs/benchmarks.md`).
+* Verdict: the **single-file executable claim is made for the CPU `HCSInfer.exe`** with the explicit limits that the
+  clean-machine test is NOT RUN and the binary is unsigned. The Vulkan EXE is single-file but needs the system loader.
+  Full CTest was not re-run on the new presets (no C++ change); the static Vulkan preset's tests were never built.

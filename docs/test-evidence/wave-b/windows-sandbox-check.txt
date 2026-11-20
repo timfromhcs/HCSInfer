@@ -1,0 +1,7 @@
+Get-WindowsOptionalFeature : Der angeforderte Vorgang erfordert erh”hte Rechte.
+In Zeile:1 Zeichen:1
++ Get-WindowsOptionalFeature -Online -FeatureName Containers-Disposable ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-WindowsOptionalFeature], COMException
+    + FullyQualifiedErrorId : Microsoft.Dism.Commands.GetWindowsOptionalFeatureCommand
+ 

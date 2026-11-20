@@ -4,6 +4,19 @@ Derived from `git log` (all 28 commits are dated 2026-11-17). No release has bee
 by `scripts/package.ps1` is named `0.1.0`. Entries describe what the commits changed; PASS/NOT RUN state of each
 feature is in `docs/roadmap/STATUS.md`.
 
+## Wave B distribution (2026-11-20; not pushed)
+
+### Added
+- Preset `windows-msvc-release-static-vulkan` (/MT + Vulkan) and a two-executable single-file layout: `HCSInfer.exe` (CPU,
+  system DLLs only) and `HCSInfer-vulkan.exe` (+ `vulkan-1.dll`). ADR-008 updated.
+- Python package `python/` (`hcsinfer`: platform wheel with the EXEs, sdist, `hcsinfer` console script, stdlib `Client`,
+  `Server`, `doctor()`; `mypy --strict`, pytest).
+- `scripts/release-local.ps1`, `package.ps1 -VulkanPreset` (dumpbin import report in `manifest.json`),
+  `restricted-env-check.ps1 -Backend` (+ GUI page check), `web/tools/build-dist.mjs` (`npm run build`).
+- `.github/workflows/release.yml` (draft release on tag, never publishes), `pr.yml` python + web-dist jobs,
+  `.github/actionlint.yaml`.
+- `docs/install.md`, `docs/packaging.md`.
+
 ## 0.1.0 release candidate (wave R, 2026-11-20; not tagged, not merged, not pushed)
 
 First release candidate of the portable folder package `HCSInfer-0.1.0-windows-msvc-release-portable` (version from

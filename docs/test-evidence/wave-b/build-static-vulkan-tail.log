@@ -1,0 +1,3 @@
+[664/666] Linking CXX static library lib\hcs_cli.lib
+[665/666] Linking CXX executable bin\HCSInfer.exe
+EXIT 0 

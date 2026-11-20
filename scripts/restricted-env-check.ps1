@@ -16,11 +16,15 @@
 .PARAMETER Exe          Path to HCSInfer.exe (the build under test).
 .PARAMETER Model        Optional GGUF for a real CPU generation (skipped = NOT RUN when omitted).
 .PARAMETER OutJson      Where to write the machine-readable result.
+.PARAMETER Backend      cpu (default) or vulkan: the --backend used for the real generation. With vulkan the check also
+                        requires doctor to list at least one Vulkan device and the loaded modules to include the system
+                        vulkan-1.dll plus the GPU driver DLLs (all under C:\Windows).
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)] [string] $Exe,
     [string] $Model = '',
+    [ValidateSet('cpu', 'vulkan')] [string] $Backend = 'cpu',
     [Parameter(Mandatory)] [string] $OutJson
 )
 $ErrorActionPreference = 'Stop'
@@ -104,14 +108,18 @@ try {
     $r = Invoke-Restricted 'help' '--help'
     $r = Invoke-Restricted 'doctor_json' 'doctor --json'
     $results['doctor_valid_json'] = $false
-    try { $null = ($script:lastStdout | ConvertFrom-Json); $results['doctor_valid_json'] = $true } catch { }
+    $results['doctor_vulkan_device_count'] = $null
+    try {
+        $dj = ($script:lastStdout | ConvertFrom-Json); $results['doctor_valid_json'] = $true
+        $results['doctor_vulkan_device_count'] = $dj.vulkan.device_count
+    } catch { }
 
     # 2. Real CPU generation (only with a model).
     if ($Model) {
         $m = (Resolve-Path -LiteralPath $Model).Path
-        $r = Invoke-Restricted 'chat_cpu_real' ("chat --model `"$m`" --backend cpu --ctx 1024 --max-tokens 12 --temp 0 --json --prompt `"Reply with exactly: static ok`"") 300
+        $r = Invoke-Restricted ("chat_${Backend}_real") ("chat --model `"$m`" --backend $Backend --ctx 1024 --max-tokens 12 --temp 0 --json --prompt `"Reply with exactly: static ok`"") 300
     } else {
-        $results.checks += [ordered]@{ name = 'chat_cpu_real'; status = 'NOT RUN (no -Model given)' }
+        $results.checks += [ordered]@{ name = "chat_${Backend}_real"; status = 'NOT RUN (no -Model given)' }
     }
 
     # 3. serve: health over loopback, then inspect the modules the live process loaded.
@@ -123,6 +131,10 @@ try {
         Start-Sleep -Milliseconds 250
         try { $health = Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:$port/hcs/v1/health" -TimeoutSec 2; break } catch { }
     }
+    $gui = $null
+    if ($health) {
+        try { $gui = Invoke-WebRequest -UseBasicParsing -Uri "http://127.0.0.1:$port/" -TimeoutSec 10 } catch { }
+    }
     $mods = @()
     if (-not $srv.HasExited) {
         $srv.Refresh()
@@ -133,6 +145,9 @@ try {
     $results['serve'] = [ordered]@{
         started          = -not $srv.HasExited
         health_status    = $(if ($health) { [int]$health.StatusCode } else { $null })
+        gui_status       = $(if ($gui) { [int]$gui.StatusCode } else { $null })
+        gui_bytes        = $(if ($gui) { $gui.Content.Length } else { $null })
+        gui_has_title    = $(if ($gui) { [bool]($gui.Content -match 'HCS') } else { $false })
         modules_loaded   = $mods.Count
         modules_outside_windows_dir = $nonSystem
         windows_modules  = @($mods | Where-Object { $_.StartsWith($sysRoot, [StringComparison]::OrdinalIgnoreCase) } | ForEach-Object { Split-Path $_ -Leaf } | Sort-Object -Unique)
@@ -140,7 +155,7 @@ try {
     if (-not $srv.HasExited) { $srv.Kill($true); $srv.WaitForExit() }   # only the process this script started
 }
 finally {
-    $results['verdict'] = 'see checks; PASS needs: exit_code 0 for help/doctor, health 200, modules_outside_windows_dir empty'
+    $results['verdict'] = 'see checks; PASS needs: exit_code 0 for help/doctor, health 200, GUI page 200 with the HCS title, modules_outside_windows_dir empty'
     $results | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $OutJson -Encoding UTF8
     # Remove only the directory this script created.
     if ($work -and (Split-Path $work -Leaf) -like 'hcs-restricted-*' -and (Test-Path -LiteralPath $work)) {

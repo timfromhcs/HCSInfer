@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-11-20T16:53:19.2284234Z",
+  "exe_source": "D:\\HCSInfer\\.claude\\worktrees\\repo-analysis-v1-stable-d7c553\\build\\windows-msvc-release-static\\bin\\HCSInfer.exe",
+  "exe_sha256": "c3a613e665eca66c8ece71d35080d91d5fce618300540db46ed64b5199a9c717",
+  "exe_bytes": 44229120,
+  "files_next_to_exe": [
+    "HCSInfer.exe"
+  ],
+  "environment": "PATH empty; only SystemRoot/windir/TEMP/TMP/HCS_STATE_DIR set; cwd = a fresh temp dir",
+  "checks": [
+    {
+      "name": "help",
+      "args": "--help",
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 3.19,
+      "stdout": "HCSInfer - local-first AI runtime (control-plane scaffold)\r\n\r\nUsage: HCSInfer [--state-dir <dir>] <command> [options]\r\n\r\nCommands:\r\n  doctor [--json]               Hardware/runtime diagnostics (unknown values are reported as 'unknown')\r\n  models list [--json]          List registered models\r\n  models scan <dir> [--json]    Read-only scan of a model folder (GGUF/safetensors headers validated)\r\n  models inspect <id>           Show a model manifest as JSON\r\n  models load|unload            Planned (needs the control-plane model lifecycle)\r\n  chat --model <path-or-id> [--prompt ...] [--backend cpu|vulkan] [--json]\r\n                                Text generation via llama.cpp (see `chat --help`)\r\n  image generate|edit ...       Image generation/edit via stable-diffusion.cpp (see `image --help`)\r\n  serve [--host ...]            Local HTTP API (OpenAI-compatible + /hcs/v1)\r\n  mcp stdio                     MCP server over stdio\r\n  vision --model <path-or-id> --image <file> --prompt ... [--mmproj <file>] [--json]\r\n                                Image analysis via llama.cpp libmtmd (see `vision --help`)\r\n  benchmark --suite quick|full --model <path-or-id> [--export file]\r\n                                Real text-model benchmark, JSON per AGENTS.md 21.1 (see `benchmark --help`)\r\n  train <subcommand>            Dataset validation, eval gate, adapter keep/rollback (see `train --help`)\r\n  cache stats|clear [--json]    Count / delete HCS-owned state-directory caches; `clear` needs --yes\r\n ...[truncated]",
+      "stderr": ""
+    },
+    {
+      "name": "doctor_json",
+      "args": "doctor --json",
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 0.12,
+      "stdout": "{\r\n  \"cpu\": {\r\n    \"family\": 25,\r\n    \"features\": {\r\n      \"aes\": true,\r\n      \"avx\": true,\r\n      \"avx2\": true,\r\n      \"avx512_vnni\": false,\r\n      \"avx512bw\": false,\r\n      \"avx512f\": false,\r\n      \"avx512vl\": false,\r\n      \"avx_vnni\": false,\r\n      \"bmi1\": true,\r\n      \"bmi2\": true,\r\n      \"f16c\": true,\r\n      \"fma3\": true,\r\n      \"os_ymm_state_enabled\": true,\r\n      \"os_zmm_state_enabled\": false,\r\n      \"popcnt\": true,\r\n      \"sha\": true,\r\n      \"sse4_2\": true\r\n    },\r\n    \"logical_processors\": 16,\r\n    \"model\": 68,\r\n    \"name\": \"AMD Ryzen 7 7735HS with Radeon Graphics\",\r\n    \"nominal_mhz\": 3194,\r\n    \"physical_cores\": 8,\r\n    \"stepping\": 1,\r\n    \"vendor\": \"AuthenticAMD\"\r\n  },\r\n  \"gpu\": {\r\n    \"adapters\": [\r\n      {\r\n        \"dedicated_system_memory_bytes\": 0,\r\n        \"dedicated_video_memory_bytes\": 4267499520,\r\n        \"device_id\": \"0x1681\",\r\n        \"index\": 0,\r\n        \"memory_local_segment\": {\r\n          \"available_for_reservation_bytes\": 7176802304,\r\n          \"budget_bytes\": 14085169152,\r\n          \"current_usage_bytes\": 0\r\n        },\r\n        \"memory_non_local_segment\": {\r\n          \"available_for_reservation_bytes\": 0,\r\n          \"budget_bytes\": 0,\r\n          \"current_usage_bytes\": 0\r\n        },\r\n        \"name\": \"AMD Radeon(TM) Graphics\",\r\n        \"revision\": 6,\r\n        \"shared_system_memory_bytes\": 10622976000,\r\n        \"software_adapter\": false,\r\n        \"subsystem_id\": \"0x1241002\",\r\n        \"umd_version\": \"32.0.21043.12001\",\r\n        \"vendor_id\": \"0x1002\"\r\n   ...[truncated]",
+      "stderr": ""
+    },
+    {
+      "name": "chat_cpu_real",
+      "args": "chat --model \"D:\\HCSModels\\llm\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf\" --backend cpu --ctx 1024 --max-tokens 12 --temp 0 --json --prompt \"Reply with exactly: static ok\"",
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 4.92,
+      "stdout": "{\r\n  \"backend\": \"cpu\",\r\n  \"device\": \"CPU\",\r\n  \"model\": \"D:\\\\HCSModels\\\\llm\\\\LFM3-Omni-2B\\\\LFM3-Omni-2B-Q8_0.gguf\",\r\n  \"offloaded_layers\": 0,\r\n  \"results\": [\r\n    {\r\n      \"metrics\": {\r\n        \"decode_tokens\": 1,\r\n        \"decode_tokens_per_second\": 9.49912987970302,\r\n        \"load_ms\": 4109.2557,\r\n        \"prompt_tokens\": 17,\r\n        \"prompt_tokens_per_second\": 46.88690272291551,\r\n        \"ttft_ms\": 365.1283\r\n      },\r\n      \"prompt_chars\": 29,\r\n      \"state\": \"succeeded\",\r\n      \"text\": \"static ok\"\r\n    }\r\n  ],\r\n  \"schema_version\": 1,\r\n  \"total_layers\": 24\r\n}",
+      "stderr": ""
+    }
+  ],
+  "path_seen_by_child": "[%PATH%]  (cmd.exe prints the literal %PATH% when the variable is not defined)",
+  "doctor_valid_json": true,
+  "doctor_vulkan_device_count": 1,
+  "serve": {
+    "started": true,
+    "health_status": 200,
+    "gui_status": 200,
+    "gui_bytes": 23315,
+    "gui_has_title": true,
+    "modules_loaded": 14,
+    "modules_outside_windows_dir": [],
+    "windows_modules": [
+      "ADVAPI32.dll",
+      "bcryptPrimitives.dll",
+      "CRYPTBASE.DLL",
+      "kernel.appcore.dll",
+      "KERNEL32.DLL",
+      "KERNELBASE.dll",
+      "msvcrt.dll",
+      "mswsock.dll",
+      "ntdll.dll",
+      "RPCRT4.dll",
+      "sechost.dll",
+      "ucrtbase.dll",
+      "WS2_32.dll"
+    ]
+  },
+  "verdict": "see checks; PASS needs: exit_code 0 for help/doctor, health 200, GUI page 200 with the HCS title, modules_outside_windows_dir empty"
+}

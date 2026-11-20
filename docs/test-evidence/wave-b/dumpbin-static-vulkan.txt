@@ -1,0 +1,22 @@
+
+Dump of file Y:\build\windows-msvc-release-static-vulkan\bin\HCSInfer.exe
+
+File Type: EXECUTABLE IMAGE
+
+  Image has the following dependencies:
+
+    ADVAPI32.dll
+    vulkan-1.dll
+    WS2_32.dll
+    KERNEL32.dll
+
+  Summary
+
+       EE000 .data
+        1000 .fptable
+       4D000 .pdata
+     45C0000 .rdata
+        B000 .reloc
+        1000 .rsrc
+      C23000 .text
+        1000 _RDATA

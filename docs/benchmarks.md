@@ -146,3 +146,21 @@ hypothesis was rejected and v1 stays the default (`docs/research/vulkan-gemv-v2-
 
 `test-evidence/M1/llama/` (llama-bench, uncontrolled, few samples; for example qwen3 0.6B Q4_K CPU pp128 416.65 t/s,
 tg64 67.89 t/s at build `d3c3e24`) and `test-evidence/M6-storage/` are not comparable with the controlled runs above.
+
+## Wave B: static single-file builds (2026-11-20)
+
+Model LFM3-Omni-2B Q8_0 (`LFM3-Omni-2B-Q8_0.gguf`), `HCSInfer benchmark --suite quick --iterations 5 --max-tokens 64`,
+same machine (Ryzen 7 7735HS, Radeon 680M, other work idle), one run per variant, median / p90. Raw JSON:
+`docs/test-evidence/wave-b/bench-*.json`. Single runs: differences of a few percent are within the noise this project
+has seen between sessions; they are **not** a controlled A/B.
+
+| Build | Backend | decode t/s median (p90) | prompt t/s median | TTFT ms median |
+|---|---|---|---|---|
+| `windows-msvc-release` (/MD, OpenMP ON) | CPU | 18.96 (18.99) | 77.7 | 2874 |
+| `windows-msvc-release-static` (/MT, OpenMP OFF) | CPU | 18.59 (18.72) | 74.3 | 3006 |
+| `windows-msvc-release-static-vulkan` (/MT) | Vulkan | 35.64 (37.35) | see note | 381 |
+
+Static CPU vs OpenMP CPU: -1.9% decode, -4.4% prefill (under the 5% regression alert threshold of AGENTS.md 16.6, one run).
+The Vulkan row is lower than the wave-K `llama-bench` figure for the same model (39.7 t/s); the tools differ and no
+controlled comparison was made, so no regression or equivalence is claimed. Its prompt rate (20,711 t/s) comes from a
+tiny prompt served from a warm graph and is not a meaningful prefill benchmark.

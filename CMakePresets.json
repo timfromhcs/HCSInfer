@@ -42,6 +42,18 @@
       }
     },
     {
+      "name": "windows-msvc-release-static-vulkan",
+      "displayName": "Windows MSVC x64 Release, static CRT (/MT) + Vulkan backend (single-EXE, wave B)",
+      "description": "Static CRT (/MT), GGML_OPENMP=OFF and the GGML/SD Vulkan backends linked in. The EXE imports only system DLLs plus the system Vulkan loader vulkan-1.dll (installed by GPU drivers, not by Windows itself).",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded",
+        "GGML_OPENMP": "OFF",
+        "HCS_ENABLE_VULKAN": "ON"
+      }
+    },
+    {
       "name": "windows-msvc-release-kernels",
       "displayName": "Windows MSVC x64 Release + experimental HCS Vulkan kernels (M8)",
       "description": "Builds the feature-flagged HCS Vulkan kernels and their CPU reference/benchmark (needs the Vulkan SDK's glslc + spirv-val at build time). The engines stay CPU.",
@@ -54,6 +66,7 @@
     { "name": "windows-msvc-release", "configurePreset": "windows-msvc-release" },
     { "name": "windows-msvc-release-vulkan", "configurePreset": "windows-msvc-release-vulkan" },
     { "name": "windows-msvc-release-static", "configurePreset": "windows-msvc-release-static" },
+    { "name": "windows-msvc-release-static-vulkan", "configurePreset": "windows-msvc-release-static-vulkan" },
     { "name": "windows-msvc-release-kernels", "configurePreset": "windows-msvc-release-kernels" }
   ],
   "testPresets": [
@@ -61,6 +74,7 @@
     { "name": "windows-msvc-release", "configurePreset": "windows-msvc-release", "output": { "outputOnFailure": true } },
     { "name": "windows-msvc-release-vulkan", "configurePreset": "windows-msvc-release-vulkan", "output": { "outputOnFailure": true } },
     { "name": "windows-msvc-release-static", "configurePreset": "windows-msvc-release-static", "output": { "outputOnFailure": true } },
+    { "name": "windows-msvc-release-static-vulkan", "configurePreset": "windows-msvc-release-static-vulkan", "output": { "outputOnFailure": true } },
     { "name": "windows-msvc-release-kernels", "configurePreset": "windows-msvc-release-kernels", "output": { "outputOnFailure": true } }
   ]
 }

@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hcsinfer"
+version = "0.1.0"
+description = "Python launcher and client for HCSInfer, a local-first AI runtime (text, vision, image generation) for Windows."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+authors = [{ name = "HCSInfer contributors" }]
+keywords = ["llm", "gguf", "llama.cpp", "stable-diffusion", "vulkan", "local-ai", "openai-compatible"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: Microsoft :: Windows",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/timfromhcs/HCSInfer"
+Issues = "https://github.com/timfromhcs/HCSInfer/issues"
+
+[project.scripts]
+hcsinfer = "hcsinfer.cli:main"
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+dev = ["pytest>=8", "mypy>=1.10", "build", "twine"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hcsinfer"]
+# The prebuilt EXE(s) are git-ignored build outputs copied to src/hcsinfer/bin by scripts/build-python.ps1.
+artifacts = ["src/hcsinfer/bin/*.exe"]
+
+[tool.hatch.build.targets.wheel.hooks.custom]
+path = "hatch_build.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["src/hcsinfer/*.py", "src/hcsinfer/py.typed", "tests", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "pyproject.toml", "hatch_build.py"]
+exclude = ["src/hcsinfer/bin"]
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
+files = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["real: needs the real HCSInfer executable (set HCSINFER_EXE) and optionally a GGUF (HCS_TEST_GGUF)"]

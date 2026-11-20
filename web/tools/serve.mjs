@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join, normalize, resolve, sep } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const root = resolve(join(here, ".."));
+const root = process.env.HCS_WEB_ROOT ? resolve(process.env.HCS_WEB_ROOT) : resolve(join(here, ".."));
 const port = Number(process.argv[2] || process.env.PORT || 8080);
 
 const MIME = {

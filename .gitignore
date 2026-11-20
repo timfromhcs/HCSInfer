@@ -15,3 +15,10 @@ artifacts/
 /*.png
 __pycache__/
 web/node_modules/
+web/dist/
+python/src/hcsinfer/bin/
+python/THIRD_PARTY_NOTICES.md
+python/dist/
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
