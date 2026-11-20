@@ -95,3 +95,31 @@ def test_image_load_and_errors(client: Client) -> None:
 def test_rejects_non_http_url() -> None:
     with pytest.raises(ValueError):
         Client("https://example.com")
+
+
+def test_find_exe_never_returns_own_entry_point(tmp_path, monkeypatch):  # type: ignore[no-untyped-def]
+    """Regression: a PATH hit in this interpreter's Scripts dir (the ``hcsinfer`` console script) must be ignored."""
+    import sys
+    from pathlib import Path
+
+    from hcsinfer import ExeNotFoundError, find_exe
+    from hcsinfer import _exe
+
+    scripts = tmp_path / "Scripts"
+    scripts.mkdir()
+    (scripts / "HCSInfer.exe").write_bytes(b"x")
+    monkeypatch.setattr(_exe, "_own_script_dirs", lambda: [scripts.resolve()])
+    monkeypatch.setattr(_exe, "_BIN", tmp_path / "nobin")
+    monkeypatch.delenv("HCSINFER_EXE", raising=False)
+    monkeypatch.setenv("PATH", str(scripts))
+    try:
+        found = find_exe()
+    except ExeNotFoundError:
+        found = None
+    assert found is None
+    other = tmp_path / "real"
+    other.mkdir()
+    (other / "HCSInfer.exe").write_bytes(b"x")
+    monkeypatch.setenv("PATH", str(scripts) + __import__("os").pathsep + str(other))
+    assert Path(str(find_exe())).parent == other.resolve() or Path(str(find_exe())).parent == other
+    assert sys is not None

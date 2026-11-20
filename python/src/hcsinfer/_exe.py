@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import json
 import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -14,6 +13,41 @@ _BIN = Path(__file__).resolve().parent / "bin"
 
 class ExeNotFoundError(FileNotFoundError):
     """No HCSInfer executable could be located."""
+
+
+def _own_script_dirs() -> List[Path]:
+    """Directories holding this interpreter's console scripts (incl. the ``hcsinfer`` entry point)."""
+    dirs = [Path(sys.executable).resolve().parent, Path(sys.prefix).resolve() / "Scripts", Path(sys.prefix).resolve() / "bin"]
+    try:
+        import sysconfig
+
+        dirs.append(Path(sysconfig.get_path("scripts")).resolve())
+    except (KeyError, OSError):
+        pass
+    return dirs
+
+
+def _which_native_exe() -> Optional[Path]:
+    """Find a real HCSInfer executable on PATH, never this package's own ``hcsinfer`` entry-point script.
+
+    Windows PATH lookup is case-insensitive, so ``HCSInfer.exe`` would otherwise match the ``hcsinfer.exe`` console
+    script of this very package and recurse forever.
+    """
+    own = {str(d).lower() for d in _own_script_dirs()}
+    for entry in os.environ.get("PATH", "").split(os.pathsep):
+        if not entry:
+            continue
+        try:
+            d = Path(entry).resolve()
+        except OSError:
+            continue
+        if str(d).lower() in own:
+            continue
+        for name in ("HCSInfer.exe", "HCSInfer"):
+            cand = d / name
+            if cand.is_file():
+                return cand
+    return None
 
 
 def _vulkan_loader_present() -> bool:
@@ -46,9 +80,9 @@ def find_exe(prefer: Optional[str] = None) -> Path:
         return cpu
     if vk.is_file() and backend != "cpu" and _vulkan_loader_present():
         return vk
-    found = shutil.which("HCSInfer") or shutil.which("HCSInfer.exe")
+    found = _which_native_exe()
     if found:
-        return Path(found)
+        return found
     raise ExeNotFoundError(
         "HCSInfer executable not found: this install has no bundled runtime for your platform. "
         "Set HCSINFER_EXE or put HCSInfer.exe on PATH."
