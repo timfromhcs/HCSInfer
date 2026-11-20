@@ -1,0 +1,12 @@
+Clean-machine environment availability check, 2026-11-20 (read-only queries; no feature enabled, no admin used)
+
+OS: Microsoft Windows 11 Pro 10.0.26200 (Pro SKU supports Windows Sandbox when the optional feature is enabled)
+C:\Windows\System32\WindowsSandbox.exe        : absent  (feature Containers-DisposableClientVM is not enabled)
+C:\Windows\System32\WindowsSandboxClient.exe  : absent
+Get-WindowsOptionalFeature -Online ...        : refused - "requires elevation" (not run as administrator)
+Get-VM (Hyper-V)                              : refused - no Hyper-V Administrators rights
+HypervisorPresent                             : True (the hypervisor is running for VBS/WSL, but no VM can be created without admin)
+WSL                                           : default distribution Ubuntu, WSL 2 - a Linux environment, NOT a Windows clean machine
+
+Conclusion: no clean Windows environment is available without enabling a Windows feature / elevation, which this wave
+must not do. The real clean-machine test stays NOT RUN; scripts/restricted-env-check.ps1 is a partial proxy only.

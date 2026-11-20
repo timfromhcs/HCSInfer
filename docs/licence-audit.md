@@ -32,7 +32,7 @@ recorded, and the obligation was checked:
 | oniguruma | vendored | BSD-2-Clause (`COPYING`) | keep copyright + licence | PASS (copied) |
 | utf8proc | vendored | MIT (`LICENSE.md`) | keep copyright + licence | PASS (copied) |
 | nlohmann/json | `55f93686â€¦` | MIT (`LICENSE.MIT`) | keep copyright + licence | PASS (copied) |
-| cpp-httplib | `4d7c9a78â€¦` | MIT (`LICENSE`) | keep copyright + licence | PASS (copied) |
+| cpp-httplib | `811dd0b6â€¦` (v0.44.0; was v0.37.2 `4d7c9a78â€¦`, see Findings 6) | MIT (`LICENSE`) | keep copyright + licence | PASS (copied) |
 | LZ4 (library) | `ebb370caâ€¦` | BSD-2-Clause (`LICENSE`: "all files in the `lib` directory use a BSD 2-Clause license") | keep copyright + licence; GPL `programs/` excluded | PASS (copied; CLI off) |
 | Zstandard | `f8745da6â€¦` | BSD-3-Clause (`LICENSE` "BSD License"); `COPYING` is GPL-2.0 and is not copied | keep copyright + licence | PASS (copied; BSD option) |
 | Vulkan-Headers | `e3b1eec0â€¦` | **Apache-2.0 OR MIT** (`LICENSE.md`; per-file SPDX). No `NOTICE` file exists in the tree. | keep licence; with no NOTICE, Apache-2.0 Â§4(d) has nothing to propagate | PASS (copied) |
@@ -42,7 +42,7 @@ recorded, and the obligation was checked:
 
 | Component | Pin | Licence (verified) | State |
 |---|---|---|---|
-| prime-agent | `8980e66fâ€¦` (v0.10.4) | MIT, "Copyright (c) 2025-2026 Prime Intellect Ltd." â€” **verified at the pinned commit** via the upstream raw URL, because the `external/prime-agent` submodule is **not initialised in this working tree** (`git submodule status` shows a leading `-`) | PASS for the licence; its **transitive Rust crates and the vendored `crossterm` are NOT audited** (`cargo deny` / SBOM for them NOT RUN) |
+| prime-agent | `8980e66f…` (v0.10.4) | MIT, "Copyright (c) 2025-2026 Prime Intellect Ltd." — verified in the file after the submodule was initialised at the pin (wave G) | PASS. **Transitive Rust crates (wave G):** 345 registry crates + 11 workspace members (incl. the vendored `crossterm`, MIT with its own `LICENSE`) — every licence expression is satisfiable by the allowlist in the project's own `deny.toml` (0 mismatches; `docs/test-evidence/wave-g/cargo-licences-prime-agent.txt`). `cargo audit` findings: see Findings 5 |
 | @huggingface/transformers (transformers.js) | 4.3.2, loaded at run time by `web/` | Apache-2.0 | PASS (browser only; not shipped) |
 | onnxruntime-web | 1.31.0-dev (transitive of the above) | MIT | PASS (browser only; not shipped) |
 
@@ -60,6 +60,46 @@ recorded, and the obligation was checked:
 4. **No new dependency was added by the M8 kernel work** (`shaders/llm/*.comp`, `src/kernels/*`): GLSL is compiled by
    the build-only Vulkan SDK `glslc`; no third-party shader code is vendored, and the shaders are original HCSInfer
    code.
+
+5. **Supply-chain scan, wave G (2026-11-20).** Tools installed from the official crates.io registry with
+   `cargo install cargo-audit --locked` (cargo-audit 0.23.0, RustSec DB of 1550 advisories fetched the same day);
+   `npm audit` from npm 11.21.1. Evidence: `docs/test-evidence/wave-g/`.
+   * `web/` has no npm dependencies: `npm audit` = 0 vulnerabilities. The only third-party code the web app loads
+     (`@huggingface/transformers@4.3.2` and its transitive tree, incl. `onnxruntime-web 1.31.0-dev`) was audited in
+     a scratch project resolving that exact pin: **0 vulnerabilities**.
+   * `external/prime-agent/Cargo.lock` (356 crates): `cargo audit` reports **4 vulnerabilities and 3 allowed
+     warnings**. (a) `RUSTSEC-2026-0523`, `-0524` (quinn-proto 0.11.18) and `-0538` (quinn-udp 0.5.15) are present in
+     `Cargo.lock` only: `cargo tree --all-features --target all -e all` shows **no `quinn*` node**, so no QUIC
+     code is compiled into any prime-agent binary (reqwest's optional HTTP/3 feature is not enabled). Not
+     reachable; to be re-checked when the pin moves. (b) `RUSTSEC-2023-0071` (rsa 0.9.10, Marvin timing side
+     channel, no upstream fix) is reachable in the graph (`pa-ai` declares it; `pa-cli` uses it in tests, `pa-core`
+     decrypts one local OAEP login result per fresh key). prime-agent triages it in its own `deny.toml`
+     (reviewed 2026-11-11); HCSInfer inherits that reasoning because it never runs the Prime browser login (the
+     agent talks to the loopback endpoint only, ADR-011). (c) Warnings `RUSTSEC-2024-0436` (paste, unmaintained)
+     and `RUSTSEC-2026-0002`/`-0253` (lru 0.12.5 via ratatui, unsound) are the other upstream-triaged entries.
+     No HCSInfer code or configuration change was required; the sidecar stays a build-it-yourself candidate and is
+     not shipped in the portable package.
+
+6. **Native pins vs OSV.dev (wave G, 2026-11-20): cpp-httplib had 9 advisories at the old pin — fixed by a dedicated
+   pin bump.** `POST https://api.osv.dev/v1/query` with each pinned commit SHA (public data only;
+   `docs/test-evidence/wave-g/osv-native-deps.txt`): llama.cpp, stable-diffusion.cpp (+ its GGML), GoogleTest,
+   nlohmann/json, LZ4, Zstandard, prime-agent: no advisory mapped (this is **not** proof of absence — OSV coverage of
+   C/C++ pins is incomplete, and stb/libwebp/oniguruma/utf8proc are vendored without a commit in the lock, so they
+   were not queried: NOT RUN). **cpp-httplib v0.37.2 (`4d7c9a78`) was mapped to 9 CVEs.** Four are in the *server*
+   request path HCSInfer exposes on loopback: CVE-2026-34441 (request smuggling via an unconsumed GET body),
+   CVE-2026-45352 (negative chunk size in chunked Transfer-Encoding, DoS), CVE-2026-45372 (header percent-decoding
+   CRLF injection) and CVE-2026-46527 (X-Forwarded-For under a trusted-proxy configuration; HCSInfer configures no
+   trusted proxy). The other five are client/TLS/WebSocket-client issues (cross-origin redirect credential leaks,
+   CRLF in `open_stream`, TLS verification on Mbed TLS/wolfSSL, WebSocketClient use-after-free) in code HCSInfer
+   never compiles into a path it uses (server only, no TLS backend, no client, no WebSocket). Action: pin moved to
+   **v0.44.0 (`811dd0b6`)**, the first tag containing the server-side fixes (`git tag --contains` on the three fix
+   commits), as its own compatibility change (AGENTS.md 0.2): the HCS access-specifier patch still applies (the
+   configure-time guard found the declaration), the full Release suite is unchanged (814 registered, 778 passed, 36
+   skipped = NOT RUN, 0 failed; `ctest-release-cpu-httplib-0.44.txt`) including the 30 real-socket tests of `hcs_test_api_http`. OSV after the
+   bump still lists CVE-2026-102944, -103930, -54919, -77358 — all in the client/TLS/WebSocket code paths above, not
+   reachable here; moving to a tag with those fixes needs a larger jump (v0.4x -> v0.6x) and is deferred to the next
+   dependency change. The Debug/Vulkan/static presets and CI fetch the pin from `cmake/HcsHttplib.cmake`; only the
+   Release CPU preset was re-run in this wave (the others are NOT RUN against v0.44.0).
 
 ## Remaining gaps (NOT RUN â€” must be closed before a public release)
 

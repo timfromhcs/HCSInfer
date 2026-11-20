@@ -51,3 +51,4 @@ credentials, no user documents and no model data.
 Per AGENTS.md 16.2: mocks are never accepted as evidence for inference, model loading, Vulkan execution, image
 generation or MCP end-to-end behaviour. Every directory above that claims one of those states which real model and
 machine was used, and marks what is NOT RUN.
+- `wave-g/` - hardening gaps: OOM injection, USB-disconnect simulation, shutdown (fake + real model), supply-chain scans (npm, cargo audit, OSV, licences), restricted-environment static-EXE run (2026-11-20).

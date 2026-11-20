@@ -1,0 +1,24 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35228.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file build\windows-msvc-release-static\bin\HCSInfer.exe
+
+File Type: EXECUTABLE IMAGE
+
+  Image has the following dependencies:
+
+    ADVAPI32.dll
+    WS2_32.dll
+    KERNEL32.dll
+
+  Summary
+
+       E9000 .data
+        1000 .fptable
+       46000 .pdata
+     1E6F000 .rdata
+        A000 .reloc
+        1000 .rsrc
+      B1D000 .text
+        1000 _RDATA

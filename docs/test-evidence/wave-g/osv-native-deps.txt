@@ -1,0 +1,18 @@
+OSV.dev commit query (POST https://api.osv.dev/v1/query {"commit": <pinned sha>}), 2026-11-20. Payload = public upstream commit SHAs only.
+An empty list means OSV has no advisory mapped to that commit - NOT proof the code is vulnerability-free (OSV coverage of C/C++ pins is incomplete).
+
+llama.cpp              d3c3e242c16b   []
+stable-diffusion.cpp   532d2c15c430   []
+stable-diffusion.cpp bundled patched GGML eeda9ec48fc8   []
+stb_image / stb_image_write None           no commit in lock
+libwebp                None           no commit in lock
+oniguruma              None           no commit in lock
+utf8proc               None           no commit in lock
+GoogleTest             52eb8108c5bd   []
+nlohmann/json          55f93686c015   []
+cpp-httplib            4d7c9a788de1   ['CVE-2026-102944', 'CVE-2026-103930', 'CVE-2026-33745', 'CVE-2026-34441', 'CVE-2026-45352', 'CVE-2026-45372', 'CVE-2026-46527', 'CVE-2026-54919', 'CVE-2026-77358']
+LZ4                    ebb370ca83af   []
+Zstandard              f8745da6ff1a   []
+prime-agent            8980e66f2f07   []
+
+--- after the cpp-httplib bump (v0.44.0, 811dd0b6f238): OSV commit query result: ['CVE-2026-102944', 'CVE-2026-103930', 'CVE-2026-54919', 'CVE-2026-77358']

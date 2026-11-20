@@ -1,7 +1,7 @@
 # HCSInfer HTTP API
 
 Status: **Experimental (M3)**. Implemented in `src/api` (`ApiHandler` = all rules, `HttpServer` = socket
-transport on cpp-httplib v0.37.2). Inference requires an engine adapter that implements
+transport on cpp-httplib v0.44.0). Inference requires an engine adapter that implements
 `hcs::api::ITextStreamEngine`; the llama.cpp adapter is wired in when the binary is built with
 `external/llama.cpp`. Image generation/editing (`/v1/images/*`) needs an engine that implements
 `hcs::api::IImageStreamEngine`; the stable-diffusion.cpp adapter is wired in when the binary is built with

@@ -8,7 +8,7 @@ or filesystem access, bind to loopback by default, and resist DNS rebinding and 
 plane facade did not exist; engines expose no channel for generated text.
 
 ## Decisions
-1. **Transport: cpp-httplib v0.37.2** (MIT, pinned tag + commit, header-only, downloaded via FetchContent with its own
+1. **Transport: cpp-httplib v0.44.0** (MIT, pinned tag + commit, header-only, downloaded via FetchContent with its own
    CMake disabled so no OpenSSL/zlib/brotli is probed). It is confined to `src/api/http_server.cpp`, compiled with
    relaxed warnings; all policy lives in `ApiHandler` (framework-neutral, unit-testable without sockets).
    Rejected: a hand-written Win32 server (more code to audit for the same result); Boost.Beast (heavy dependency).
@@ -48,3 +48,11 @@ plane facade did not exist; engines expose no channel for generated text.
 Contract tests: `tests/contract/api` (36, handler), `tests/contract/api_http` (9, real sockets), `tests/contract/mcp`
 (22), `tests/unit/api_schema` (7); real-engine e2e `tests/e2e/api_mcp_real/e2e_real.py`. See
 `docs/test-evidence/M3-api-mcp/`.
+
+## Addendum 2026-11-20: transport pin v0.37.2 -> v0.44.0 (wave G)
+An OSV.dev query of the pinned commit listed 9 advisories for cpp-httplib v0.37.2, four of them in the server request
+path (request smuggling via an unconsumed GET body, negative chunk-size DoS, header percent-decoding CRLF injection, and
+X-Forwarded-For under a trusted-proxy configuration). v0.44.0 is the first tag containing those fixes. The pin moved in
+its own change; the local `process_and_close_socket` access patch still applies and the transport test suite is
+unchanged. Details and the four client/TLS advisories that remain (unreachable: server only, no TLS, no client, no
+WebSocket) are in `docs/licence-audit.md` Findings 6.

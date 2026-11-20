@@ -127,7 +127,7 @@
     {
       "name": "cpp-httplib",
       "url": "https://github.com/yhirose/cpp-httplib",
-      "commit": "4d7c9a788de136071ccf0dd4e96239151e2adadb",
+      "commit": "811dd0b6f2382f50f801f3cfdb5ba349d08bb575",
       "role": "local HTTP transport (loopback only)",
       "licence": "MIT",
       "linked": true,

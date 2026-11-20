@@ -4,7 +4,7 @@
 include(FetchContent)
 FetchContent_Declare(cpp_httplib
   GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
-  GIT_TAG        v0.37.2   # commit 4d7c9a788de136071ccf0dd4e96239151e2adadb
+  GIT_TAG        v0.44.0   # commit 811dd0b6f2382f50f801f3cfdb5ba349d08bb575
   GIT_SHALLOW    TRUE
   SOURCE_SUBDIR  hcs-no-cmake)
 FetchContent_MakeAvailable(cpp_httplib)
