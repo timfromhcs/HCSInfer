@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/.claude/worktrees/repo-analysis-v1-stable-d7c553/build/windows-msvc-release
+Test project <REPO>/build/windows-msvc-release
         Start 645: TransportNegative.MalformedRequestLinesAreNeverServedAsSuccess
         Start 646: TransportNegative.BadContentLengthIsRejectedOrIgnoredSafely
         Start   7: SandboxPolicy.PathArgumentsMustStayInsideApprovedRoots

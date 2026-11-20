@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/build/audit-fix
+Test project <REPO>/build/audit-fix
         Start   1: JsonSchema.TypesAndRequired
   1/368 Test   #1: JsonSchema.TypesAndRequired .......................................................................   Passed    0.03 sec
         Start   2: JsonSchema.AdditionalPropertiesFalseRejectsUnknown

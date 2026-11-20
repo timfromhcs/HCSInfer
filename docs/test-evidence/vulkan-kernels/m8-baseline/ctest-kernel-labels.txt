@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/.claude/worktrees/repo-analysis-v1-stable-d7c553/build/windows-msvc-release-kernels
+Test project <REPO>/build/windows-msvc-release-kernels
       Start  8: KernelCpuFp16.RoundTripsRepresentableValuesExactly
  1/12 Test  #8: KernelCpuFp16.RoundTripsRepresentableValuesExactly ......................................   Passed    0.05 sec
       Start  9: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns

@@ -136,8 +136,8 @@ one call per turn; `tool_choice` `required` or a named function (nothing constra
 
 ### `POST /v1/images/generations`, `POST /v1/images/edits`
 
-Authenticated, **Experimental**. Real stable-diffusion.cpp output (tested with SD1.5 Q8_0 only,
-`docs/test-evidence/M3-image/`). The request is a JSON body (`Content-Type: application/json`); `multipart/form-data`
+Authenticated, **Experimental**. Real stable-diffusion.cpp output (HTTP route tested with SD1.5 Q8_0,
+`docs/test-evidence/M3-image/`; FLUX.3 Klein renders are proven through the engine and CLI, see `docs/test-evidence/wave-f/`). The request is a JSON body (`Content-Type: application/json`); `multipart/form-data`
 (what OpenAI's edit endpoint uses) is **not** supported and answers `415` with that hint.
 
 `POST /v1/images/generations`

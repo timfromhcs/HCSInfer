@@ -1,4 +1,4 @@
-Running main() from D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\build\lfm3-unit\_deps\googletest-src\googletest\src\gtest_main.cc
+Running main() from <REPO>\build\lfm3-unit\_deps\googletest-src\googletest\src\gtest_main.cc
 [==========] Running 12 tests from 2 test suites.
 [----------] Global test environment set-up.
 [----------] 9 tests from ApiSocket

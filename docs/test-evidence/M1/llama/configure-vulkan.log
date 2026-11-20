@@ -71,4 +71,4 @@ CMake Warning at vendor/cpp-httplib/CMakeLists.txt:154 (message):
 -- Generating embedded license file for target: llama-app
 -- Configuring done (14.7s)
 -- Generating done (0.7s)
--- Build files have been written to: D:/HCSInfer/build/llama-vulkan
+-- Build files have been written to: <REPO>/build/llama-vulkan

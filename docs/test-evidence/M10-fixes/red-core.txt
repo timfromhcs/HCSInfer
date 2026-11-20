@@ -1,25 +1,25 @@
 127..0.1
 
-D:\HCSInfer\tests\unit\core\test_settings.cpp(158): error: Value of: is_loopback_host(h)
+<REPO>\tests\unit\core\test_settings.cpp(158): error: Value of: is_loopback_host(h)
   Actual: true
 Expected: false
 127.0.0.-1
 
-D:\HCSInfer\tests\unit\core\test_settings.cpp(159): error: Value of: is_loopback_host(std::string_view("127.0.0.1\0evil", 14))
+<REPO>\tests\unit\core\test_settings.cpp(159): error: Value of: is_loopback_host(std::string_view("127.0.0.1\0evil", 14))
   Actual: true
 Expected: false
 
-D:\HCSInfer\tests\unit\core\test_settings.cpp(164): error: Value of: validate(s)
+<REPO>\tests\unit\core\test_settings.cpp(164): error: Value of: validate(s)
   Actual: true
 Expected: false
 
 [  FAILED  ] Settings.LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch (0 ms)
 [ RUN      ] Settings.ContextTokenCapMatchesEngineCap
-D:\HCSInfer\tests\unit\core\test_settings.cpp(174): error: Value of: validate(s)
+<REPO>\tests\unit\core\test_settings.cpp(174): error: Value of: validate(s)
   Actual: true
 Expected: false
 
-D:\HCSInfer\tests\unit\core\test_settings.cpp(176): error: Value of: validate(s)
+<REPO>\tests\unit\core\test_settings.cpp(176): error: Value of: validate(s)
   Actual: true
 Expected: false
 

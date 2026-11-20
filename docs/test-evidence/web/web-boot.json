@@ -72,7 +72,7 @@
     {
       "name": "screenshot captured",
       "ok": true,
-      "detail": "D:/HCSInfer/docs/test-evidence/web/web-chat.png"
+      "detail": "<REPO>/docs/test-evidence/web/web-chat.png"
     }
   ]
 }

@@ -18,7 +18,7 @@
       "testsuite": [
         {
           "name": "UnplugEngineLoadTruncatedAndVanishedFile",
-          "file": "D:\\HCSInfer\\.claude\\worktrees\\repo-analysis-v1-stable-80f8d6\\tests\\soak\\soak_core\\test_soak_core.cpp",
+          "file": "<REPO>\\tests\\soak\\soak_core\\test_soak_core.cpp",
           "line": 782,
           "status": "RUN",
           "result": "COMPLETED",

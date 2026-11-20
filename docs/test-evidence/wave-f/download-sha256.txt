@@ -1,2 +1,2 @@
-66358cb18bb6b3b1b6675aa412c7a88ef01d228f481184d13668e5201c730a0a */d/HCSModels/diffusion/flux3/qwen3vl/Qwen3VL-4B-Instruct-Q4_K_M.gguf
-d64f3a68e1cc4f9f4e29b6e0da38a0204fe9a49f2d4053f0ec1fa1ca02f9c4b5 */d/HCSModels/diffusion/flux3/vae/split_files/vae/flux2-vae.safetensors
+66358cb18bb6b3b1b6675aa412c7a88ef01d228f481184d13668e5201c730a0a *<MODELS>/diffusion/flux3/qwen3vl/Qwen3VL-4B-Instruct-Q4_K_M.gguf
+d64f3a68e1cc4f9f4e29b6e0da38a0204fe9a49f2d4053f0ec1fa1ca02f9c4b5 *<MODELS>/diffusion/flux3/vae/split_files/vae/flux2-vae.safetensors

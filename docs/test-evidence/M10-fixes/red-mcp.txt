@@ -3,10 +3,10 @@ exit=127
 === McpAudit.DeeplyNestedLinesOverStdioAreRejectedAndServerKeepsServing
 exit=127
 === McpAudit.DuplicateInFlightRequestIdIsRejected
-D:\HCSInfer\tests\contract\mcp\test_mcp.cpp(578): error: Value of: dup.contains("error")
+<REPO>\tests\contract\mcp\test_mcp.cpp(578): error: Value of: dup.contains("error")
 exit=3
 === McpAudit.CancelDuringModelLoadReleasesTheCallSlotPromptly
-D:\HCSInfer\tests\contract\mcp\test_mcp.cpp(614): error: Value of: second["result"]["isError"]
+<REPO>\tests\contract\mcp\test_mcp.cpp(614): error: Value of: second["result"]["isError"]
 [  FAILED  ] McpAudit.CancelDuringModelLoadReleasesTheCallSlotPromptly (1565 ms)
 [  PASSED  ] 0 tests.
 [  FAILED  ] 1 test, listed below:
@@ -14,11 +14,11 @@ D:\HCSInfer\tests\contract\mcp\test_mcp.cpp(614): error: Value of: second["resul
  1 FAILED TEST
 exit=1
 === McpAudit.ErrorsDoNotLeakAbsoluteLocalPaths
-D:\HCSInfer\tests\contract\mcp\test_mcp.cpp(629): error: Expected equality of these values:
+<REPO>\tests\contract\mcp\test_mcp.cpp(629): error: Expected equality of these values:
 {"id":1,"jsonrpc":"2.0","result":{"_meta":{"io.modelcontextprotocol/serverInfo":{"name":"hcsinfer","version":"unknown"}},"content":[{"text":"model_error: failed to load model from C:\\Users\\bob smith\\AppData\\Local\\Temp\\bad_f.gguf: invalid magic","type":"text"}],"isError":true,"resultType":"complete","structuredContent":{"error":{"code":"model_error","message":"failed to load model from C:\\Users\\bob smith\\AppData\\Local\\Temp\\bad_f.gguf: invalid magic"}}}}
-D:\HCSInfer\tests\contract\mcp\test_mcp.cpp(630): error: Expected equality of these values:
+<REPO>\tests\contract\mcp\test_mcp.cpp(630): error: Expected equality of these values:
 {"id":1,"jsonrpc":"2.0","result":{"_meta":{"io.modelcontextprotocol/serverInfo":{"name":"hcsinfer","version":"unknown"}},"content":[{"text":"model_error: failed to load model from C:\\Users\\bob smith\\AppData\\Local\\Temp\\bad_f.gguf: invalid magic","type":"text"}],"isError":true,"resultType":"complete","structuredContent":{"error":{"code":"model_error","message":"failed to load model from C:\\Users\\bob smith\\AppData\\Local\\Temp\\bad_f.gguf: invalid magic"}}}}
-D:\HCSInfer\tests\contract\mcp\test_mcp.cpp(631): error: Expected equality of these values:
+<REPO>\tests\contract\mcp\test_mcp.cpp(631): error: Expected equality of these values:
 {"id":1,"jsonrpc":"2.0","result":{"_meta":{"io.modelcontextprotocol/serverInfo":{"name":"hcsinfer","version":"unknown"}},"content":[{"text":"model_error: failed to load model from C:\\Users\\bob smith\\AppData\\Local\\Temp\\bad_f.gguf: invalid magic","type":"text"}],"isError":true,"resultType":"complete","structuredContent":{"error":{"code":"model_error","message":"failed to load model from C:\\Users\\bob smith\\AppData\\Local\\Temp\\bad_f.gguf: invalid magic"}}}}
 exit=1
 (exit=127 for the two DeeplyNested tests = process died mid-test: stack overflow reproduced, no PASS/FAIL line printed)

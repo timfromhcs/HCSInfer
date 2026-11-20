@@ -1,4 +1,4 @@
--- Using the multi-header code from D:/HCSInfer/build/llama-adapter-rv/_deps/nlohmann_json-src/include/
+-- Using the multi-header code from <REPO>/build/llama-adapter-rv/_deps/nlohmann_json-src/include/
 -- llama.cpp version: 1.0.0-dev
 CMAKE_BUILD_TYPE=Release
 -- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
@@ -21,4 +21,4 @@ CMAKE_BUILD_TYPE=Release
 -- ggml commit:  d3c3e24
 -- Configuring done (3.5s)
 -- Generating done (0.4s)
--- Build files have been written to: D:/HCSInfer/build/llama-adapter-rv
+-- Build files have been written to: <REPO>/build/llama-adapter-rv

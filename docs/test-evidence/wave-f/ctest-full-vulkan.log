@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/.claude/worktrees/repo-analysis-v1-stable-d7c553/build/windows-msvc-release-vulkan
+Test project <REPO>/build/windows-msvc-release-vulkan
         Start   1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules
         Start   2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd
   1/788 Test   #1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules ............................................   Passed    0.05 sec

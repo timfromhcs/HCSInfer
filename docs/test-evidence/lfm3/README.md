@@ -26,7 +26,7 @@ Builds: CPU `build/lfm3-unit` (preset `windows-msvc-release`), Vulkan `build/lfm
 ## Model files and licence
 
 Download source: `https://huggingface.co/LiquidAI/LFM3-Omni-2B-GGUF` (public, no token used), `resolve/main/<file>`. Stored on
-`D:\HCSModels\text\LFM3-Omni-2B\` (the model drive used by the other evidence, outside the repository; nothing was copied
+`<MODELS>\text\LFM3-Omni-2B\` (the model drive used by the other evidence, outside the repository; nothing was copied
 to an SSD cache).
 
 | File | Bytes | SHA-256 (computed locally = Hugging Face LFS `oid`) |
@@ -132,8 +132,8 @@ LeetCode-style one-function problems, not repository-scale work.
 
 ```
 python -I tests/eval/agentic/score.py --selftest
-python -I tests/eval/agentic/e2e_lfm3.py --exe build/lfm3-vk/bin/HCSInfer.exe --model D:/HCSModels/text/LFM3-Omni-2B/LFM3-Omni-2B-Q8_0.gguf --evidence docs/test-evidence/lfm3 --tag vulkan
-python -I tests/e2e/vision_real/e2e_vision.py --exe build/lfm3-vk/bin/HCSInfer.exe --vlm D:/HCSModels/text/LFM3-Omni-2B/LFM3-Omni-2B-Q8_0.gguf --evidence <dir>
+python -I tests/eval/agentic/e2e_lfm3.py --exe build/lfm3-vk/bin/HCSInfer.exe --model <MODELS>/text/LFM3-Omni-2B/LFM3-Omni-2B-Q8_0.gguf --evidence docs/test-evidence/lfm3 --tag vulkan
+python -I tests/e2e/vision_real/e2e_vision.py --exe build/lfm3-vk/bin/HCSInfer.exe --vlm <MODELS>/text/LFM3-Omni-2B/LFM3-Omni-2B-Q8_0.gguf --evidence <dir>
 ```
 
 ## Not done / open

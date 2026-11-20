@@ -1,18 +1,18 @@
-Running main() from D:\HCSInfer\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
+Running main() from <REPO>\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
 Note: Google Test filter = ApiSocketAudit.Idle*:ApiSocketAudit.SocketThat*
 [==========] Running 2 tests from 1 test suite.
 [----------] Global test environment set-up.
 [----------] 2 tests from ApiSocketAudit
 [ RUN      ] ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded
-D:\HCSInfer\tests\contract\api_http\test_http_socket.cpp(323): error: Expected: (refused_fast) >= (static_cast<int>(idle.size()) - 6), actual: 0 vs 24
+<REPO>\tests\contract\api_http\test_http_socket.cpp(323): error: Expected: (refused_fast) >= (static_cast<int>(idle.size()) - 6), actual: 0 vs 24
 the connection queue is unbounded
 
-D:\HCSInfer\tests\contract\api_http\test_http_socket.cpp(336): error: Expected: (ms) < (4000), actual: 71848 vs 4000
+<REPO>\tests\contract\api_http\test_http_socket.cpp(336): error: Expected: (ms) < (4000), actual: 71848 vs 4000
 idle sockets starved the server for 71848 ms
 
 [  FAILED  ] ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded (75204 ms)
 [ RUN      ] ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout
-D:\HCSInfer\tests\contract\api_http\test_http_socket.cpp(348): error: Value of: raw_peer_closed_within(c, 3500)
+<REPO>\tests\contract\api_http\test_http_socket.cpp(348): error: Value of: raw_peer_closed_within(c, 3500)
   Actual: false
 Expected: true
 an idle socket kept a worker for more than 3.5 s (read timeout is 1 s)

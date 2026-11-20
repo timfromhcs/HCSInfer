@@ -1,6 +1,6 @@
 Der Befehl "vswhere.exe" ist entweder falsch geschrieben oder
 konnte nicht gefunden werden.
-Test project D:/HCSInfer/build/hardware-Release
+Test project <REPO>/build/hardware-Release
       Start  93: HardwareFormat.Bytes
  1/19 Test  #93: HardwareFormat.Bytes .....................................   Passed    0.06 sec
       Start  94: HardwareFormat.MibS

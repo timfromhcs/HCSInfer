@@ -147,7 +147,7 @@
     },
     "schema_version": 1,
     "storage": {
-      "requested_path": "D:/HCSModels",
+      "requested_path": "<MODELS>",
       "requested_volume": {
         "bus_type": "usb",
         "device_product": "IB-1232CL-U3",

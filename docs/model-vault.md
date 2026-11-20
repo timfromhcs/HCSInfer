@@ -106,7 +106,7 @@ storage module; the shared `hcsinfer benchmark --suite storage` entry is left to
 
 ```powershell
 build\<preset>\bin\hcs_storage_bench.exe --suite storage `
-  --source E:\path\model.gguf --scratch D:\HCSInfer\build\storage-scratch `
+  --source E:\path\model.gguf --scratch <REPO>\build\storage-scratch `
   --out docs\test-evidence\M6-storage\storage-bench.json
 ```
 
@@ -118,7 +118,7 @@ not apply to a storage benchmark (TTFT, tokens/s, GPU) are `null` / `n/a`, never
 
 Raw JSON: `docs/test-evidence/M6-storage/storage-bench-qwen3-0.6b-q4_k_m.json` (Release build, MSVC 19.44).
 Machine: Ryzen 7 7735HS, 19.8 GB RAM, Windows 11 10.0.26200. Model: `qwen3-0.6b-q4_k_m.gguf` (Q4_K_M, 484,219,712 bytes,
-sha256 `4ea79412...37ae7c`) on E:. Containers were written to `D:\HCSInfer\build\storage-scratch` (deleted afterwards).
+sha256 `4ea79412...37ae7c`) on E:. Containers were written to `<REPO>\build\storage-scratch` (deleted afterwards).
 **Both E: and D: are USB-attached disks (IB-1232CL-U3, MediaType "Unspecified"); whether they are HDD or SSD is unknown.**
 Chunk size 16 MiB, 4 pipeline buffers, 3 workers, 1 warm-up + 3 measured runs, other engineers' builds were running.
 

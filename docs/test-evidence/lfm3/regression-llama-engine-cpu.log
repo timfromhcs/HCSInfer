@@ -1,4 +1,4 @@
-Running main() from D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\build\lfm3-unit\_deps\googletest-src\googletest\src\gtest_main.cc
+Running main() from <REPO>\build\lfm3-unit\_deps\googletest-src\googletest\src\gtest_main.cc
 [==========] Running 17 tests from 2 test suites.
 [----------] Global test environment set-up.
 [----------] 7 tests from LlamaEngineErrors
@@ -25,7 +25,7 @@ Running main() from D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\b
 Okay, the user wants me to reply with exactly "HCSInfer smoke test passed." So first, I need to make sure that the response is exactly that string. Let me check the original query again. The user provided
 [       OK ] LlamaEngineReal.CpuGeneration (10319 ms)
 [ RUN      ] LlamaEngineReal.VulkanGeneration
-D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\tests\integration\llama_engine\test_llama_engine.cpp(254): Skipped
+<REPO>\tests\integration\llama_engine\test_llama_engine.cpp(254): Skipped
 NOT RUN: no GPU device visible to this build (vulkan_compiled=0)
 
 [  SKIPPED ] LlamaEngineReal.VulkanGeneration (0 ms)
@@ -37,7 +37,7 @@ NOT RUN: no GPU device visible to this build (vulkan_compiled=0)
 [evidence] {"test":"CancelCpu","chunks_at_cancel":5,"chunks_final":5,"stop_latency_ms":0.343400}
 [       OK ] LlamaEngineReal.CancellationMidGenerationCpu (977 ms)
 [ RUN      ] LlamaEngineReal.CancellationMidGenerationVulkan
-D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\tests\integration\llama_engine\test_llama_engine.cpp(355): Skipped
+<REPO>\tests\integration\llama_engine\test_llama_engine.cpp(355): Skipped
 NOT RUN: no GPU device visible to this build (vulkan_compiled=0)
 
 [  SKIPPED ] LlamaEngineReal.CancellationMidGenerationVulkan (0 ms)
@@ -45,7 +45,7 @@ NOT RUN: no GPU device visible to this build (vulkan_compiled=0)
 [evidence] {"test":"Cycle10Cpu","cycles":10,"private_bytes_after_each_unload":[8232960,9363456,8843264,11112448,10919936,11751424,10338304,10686464,10260480,12046336],"working_set_after_each_unload":[15425536,15814656,15876096,16117760,16621568,16842752,16777216,17305600,17371136,17772544],"private_growth_after_cycle3":3203072,"working_set_growth_after_cycle3":1896448}
 [       OK ] LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth (6828 ms)
 [ RUN      ] LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth
-D:\HCSInfer\.claude\worktrees\flux3-agent-engine-v1-665ab0\tests\integration\llama_engine\test_llama_engine.cpp(399): Skipped
+<REPO>\tests\integration\llama_engine\test_llama_engine.cpp(399): Skipped
 NOT RUN: no GPU device visible to this build (vulkan_compiled=0)
 
 [  SKIPPED ] LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth (0 ms)

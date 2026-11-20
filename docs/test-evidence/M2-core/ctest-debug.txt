@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/build/windows-msvc-debug
+Test project <REPO>/build/windows-msvc-debug
         Start   1: Result.ValueAndError
   1/101 Test   #1: Result.ValueAndError .........................................   Passed    0.09 sec
         Start   2: Result.VoidSpecialisation
@@ -209,4 +209,4 @@ contract    =   0.31 sec*proc (9 tests)
 unit        =   7.34 sec*proc (92 tests)
 
 Total Test time (real) =  17.37 sec
-ctest log: D:\HCSInfer\artifacts\test-logs\ctest-windows-msvc-debug-20261117-082021.log
+ctest log: <REPO>\artifacts\test-logs\ctest-windows-msvc-debug-20261117-082021.log

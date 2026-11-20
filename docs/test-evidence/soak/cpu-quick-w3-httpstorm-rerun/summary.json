@@ -9,7 +9,7 @@
     "os": "Microsoft Windows 11 Pro 26200",
     "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics        ",
     "ram_bytes": 21245952000,
-    "exe_test": "D:\\HCSInfer\\.claude\\worktrees\\repo-analysis-v1-stable-80f8d6\\build\\rel\\bin\\hcs_test_soak_core.exe",
+    "exe_test": "<REPO>\\build\\rel\\bin\\hcs_test_soak_core.exe",
     "knobs": {
       "HCS_SOAK_GEN_SECONDS": 60,
       "HCS_SOAK_CANCEL_ROUNDS": 10,

@@ -3,7 +3,7 @@
 Machine: Ryzen 7 7735HS, ~21 GB RAM, Windows 11 Pro 10.0.26200, MSVC 19.44 / VS 2022, CMake 4.4.0, Ninja. Source: branch
 `claude/repo-analysis-v1-stable-d7c553`, built in this worktree with the CPU Release preset (`windows-msvc-release`,
 Vulkan off) from `Y:` (short drive, MAX_PATH). Model for the real-model runs: LiquidAI LFM3-Omni-2B Q8_0
-(`D:\HCSModels\llm\LFM3-Omni-2B`, already on disk, no download in this wave).
+(`<MODELS>\llm\LFM3-Omni-2B`, already on disk, no download in this wave).
 
 ## Result summary
 
@@ -98,7 +98,7 @@ path. Build under test: `windows-msvc-release-static`, sha256
 ```powershell
 cmake --preset windows-msvc-release; cmake --build --preset windows-msvc-release --parallel
 ctest --test-dir build\windows-msvc-release --output-on-failure -j4
-$env:HCS_TEST_GGUF = 'D:\HCSModels\llm\LFM3-Omni-2B\LFM3-Omni-2B-Q8_0.gguf'
+$env:HCS_TEST_GGUF = '<MODELS>\llm\LFM3-Omni-2B\LFM3-Omni-2B-Q8_0.gguf'
 build\windows-msvc-release\bin\hcs_test_shutdown_real.exe
 .\scripts\restricted-env-check.ps1 -Exe build\windows-msvc-release-static\bin\HCSInfer.exe -Model $env:HCS_TEST_GGUF -OutJson restricted.json
 ```

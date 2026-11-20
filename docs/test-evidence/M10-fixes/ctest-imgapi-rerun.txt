@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/build/img-api
+Test project <REPO>/build/img-api
     Start 362: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng
 1/9 Test #362: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng ....   Passed    8.78 sec
     Start 363: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize

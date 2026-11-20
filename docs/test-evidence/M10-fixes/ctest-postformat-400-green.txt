@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/build/img-api
+Test project <REPO>/build/img-api
         Start   1: JsonSchema.TypesAndRequired
   1/400 Test   #1: JsonSchema.TypesAndRequired .......................................................................   Passed    0.04 sec
         Start   2: JsonSchema.AdditionalPropertiesFalseRejectsUnknown

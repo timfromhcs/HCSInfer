@@ -5,9 +5,9 @@ ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | reb
    SSE3 = 1 |    SSSE3 = 1 |    AVX = 1 |    AVX2 = 1 |    F16C = 1 |    FMA = 1 |    OPENMP = 1 |    REPACK = 1 |  --- main.cpp:761
 [W] Using upstream GGML: INT8 tensorwise/convrot is disabled and FP8 weights are converted to F16 at load time. Some operators may be unsupported and performance may be lower than with patched GGML. --- diffusion_engine.cpp:902
 [V] using 8 threads for model loading --- model_loader.cpp:194
-[I] loading diffusion model from 'D:/HCSModels/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf' --- diffusion_engine.cpp:697
-[I] load D:/HCSModels/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf using gguf format --- model_loader.cpp:220
-[V] init from 'D:/HCSModels/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf' --- model_loader.cpp:266
+[I] loading diffusion model from '<MODELS>/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf' --- diffusion_engine.cpp:697
+[I] load <MODELS>/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf using gguf format --- model_loader.cpp:220
+[V] init from '<MODELS>/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf' --- model_loader.cpp:266
 [V] GGUF v3, tensor_count=359, metadata_kv_count=6 --- gguf_reader_ext.h:225
 [I] Version: Flux.3 Image Klein  --- diffusion_engine.cpp:982
 [I] auto-fit plan: --- backend_fit.cpp:335

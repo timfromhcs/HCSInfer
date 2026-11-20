@@ -1,6 +1,6 @@
 Der Befehl "vswhere.exe" ist entweder falsch geschrieben oder
 konnte nicht gefunden werden.
-Test project D:/HCSInfer/build/m3-debug
+Test project <REPO>/build/m3-debug
         Start   1: JsonSchema.TypesAndRequired
   1/274 Test   #1: JsonSchema.TypesAndRequired .......................................................................   Passed    0.03 sec
         Start   2: JsonSchema.AdditionalPropertiesFalseRejectsUnknown

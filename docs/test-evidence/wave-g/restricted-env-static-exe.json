@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "timestamp_utc": "2026-11-20T12:17:32.5242061Z",
-  "exe_source": "D:\\HCSInfer\\.claude\\worktrees\\repo-analysis-v1-stable-d7c553\\build\\windows-msvc-release-static\\bin\\HCSInfer.exe",
+  "exe_source": "<REPO>\\build\\windows-msvc-release-static\\bin\\HCSInfer.exe",
   "exe_sha256": "42067d40e8fb3142a7e3a564a61d7c13ffe6f88bf1868cb55cd50ee8bfd127af",
   "exe_bytes": 44208128,
   "files_next_to_exe": [
@@ -29,11 +29,11 @@
     },
     {
       "name": "chat_cpu_real",
-      "args": "chat --model \"D:\\HCSModels\\llm\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf\" --backend cpu --ctx 1024 --max-tokens 12 --temp 0 --json --prompt \"Reply with exactly: static ok\"",
+      "args": "chat --model \"<MODELS>\\llm\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf\" --backend cpu --ctx 1024 --max-tokens 12 --temp 0 --json --prompt \"Reply with exactly: static ok\"",
       "exit_code": 0,
       "timed_out": false,
       "seconds": 18.02,
-      "stdout": "{\r\n  \"backend\": \"cpu\",\r\n  \"device\": \"CPU\",\r\n  \"model\": \"D:\\\\HCSModels\\\\llm\\\\LFM3-Omni-2B\\\\LFM3-Omni-2B-Q8_0.gguf\",\r\n  \"offloaded_layers\": 0,\r\n  \"results\": [\r\n    {\r\n      \"metrics\": {\r\n        \"decode_tokens\": 1,\r\n        \"decode_tokens_per_second\": 9.582720438505287,\r\n        \"load_ms\": 17364.704,\r\n        \"prompt_tokens\": 17,\r\n        \"prompt_tokens_per_second\": 54.42204745986694,\r\n        \"ttft_ms\": 314.8676\r\n      },\r\n      \"prompt_chars\": 29,\r\n      \"state\": \"succeeded\",\r\n      \"text\": \"static ok\"\r\n    }\r\n  ],\r\n  \"schema_version\": 1,\r\n  \"total_layers\": 24\r\n}",
+      "stdout": "{\r\n  \"backend\": \"cpu\",\r\n  \"device\": \"CPU\",\r\n  \"model\": \"<MODELS>\\\\llm\\\\LFM3-Omni-2B\\\\LFM3-Omni-2B-Q8_0.gguf\",\r\n  \"offloaded_layers\": 0,\r\n  \"results\": [\r\n    {\r\n      \"metrics\": {\r\n        \"decode_tokens\": 1,\r\n        \"decode_tokens_per_second\": 9.582720438505287,\r\n        \"load_ms\": 17364.704,\r\n        \"prompt_tokens\": 17,\r\n        \"prompt_tokens_per_second\": 54.42204745986694,\r\n        \"ttft_ms\": 314.8676\r\n      },\r\n      \"prompt_chars\": 29,\r\n      \"state\": \"succeeded\",\r\n      \"text\": \"static ok\"\r\n    }\r\n  ],\r\n  \"schema_version\": 1,\r\n  \"total_layers\": 24\r\n}",
       "stderr": ""
     }
   ],

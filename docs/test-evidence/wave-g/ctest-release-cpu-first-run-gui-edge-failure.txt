@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/.claude/worktrees/repo-analysis-v1-stable-d7c553/build/windows-msvc-release
+Test project <REPO>/build/windows-msvc-release
         Start   1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules
         Start   2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd
         Start   3: SandboxPolicy.RejectsUnlistedShellsAndPathPrograms

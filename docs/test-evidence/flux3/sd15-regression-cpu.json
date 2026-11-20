@@ -6,7 +6,7 @@
   "height": 256,
   "load_ms": 148.0469,
   "mode": "generate",
-  "model": "D:/HCSModels/diffusion/sd15-q8_0.gguf",
+  "model": "<MODELS>/diffusion/sd15-q8_0.gguf",
   "output": "docs/test-evidence/flux3/sd15-regression-cpu.png",
   "preset": "",
   "schema_version": 1,

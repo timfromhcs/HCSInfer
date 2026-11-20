@@ -6,7 +6,7 @@
   "height": 256,
   "load_ms": 135.7211,
   "mode": "edit",
-  "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf",
+  "model": "<MODELS>\\diffusion\\sd15-q8_0.gguf",
   "output": "artifacts\\image-smoke\\cpu-edit-256x256-2step.png",
   "schema_version": 1,
   "steps": 2,

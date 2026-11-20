@@ -3,7 +3,7 @@
 Build: `build/audit-fix`, Release, CPU-only (`HCS_ENABLE_VULKAN=OFF`), MSVC 19.44 x64, Ninja, llama.cpp engine linked,
 `/W4 /WX` on HCS targets. Vulkan paths are NOT RUN here.
 
-Commands (from `D:\HCSInfer`, MSVC environment via `scripts\common.ps1` `Initialize-MsvcEnvironment`):
+Commands (from `<REPO>`, MSVC environment via `scripts\common.ps1` `Initialize-MsvcEnvironment`):
 
 ```
 cmake --preset windows-msvc-release -B build/audit-fix
@@ -16,8 +16,8 @@ build\audit-fix\bin\hcs_test_api_http.exe --gtest_filter=ApiSocketAudit.*
 build\audit-fix\bin\hcs_test_hardware.exe --gtest_filter=MemoryProbe.*
 # Full suite with the real models:
 set HCS_TEST_GGUF=E:\AILOCALTRAIN\data\gguf\qwen3-0.6b-q4_k_m.gguf
-set HCS_TEST_VLM=D:\HCSModels\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf
-set HCS_TEST_MMPROJ=D:\HCSModels\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf
+set HCS_TEST_VLM=<MODELS>\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf
+set HCS_TEST_MMPROJ=<MODELS>\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf
 ctest --test-dir build/audit-fix --output-on-failure --timeout 1800
 ```
 

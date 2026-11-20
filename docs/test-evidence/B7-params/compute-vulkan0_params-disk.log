@@ -1,5 +1,5 @@
-[I] loading model from 'D:\HCSModels\diffusion\sd15-q8_0.gguf' --- diffusion_engine.cpp:690
-[I] load D:\HCSModels\diffusion\sd15-q8_0.gguf using gguf format --- model_loader.cpp:220
+[I] loading model from '<MODELS>\diffusion\sd15-q8_0.gguf' --- diffusion_engine.cpp:690
+[I] load <MODELS>\diffusion\sd15-q8_0.gguf using gguf format --- model_loader.cpp:220
 [I] Version: SD 1.x  --- diffusion_engine.cpp:982
 [I] Weight type stat:                      f16: 176  |    q8_0: 955   --- diffusion_engine.cpp:1560
 [I] Conditioner weight type stat:         q8_0: 196   --- diffusion_engine.cpp:1561

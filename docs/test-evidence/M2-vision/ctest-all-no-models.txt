@@ -1,4 +1,4 @@
-﻿Test project D:/HCSInfer/build/vision
+﻿Test project <REPO>/build/vision
         Start 295: MutationFuzz.GgufParserNeverCrashesOrViolatesInvariants
         Start 296: MutationFuzz.PureRandomGarbageIsRejected
   1/327 Test #296: MutationFuzz.PureRandomGarbageIsRejected ..........................................................   Passed    0.47 sec

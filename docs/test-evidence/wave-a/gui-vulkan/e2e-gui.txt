@@ -1,0 +1,33 @@
+== Phase 1: UI over HTTP ==
+PASS  GET / without token -> 200 html
+PASS  CSP present and strict
+PASS  framing and referrer hardened
+PASS  index has no token embedded
+PASS  /ui/app.js served (javascript)
+PASS  /ui/app.js carries CSP
+PASS  /ui/app.css served (text/css)
+PASS  /ui/app.css carries CSP
+PASS  traversal rejected: /ui/../x
+PASS  traversal rejected: /ui/..%2f..%2fwindows
+PASS  traversal rejected: /ui/%2e%2e/x
+PASS  traversal rejected: /ui/a/b
+PASS  traversal rejected: /ui/.env
+PASS  POST / -> 405
+PASS  API still requires the token
+PASS  UI refuses foreign Host (DNS rebinding)
+PASS  UI refuses foreign Origin
+PASS  API works with token (UI's own call)
+== Phase 2: browser boot (headless --dump-dom) ==
+PASS  browser rendered the UI
+PASS  UI connected to the API using the fragment token
+PASS  Models table lists registered models
+PASS  token not left in DOM
+== Phase 3: browser interaction (playwright) ==
+PASS  UI connected
+PASS  fragment cleared from the URL
+PASS  model loaded through the Models tab
+PASS  streamed chat reply shown
+PASS  Stop ends generation and re-enables Send
+PASS  no CSP violations logged
+
+SUMMARY: 28 checks, 0 failed, 0 not run -> PASS

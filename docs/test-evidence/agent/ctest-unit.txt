@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/.claude/worktrees/flux3-agent-engine-v1-665ab0/build/agent-cmake
+Test project <REPO>/build/agent-cmake
       Start  1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules
  1/33 Test  #1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules .............   Passed    0.03 sec
       Start  2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd

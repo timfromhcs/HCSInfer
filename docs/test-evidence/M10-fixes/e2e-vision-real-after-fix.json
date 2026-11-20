@@ -23,7 +23,7 @@
     {
       "check": "scan registers the VLM",
       "pass": true,
-      "detail": "{\n  \"models\": [\n    {\n      \"architecture\": \"clip\",\n      \"display_name\": \"mmproj-SmolVLM2-500M-Video-Instruct-Q8_0\",\n      \"format\": \"gguf\",\n      \"id\": \"mmproj-smolvlm2-500m-video-instruct-q8_0\",\n      \"kind\": \"text\",\n      \"license\": \"unknown\",\n      \"path\": \"D:\\\\HCSModels\\\\vision\\\\mmproj-SmolVLM"
+      "detail": "{\n  \"models\": [\n    {\n      \"architecture\": \"clip\",\n      \"display_name\": \"mmproj-SmolVLM2-500M-Video-Instruct-Q8_0\",\n      \"format\": \"gguf\",\n      \"id\": \"mmproj-smolvlm2-500m-video-instruct-q8_0\",\n      \"kind\": \"text\",\n      \"license\": \"unknown\",\n      \"path\": \"<MODELS>\\\\vision\\\\mmproj-SmolVLM"
     },
     {
       "check": "serve prints port and token",

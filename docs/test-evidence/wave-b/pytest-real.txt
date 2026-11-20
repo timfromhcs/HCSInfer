@@ -1,7 +1,7 @@
 ============================= test session starts =============================
-platform win32 -- Python 3.13.13, pytest-9.2.0, pluggy-1.7.0 -- D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\build\devtools\pybuild\Scripts\python.exe
+platform win32 -- Python 3.13.13, pytest-9.2.0, pluggy-1.7.0 -- <REPO>\build\devtools\pybuild\Scripts\python.exe
 cachedir: .pytest_cache
-rootdir: D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-d7c553\python
+rootdir: <REPO>\python
 configfile: pyproject.toml
 testpaths: tests
 collecting ... collected 8 items

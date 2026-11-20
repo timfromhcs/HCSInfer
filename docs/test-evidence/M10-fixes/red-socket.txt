@@ -1,19 +1,19 @@
-Running main() from D:\HCSInfer\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
+Running main() from <REPO>\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
 Note: Google Test filter = ApiSocketAudit.*
 [==========] Running 3 tests from 1 test suite.
 [----------] Global test environment set-up.
 [----------] 3 tests from ApiSocketAudit
 [ RUN      ] ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob
-D:\HCSInfer\tests\contract\api_http\test_http_socket.cpp(276): error: Value of: stopped
+<REPO>\tests\contract\api_http\test_http_socket.cpp(276): error: Value of: stopped
   Actual: false
 Expected: true
 engine kept generating for a client that disconnected
 
-D:\HCSInfer\tests\contract\api_http\test_http_socket.cpp(277): error: Value of: s.fx.cp->wait_job(JobId{1}, std::chrono::milliseconds(3000))
+<REPO>\tests\contract\api_http\test_http_socket.cpp(277): error: Value of: s.fx.cp->wait_job(JobId{1}, std::chrono::milliseconds(3000))
   Actual: false
 Expected: true
 
-D:\HCSInfer\tests\contract\api_http\test_http_socket.cpp(278): error: Expected equality of these values:
+<REPO>\tests\contract\api_http\test_http_socket.cpp(278): error: Expected equality of these values:
   s.fx.cp->job_status(JobId{1}).value().state
     Which is: 4-byte object <01-00 00-00>
   JobState::Cancelled

@@ -1,5 +1,5 @@
 stable-diffusion.cpp version master-1106-532d2c1, commit 532d2c1
-Usage: D:\HCSInfer\build\sd-vulkan\bin\sd-cli.exe [options]
+Usage: <REPO>\build\sd-vulkan\bin\sd-cli.exe [options]
 
 CLI Options:
   --input-frames <string>            directory of ordered RGB frames for vid_upscale (use -i for a single image)

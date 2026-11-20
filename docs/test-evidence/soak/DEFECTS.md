@@ -1,6 +1,6 @@
 # Defects found by the soak harness, CI and the real-model runs (2026-11-18) and their status
 
-Original run: `scripts/soak.ps1 -BuildDir build/rel -ModelRoot D:\HCSModels -Profile quick -Label cpu-quick` on the
+Original run: `scripts/soak.ps1 -BuildDir build/rel -ModelRoot <MODELS> -Profile quick -Label cpu-quick` on the
 target machine (Ryzen 7 7735HS, CPU-only Release build, LFM3-Omni-2B Q8_0 + mmproj and SD1.5 Q8_0, models read-only)
 against `main` 902b41e + the uncommitted W2 port. Evidence: `cpu-quick/`. 12 gtest cases PASS, `HttpStorm` FAIL
 (2 of 18 checks).

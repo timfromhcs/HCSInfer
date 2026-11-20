@@ -34,3 +34,11 @@ path recorded in `CMakeCache.txt`; all four are now in `licenses/`.
   does include libwebp. Treat the SBOM/libwebp line as conservative, not as a statement about this binary.
 - Model-dependent tests (36) were NOT RUN in this wave; their last real-model evidence is in earlier waves.
 - No clean-machine test, no signing, no tag, no merge, no push.
+
+## Superseded in wave A (2026-11-20)
+
+- The SBOM above (`package-sbom.cdx.json`) listed libwebp as linked. Wave A found that libwebp is only linked by
+  stable-diffusion.cpp's own CLI/server examples, which HCSInfer never builds, so it was never in the binary. The SBOM
+  is now generated from the build's `CMakeCache.txt` (`scripts/sbom.ps1 -BuildDir`) and records the tree state; see
+  `docs/test-evidence/wave-a/`.
+- The nested submodules (`ggml`, `libwebp`, `libwebm`) are now initialised from the local clones at their recorded pins.

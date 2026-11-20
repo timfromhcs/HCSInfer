@@ -11,12 +11,12 @@
 [10/717] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\amx\amx.cpp.obj
 [11/717] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\amx\mmq.cpp.obj
 [12/717] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\tiled\tiled-kernel.cpp.obj
-D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(280): warning C4068: unknown pragma 'GCC'
-D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(289): warning C4068: unknown pragma 'GCC'
-D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(297): warning C4068: unknown pragma 'GCC'
-D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(320): warning C4068: unknown pragma 'GCC'
-D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(329): warning C4068: unknown pragma 'GCC'
-D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(337): warning C4068: unknown pragma 'GCC'
+<REPO>\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(280): warning C4068: unknown pragma 'GCC'
+<REPO>\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(289): warning C4068: unknown pragma 'GCC'
+<REPO>\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(297): warning C4068: unknown pragma 'GCC'
+<REPO>\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(320): warning C4068: unknown pragma 'GCC'
+<REPO>\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(329): warning C4068: unknown pragma 'GCC'
+<REPO>\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(337): warning C4068: unknown pragma 'GCC'
 [13/717] Building C object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ggml-cpu.c.obj
 [14/717] Building CXX object ggml\src\CMakeFiles\ggml-base.dir\ggml-threading.cpp.obj
 [15/717] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ggml-cpu.cpp.obj
@@ -81,7 +81,7 @@ D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(337): wa
 -- Enabling E4M3 glslc support
 -- Configuring done (10.3s)
 -- Generating done (0.1s)
--- Build files have been written to: D:/HCSInfer/build/llama-vulkan/ggml/src/ggml-vulkan/vulkan-shaders-gen-prefix/src/vulkan-shaders-gen-build
+-- Build files have been written to: <REPO>/build/llama-vulkan/ggml/src/ggml-vulkan/vulkan-shaders-gen-prefix/src/vulkan-shaders-gen-build
 [49/717] Building CXX object vendor\cpp-httplib\CMakeFiles\cpp-httplib.dir\httplib.cpp.obj
 [50/717] Linking CXX static library vendor\cpp-httplib\cpp-httplib.lib
 [51/717] Provisioning UI assets
@@ -90,7 +90,7 @@ D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(337): wa
 -- UI: downloading from latest: https://huggingface.co/buckets/ggml-org/llama-ui/resolve/latest/dist.tar.gz
 -- UI: archive verified and extracted
 -- UI: HF download succeeded, stamp updated (ggml-org/llama-ui|b1, resolved: latest)
--- UI: gzip compression applied (D:/HCSInfer/build/llama-vulkan/ui/apps/chat/ui-gzip/_gzip)
+-- UI: gzip compression applied (<REPO>/build/llama-vulkan/ui/apps/chat/ui-gzip/_gzip)
 -- UI: embedded 70 assets
 [52/717] Building CXX object ui\apps\chat\CMakeFiles\llama-ui.dir\ui.cpp.obj
 [53/717] Linking CXX static library ui\apps\chat\llama-ui.lib
@@ -98,7 +98,7 @@ D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(337): wa
 [1/2] Building CXX object CMakeFiles\vulkan-shaders-gen.dir\vulkan-shaders-gen.cpp.obj
 [2/2] Linking CXX executable vulkan-shaders-gen.exe
 [55/717] Performing install step for 'vulkan-shaders-gen'
--- Installing: D:/HCSInfer/build/llama-vulkan/Release/vulkan-shaders-gen.exe
+-- Installing: <REPO>/build/llama-vulkan/Release/vulkan-shaders-gen.exe
 [56/717] Completed 'vulkan-shaders-gen'
 [57/717] Generate vulkan shaders header
 [58/717] Generate vulkan shaders for arange.comp
@@ -446,7 +446,7 @@ D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(337): wa
 [400/717] Building CXX object src\CMakeFiles\llama.dir\llama-graph.cpp.obj
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3630): warning C4244: 'argument': conversion from 'const int64_t' to 'uint32_t', possible loss of data
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3630): note: the template instantiation context (the oldest one first) is
-D:\HCSInfer\external\llama.cpp\src\llama-graph.cpp(2896): note: see reference to function template instantiation 'std::unique_ptr<llm_graph_input_out_ids,std::default_delete<llm_graph_input_out_ids>> std::make_unique<llm_graph_input_out_ids,const llama_hparams&,const llama_cparams&,const int64_t&,0>(const llama_hparams &,const llama_cparams &,const int64_t &)' being compiled
+<REPO>\external\llama.cpp\src\llama-graph.cpp(2896): note: see reference to function template instantiation 'std::unique_ptr<llm_graph_input_out_ids,std::default_delete<llm_graph_input_out_ids>> std::make_unique<llm_graph_input_out_ids,const llama_hparams&,const llama_cparams&,const int64_t&,0>(const llama_hparams &,const llama_cparams &,const int64_t &)' being compiled
 [401/717] Building CXX object src\CMakeFiles\llama.dir\llama-chat.cpp.obj
 [402/717] Building CXX object src\CMakeFiles\llama.dir\llama-kv-cache-dsa.cpp.obj
 [403/717] Building CXX object src\CMakeFiles\llama.dir\llama-context.cpp.obj
@@ -468,8 +468,8 @@ D:\HCSInfer\external\llama.cpp\src\llama-graph.cpp(2896): note: see reference to
 [419/717] Building CXX object src\CMakeFiles\llama.dir\llama-quant.cpp.obj
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\type_traits(1680): warning C4244: 'argument': conversion from 'unsigned __int64' to 'int', possible loss of data
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\type_traits(1680): note: the template instantiation context (the oldest one first) is
-D:\HCSInfer\external\llama.cpp\src\llama-quant.cpp(290): note: see reference to function template instantiation 'std::thread &std::vector<std::thread,std::allocator<std::thread>>::emplace_back<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const uint8_t*,float*,size_t&>(llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const uint8_t *&&,float *&&,size_t &)' being compiled
-D:\HCSInfer\external\llama.cpp\src\llama-quant.cpp(290): note: see the first reference to 'std::vector<std::thread,std::allocator<std::thread>>::emplace_back' in 'llama_tensor_dequantize_impl'
+<REPO>\external\llama.cpp\src\llama-quant.cpp(290): note: see reference to function template instantiation 'std::thread &std::vector<std::thread,std::allocator<std::thread>>::emplace_back<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const uint8_t*,float*,size_t&>(llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const uint8_t *&&,float *&&,size_t &)' being compiled
+<REPO>\external\llama.cpp\src\llama-quant.cpp(290): note: see the first reference to 'std::vector<std::thread,std::allocator<std::thread>>::emplace_back' in 'llama_tensor_dequantize_impl'
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(924): note: see reference to function template instantiation '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_one_at_back<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const unsigned char*,float*,size_t&>(llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const unsigned char *&&,float *&&,size_t &)' being compiled
         with
         [
@@ -532,26 +532,26 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.3520
             _Ty2=uint32_t
         ]
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): note: the template instantiation context (the oldest one first) is
-D:\HCSInfer\external\llama.cpp\src\llama-model.cpp(727): note: see reference to function template instantiation 'std::pair<int64_t,uint32_t>::pair<const int64_t&,int64_t,0>(_Other1,_Other2 &&) noexcept' being compiled
+<REPO>\external\llama.cpp\src\llama-model.cpp(727): note: see reference to function template instantiation 'std::pair<int64_t,uint32_t>::pair<const int64_t&,int64_t,0>(_Other1,_Other2 &&) noexcept' being compiled
         with
         [
             _Other1=const int64_t &,
             _Other2=int64_t
         ]
-D:\HCSInfer\external\llama.cpp\src\llama-model.cpp(727): note: see the first reference to 'std::pair<int64_t,uint32_t>::pair' in 'llama_meta_device_get_split_state::<lambda_133962d96ca4afe921c058bf7f3983f8>::operator ()'
+<REPO>\external\llama.cpp\src\llama-model.cpp(727): note: see the first reference to 'std::pair<int64_t,uint32_t>::pair' in 'llama_meta_device_get_split_state::<lambda_133962d96ca4afe921c058bf7f3983f8>::operator ()'
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): warning C4244: 'initializing': conversion from 'const int64_t' to '_Ty2', possible loss of data
         with
         [
             _Ty2=uint32_t
         ]
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): note: the template instantiation context (the oldest one first) is
-D:\HCSInfer\external\llama.cpp\src\llama-model.cpp(738): note: see reference to function template instantiation 'std::pair<int64_t,uint32_t>::pair<const int64_t&,const int64_t&,0>(_Other1,_Other2) noexcept' being compiled
+<REPO>\external\llama.cpp\src\llama-model.cpp(738): note: see reference to function template instantiation 'std::pair<int64_t,uint32_t>::pair<const int64_t&,const int64_t&,0>(_Other1,_Other2) noexcept' being compiled
         with
         [
             _Other1=const int64_t &,
             _Other2=const int64_t &
         ]
-D:\HCSInfer\external\llama.cpp\src\llama-model.cpp(738): note: see the first reference to 'std::pair<int64_t,uint32_t>::pair' in 'llama_meta_device_get_split_state::<lambda_133962d96ca4afe921c058bf7f3983f8>::operator ()'
+<REPO>\external\llama.cpp\src\llama-model.cpp(738): note: see the first reference to 'std::pair<int64_t,uint32_t>::pair' in 'llama_meta_device_get_split_state::<lambda_133962d96ca4afe921c058bf7f3983f8>::operator ()'
 [430/717] Building CXX object common\CMakeFiles\llama-common.dir\parsers\harmony-xml.cpp.obj
 [431/717] Building CXX object common\CMakeFiles\llama-common.dir\parsers\kimi-k2.cpp.obj
 [432/717] Building CXX object common\CMakeFiles\llama-common.dir\parsers\k2-horizon.cpp.obj
@@ -566,14 +566,14 @@ D:\HCSInfer\external\llama.cpp\src\llama-model.cpp(738): note: see the first ref
 [441/717] Building CXX object common\CMakeFiles\llama-common.dir\parsers\muse-glimmer.cpp.obj
 [442/717] Building CXX object common\CMakeFiles\llama-common.dir\parsers\minimax-m3.cpp.obj
 [443/717] Building CXX object ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ggml-vulkan.cpp.obj
-D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(3994): warning C4003: not enough arguments for function-like macro invocation 'IM2COL'
-D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(4271): warning C4003: not enough arguments for function-like macro invocation 'CREATE_CONVS'
-D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(6885): warning C4319: '~': zero extending '_Ty' to 'uint64_t' of greater size
+<REPO>\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(3994): warning C4003: not enough arguments for function-like macro invocation 'IM2COL'
+<REPO>\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(4271): warning C4003: not enough arguments for function-like macro invocation 'CREATE_CONVS'
+<REPO>\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(6885): warning C4319: '~': zero extending '_Ty' to 'uint64_t' of greater size
         with
         [
             _Ty=uint32_t
         ]
-D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(11486): warning C4319: '~': zero extending 'uint32_t' to 'size_t' of greater size
+<REPO>\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(11486): warning C4319: '~': zero extending 'uint32_t' to 'size_t' of greater size
 [444/717] Building CXX object common\CMakeFiles\llama-common.dir\parsers\qwen3-coder.cpp.obj
 [445/717] Building CXX object common\CMakeFiles\llama-common.dir\parsers\translate-gemma.cpp.obj
 [446/717] Building CXX object common\CMakeFiles\llama-common.dir\chat-auto-parser-helpers.cpp.obj
@@ -629,7 +629,7 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.3520
             _Ty=int
         ]
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(5310): note: the template instantiation context (the oldest one first) is
-D:\HCSInfer\external\llama.cpp\tools\mtmd\mtmd-audio.cpp(378): note: see reference to function template instantiation 'void std::fill<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,int>(const _FwdIt,const _FwdIt,const int &)' being compiled
+<REPO>\external\llama.cpp\tools\mtmd\mtmd-audio.cpp(378): note: see reference to function template instantiation 'void std::fill<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,int>(const _FwdIt,const _FwdIt,const int &)' being compiled
         with
         [
             _Ty=float,
@@ -651,7 +651,7 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.3520
             _Ty=double
         ]
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(5310): note: the template instantiation context (the oldest one first) is
-D:\HCSInfer\external\llama.cpp\tools\mtmd\mtmd-subcontext.cpp(1214): note: see reference to function template instantiation 'void std::fill<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,double>(const _FwdIt,const _FwdIt,const double &)' being compiled
+<REPO>\external\llama.cpp\tools\mtmd\mtmd-subcontext.cpp(1214): note: see reference to function template instantiation 'void std::fill<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,double>(const _FwdIt,const _FwdIt,const double &)' being compiled
         with
         [
             _Ty=float,
@@ -671,8 +671,8 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.3520
             _Ty2=int32_t
         ]
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): note: the template instantiation context (the oldest one first) is
-D:\HCSInfer\external\llama.cpp\examples\diffusion\diffusion.cpp(338): note: see reference to function template instantiation 'std::pair<float,int32_t> &std::vector<std::pair<float,int32_t>,std::allocator<std::pair<float,int32_t>>>::emplace_back<float&,size_t&>(float &,size_t &)' being compiled
-D:\HCSInfer\external\llama.cpp\examples\diffusion\diffusion.cpp(338): note: see the first reference to 'std::vector<std::pair<float,int32_t>,std::allocator<std::pair<float,int32_t>>>::emplace_back' in 'diffusion_generate'
+<REPO>\external\llama.cpp\examples\diffusion\diffusion.cpp(338): note: see reference to function template instantiation 'std::pair<float,int32_t> &std::vector<std::pair<float,int32_t>,std::allocator<std::pair<float,int32_t>>>::emplace_back<float&,size_t&>(float &,size_t &)' being compiled
+<REPO>\external\llama.cpp\examples\diffusion\diffusion.cpp(338): note: see the first reference to 'std::vector<std::pair<float,int32_t>,std::allocator<std::pair<float,int32_t>>>::emplace_back' in 'diffusion_generate'
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(924): note: see reference to function template instantiation '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_one_at_back<float&,size_t&>(float &,size_t &)' being compiled
         with
         [
@@ -698,17 +698,17 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.3520
 [512/717] Building CXX object tools\server\CMakeFiles\server-context.dir\server-context.cpp.obj
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3630): warning C4244: 'argument': conversion from 'const uint64_t' to 'int', possible loss of data
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3630): note: the template instantiation context (the oldest one first) is
-D:\HCSInfer\external\llama.cpp\tools\server\server-context.cpp(2052): note: see reference to function template instantiation 'std::unique_ptr<server_realtime_slot,std::default_delete<server_realtime_slot>> std::make_unique<server_realtime_slot,llama_context*&,mtmd_context*&,int&,int32_t&,const common_params_sampling&,server_response&,const int&,const size_t&,0>(llama_context *&,mtmd_context *&,int &,int32_t &,const common_params_sampling &,server_response &,const int &,const size_t &)' being compiled
+<REPO>\external\llama.cpp\tools\server\server-context.cpp(2052): note: see reference to function template instantiation 'std::unique_ptr<server_realtime_slot,std::default_delete<server_realtime_slot>> std::make_unique<server_realtime_slot,llama_context*&,mtmd_context*&,int&,int32_t&,const common_params_sampling&,server_response&,const int&,const size_t&,0>(llama_context *&,mtmd_context *&,int &,int32_t &,const common_params_sampling &,server_response &,const int &,const size_t &)' being compiled
 [513/717] Building CXX object tools\mtmd\CMakeFiles\mtmd.dir\mtmd-model.cpp.obj
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1461): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1461): note: the template instantiation context (the oldest one first) is
-D:\HCSInfer\external\llama.cpp\tools\mtmd\mtmd-model.cpp(3245): note: see reference to function template instantiation 'void std::vector<int,std::allocator<int>>::assign<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,0>(_Iter,_Iter)' being compiled
+<REPO>\external\llama.cpp\tools\mtmd\mtmd-model.cpp(3245): note: see reference to function template instantiation 'void std::vector<int,std::allocator<int>>::assign<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,0>(_Iter,_Iter)' being compiled
         with
         [
             _Ty=float,
             _Iter=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<float>>>
         ]
-D:\HCSInfer\external\llama.cpp\tools\mtmd\mtmd-model.cpp(3245): note: see the first reference to 'std::vector<int,std::allocator<int>>::assign' in 'mtmd_model_loader::load_tensors'
+<REPO>\external\llama.cpp\tools\mtmd\mtmd-model.cpp(3245): note: see the first reference to 'std::vector<int,std::allocator<int>>::assign' in 'mtmd_model_loader::load_tensors'
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1491): note: see reference to function template instantiation 'void std::vector<int,std::allocator<int>>::_Assign_counted_range<float*>(_Iter,const unsigned __int64)' being compiled
         with
         [
@@ -769,7 +769,7 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.3520
 [528/717] Building CXX object tools\llama-bench\CMakeFiles\llama-bench-impl.dir\llama-bench.cpp.obj
 [529/717] Building CXX object tests\CMakeFiles\test-llama-context.dir\test-llama-context.cpp.obj
 [530/717] Building CXX object tools\completion\CMakeFiles\llama-completion-impl.dir\completion.cpp.obj
-D:\HCSInfer\external\llama.cpp\tools\completion\completion.cpp(386): warning C4804: '>': unsafe use of type 'bool' in operation
+<REPO>\external\llama.cpp\tools\completion\completion.cpp(386): warning C4804: '>': unsafe use of type 'bool' in operation
 [531/717] Building CXX object tests\CMakeFiles\test-llama-context.dir\llama-context\test-util.cpp.obj
 [532/717] Building CXX object tools\cli\CMakeFiles\llama-cli-impl.dir\cli-context.cpp.obj
 [533/717] Building CXX object tests\CMakeFiles\test-log.dir\test-log.cpp.obj
@@ -816,7 +816,7 @@ D:\HCSInfer\external\llama.cpp\tools\completion\completion.cpp(386): warning C48
 [574/717] Building CXX object tests\CMakeFiles\test-llama-mmap.dir\__\src\llama-mmap.cpp.obj
 [575/717] Building CXX object examples\gguf\CMakeFiles\llama-gguf.dir\gguf.cpp.obj
 [576/717] Building CXX object tests\CMakeFiles\test-gguf.dir\test-gguf.cpp.obj
-D:\HCSInfer\external\llama.cpp\tests\test-gguf.cpp(714): warning C4319: '~': zero extending 'uint32_t' to 'size_t' of greater size
+<REPO>\external\llama.cpp\tests\test-gguf.cpp(714): warning C4319: '~': zero extending 'uint32_t' to 'size_t' of greater size
 [577/717] Building CXX object examples\gguf-hash\CMakeFiles\llama-gguf-hash.dir\gguf-hash.cpp.obj
 [578/717] Building CXX object tests\CMakeFiles\test-export-graph-ops.dir\test-export-graph-ops.cpp.obj
 [579/717] Building CXX object examples\batched\CMakeFiles\llama-batched.dir\batched.cpp.obj

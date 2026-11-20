@@ -2,18 +2,18 @@ ggml_vulkan: Found 1 Vulkan devices:
 ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | rebar: 0 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 32768 | int dot: 1 | matrix cores: none
 Using upstream GGML: INT8 tensorwise/convrot is disabled and FP8 weights are converted to F16 at load time. Some operators may be unsupported and performance may be lower than with patched GGML. --- diffusion_engine.cpp:902
 using 8 threads for model loading --- model_loader.cpp:194
-loading diffusion model from 'D:\HCSModels\diffusion\flux3\flux-3-image-klein-UD-Q4_K_XL.gguf' --- diffusion_engine.cpp:697
-load D:\HCSModels\diffusion\flux3\flux-3-image-klein-UD-Q4_K_XL.gguf using gguf format --- model_loader.cpp:220
-init from 'D:\HCSModels\diffusion\flux3\flux-3-image-klein-UD-Q4_K_XL.gguf' --- model_loader.cpp:266
+loading diffusion model from '<MODELS>\diffusion\flux3\flux-3-image-klein-UD-Q4_K_XL.gguf' --- diffusion_engine.cpp:697
+load <MODELS>\diffusion\flux3\flux-3-image-klein-UD-Q4_K_XL.gguf using gguf format --- model_loader.cpp:220
+init from '<MODELS>\diffusion\flux3\flux-3-image-klein-UD-Q4_K_XL.gguf' --- model_loader.cpp:266
 GGUF v3, tensor_count=359, metadata_kv_count=6 --- gguf_reader_ext.h:225
-loading llm from 'D:\HCSModels\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf' --- diffusion_engine.cpp:754
-load D:\HCSModels\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf using gguf format --- model_loader.cpp:220
-init from 'D:\HCSModels\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf' --- model_loader.cpp:266
+loading llm from '<MODELS>\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf' --- diffusion_engine.cpp:754
+load <MODELS>\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf using gguf format --- model_loader.cpp:220
+init from '<MODELS>\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf' --- model_loader.cpp:266
 GGUF v3, tensor_count=198, metadata_kv_count=66 --- gguf_reader_ext.h:225
-loading vae from 'D:\HCSModels\diffusion\flux3\bfl\LICENSE.md' --- diffusion_engine.cpp:768
-init from torch legacy 'D:\HCSModels\diffusion\flux3\bfl\LICENSE.md' --- model_loader.cpp:366
-unknown format D:\HCSModels\diffusion\flux3\bfl\LICENSE.md --- model_loader.cpp:236
-loading vae from 'D:\HCSModels\diffusion\flux3\bfl\LICENSE.md' failed --- diffusion_engine.cpp:770
+loading vae from '<MODELS>\diffusion\flux3\bfl\LICENSE.md' --- diffusion_engine.cpp:768
+init from torch legacy '<MODELS>\diffusion\flux3\bfl\LICENSE.md' --- model_loader.cpp:366
+unknown format <MODELS>\diffusion\flux3\bfl\LICENSE.md --- model_loader.cpp:236
+loading vae from '<MODELS>\diffusion\flux3\bfl\LICENSE.md' failed --- diffusion_engine.cpp:770
 Version: Flux.3 Image Klein  --- diffusion_engine.cpp:982
 Initializing backend: CPU --- ggml_extend_backend.cpp:421
 using 8 threads for model loading --- model_loader.cpp:194
@@ -414,4 +414,4 @@ VAE tensor 'first_stage_model.post_quant_conv.weight' not in model metadata --- 
 VAE tensor 'first_stage_model.quant_conv.bias' not in model metadata --- model_manager.cpp:780
 VAE tensor 'first_stage_model.quant_conv.weight' not in model metadata --- model_manager.cpp:780
 model metadata validation failed --- diffusion_engine.cpp:1373
-error: stable-diffusion.cpp could not load the model: loading vae from 'D:\HCSModels\diffusion\flux3\bfl\LICENSE.md' failed --- diffusion_engine.cpp:770 | model metadata validation failed --- diffusion_engine.cpp:1373: context creation failed; see log for details [model_error]
+error: stable-diffusion.cpp could not load the model: loading vae from '<MODELS>\diffusion\flux3\bfl\LICENSE.md' failed --- diffusion_engine.cpp:770 | model metadata validation failed --- diffusion_engine.cpp:1373: context creation failed; see log for details [model_error]

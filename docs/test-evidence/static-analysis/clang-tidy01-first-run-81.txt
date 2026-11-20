@@ -5,153 +5,153 @@ compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64
 translation units: 42 (src)
 
 == src/api/control_plane_vision.cpp
-D:\HCSInfer\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\src\api\control_plane_vision.cpp:156:50: warning: an exception may be thrown in function '(lambda at D:\HCSInfer\src\api\control_plane_vision.cpp:156:50)' which should not throw exceptions [bugprone-exception-escape]
+<REPO>\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\src\api\control_plane_vision.cpp:156:50: warning: an exception may be thrown in function '(lambda at <REPO>\src\api\control_plane_vision.cpp:156:50)' which should not throw exceptions [bugprone-exception-escape]
 
 == src/api/control_plane.cpp
-D:\HCSInfer\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
-D:\HCSInfer\src\api\control_plane.cpp:109:47: warning: 2 adjacent parameters of 'kv_cache_estimate' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters]
-D:\HCSInfer\src\api\control_plane.cpp:356:40: warning: an exception may be thrown in function '(lambda at D:\HCSInfer\src\api\control_plane.cpp:356:40)' which should not throw exceptions [bugprone-exception-escape]
-D:\HCSInfer\src\api\control_plane.cpp:653:11: warning: empty catch statements hide issues; to handle exceptions appropriately, consider re-throwing, handling, or avoiding catch altogether [bugprone-empty-catch]
+<REPO>\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\api\control_plane.cpp:109:47: warning: 2 adjacent parameters of 'kv_cache_estimate' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\api\control_plane.cpp:356:40: warning: an exception may be thrown in function '(lambda at <REPO>\src\api\control_plane.cpp:356:40)' which should not throw exceptions [bugprone-exception-escape]
+<REPO>\src\api\control_plane.cpp:653:11: warning: empty catch statements hide issues; to handle exceptions appropriately, consider re-throwing, handling, or avoiding catch altogether [bugprone-empty-catch]
 
 == src/api/data_uri.cpp
-D:\HCSInfer\src\api\data_uri.cpp:13:11: warning: either cast from 'int' to 'std::size_t' (aka 'unsigned long long') is ineffective, or there is loss of precision before the conversion [bugprone-misplaced-widening-cast]
-D:\HCSInfer\src\api\data_uri.cpp:14:11: warning: either cast from 'int' to 'std::size_t' (aka 'unsigned long long') is ineffective, or there is loss of precision before the conversion [bugprone-misplaced-widening-cast]
-D:\HCSInfer\src\api\data_uri.cpp:16:36: warning: either cast from 'int' to 'std::size_t' (aka 'unsigned long long') is ineffective, or there is loss of precision before the conversion [bugprone-misplaced-widening-cast]
+<REPO>\src\api\data_uri.cpp:13:11: warning: either cast from 'int' to 'std::size_t' (aka 'unsigned long long') is ineffective, or there is loss of precision before the conversion [bugprone-misplaced-widening-cast]
+<REPO>\src\api\data_uri.cpp:14:11: warning: either cast from 'int' to 'std::size_t' (aka 'unsigned long long') is ineffective, or there is loss of precision before the conversion [bugprone-misplaced-widening-cast]
+<REPO>\src\api\data_uri.cpp:16:36: warning: either cast from 'int' to 'std::size_t' (aka 'unsigned long long') is ineffective, or there is loss of precision before the conversion [bugprone-misplaced-widening-cast]
 
 == src/api/http_api.cpp
-D:\HCSInfer\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/api/http_api.hpp:51:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/api/http_api.hpp:96:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\src\api\http_api.cpp:65:9: warning: switch has 2 consecutive identical branches [bugprone-branch-clone]
-D:\HCSInfer\src\api\http_api.cpp:698:16: warning: an exception may be thrown in function '(lambda at D:\HCSInfer\src\api\http_api.cpp:698:16)' which should not throw exceptions [bugprone-exception-escape]
+<REPO>\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/http_api.hpp:51:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/http_api.hpp:96:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\src\api\http_api.cpp:65:9: warning: switch has 2 consecutive identical branches [bugprone-branch-clone]
+<REPO>\src\api\http_api.cpp:698:16: warning: an exception may be thrown in function '(lambda at <REPO>\src\api\http_api.cpp:698:16)' which should not throw exceptions [bugprone-exception-escape]
 
 == src/api/http_server.cpp
-D:\HCSInfer\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/api/http_api.hpp:19:8: warning: an exception may be thrown in function 'HttpRequest' which should not throw exceptions [bugprone-exception-escape]
-D:\HCSInfer\include\hcs/api/http_api.hpp:51:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/api/http_api.hpp:96:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/http_api.hpp:19:8: warning: an exception may be thrown in function 'HttpRequest' which should not throw exceptions [bugprone-exception-escape]
+<REPO>\include\hcs/api/http_api.hpp:51:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/http_api.hpp:96:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
 
 == src/api/llama_stream_adapter.cpp
-D:\HCSInfer\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
 
 == src/api/runtime.cpp
-D:\HCSInfer\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/api/http_api.hpp:51:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/api/http_api.hpp:96:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\src\api\runtime.cpp:158:48: warning: performing an implicit widening conversion to type 'unsigned long long' of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/http_api.hpp:51:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/http_api.hpp:96:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\src\api\runtime.cpp:158:48: warning: performing an implicit widening conversion to type 'unsigned long long' of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
 
 == src/app/main.cpp
-D:\HCSInfer\src\app\main.cpp:7:5: warning: an exception may be thrown in function 'main' which should not throw exceptions [bugprone-exception-escape]
+<REPO>\src\app\main.cpp:7:5: warning: an exception may be thrown in function 'main' which should not throw exceptions [bugprone-exception-escape]
 
 == src/cli/chat_cmd.cpp
-D:\HCSInfer\src\cli\chat_cmd.cpp:119:35: warning: 2 adjacent parameters of 'resolve_model' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\cli\chat_cmd.cpp:119:35: warning: 2 adjacent parameters of 'resolve_model' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/cli/cli.cpp
-D:\HCSInfer\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/mcp/mcp_server.hpp:29:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/mcp/mcp_server.hpp:32:35: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/mcp/mcp_server.hpp:29:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/mcp/mcp_server.hpp:32:35: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
 
 == src/cli/image_cmd.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xfilesystem_abi.h:132:1: warning: The value '9' provided to the cast expression is not in the valid range of values for '__std_fs_stats_flags' [clang-analyzer-optin.core.EnumCastOutOfRange]
-D:\HCSInfer\src\cli\image_cmd.cpp:127:35: warning: 2 adjacent parameters of 'resolve_model' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\cli\image_cmd.cpp:127:35: warning: 2 adjacent parameters of 'resolve_model' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/cli/vision_cmd.cpp
-D:\HCSInfer\src\cli\vision_cmd.cpp:118:35: warning: 2 adjacent parameters of 'resolve_model' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
-D:\HCSInfer\src\cli\vision_cmd.cpp:329:58: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
-D:\HCSInfer\src\cli\vision_cmd.cpp:330:39: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+<REPO>\src\cli\vision_cmd.cpp:118:35: warning: 2 adjacent parameters of 'resolve_model' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\cli\vision_cmd.cpp:329:58: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+<REPO>\src\cli\vision_cmd.cpp:330:39: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
 
 == src/core/fs_util.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xfilesystem_abi.h:132:1: warning: The value '9' provided to the cast expression is not in the valid range of values for '__std_fs_stats_flags' [clang-analyzer-optin.core.EnumCastOutOfRange]
 
 == src/core/gguf_probe.cpp
-D:\HCSInfer\src\core\gguf_probe.cpp:153:28: warning: 2 adjacent parameters of 'skip_value' of similar type ('std::uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\core\gguf_probe.cpp:153:28: warning: 2 adjacent parameters of 'skip_value' of similar type ('std::uint32_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/core/job_queue.cpp
-D:\HCSInfer\src\core\job_queue.cpp:73:15: warning: empty catch statements hide issues; to handle exceptions appropriately, consider re-throwing, handling, or avoiding catch altogether [bugprone-empty-catch]
-D:\HCSInfer\src\core\job_queue.cpp:132:38: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
-D:\HCSInfer\src\core\job_queue.cpp:149:11: warning: an exception may be thrown in function '~JobQueue' which should not throw exceptions [bugprone-exception-escape]
+<REPO>\src\core\job_queue.cpp:73:15: warning: empty catch statements hide issues; to handle exceptions appropriately, consider re-throwing, handling, or avoiding catch altogether [bugprone-empty-catch]
+<REPO>\src\core\job_queue.cpp:132:38: warning: unchecked access to optional value [bugprone-unchecked-optional-access]
+<REPO>\src\core\job_queue.cpp:149:11: warning: an exception may be thrown in function '~JobQueue' which should not throw exceptions [bugprone-exception-escape]
 
 == src/core/lifecycle.cpp
-D:\HCSInfer\src\core\lifecycle.cpp:43:26: warning: 2 adjacent parameters of 'is_legal_transition' of similar type ('ModelState') are easily swapped by mistake [bugprone-easily-swappable-parameters]
-D:\HCSInfer\src\core\lifecycle.cpp:115:46: warning: 2 adjacent parameters of 'transition_from' of similar type ('ModelState') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\core\lifecycle.cpp:43:26: warning: 2 adjacent parameters of 'is_legal_transition' of similar type ('ModelState') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\core\lifecycle.cpp:115:46: warning: 2 adjacent parameters of 'transition_from' of similar type ('ModelState') are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/core/memory_budget.cpp
-D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/core/model_registry.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xfilesystem_abi.h:132:1: warning: The value '9' provided to the cast expression is not in the valid range of values for '__std_fs_stats_flags' [clang-analyzer-optin.core.EnumCastOutOfRange]
-D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/engines/diffusion/diffusion_engine.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xfilesystem_abi.h:132:1: warning: The value '9' provided to the cast expression is not in the valid range of values for '__std_fs_stats_flags' [clang-analyzer-optin.core.EnumCastOutOfRange]
-D:\HCSInfer\src\engines\diffusion\diffusion_engine.cpp:79:38: warning: performing an implicit widening conversion to type 'const std::size_t' (aka 'const unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\src\engines\diffusion\diffusion_engine.cpp:171:9: warning: switch has 2 consecutive identical branches [bugprone-branch-clone]
-D:\HCSInfer\src\engines\diffusion\diffusion_engine.cpp:266:15: warning: 2 adjacent parameters of 'png_sink' of similar type ('void *') are easily swapped by mistake [bugprone-easily-swappable-parameters]
-D:\HCSInfer\src\engines\diffusion\diffusion_engine.cpp:625:9: warning: an exception may be thrown in function '(lambda at D:\HCSInfer\src\engines\diffusion\diffusion_engine.cpp:625:9)' which should not throw exceptions [bugprone-exception-escape]
+<REPO>\src\engines\diffusion\diffusion_engine.cpp:79:38: warning: performing an implicit widening conversion to type 'const std::size_t' (aka 'const unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\src\engines\diffusion\diffusion_engine.cpp:171:9: warning: switch has 2 consecutive identical branches [bugprone-branch-clone]
+<REPO>\src\engines\diffusion\diffusion_engine.cpp:266:15: warning: 2 adjacent parameters of 'png_sink' of similar type ('void *') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\engines\diffusion\diffusion_engine.cpp:625:9: warning: an exception may be thrown in function '(lambda at <REPO>\src\engines\diffusion\diffusion_engine.cpp:625:9)' which should not throw exceptions [bugprone-exception-escape]
 
 == src/engines/llama/llama_engine.cpp
-D:\HCSInfer\src\engines\llama\llama_engine.cpp:59:38: warning: performing an implicit widening conversion to type 'const std::size_t' (aka 'const unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\src\engines\llama\llama_engine.cpp:782:43: warning: 2 adjacent parameters of 'operator()' of similar type are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\engines\llama\llama_engine.cpp:59:38: warning: performing an implicit widening conversion to type 'const std::size_t' (aka 'const unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\src\engines\llama\llama_engine.cpp:782:43: warning: 2 adjacent parameters of 'operator()' of similar type are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/hardware/doctor.cpp
-D:\HCSInfer\src\hardware\doctor.cpp:157:46: warning: 2 adjacent parameters of 'run_doctor' of similar type ('std::ostream &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\hardware\doctor.cpp:157:46: warning: 2 adjacent parameters of 'run_doctor' of similar type ('std::ostream &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/hardware/gpu_info.cpp
-D:\HCSInfer\src\hardware\gpu_info.cpp:45:36: warning: do not cast 'FARPROC' (aka 'long long (*)()') to 'CreateFn' (aka 'long (*)(const _GUID &, void **)') through 'void *' [bugprone-casting-through-void]
+<REPO>\src\hardware\gpu_info.cpp:45:36: warning: do not cast 'FARPROC' (aka 'long long (*)()') to 'CreateFn' (aka 'long (*)(const _GUID &, void **)') through 'void *' [bugprone-casting-through-void]
 
 == src/hardware/system_info.cpp
-D:\HCSInfer\src\hardware\system_info.cpp:28:17: warning: do not cast 'FARPROC' (aka 'long long (*)()') to 'RtlGetVersionFn' (aka 'long (*)(_OSVERSIONINFOW *)') through 'void *' [bugprone-casting-through-void]
+<REPO>\src\hardware\system_info.cpp:28:17: warning: do not cast 'FARPROC' (aka 'long long (*)()') to 'RtlGetVersionFn' (aka 'long (*)(_OSVERSIONINFOW *)') through 'void *' [bugprone-casting-through-void]
 
 == src/hardware/vulkan_info.cpp
-D:\HCSInfer\src\hardware\vulkan_info.cpp:171:32: warning: do not cast 'PFN_vkVoidFunction' (aka 'void (*)()') to 'F' through 'void *' [bugprone-casting-through-void]
-D:\HCSInfer\src\hardware\vulkan_info.cpp:312:13: warning: Value stored to 'tail' is never read [clang-analyzer-deadcode.DeadStores]
-D:\HCSInfer\src\hardware\vulkan_info.cpp:459:9: warning: do not cast 'FARPROC' (aka 'long long (*)()') to 'PFN_vkGetInstanceProcAddr' (aka 'void (*(*)(VkInstance_T *, const char *))()') through 'void *' [bugprone-casting-through-void]
+<REPO>\src\hardware\vulkan_info.cpp:171:32: warning: do not cast 'PFN_vkVoidFunction' (aka 'void (*)()') to 'F' through 'void *' [bugprone-casting-through-void]
+<REPO>\src\hardware\vulkan_info.cpp:312:13: warning: Value stored to 'tail' is never read [clang-analyzer-deadcode.DeadStores]
+<REPO>\src\hardware\vulkan_info.cpp:459:9: warning: do not cast 'FARPROC' (aka 'long long (*)()') to 'PFN_vkGetInstanceProcAddr' (aka 'void (*(*)(VkInstance_T *, const char *))()') through 'void *' [bugprone-casting-through-void]
 
 == src/mcp/mcp_server.cpp
-D:\HCSInfer\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/mcp/mcp_server.hpp:29:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/mcp/mcp_server.hpp:32:35: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\src\mcp\mcp_server.cpp:200:26: warning: 2 adjacent parameters of 'tool_err' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
-D:\HCSInfer\src\mcp\mcp_server.cpp:838:15: warning: empty catch statements hide issues; to handle exceptions appropriately, consider re-throwing, handling, or avoiding catch altogether [bugprone-empty-catch]
+<REPO>\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/mcp/mcp_server.hpp:29:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/mcp/mcp_server.hpp:32:35: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\src\mcp\mcp_server.cpp:200:26: warning: 2 adjacent parameters of 'tool_err' of similar type ('const std::string &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\mcp\mcp_server.cpp:838:15: warning: empty catch statements hide issues; to handle exceptions appropriately, consider re-throwing, handling, or avoiding catch altogether [bugprone-empty-catch]
 
 == src/mcp/stdio.cpp
-D:\HCSInfer\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/mcp/mcp_server.hpp:29:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\include\hcs/mcp/mcp_server.hpp:32:35: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/api/control_plane.hpp:96:36: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/mcp/mcp_server.hpp:29:34: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\include\hcs/mcp/mcp_server.hpp:32:35: warning: performing an implicit widening conversion to type 'std::size_t' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
 
 == src/storage/codec.cpp
-D:\HCSInfer\src\storage\codec.cpp:161:18: warning: an exception may be thrown in function 'lz4_version' which should not throw exceptions [bugprone-exception-escape]
-D:\HCSInfer\src\storage\codec.cpp:165:18: warning: an exception may be thrown in function 'zstd_version' which should not throw exceptions [bugprone-exception-escape]
+<REPO>\src\storage\codec.cpp:161:18: warning: an exception may be thrown in function 'lz4_version' which should not throw exceptions [bugprone-exception-escape]
+<REPO>\src\storage\codec.cpp:165:18: warning: an exception may be thrown in function 'zstd_version' which should not throw exceptions [bugprone-exception-escape]
 
 == src/storage/file_source.cpp
-D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/storage/gguf.cpp
-D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
-D:\HCSInfer\src\storage\gguf.cpp:130:36: warning: 2 adjacent parameters of 'skip_value' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\storage\gguf.cpp:130:36: warning: 2 adjacent parameters of 'skip_value' of convertible types are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/storage/hcsmodel.cpp
-D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
-D:\HCSInfer\src\storage\hcsmodel.cpp:58:5: warning: the result from calling 'memcpy' is not null-terminated [bugprone-not-null-terminated-result]
+<REPO>\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\storage\hcsmodel.cpp:58:5: warning: the result from calling 'memcpy' is not null-terminated [bugprone-not-null-terminated-result]
 
 == src/storage/model_reader.cpp
-D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/storage/sha256.cpp
-D:\HCSInfer\src\storage\sha256.cpp:33:35: warning: result of multiplication in type 'int' is used as a pointer offset after an implicit widening conversion to type 'ptrdiff_t' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\src\storage\sha256.cpp:97:87: warning: result of multiplication in type 'int' is used as a pointer offset after an implicit widening conversion to type 'ptrdiff_t' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\src\storage\sha256.cpp:104:90: warning: result of multiplication in type 'int' is used as a pointer offset after an implicit widening conversion to type 'ptrdiff_t' [bugprone-implicit-widening-of-multiplication-result]
-D:\HCSInfer\src\storage\sha256.cpp:200:13: warning: performing an implicit widening conversion to type 'size_type' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\src\storage\sha256.cpp:33:35: warning: result of multiplication in type 'int' is used as a pointer offset after an implicit widening conversion to type 'ptrdiff_t' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\src\storage\sha256.cpp:97:87: warning: result of multiplication in type 'int' is used as a pointer offset after an implicit widening conversion to type 'ptrdiff_t' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\src\storage\sha256.cpp:104:90: warning: result of multiplication in type 'int' is used as a pointer offset after an implicit widening conversion to type 'ptrdiff_t' [bugprone-implicit-widening-of-multiplication-result]
+<REPO>\src\storage\sha256.cpp:200:13: warning: performing an implicit widening conversion to type 'size_type' (aka 'unsigned long long') of a multiplication performed in type 'int' [bugprone-implicit-widening-of-multiplication-result]
 
 == src/storage/stream.cpp
-D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
 
 == src/storage/writer.cpp
-D:\HCSInfer\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
-D:\HCSInfer\src\storage\writer.cpp:55:35: warning: 2 adjacent parameters of 'write_hcsmodel' of similar type ('const std::filesystem::path &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
-D:\HCSInfer\src\storage\writer.cpp:205:5: warning: Value stored to 'success' is never read [clang-analyzer-deadcode.DeadStores]
+<REPO>\include\hcs/checked_math.hpp:26:51: warning: 2 adjacent parameters of 'range_within' of similar type ('std::uint64_t') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\storage\writer.cpp:55:35: warning: 2 adjacent parameters of 'write_hcsmodel' of similar type ('const std::filesystem::path &') are easily swapped by mistake [bugprone-easily-swappable-parameters]
+<REPO>\src\storage\writer.cpp:205:5: warning: Value stored to 'success' is never read [clang-analyzer-deadcode.DeadStores]
 
 STATIC ANALYSIS: 81 diagnostic(s) in 42 translation units.
 Report-only run (-FailOnFindings to make this an error).

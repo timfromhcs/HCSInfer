@@ -6,7 +6,7 @@ Commit pinned: d3c3e242c16b8cbf51400fad410cd69b22d64f35 (build string d3c3e24). 
 Builds (Ninja, Release, -DLLAMA_CURL=OFF; logs configure-*.log / build-*.log):
 - build/llama-vulkan: -DGGML_VULKAN=ON   (717 steps, exit 0)
 - build/llama-cpu:    -DGGML_VULKAN=OFF  (386 steps, exit 0)
-Binaries: D:\HCSInfer\build\llama-{vulkan,cpu}\bin\{llama-cli,llama-completion,llama-bench,llama-server,llama-mtmd-cli}.exe
+Binaries: <REPO>\build\llama-{vulkan,cpu}\bin\{llama-cli,llama-completion,llama-bench,llama-server,llama-mtmd-cli}.exe
 
 Devices: Vulkan build lists `Vulkan0: AMD Radeon(TM) Graphics (14226 MiB, 13515 MiB free)`; CPU build lists none.
 Model: E:\AILOCALTRAIN\data\gguf\qwen3-0.6b-q4_k_m.gguf, SHA-256 4ea794120a3b2244a6e8a36354f1aa53e7f0c52b2f1f280dde0d7f522f37ae7c.

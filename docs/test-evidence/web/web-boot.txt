@@ -11,4 +11,4 @@ PASS  app shell rendered (tabs present)
 PASS  capability probe ran (device pill updated) - detected: WebAssembly (CPU)
 PASS  chat model options populated
 PASS  no server-side template markers leaked
-PASS  screenshot captured - D:/HCSInfer/docs/test-evidence/web/web-chat.png
+PASS  screenshot captured - <REPO>/docs/test-evidence/web/web-chat.png

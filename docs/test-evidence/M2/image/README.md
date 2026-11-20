@@ -13,7 +13,7 @@ Vulkan. Vision/VLM remains BLOCKED (no licensed VLM model available) — see `..
 | CMake / Generator | CMake 4.4.0 / Ninja 1.13.2 |
 | Vulkan SDK (build only) | `C:\VulkanSDK\1.4.357.0` |
 | Driver | AMD proprietary (from `ggml_vulkan` device line below) |
-| Model | `D:\HCSModels\diffusion\sd15-q8_0.gguf` |
+| Model | `<MODELS>\diffusion\sd15-q8_0.gguf` |
 | Model size / sha256 | 1,763,578,176 B / `d0555243938c62faeefb4ac93f6c7a053ad373a4290c5256bce229aeb193bf94` |
 | Model licence | **unverified** — internal test only, never redistributed |
 | Engines | llama.cpp `d3c3e242`, stable-diffusion.cpp `532d2c15` via `SD_USE_UPSTREAM_GGML=ON` |
@@ -23,13 +23,13 @@ Builds: `scripts\build.ps1 -Preset windows-msvc-release` and
 
 ## Runs
 
-All commands were run from `D:\HCSInfer`. `--json` writes the machine-readable result to stdout;
+All commands were run from `<REPO>`. `--json` writes the machine-readable result to stdout;
 stderr is reserved for diagnostics.
 
 ### CPU text-to-image (Release, no Vulkan)
 
 ```
-HCSInfer.exe image generate --model D:\HCSModels\diffusion\sd15-q8_0.gguf ^
+HCSInfer.exe image generate --model <MODELS>\diffusion\sd15-q8_0.gguf ^
   --prompt "a red apple on a plain table" --width 256 --height 256 --steps 2 --backend cpu --json
 ```
 
@@ -41,7 +41,7 @@ HCSInfer.exe image generate --model D:\HCSModels\diffusion\sd15-q8_0.gguf ^
 ### CPU img2img / edit (same build)
 
 ```
-HCSInfer.exe image edit --model D:\HCSModels\diffusion\sd15-q8_0.gguf ^
+HCSInfer.exe image edit --model <MODELS>\diffusion\sd15-q8_0.gguf ^
   --prompt "a red apple on a plain table, photo" --input artifacts\image-smoke\cpu-256x256-2step.png ^
   --width 256 --height 256 --steps 2 --strength 0.6 --backend cpu --json
 ```
@@ -53,7 +53,7 @@ HCSInfer.exe image edit --model D:\HCSModels\diffusion\sd15-q8_0.gguf ^
 ### Vulkan text-to-image (Release + Vulkan)
 
 ```
-HCSInfer.exe image generate --model D:\HCSModels\diffusion\sd15-q8_0.gguf ^
+HCSInfer.exe image generate --model <MODELS>\diffusion\sd15-q8_0.gguf ^
   --prompt "a red apple on a plain wooden table, photo" --width 512 --height 512 ^
   --steps 4 --backend vulkan --json
 ```

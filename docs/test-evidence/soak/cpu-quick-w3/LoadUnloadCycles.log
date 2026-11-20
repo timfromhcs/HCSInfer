@@ -1,4 +1,4 @@
-Running main() from D:\HCSInfer\.claude\worktrees\repo-analysis-v1-stable-80f8d6\build\rel\_deps\googletest-src\googletest\src\gtest_main.cc
+Running main() from <REPO>\build\rel\_deps\googletest-src\googletest\src\gtest_main.cc
 Note: Google Test filter = Soak.LoadUnloadCycles
 [==========] Running 1 test from 1 test suite.
 [----------] Global test environment set-up.

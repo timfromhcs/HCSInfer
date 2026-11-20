@@ -20,7 +20,7 @@ CMake Warning (policy) at C:/Program Files/Python314/Lib/site-packages/cmake/dat
   "cmake --help-policy CMP0194" for policy details.  Use the cmake_policy
   command to set the policy and suppress this warning.
 Call Stack (most recent call first):
-  D:/HCSInfer/external/llama.cpp/ggml/CMakeLists.txt:3 (project)
+  <REPO>/external/llama.cpp/ggml/CMakeLists.txt:3 (project)
 This warning is for project developers.  Use -Wno-author or -Wno-policy to
 suppress it.
 
@@ -149,9 +149,9 @@ Checking CXX compiler flag support for: /W4
 Checking CXX compiler flag support for: /wd4996
 -- Performing Test CXX_FLAG_SUPPORTED
 -- Performing Test CXX_FLAG_SUPPORTED - Success
--- Frontend disabled or directory not found: D:/HCSInfer/external/stable-diffusion.cpp/examples/server/frontend
+-- Frontend disabled or directory not found: <REPO>/external/stable-diffusion.cpp/examples/server/frontend
 -- HAVE_INDEX_HTML disabled
 -- Configuring done (134.6s)
 -- Generating done (0.7s)
--- Build files have been written to: D:/HCSInfer/build/sd-upstream-ggml
+-- Build files have been written to: <REPO>/build/sd-upstream-ggml
 configure exit 0 

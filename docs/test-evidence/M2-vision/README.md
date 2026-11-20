@@ -28,9 +28,9 @@ provisional smoke numbers: one sample, uncontrolled thermals, first-run Vulkan s
 * Test image: generated in-process / by the e2e script (`tests/support/test_png.hpp`, `e2e_vision.py`): a 256x256
   solid red square (128x128 px) on white, saved here as `red-square-256.png` (generated, no third-party content,
   freely redistributable).
-* VLM: `D:\HCSModels\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf`, 436,808,704 bytes, sha256
+* VLM: `<MODELS>\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf`, 436,808,704 bytes, sha256
   `6f67b8036b2469fcd71728702720c6b51aebd759b78137a8120733b4d66438bc`
-* mmproj: `D:\HCSModels\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf`, 108,785,184 bytes, sha256
+* mmproj: `<MODELS>\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf`, 108,785,184 bytes, sha256
   `921dc7e259f308e5b027111fa185efcbf33db13f6e35749ddf7f5cdb60ef520b`
 * Model licence: SmolVLM2 is published under Apache-2.0 by Hugging Face; **not re-verified in this session** and the
   download source was not recorded (open item, same as the earlier M1 note).
@@ -69,7 +69,7 @@ main model is `unsupported` ("CLIP cannot be used as main model").
 CLI:
 
 ```powershell
-build\vision\bin\HCSInfer.exe vision --model D:\HCSModels\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf `
+build\vision\bin\HCSInfer.exe vision --model <MODELS>\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf `
   --image red-square-256.png --prompt "What colour is the large square in this image? Answer in one short sentence." `
   --temp 0 --max-tokens 40 --backend cpu --json
 build\vision-vk\bin\HCSInfer.exe vision ... --backend vulkan --json
@@ -82,7 +82,7 @@ creation), image encode 247 ms on a warm second run.
 End-to-end over HTTP and MCP (spawns `HCSInfer serve` and `HCSInfer mcp stdio`, real model, stdlib Python):
 
 ```powershell
-$env:HCS_TEST_VLM = 'D:\HCSModels\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf'
+$env:HCS_TEST_VLM = '<MODELS>\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf'
 python -I tests\e2e\vision_real\e2e_vision.py --exe build\vision\bin\HCSInfer.exe     --evidence ...   # 27 checks, 0 failed (runtime reports backend=cpu)
 python -I tests\e2e\vision_real\e2e_vision.py --exe build\vision-vk\bin\HCSInfer.exe  --evidence ...   # 27 checks, 0 failed (runtime reports "AMD Radeon(TM) Graphics (Vulkan0)")
 ```

@@ -15,7 +15,7 @@
 {"first":{"handles":90,"private_bytes":11370496,"threads":4,"working_set":15048704},"handle_growth":0,"kind":"leak_verdict","last":{"handles":90,"private_bytes":9867264,"threads":4,"working_set":14589952},"limits":{"handles":32,"private_mb":128.0,"threads":4},"private_growth_mb":-1.43359375,"private_slope_mb_per_sample":-0.333984375,"samples":5,"t_unix_ms":1794988469543,"test":"UnplugTruncatedHcsModel","thread_growth":0,"verdict":"PASS","warmup_samples":1}
 {"code":"model_error","id":"soak-cut","kind":"case","message":"llama.cpp could not load the model: llama_model_load: error loading model: tensor 'token_embd.weight' data is not within the file bounds, model is corrupted or incomplete | llama_model_load_from_file_","t_unix_ms":1794988473207,"test":"UnplugEngineLoad"}
 {"id":"soak-cut","kind":"state","round":0,"state":"Failed","t_unix_ms":1794988473208,"test":"UnplugEngineLoad"}
-{"code":"not_found","id":"soak-vanished","kind":"case","message":"cannot open model file: C:\\Users\\hcsme\\AppData\\Local\\Temp\\hcs-test-7561349663600-0\\unplug-root\\soak-vanished.gguf","t_unix_ms":1794988473210,"test":"UnplugEngineLoad"}
+{"code":"not_found","id":"soak-vanished","kind":"case","message":"cannot open model file: <HOME>\\AppData\\Local\\Temp\\hcs-test-7561349663600-0\\unplug-root\\soak-vanished.gguf","t_unix_ms":1794988473210,"test":"UnplugEngineLoad"}
 {"id":"soak-vanished","kind":"state","round":0,"state":"Failed","t_unix_ms":1794988473210,"test":"UnplugEngineLoad"}
 {"id":"soak-cut","kind":"state","round":1,"state":"Failed","t_unix_ms":1794988473313,"test":"UnplugEngineLoad"}
 {"id":"soak-vanished","kind":"state","round":1,"state":"Failed","t_unix_ms":1794988473314,"test":"UnplugEngineLoad"}

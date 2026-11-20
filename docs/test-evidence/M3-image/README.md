@@ -18,9 +18,9 @@ Real models used:
 
 | Role | File | Notes |
 |---|---|---|
-| Image (diffusion) | `D:\HCSModels\diffusion\sd15-q8_0.gguf` | SD1.5 Q8_0, 1.76 GB; licence not verified |
+| Image (diffusion) | `<MODELS>\diffusion\sd15-q8_0.gguf` | SD1.5 Q8_0, 1.76 GB; licence not verified |
 | Text (for the UI/API phase) | `E:\AILOCALTRAIN\data\gguf\qwen3-0.6b-q4_k_m.gguf` | Q4_K_M |
-| Vision (for the UI phase) | `D:\HCSModels\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf` + `mmproj-...Q8_0.gguf` | Q8_0 |
+| Vision (for the UI phase) | `<MODELS>\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf` + `mmproj-...Q8_0.gguf` | Q8_0 |
 
 ## Evidence files
 
@@ -32,15 +32,15 @@ Real models used:
 | `mcp-generate-256x256-2steps.png`, `mcp-edit-256x256-2steps.png` | the two images returned through MCP `hcs.image.generate` / `hcs.image.edit` as image content blocks |
 | `../M10-fixes/ctest-full-400-green.txt` | the full CTest suite (400 tests) that contains `e2e_image_real` |
 
-Commands (from `D:\HCSInfer`, MSVC environment via `scripts\common.ps1` `Initialize-MsvcEnvironment`):
+Commands (from `<REPO>`, MSVC environment via `scripts\common.ps1` `Initialize-MsvcEnvironment`):
 
 ```
 cmake --preset windows-msvc-release -B build/img-api
 cmake --build build/img-api --parallel 4
 set HCS_TEST_GGUF=E:\AILOCALTRAIN\data\gguf\qwen3-0.6b-q4_k_m.gguf
-set HCS_TEST_VLM=D:\HCSModels\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf
-set HCS_TEST_MMPROJ=D:\HCSModels\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf
-set HCS_TEST_DIFFUSION_MODEL=D:\HCSModels\diffusion\sd15-q8_0.gguf
+set HCS_TEST_VLM=<MODELS>\vision\SmolVLM2-500M-Video-Instruct-Q8_0.gguf
+set HCS_TEST_MMPROJ=<MODELS>\vision\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf
+set HCS_TEST_DIFFUSION_MODEL=<MODELS>\diffusion\sd15-q8_0.gguf
 ctest --test-dir build/img-api --output-on-failure --timeout 2400
 ```
 

@@ -17,13 +17,13 @@ pin check llama.cpp              submodule HEAD d3c3e242c16b lock d3c3e242c16b O
 pin check stable-diffusion.cpp   submodule HEAD 532d2c15c430 lock 532d2c15c430 OK
 pin check prime-agent            submodule HEAD 8980e66f2f07 lock 8980e66f2f07 OK
 
-Nested submodules of stable-diffusion.cpp (ggml/, thirdparty/libwebp) are NOT initialised in this worktree; their licence files were read read-only from the main checkout D:/HCSInfer/external/stable-diffusion.cpp:
+Nested submodules of stable-diffusion.cpp (ggml/, thirdparty/libwebp) are NOT initialised in this worktree; their licence files were read read-only from the main checkout <REPO>/external/stable-diffusion.cpp:
 ggml/LICENSE: MIT text present
 thirdparty/libwebp/COPYING: BSD text present
 GoogleTest / nlohmann / cpp-httplib / LZ4 / Zstd have no licence_file field in the lock (FetchContent sources); their licence files were read in the FetchContent trees:
 build/httplib-v0.44.0/LICENSE: MIT text
-/d/HCSInfer/build/gui/_deps/nlohmann_json-src/LICENSE.MIT: MIT text
-/d/HCSInfer/build/gui/_deps/googletest-src/LICENSE: BSD text (2 clauses listed)
-/d/HCSInfer/build/audit-fix/_deps/lz4-src/LICENSE: NO MATCH
-/d/HCSInfer/build/audit-fix/_deps/zstd-src/LICENSE: BSD text (2 clauses listed)
+<REPO>/build/gui/_deps/nlohmann_json-src/LICENSE.MIT: MIT text
+<REPO>/build/gui/_deps/googletest-src/LICENSE: BSD text (2 clauses listed)
+<REPO>/build/audit-fix/_deps/lz4-src/LICENSE: NO MATCH
+<REPO>/build/audit-fix/_deps/zstd-src/LICENSE: BSD text (2 clauses listed)
 LZ4 root LICENSE states the split (lib/ = BSD-2-Clause, other files GPL-2.0+); lib/LICENSE contains the BSD-2-Clause text: confirmed (matches docs/licence-audit.md; programs/ not built).

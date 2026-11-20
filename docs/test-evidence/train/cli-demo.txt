@@ -34,7 +34,7 @@ $ HCSInfer train validate --dataset dataset.jsonl --json   (exit 0)
     }
   ],
   "lines_read": 2,
-  "path": "C:\\Users\\hcsme\\AppData\\Local\\Temp\\opencode\\train-demo\\dataset.jsonl",
+  "path": "<HOME>\\AppData\\Local\\Temp\\opencode\\train-demo\\dataset.jsonl",
   "rejected": 1,
   "truncated_by_limits": false
 }
@@ -64,7 +64,7 @@ $ HCSInfer --state-dir <s> train pipeline --input pipeline.json --json   (keep) 
   "decision": "keep",
   "heldout_delta": 0.02499999999999991,
   "installed": true,
-  "manifest_path": "C:\\Users\\hcsme\\AppData\\Local\\Temp\\opencode\\train-demo\\state\\train\\adapters\\lfm3-agentic-0001\\manifest.json",
+  "manifest_path": "<HOME>\\AppData\\Local\\Temp\\opencode\\train-demo\\state\\train\\adapters\\lfm3-agentic-0001\\manifest.json",
   "reason": "held-out improved by 0.025 and no regression suite dropped",
   "regressed_suites": []
 }
@@ -76,7 +76,7 @@ $ HCSInfer --state-dir <s> train pipeline --input pipeline-rollback.json --json 
   "decision": "rollback",
   "heldout_delta": -0.025000000000000022,
   "installed": true,
-  "manifest_path": "C:\\Users\\hcsme\\AppData\\Local\\Temp\\opencode\\train-demo\\state\\train\\adapters\\lfm3-agentic-0002\\manifest.json",
+  "manifest_path": "<HOME>\\AppData\\Local\\Temp\\opencode\\train-demo\\state\\train\\adapters\\lfm3-agentic-0002\\manifest.json",
   "reason": "held-out gain -0.025 is below the required 0.01",
   "regressed_suites": []
 }

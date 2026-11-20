@@ -17,7 +17,7 @@ Pins: sd.cpp 532d2c15c430a785a712b2d94281f04e733008a4; nested patched ggml eeda9
 | Combined llama.cpp+sd.cpp GGML graph / single EXE | NOT RUN |
 
 ## Model used
-D:\HCSModels\diffusion\sd15-q8_0.gguf (1,763,578,176 bytes, SD1.5 Q8_0 GGUF, sha256 d0555243938c62faeefb4ac93f6c7a053ad373a4290c5256bce229aeb193bf94). It lives on the internal D: NVMe, not the USB HDD; licence/source of this file is unknown (not provenance-verified). Other local diffusion-like files (E:\Qwen\Qwen-Image-2.1-*, E:\qwen-quant-*) are multi-GB diffusers safetensors (Qwen-Image transformer ~13.5 GB + text encoder), not tested: too large for ~19.8 GB RAM with sd.cpp conversion and not a small smoke target. Full search output: model-search.txt.
+<MODELS>\diffusion\sd15-q8_0.gguf (1,763,578,176 bytes, SD1.5 Q8_0 GGUF, sha256 d0555243938c62faeefb4ac93f6c7a053ad373a4290c5256bce229aeb193bf94). It lives on the internal D: NVMe, not the USB HDD; licence/source of this file is unknown (not provenance-verified). Other local diffusion-like files (E:\Qwen\Qwen-Image-2.1-*, E:\qwen-quant-*) are multi-GB diffusers safetensors (Qwen-Image transformer ~13.5 GB + text encoder), not tested: too large for ~19.8 GB RAM with sd.cpp conversion and not a small smoke target. Full search output: model-search.txt.
 
 ## Timings (single samples, NOT benchmarks; first runs overlapped a concurrent compile)
 - Vulkan 256/4 steps, first run (build running concurrently, cold shader cache): generate_image 45.4 s; uncontended repeat 3.16 s.
@@ -27,8 +27,8 @@ D:\HCSModels\diffusion\sd15-q8_0.gguf (1,763,578,176 bytes, SD1.5 Q8_0 GGUF, sha
 Model-load note: tensors read ~390 MB/s from internal NVMe-class storage.
 
 ## Commands
-Build scripts: sdvk.bat, sdup.bat, sdupb.bat (cmake -G Ninja -DSD_VULKAN=ON -DSD_BUILD_EXAMPLES=ON -DSD_BUILD_SHARED_LIBS=OFF -DSD_SERVER_BUILD_FRONTEND=OFF -DCMAKE_BUILD_TYPE=Release [-DSD_USE_UPSTREAM_GGML=ON -DSD_GGML_SOURCE_DIR=D:/HCSInfer/external/llama.cpp/ggml]).
-Smoke: `sd-cli.exe -m D:\HCSModels\diffusion\sd15-q8_0.gguf -p "a photo of a red apple on a wooden table" -W 512 -H 512 --steps 15 --cfg-scale 7 --seed 42 --backend vulkan0 --params-backend cpu -o out.png -v`
+Build scripts: sdvk.bat, sdup.bat, sdupb.bat (cmake -G Ninja -DSD_VULKAN=ON -DSD_BUILD_EXAMPLES=ON -DSD_BUILD_SHARED_LIBS=OFF -DSD_SERVER_BUILD_FRONTEND=OFF -DCMAKE_BUILD_TYPE=Release [-DSD_USE_UPSTREAM_GGML=ON -DSD_GGML_SOURCE_DIR=<REPO>/external/llama.cpp/ggml]).
+Smoke: `sd-cli.exe -m <MODELS>\diffusion\sd15-q8_0.gguf -p "a photo of a red apple on a wooden table" -W 512 -H 512 --steps 15 --cfg-scale 7 --seed 42 --backend vulkan0 --params-backend cpu -o out.png -v`
 CPU: same with `--backend cpu`. Logs: smoke-*.log. Images: images/. Help: sd-cli-help.txt. Devices: sd-cli-list-devices.txt, upstream-list-devices.txt.
 
 ## Observations / open

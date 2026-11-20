@@ -10,7 +10,7 @@
     "prompt_tokens_per_second": 53.75839378520713,
     "ttft_ms": 3015.7773
   },
-  "model": "D:\\HCSModels\\vision\\SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
+  "model": "<MODELS>\\vision\\SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
   "prompt_chars": 76,
   "schema_version": 1,
   "state": "succeeded",

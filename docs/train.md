@@ -85,7 +85,7 @@ HCSInfer --state-dir <dir> train pipeline --input result.json [--json]
   "adapter_id": "lfm3-agentic-0001",
   "base_model_sha256": "<64 hex>",
   "adapter_sha256": "<64 hex>",
-  "artifact_path": "D:/HCSModels/adapters/lfm3-agentic-0001.gguf",
+  "artifact_path": "<MODELS>/adapters/lfm3-agentic-0001.gguf",
   "dataset_manifest_sha256": "<64 hex>",
   "hyperparameters": { "rank": "8", "lr": "1e-4" },
   "baseline":  { "...the baseline evaluation report..." },

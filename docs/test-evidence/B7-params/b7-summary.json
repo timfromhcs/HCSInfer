@@ -14,7 +14,7 @@
     "steps": 2,
     "seed": 42,
     "prompt_chars": 57,
-    "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf"
+    "model": "<MODELS>\\diffusion\\sd15-q8_0.gguf"
   },
   {
     "name": "compute-vulkan0_params-disk",
@@ -31,7 +31,7 @@
     "steps": 2,
     "seed": 42,
     "prompt_chars": 57,
-    "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf"
+    "model": "<MODELS>\\diffusion\\sd15-q8_0.gguf"
   },
   {
     "name": "compute-cpu_params-cpu",
@@ -48,6 +48,6 @@
     "steps": 2,
     "seed": 42,
     "prompt_chars": 57,
-    "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf"
+    "model": "<MODELS>\\diffusion\\sd15-q8_0.gguf"
   }
 ]

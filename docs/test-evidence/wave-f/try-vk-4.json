@@ -6,7 +6,7 @@
   "height": 512,
   "load_ms": 2101.7527,
   "mode": "generate",
-  "model": "D:/HCSModels/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf",
+  "model": "<MODELS>/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf",
   "output": "docs/test-evidence/wave-f/try-vk-4.png",
   "preset": "",
   "schema_version": 1,

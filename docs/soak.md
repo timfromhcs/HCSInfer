@@ -9,7 +9,7 @@ memory budget) and run it against LFM3-Omni-2B Q8_0 (+ mmproj) and SD1.5 Q8_0.
 ```powershell
 # build (see build recipe in docs/build.md); targets: hcs_test_soak_core, hcsinfer
 # (any build directory works: -BuildDir build/rel)
-scripts/soak.ps1 -BuildDir build/soak -ModelRoot D:\HCSModels -Profile quick -Label cpu
+scripts/soak.ps1 -BuildDir build/soak -ModelRoot <MODELS> -Profile quick -Label cpu
 scripts/soak.ps1 -BuildDir build/soak -Profile full  -Label cpu     # 100 cycles, 30 min generation, ...
 scripts/soak.ps1 -Only LoadUnloadCycles,HttpStorm                    # subset
 ```

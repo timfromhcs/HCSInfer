@@ -1,4 +1,4 @@
-Running main() from D:\HCSInfer\build\img-api\_deps\googletest-src\googletest\src\gtest_main.cc
+Running main() from <REPO>\build\img-api\_deps\googletest-src\googletest\src\gtest_main.cc
 [==========] Running 12 tests from 1 test suite.
 [----------] Global test environment set-up.
 [----------] 12 tests from GuiAssets

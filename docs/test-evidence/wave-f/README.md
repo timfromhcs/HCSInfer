@@ -26,7 +26,8 @@ Both hashes equal the content hash embedded in the Hugging Face download cache f
 * Finding and fix: the engine-wide default cfg is wrong for the guidance-distilled Klein. `sweep.py` passes
   `--cfg 1.0` and its 4-step image is clean. `DiffusionImageEngine` now treats an unset cfg as 1.0 for the FLUX.3
   family. `default-cfg-fixed-vk-4.png` (no `--cfg`) matches the sweep 4-step image at PSNR 61.6 dB
-  (run-to-run Vulkan numeric noise) versus 13.8 dB before the fix.
+  (run-to-run Vulkan numeric noise) versus 13.8 dB before the fix (`try-vk-4.png`). Both numbers were recomputed in wave A
+  from the saved PNGs with ImageMagick: `../wave-a/psnr-cfg-fix.txt` (61.6073 dB and 13.7692 dB).
 * Step sweep (`sweep-vulkan/`, `sweep.json`, `sweep-montage.png`; ImageMagick 7.1.2; one sample per point, so
   timings are provisional per ADR-010; prompt in `sweep.py`):
 

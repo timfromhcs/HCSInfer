@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/build/gui
+Test project <REPO>/build/gui
       Start  1: GuiAssets.RootServesIndexHtmlWithStrictCsp
  1/11 Test  #1: GuiAssets.RootServesIndexHtmlWithStrictCsp .........   Passed    0.03 sec
       Start  2: GuiAssets.EveryAssetIsServedWithCspAndRightType

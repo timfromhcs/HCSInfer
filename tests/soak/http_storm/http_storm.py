@@ -6,7 +6,7 @@ followed by a restart (crash recovery), and an attempt at a graceful Ctrl+C shut
 The server process is sampled (private bytes, handles, threads) before/after every phase; growth beyond the
 documented limits (docs/soak.md) fails the run.
 
-Run:  python -I http_storm.py --exe <HCSInfer.exe> --model-root D:\\HCSModels --out <dir> [--rounds 40]
+Run:  python -I http_storm.py --exe <HCSInfer.exe> --model-root <MODELS> --out <dir> [--rounds 40]
 Exit: 0 PASS, 1 FAIL, 77 BLOCKED (prerequisite missing). Stdlib only.
 """
 import argparse

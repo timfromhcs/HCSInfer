@@ -2,7 +2,7 @@
 
 Only models that were loaded and run through HCSInfer on the target machine are listed as `Verified`. Everything
 else is `Recognised` (the engine identifies it) or `Blocked` (a required file could not be obtained), with the
-reason. Model files live outside the repository (the evidence uses `D:\HCSModels`).
+reason. Model files live outside the repository (the evidence uses `<MODELS>`).
 
 ## Text and vision (llama.cpp adapter)
 

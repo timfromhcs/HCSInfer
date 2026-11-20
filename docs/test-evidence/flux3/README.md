@@ -37,7 +37,7 @@ To unblock, either approve access to the BFL repository for the Hugging Face acc
 (the sd.cpp FLUX.3 guide lists `Qwen/Qwen3-VL-4B-Instruct-GGUF` for the encoder and the FLUX.2 VAE), then run:
 
 ```
-python docs/test-evidence/flux3/sweep.py --exe <HCSInfer.exe> --model D:\HCSModels\diffusion\flux3\flux-3-image-klein-UD-Q4_K_XL.gguf ^
+python docs/test-evidence/flux3/sweep.py --exe <HCSInfer.exe> --model <MODELS>\diffusion\flux3\flux-3-image-klein-UD-Q4_K_XL.gguf ^
     --llm <qwen3-vl-4b> --vae <flux2-vae> --out docs/test-evidence/flux3/sweep-vulkan --backend vulkan
 ```
 
@@ -57,7 +57,7 @@ during the probe. The auto-fit planner in stable-diffusion.cpp placed the DiT on
    on purpose, so the run ends with a `model_error`; this proves routing only, not a render.
 3. **Actionable error without components** (`flux3-load-without-components.txt`): loading the DiT-only GGUF as
    an all-in-one checkpoint now explains that it needs `--llm`/`--vae` or a `<model>.components.json` sidecar.
-4. **SD1.5 regression, real model `D:\HCSModels\diffusion\sd15-q8_0.gguf`**, 256x256, 2 steps, seed 42:
+4. **SD1.5 regression, real model `<MODELS>\diffusion\sd15-q8_0.gguf`**, 256x256, 2 steps, seed 42:
    * CPU PNG sha256 is byte-identical to the one produced by the pre-change HCSInfer binary
      (`d2686dda9d76...`, `sd15-baseline-oldbin-cpu.png` vs `sd15-regression-cpu.png`).
    * Vulkan: the new PNG and the pre-change binary's PNG differ only numerically (PSNR 67.2 dB; Vulkan results also
@@ -88,11 +88,11 @@ ImageMagick `compare` (LPIPS needs a neural network not available here).
 | BFL `ae.safetensors`, `text_encoder/*` | `black-forest-labs/flux-3-image-klein` | n/a | n/a | not downloaded (access denied) |
 | `LFM3-Omni-2B-Q8_0.gguf`, `mmproj-LFM3-Omni-2B-Q8_0.gguf` | `LiquidAI/LFM3-Omni-2B-GGUF` | 1,846,240,768 / 506,842,528 | see `lfm3-byproduct-sha256.txt` against `59118f66...` / `8a25f9d1...` | see file |
 
-Files are on `D:\HCSModels` (`diffusion\flux3`, `llm\LFM3-Omni-2B`); the Hugging Face cache was redirected to
-`D:\HCSModels\.hfcache`, so nothing was cached on the SSD. FLUX.3 Klein is under the FLUX Kommunity License v1.0
+Files are on `<MODELS>` (`diffusion\flux3`, `llm\LFM3-Omni-2B`); the Hugging Face cache was redirected to
+`<MODELS>\.hfcache`, so nothing was cached on the SSD. FLUX.3 Klein is under the FLUX Kommunity License v1.0
 (Black Forest Labs; non-commercial/non-production use, or commercial use only as a Qualifying User); the unsloth
 card notes the transformer was quantized to GGUF by Unsloth. LFM3-Omni is under the licence file shipped in its
-repository (`D:\HCSModels\llm\LFM3-Omni-2B\LICENSE`).
+repository (`<MODELS>\llm\LFM3-Omni-2B\LICENSE`).
 
 The LFM3 files were fetched by the same download chain that was started for this task; they are not used by this
-change. A second workstream downloaded the same model to `D:\HCSModels\text\LFM3-Omni-2B`.
+change. A second workstream downloaded the same model to `<MODELS>\text\LFM3-Omni-2B`.

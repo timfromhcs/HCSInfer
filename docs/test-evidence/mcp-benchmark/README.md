@@ -14,9 +14,9 @@ Status: **PASS** (tool plumbing + one real-model run). This closes the open W1 i
 ```
 
 * Binary: `build/windows-msvc-release/bin/HCSInfer.exe` (Release, MSVC 19.44, CPU-only build).
-* Model: `D:\HCSModels\text\LFM3-Omni-2B\LFM3-Omni-2B-Q8_0.gguf` (1.72 GiB), id `lfm3-omni-2b-q8_0`
-  (from `HCSInfer models scan D:\HCSModels\text`).
-* Approved root: `--model-root D:\HCSModels\text`.
+* Model: `<MODELS>\text\LFM3-Omni-2B\LFM3-Omni-2B-Q8_0.gguf` (1.72 GiB), id `lfm3-omni-2b-q8_0`
+  (from `HCSInfer models scan <MODELS>\text`).
+* Approved root: `--model-root <MODELS>\text`.
 * Source state: working tree at `b02075f` + the uncommitted MCP-benchmark change (git_commit in the
   document reads `b02075f174c4+dirty`).
 * Date: 2026-11-18.

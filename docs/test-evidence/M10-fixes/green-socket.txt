@@ -1,4 +1,4 @@
-Running main() from D:\HCSInfer\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
+Running main() from <REPO>\build\audit-fix\_deps\googletest-src\googletest\src\gtest_main.cc
 Note: Google Test filter = ApiSocketAudit.*
 [==========] Running 3 tests from 1 test suite.
 [----------] Global test environment set-up.

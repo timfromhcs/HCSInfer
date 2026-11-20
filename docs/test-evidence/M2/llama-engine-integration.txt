@@ -1,4 +1,4 @@
-Running main() from D:\HCSInfer\build\llama-adapter-rv\_deps\googletest-src\googletest\src\gtest_main.cc
+Running main() from <REPO>\build\llama-adapter-rv\_deps\googletest-src\googletest\src\gtest_main.cc
 [==========] Running 16 tests from 2 test suites.
 [----------] Global test environment set-up.
 [----------] 6 tests from LlamaEngineErrors

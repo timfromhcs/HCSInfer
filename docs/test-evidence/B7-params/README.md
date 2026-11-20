@@ -3,7 +3,7 @@
 Date: 2026-11-17. Machine: Windows 11 26200, Ryzen 7 7735HS (8C/16T), 21.2 GB RAM, Radeon 680M (Vulkan0, AMD
 proprietary driver). Upstream CLI: `build/sd-vulkan/bin/sd-cli.exe` (stable-diffusion.cpp `master-1106-532d2c1`,
 pinned commit `532d2c15c430a785a712b2d94281f04e733008a4`, patched GGML build - see `../M1/sd/`).
-Model: `D:\HCSModels\diffusion\sd15-q8_0.gguf` (1,763,578,176 bytes, SD1.5 Q8_0).
+Model: `<MODELS>\diffusion\sd15-q8_0.gguf` (1,763,578,176 bytes, SD1.5 Q8_0).
 
 AGENTS.md 11.2 asks to test the compute backend separately from the parameter backend for diffusion, and to treat
 parameter placement on disk as a capacity fallback - not as an assumed speed-up or slow-down. This is that

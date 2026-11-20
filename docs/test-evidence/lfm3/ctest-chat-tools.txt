@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/.claude/worktrees/flux3-agent-engine-v1-665ab0/build/lfm3-unit
+Test project <REPO>/build/lfm3-unit
       Start  13: ChatToolsRequest.NoToolsIsOff
  1/49 Test  #13: ChatToolsRequest.NoToolsIsOff .................................   Passed    0.03 sec
       Start  14: ChatToolsRequest.ParsesToolsAndDefaultsToAuto

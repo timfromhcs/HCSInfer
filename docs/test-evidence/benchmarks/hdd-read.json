@@ -8,7 +8,7 @@
       "read_benchmark": {
         "buffer_bytes": 4194304,
         "cold_or_warm": "unknown",
-        "file": "D:/HCSModels\\text\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf",
+        "file": "<MODELS>\\text\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf",
         "file_size_bytes": 1846240768,
         "max_bytes_per_sample": 1073741824,
         "mib_s_max": 37.607682888227735,
@@ -45,7 +45,7 @@
       "read_benchmark": {
         "buffer_bytes": 4194304,
         "cold_or_warm": "unknown",
-        "file": "D:/HCSModels\\diffusion\\flux3\\qwen3vl\\Qwen3VL-4B-Instruct-Q4_K_M.gguf",
+        "file": "<MODELS>\\diffusion\\flux3\\qwen3vl\\Qwen3VL-4B-Instruct-Q4_K_M.gguf",
         "file_size_bytes": 2497281664,
         "max_bytes_per_sample": 1073741824,
         "mib_s_max": 55.884758990646155,
@@ -82,7 +82,7 @@
       "read_benchmark": {
         "buffer_bytes": 4194304,
         "cold_or_warm": "unknown",
-        "file": "D:/HCSModels\\vision\\SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
+        "file": "<MODELS>\\vision\\SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
         "file_size_bytes": 436808704,
         "max_bytes_per_sample": 1073741824,
         "mib_s_max": 63.32235688296517,
@@ -119,7 +119,7 @@
       "read_benchmark": {
         "buffer_bytes": 4194304,
         "cold_or_warm": "unknown",
-        "file": "D:/HCSModels\\text\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf",
+        "file": "<MODELS>\\text\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf",
         "file_size_bytes": 1846240768,
         "max_bytes_per_sample": 1073741824,
         "mib_s_max": 6296.536105776888,

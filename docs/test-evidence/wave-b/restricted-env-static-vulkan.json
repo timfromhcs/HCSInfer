@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "timestamp_utc": "2026-11-20T16:53:35.7554768Z",
-  "exe_source": "D:\\HCSInfer\\.claude\\worktrees\\repo-analysis-v1-stable-d7c553\\build\\windows-msvc-release-static-vulkan\\bin\\HCSInfer.exe",
+  "exe_source": "<REPO>\\build\\windows-msvc-release-static-vulkan\\bin\\HCSInfer.exe",
   "exe_sha256": "b94a6e06a3b0d469a9b05139cfc784a6134a371e72bf1049cc58cd9f3052cbe8",
   "exe_bytes": 86548992,
   "files_next_to_exe": [
@@ -29,11 +29,11 @@
     },
     {
       "name": "chat_vulkan_real",
-      "args": "chat --model \"D:\\HCSModels\\llm\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf\" --backend vulkan --ctx 1024 --max-tokens 12 --temp 0 --json --prompt \"Reply with exactly: static ok\"",
+      "args": "chat --model \"<MODELS>\\llm\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf\" --backend vulkan --ctx 1024 --max-tokens 12 --temp 0 --json --prompt \"Reply with exactly: static ok\"",
       "exit_code": 0,
       "timed_out": false,
       "seconds": 5.07,
-      "stdout": "{\r\n  \"backend\": \"vulkan\",\r\n  \"device\": \"AMD Radeon(TM) Graphics (Vulkan0)\",\r\n  \"model\": \"D:\\\\HCSModels\\\\llm\\\\LFM3-Omni-2B\\\\LFM3-Omni-2B-Q8_0.gguf\",\r\n  \"offloaded_layers\": 25,\r\n  \"results\": [\r\n    {\r\n      \"metrics\": {\r\n        \"decode_tokens\": 1,\r\n        \"decode_tokens_per_second\": 4.5552483293626755,\r\n        \"load_ms\": 1681.293,\r\n        \"prompt_tokens\": 17,\r\n        \"prompt_tokens_per_second\": 5.821561137915215,\r\n        \"ttft_ms\": 2942.9058\r\n      },\r\n      \"prompt_chars\": 29,\r\n      \"state\": \"succeeded\",\r\n      \"text\": \"static ok\"\r\n    }\r\n  ],\r\n  \"schema_version\": 1,\r\n  \"total_layers\": 24\r\n}",
+      "stdout": "{\r\n  \"backend\": \"vulkan\",\r\n  \"device\": \"AMD Radeon(TM) Graphics (Vulkan0)\",\r\n  \"model\": \"<MODELS>\\\\llm\\\\LFM3-Omni-2B\\\\LFM3-Omni-2B-Q8_0.gguf\",\r\n  \"offloaded_layers\": 25,\r\n  \"results\": [\r\n    {\r\n      \"metrics\": {\r\n        \"decode_tokens\": 1,\r\n        \"decode_tokens_per_second\": 4.5552483293626755,\r\n        \"load_ms\": 1681.293,\r\n        \"prompt_tokens\": 17,\r\n        \"prompt_tokens_per_second\": 5.821561137915215,\r\n        \"ttft_ms\": 2942.9058\r\n      },\r\n      \"prompt_chars\": 29,\r\n      \"state\": \"succeeded\",\r\n      \"text\": \"static ok\"\r\n    }\r\n  ],\r\n  \"schema_version\": 1,\r\n  \"total_layers\": 24\r\n}",
       "stderr": ""
     }
   ],

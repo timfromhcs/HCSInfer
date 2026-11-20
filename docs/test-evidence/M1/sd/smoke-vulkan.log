@@ -4,9 +4,9 @@ ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | reb
 [V] System Info: 
    SSE3 = 1 |    SSSE3 = 1 |    AVX = 1 |    AVX2 = 1 |    F16C = 1 |    FMA = 1 |    OPENMP = 1 |    REPACK = 1 |  --- main.cpp:761
 [V] using 8 threads for model loading --- model_loader.cpp:194
-[I] loading model from 'D:\HCSModels\diffusion\sd15-q8_0.gguf' --- diffusion_engine.cpp:690
-[I] load D:\HCSModels\diffusion\sd15-q8_0.gguf using gguf format --- model_loader.cpp:220
-[V] init from 'D:\HCSModels\diffusion\sd15-q8_0.gguf' --- model_loader.cpp:266
+[I] loading model from '<MODELS>\diffusion\sd15-q8_0.gguf' --- diffusion_engine.cpp:690
+[I] load <MODELS>\diffusion\sd15-q8_0.gguf using gguf format --- model_loader.cpp:220
+[V] init from '<MODELS>\diffusion\sd15-q8_0.gguf' --- model_loader.cpp:266
 [V] GGUF v3, tensor_count=1131, metadata_kv_count=0 --- gguf_reader_ext.h:225
 [I] Version: SD 1.x  --- diffusion_engine.cpp:982
 [V] Initializing backend: Vulkan0 --- ggml_extend_backend.cpp:421
@@ -17,7 +17,7 @@ ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | reb
 [I] Diffusion model weight type stat:      f16: 99   |    q8_0: 587   --- diffusion_engine.cpp:1562
 [I] VAE weight type stat:                  f16: 76   |    q8_0: 172   --- diffusion_engine.cpp:1563
 [V] using 8 threads for model loading --- model_loader.cpp:194
-[V] loading 1/1131 tensors from D:\HCSModels\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
+[V] loading 1/1131 tensors from <MODELS>\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
   |##################################################| 1/1 -   0.02MB/s[K
 [I] loading tensors completed, taking 0.11s (read: 0.00s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
 [V] loaded alphas_cumprod from model file --- diffusion_engine.cpp:676
@@ -38,7 +38,7 @@ ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | reb
 [V] parse 'a simple red apple on a plain table' to [['a simple red apple on a plain table', 1], ] --- conditioner.hpp:412
 [V] split prompt "a simple red apple on a plain table" to 8 tokens ["a</w>", "simple</w>", "red</w>", "apple</w>", "on</w>", "a</w>", "plain</w>", "table</w>", ] --- bpe_tokenizer.cpp:245
 [I] clip build cached graph cut plan done (taking 2 ms) --- ggml_graph_cut.cpp:1034
-[V] loading 196/1131 tensors from D:\HCSModels\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
+[V] loading 196/1131 tensors from <MODELS>\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
   |##################################################| 196/196 - 331.63MB/s[K
 [I] loading tensors completed, taking 0.38s (read: 0.11s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
 [V] model manager prepared params backend buffers (125.20 MB, 196 tensors, 1 blocks, RAM) on Vulkan_Host --- model_manager.cpp:508
@@ -50,7 +50,7 @@ ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | reb
 [I] get_learned_condition completed, taking 3.31s --- image.cpp:664
 [I] generating image: 1/1 - seed 42 --- image.cpp:1005
 [I] unet build cached graph cut plan done (taking 47 ms) --- ggml_graph_cut.cpp:1034
-[V] loading 686/1131 tensors from D:\HCSModels\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
+[V] loading 686/1131 tensors from <MODELS>\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
   |#########                                         | 122/686 - 248.04MB/s[K  |################                                  | 216/686 - 319.89MB/s[K  |#################                                 | 226/686 - 275.52MB/s[K  |###################                               | 254/686 - 297.28MB/s[K  |####################                              | 269/686 - 282.94MB/s[K  |#######################                           | 310/686 - 350.98MB/s[K  |########################                          | 322/686 - 345.38MB/s[K  |###############################                   | 412/686 - 359.85MB/s[K  |###############################                   | 422/686 - 366.64MB/s[K  |###############################                   | 424/686 - 336.54MB/s[K  |####################################              | 482/686 - 410.67MB/s[K  |#####################################             | 507/686 - 415.11MB/s[K  |#######################################           | 534/686 - 401.43MB/s[K  |###########################################       | 578/686 - 394.30MB/s[K  |################################################  | 654/686 - 386.51MB/s[K  |##################################################| 686/686 - 388.97MB/s[K
 [I] loading tensors completed, taking 3.59s (read: 3.35s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
 [V] model manager prepared params backend buffers (1398.81 MB, 686 tensors, 2 blocks, RAM) on Vulkan_Host --- model_manager.cpp:508
@@ -62,7 +62,7 @@ ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | reb
 [I] generating 1 latent images completed, taking 28.69s --- image.cpp:1052
 [I] decoding 1 latents --- image.cpp:689
 [I] vae build cached graph cut plan done (taking 1 ms) --- ggml_graph_cut.cpp:1034
-[V] loading 140/1131 tensors from D:\HCSModels\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
+[V] loading 140/1131 tensors from <MODELS>\diffusion\sd15-q8_0.gguf --- model_loader.cpp:1170
   |#######                                           |  18/140 -   1.89MB/s[K  |###########                                       |  30/140 -   1.82MB/s[K  |################                                  |  44/140 -   2.10MB/s[K  |###################                               |  52/140 -   2.09MB/s[K  |#####################                             |  56/140 -   2.19MB/s[K  |###############################################   | 130/140 -  28.88MB/s[K  |##################################################| 140/140 -  20.79MB/s[K
 [I] loading tensors completed, taking 4.54s (read: 3.29s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
 [V] model manager prepared params backend buffers ( 94.47 MB, 140 tensors, 1 blocks, RAM) on Vulkan_Host --- model_manager.cpp:508

@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/build/llama-adapter-rv
+Test project <REPO>/build/llama-adapter-rv
         Start   1: Result.ValueAndError
         Start   2: Result.VoidSpecialisation
         Start   3: Result.MoveOnlyAndString

@@ -1,4 +1,4 @@
-Running main() from D:\HCSInfer\build\vision\_deps\googletest-src\googletest\src\gtest_main.cc
+Running main() from <REPO>\build\vision\_deps\googletest-src\googletest\src\gtest_main.cc
 [==========] Running 10 tests from 1 test suite.
 [----------] Global test environment set-up.
 [----------] 10 tests from LlamaVisionReal
@@ -6,7 +6,7 @@ Running main() from D:\HCSInfer\build\vision\_deps\googletest-src\googletest\src
 [vision answer]  Red.
 [       OK ] LlamaVisionReal.DescribesAGeneratedImageOnCpu (2285 ms)
 [ RUN      ] LlamaVisionReal.DescribesAGeneratedImageOnVulkan
-D:\HCSInfer\tests\integration\llama_vision\test_llama_vision.cpp(138): Skipped
+<REPO>\tests\integration\llama_vision\test_llama_vision.cpp(138): Skipped
 NOT RUN: no GPU device visible to this build (vulkan_compiled=0)
 
 [  SKIPPED ] LlamaVisionReal.DescribesAGeneratedImageOnVulkan (0 ms)

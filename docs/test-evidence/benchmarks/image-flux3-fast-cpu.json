@@ -18,7 +18,7 @@
         "height": 512,
         "load_ms": 1300.0854,
         "mode": "generate",
-        "model": "D:/HCSModels\\diffusion\\flux3\\flux-3-image-klein-UD-Q4_K_XL.gguf",
+        "model": "<MODELS>\\diffusion\\flux3\\flux-3-image-klein-UD-Q4_K_XL.gguf",
         "output": "docs/test-evidence/benchmarks\\images\\flux3-fast-cpu-0.png",
         "preset": "fast",
         "schema_version": 1,

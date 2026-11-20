@@ -1,4 +1,4 @@
-Test project D:/HCSInfer/build/windows-msvc-release
+Test project <REPO>/build/windows-msvc-release
     Start  93: Cli.HelpWorksAtEveryLevel
 1/9 Test  #93: Cli.HelpWorksAtEveryLevel .................   Passed    0.04 sec
     Start  94: Cli.VersionAndNoArgs
@@ -24,4 +24,4 @@ Label Time Summary:
 contract    =   0.35 sec*proc (9 tests)
 
 Total Test time (real) =   0.56 sec
-ctest log: D:\HCSInfer\artifacts\test-logs\ctest-windows-msvc-release-20261117-082042.log
+ctest log: <REPO>\artifacts\test-logs\ctest-windows-msvc-release-20261117-082042.log

@@ -1,0 +1,10 @@
+# PSNR of the wave-F cfg-fix renders, recomputed in wave A from the saved PNGs (no re-render)
+# Version: ImageMagick 7.1.2-29 Q16-HDRI x64 360eda5:20260727 https://imagemagick.org
+# reference: sweep-vulkan/steps04_r0.png (4 steps, --cfg 1.0)
+default-cfg-fixed-vk-4.png (engine default cfg after the fix):
+61.6073 (0.513394)
+try-vk-4.png (engine default cfg before the fix):
+13.7692 (0.114743)
+5eba17f1e2f94f0f201448be7ebcf76e1a4869fafe0dde452341288afdc140b8 *default-cfg-fixed-vk-4.png
+51f0998f1d8e144fadfb35b81678ebf3f6479e764ba9f5cc29b396340849cd5a *try-vk-4.png
+fb2b6bd9288d36d4f9c875008d84fa2081450d4b0add865c150d4cfc7d1d1f8d *sweep-vulkan/steps04_r0.png

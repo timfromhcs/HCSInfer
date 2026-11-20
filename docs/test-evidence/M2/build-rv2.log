@@ -1,9 +1,9 @@
 [0/2] Re-checking globbed directories...
 -- GLOB mismatch!
 The following files were added:
-  +D:/HCSInfer/tests/integration/storage
+  +<REPO>/tests/integration/storage
 [1/2] Re-running CMake...
--- Using the multi-header code from D:/HCSInfer/build/llama-adapter-rv/_deps/nlohmann_json-src/include/
+-- Using the multi-header code from <REPO>/build/llama-adapter-rv/_deps/nlohmann_json-src/include/
 -- llama.cpp version: 1.0.0-dev
 CMAKE_BUILD_TYPE=Release
 -- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
@@ -26,12 +26,12 @@ CMAKE_BUILD_TYPE=Release
 -- ggml commit:  d3c3e24
 -- Configuring done (11.6s)
 -- Generating done (5.2s)
--- Build files have been written to: D:/HCSInfer/build/llama-adapter-rv
+-- Build files have been written to: <REPO>/build/llama-adapter-rv
 [0/4] Re-checking globbed directories...
 [1/14] Performing build step for 'vulkan-shaders-gen'
 ninja: no work to do.
 [2/14] Performing install step for 'vulkan-shaders-gen'
--- Up-to-date: D:/HCSInfer/build/llama-adapter-rv/Release/vulkan-shaders-gen.exe
+-- Up-to-date: <REPO>/build/llama-adapter-rv/Release/vulkan-shaders-gen.exe
 [3/14] Completed 'vulkan-shaders-gen'
 [4/14] Building CXX object src\engines\llama\CMakeFiles\hcs_engine_llama.dir\llama_engine.cpp.obj
 [5/14] Linking CXX static library lib\hcs_engine_llama.lib

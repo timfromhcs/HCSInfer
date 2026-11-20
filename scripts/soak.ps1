@@ -6,7 +6,7 @@
   the unplug scenarios use fault injection and private temp copies, never the real drive.
 
 .PARAMETER BuildDir     CMake build dir holding bin/hcs_test_soak_core.exe and bin/HCSInfer.exe (default build/soak).
-.PARAMETER ModelRoot    Folder with LFM3-Omni-2B Q8_0 (+mmproj) and SD1.5 Q8_0 (default D:\HCSModels).
+.PARAMETER ModelRoot    Folder with LFM3-Omni-2B Q8_0 (+mmproj) and SD1.5 Q8_0 (default: the HCS_SOAK_MODEL_ROOT environment variable).
 .PARAMETER Profile      quick (minutes) | full (100 cycles, 30 min generation, ...). Default quick.
 .PARAMETER Out          Evidence directory (default docs/test-evidence/soak/<label>).
 .PARAMETER Label        Run label, e.g. cpu or vulkan.
@@ -14,7 +14,7 @@
 #>
 param(
     [string]$BuildDir = 'build/soak',
-    [string]$ModelRoot = 'D:\HCSModels',
+    [string]$ModelRoot = $env:HCS_SOAK_MODEL_ROOT,
     [ValidateSet('quick', 'full')][string]$Profile = 'quick',
     [string]$Out = '',
     [string]$Label = 'cpu',
@@ -34,7 +34,7 @@ $Out = (Resolve-Path $Out).Path   # evidence dir only; nothing outside it is del
 foreach ($p in @($exeTest, $exeApp)) {
     if (-not (Test-Path $p)) { throw "missing $p - build targets hcs_test_soak_core and hcsinfer first" }
 }
-if (-not (Test-Path $ModelRoot)) { throw "model root not found: $ModelRoot (BLOCKED)" }
+if (-not $ModelRoot -or -not (Test-Path $ModelRoot)) { throw "model root not found: $ModelRoot (BLOCKED)" }
 
 # knobs per profile (docs/soak.md)
 $k = if ($Profile -eq 'full') {

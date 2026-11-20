@@ -45,7 +45,7 @@ These files are published with the repository, so:
 * Device, driver and GPU identifiers are kept: they are the point of a hardware-aware project.
 
 Evidence files still contain absolute paths of the machine that produced them (model locations such as
-`E:\AILOCALTRAIN\...`, `D:\HCSModels\...`), because the exact file is part of reproducing a result. They contain no
+`E:\AILOCALTRAIN\...`, `<MODELS>\...`), because the exact file is part of reproducing a result. They contain no
 credentials, no user documents and no model data.
 
 Per AGENTS.md 16.2: mocks are never accepted as evidence for inference, model loading, Vulkan execution, image

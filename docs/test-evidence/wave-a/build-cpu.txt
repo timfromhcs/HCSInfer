@@ -1,0 +1,57 @@
+[0/2] Re-checking globbed directories...
+[1/46] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\doctor.cpp.obj
+[2/46] Building CXX object src\api\CMakeFiles\hcs_api.dir\runtime.cpp.obj
+[3/46] Building CXX object src\core\CMakeFiles\hcs_core.dir\benchmark.cpp.obj
+[4/46] Building CXX object src\engines\diffusion\CMakeFiles\hcs_engine_diffusion.dir\diffusion_engine.cpp.obj
+[5/46] Linking CXX static library lib\hcs_core.lib
+[6/46] Linking CXX static library lib\hcs_hardware.lib
+[7/46] Linking CXX static library lib\hcs_engine_diffusion.lib
+[8/46] Building CXX object src\mcp\CMakeFiles\hcs_mcp.dir\stdio.cpp.obj
+[9/46] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\cli.cpp.obj
+[10/46] Building CXX object src\api\CMakeFiles\hcs_api.dir\http_server.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[11/46] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\benchmark_cmd.cpp.obj
+[12/46] Linking CXX static library lib\hcs_api.lib
+[13/46] Linking CXX static library lib\hcs_mcp.lib
+[14/46] Linking CXX static library lib\hcs_cli.lib
+[15/46] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_socket.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[16/46] Linking CXX executable bin\hcs_storage_bench.exe
+[17/46] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_transport_negative.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[18/46] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_shutdown.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[19/46] Building CXX object tests\integration\shutdown_real\CMakeFiles\hcs_test_shutdown_real.dir\test_shutdown_real.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[20/46] Linking CXX executable bin\hcs_test_api_chat_tools.exe
+[21/46] Linking CXX executable bin\hcs_test_api_schema.exe
+[22/46] Linking CXX executable bin\hcs_test_api_vision.exe
+[23/46] Linking CXX executable bin\hcs_test_hardware.exe
+[24/46] Linking CXX executable bin\hcs_test_kernels.exe
+[25/46] Linking CXX executable bin\hcs_test_agent.exe
+[26/46] Linking CXX executable bin\hcs_test_process.exe
+[27/46] Linking CXX executable bin\hcs_test_core.exe
+[28/46] Linking CXX executable bin\hcs_test_storage.exe
+[29/46] Linking CXX executable bin\hcs_test_api_chat_tools_contract.exe
+[30/46] Linking CXX executable bin\hcs_test_train.exe
+[31/46] Linking CXX executable bin\hcs_test_api_image.exe
+[32/46] Linking CXX executable bin\hcs_test_api_vision_contract.exe
+[33/46] Linking CXX executable bin\hcs_test_api_http.exe
+[34/46] Linking CXX executable bin\hcs_test_cli.exe
+[35/46] Linking CXX executable bin\hcs_test_api.exe
+[36/46] Linking CXX executable bin\HCSInfer.exe
+[37/46] Linking CXX executable bin\hcs_test_storage_mutation_fuzz.exe
+[38/46] Linking CXX executable bin\hcs_test_mcp_image.exe
+[39/46] Linking CXX executable bin\hcs_test_llama_engine.exe
+[40/46] Linking CXX executable bin\hcs_test_mcp.exe
+[41/46] Linking CXX executable bin\hcs_test_llama_vision.exe
+[42/46] Linking CXX executable bin\hcs_test_storage_real_model.exe
+[43/46] Linking CXX executable bin\hcs_test_diffusion_engine.exe
+[44/46] Linking CXX executable bin\hcs_test_shutdown_real.exe
+[45/46] Linking CXX executable bin\hcs_test_soak_core.exe
+EXIT 0 

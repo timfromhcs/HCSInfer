@@ -141,9 +141,9 @@ Checking CXX compiler flag support for: /W4
 Checking CXX compiler flag support for: /wd4996
 -- Performing Test CXX_FLAG_SUPPORTED
 -- Performing Test CXX_FLAG_SUPPORTED - Success
--- Frontend disabled or directory not found: D:/HCSInfer/external/stable-diffusion.cpp/examples/server/frontend
+-- Frontend disabled or directory not found: <REPO>/external/stable-diffusion.cpp/examples/server/frontend
 -- HAVE_INDEX_HTML disabled
 -- Configuring done (56.7s)
 -- Generating done (13.3s)
--- Build files have been written to: D:/HCSInfer/build/sd-vulkan
+-- Build files have been written to: <REPO>/build/sd-vulkan
 configure exit 0 

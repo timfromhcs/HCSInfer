@@ -23,7 +23,7 @@
     {
       "check": "scan registers the VLM",
       "pass": true,
-      "detail": "{\n  \"models\": [\n    {\n      \"architecture\": \"lfm3\",\n      \"display_name\": \"LFM3-Omni-2B-Q8_0\",\n      \"format\": \"gguf\",\n      \"id\": \"lfm3-omni-2b-q8_0\",\n      \"kind\": \"text\",\n      \"license\": \"unknown\",\n      \"path\": \"D:\\\\HCSModels\\\\text\\\\LFM3-Omni-2B\\\\LFM3-Omni-2B-Q8_0.gguf\",\n      \"quantization\": \""
+      "detail": "{\n  \"models\": [\n    {\n      \"architecture\": \"lfm3\",\n      \"display_name\": \"LFM3-Omni-2B-Q8_0\",\n      \"format\": \"gguf\",\n      \"id\": \"lfm3-omni-2b-q8_0\",\n      \"kind\": \"text\",\n      \"license\": \"unknown\",\n      \"path\": \"<MODELS>\\\\text\\\\LFM3-Omni-2B\\\\LFM3-Omni-2B-Q8_0.gguf\",\n      \"quantization\": \""
     },
     {
       "check": "serve prints port and token",
