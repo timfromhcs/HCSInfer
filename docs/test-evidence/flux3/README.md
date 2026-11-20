@@ -1,5 +1,8 @@
 # FLUX.3 Image Klein through the HCS diffusion adapter
 
+> Update 2026-11-20: the render is no longer blocked. Results, the step sweep and the `fast` preset decision are in
+> `../wave-f/README.md`. The text below is the 2026-11-17 state and stays as history.
+
 Date: 2026-11-17. Machine: Windows 11 26200, Ryzen 7 7735HS, Radeon 680M (Vulkan0, AMD proprietary driver, UMA),
 MSVC 19.44, CMake 4.4, Ninja. Build: `windows-msvc-release-vulkan`, `SD_USE_UPSTREAM_GGML=ON`, built from a short
 `subst` drive (`Y:\build\f3`) because the Vulkan shader-generator sub-project exceeds MAX_PATH from the long
@@ -15,11 +18,11 @@ commit than the lock-file pin `d3c3e24`; another workstream moved it, not this c
 | CPU + Vulkan build with `SD_USE_UPSTREAM_GGML=ON` | PASS (`build/f3`, 674 targets, no errors) |
 | SD1.5 regression | PASS (below) |
 | Approved downloads | PARTIAL: unsloth GGUF PASS (sha256 verified); LFM3 Q8_0 + mmproj downloaded (hash file below); BFL text encoder + VAE BLOCKED |
-| FLUX.3 text-to-image / image-to-image, Vulkan and CPU | **BLOCKED** (no text encoder, no VAE) |
+| FLUX.3 text-to-image / image-to-image, Vulkan and CPU | **PASS** with the approved substitute encoder/VAE; see `../wave-f/README.md` (2026-11-20) |
 | Memory split DiT / Qwen3-VL encoder / VAE, params-backend cpu vs disk on FLUX | **BLOCKED**, same reason |
-| Step sweep 4/6/8/12/16 and LPIPS or image diff | **BLOCKED**; tooling written (`sweep.py`), NOT RUN |
+| Step sweep 4/6/8/12/16 and image diff | **PASS** (PSNR/DSSIM, single sample); LPIPS NOT RUN. `../wave-f/sweep-vulkan/` |
 | Fast LoRA | NOT RUN: no public FLUX.3 Klein fast LoRA exists; none was claimed or downloaded |
-| Presets in ImageRequest / CLI / HTTP / MCP | PASS (code + tests); the `fast` value is PROVISIONAL |
+| Presets in ImageRequest / CLI / HTTP / MCP | PASS (code + tests); `fast` = 6 steps is now measured (wave F) |
 
 ## Why the render is blocked
 

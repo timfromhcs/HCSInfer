@@ -33,7 +33,7 @@ reason. Model files live outside the repository (the evidence uses `D:\HCSModels
 | Model | Files | Status | Evidence |
 |---|---|---|---|
 | Stable Diffusion 1.5 Q8_0 | one GGUF | Verified (txt2img, img2img, CPU + Vulkan) | `docs/test-evidence/M1/sd`, `M3-image`, `B7-params` |
-| FLUX.3 Image Klein (5.6B distilled), unsloth `UD-Q4_K_XL` | DiT GGUF + Qwen3-VL-4B-Instruct text encoder + FLUX.2 VAE | Recognised, end-to-end render BLOCKED | `docs/test-evidence/flux3` |
+| FLUX.3 Image Klein (5.6B distilled), unsloth `UD-Q4_K_XL` | DiT GGUF + Qwen3-VL-4B-Instruct text encoder + FLUX.2 VAE | Rendered (Vulkan and CPU, text-to-image and image-to-image) | `docs/test-evidence/wave-f` |
 
 ### FLUX.3 Image Klein
 
@@ -43,9 +43,10 @@ reason. Model files live outside the repository (the evidence uses `D:\HCSModels
   is identified as `Flux.3 Image Klein` and its DiT (hidden 3072, 5 double + 28 single blocks) is parsed.
 * It is a multi-file model. The DiT GGUF contains no text encoder and no VAE; both are separate files:
   the encoder is Qwen3-VL-4B-Instruct (`--llm`), the VAE is the FLUX.2 VAE (`--vae`).
-  **Status: the gated `black-forest-labs/flux-3-image-klein` files returned "Access denied. This repository requires
-  approval" for the configured Hugging Face account, so a real render has not been run.** Nothing in this table
-  claims FLUX.3 output quality or speed on this PC.
+  **Status: the gated `black-forest-labs/flux-3-image-klein` files are not accessible for the configured account.
+  With Qwen3-VL-4B-Instruct Q4_K_M and the FLUX.2 VAE (hashes in `docs/test-evidence/wave-f`) a 512x512 render takes
+  about 364-471 s on Radeon 680M (Vulkan, 6-16 steps; ~300 s of that is a fixed per-process cost), single samples.**
+  `--preset fast` = 6 steps, cfg 1.0; an unset cfg means 1.0 for this family.
 * Licence: FLUX Kommunity License v1.0 (Black Forest Labs; non-commercial / non-production, or commercial only as
   a Qualifying User). Weights are never redistributed by HCSInfer.
 * No public "fast" LoRA for FLUX.3 Klein was found or downloaded. The adapter does not claim one.

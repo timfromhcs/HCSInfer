@@ -3,8 +3,8 @@
 
 Runs the HCSInfer CLI (never raw sd-cli) once per step count with a fixed model, prompt, seed and size,
 then compares each output with the 16-step render using ImageMagick `compare` (PSNR in dB, higher is closer,
-and SSIM, 1.0 is identical). LPIPS needs a neural network and a Python ML stack that this machine does not
-have in a reviewed form, so the documented metric here is PSNR + SSIM; see README.md.
+and DSSIM, 0.0 is identical). LPIPS needs a neural network and a Python ML stack that this machine does not
+have in a reviewed form, so the documented metric here is PSNR + DSSIM; see README.md.
 
 Usage (all paths are arguments, nothing is hard-coded):
   python sweep.py --exe <HCSInfer.exe> --model <flux gguf> --out <dir> [--backend vulkan|cpu]
@@ -35,6 +35,10 @@ def compare(metric, a, b):
     p = subprocess.run(["magick", "compare", "-metric", metric, str(a), str(b), "null:"],
                        capture_output=True, text=True, timeout=120)
     txt = (p.stderr or p.stdout).strip()
+    # ImageMagick 7 prints "<raw> (<normalised>)" for SSIM/DSSIM; the normalised value in parentheses is the one to use.
+    paren = re.search(r"\(([0-9.eE+-]+)\)", txt)
+    if paren and metric in ("SSIM", "DSSIM"):
+        return float(paren.group(1))
     m = re.match(r"^(inf|[0-9.eE+-]+)", txt)
     if not m:
         return None
@@ -97,10 +101,10 @@ def main():
             continue
         png = out / r["png"]
         r["psnr_db_vs_16"] = compare("PSNR", png, ref)
-        r["ssim_vs_16"] = compare("SSIM", png, ref)
+        r["dssim_vs_16"] = compare("DSSIM", png, ref)
     (out / "sweep.json").write_text(json.dumps(
         {"prompt_chars": len(PROMPT), "width": a.width, "height": a.height, "seed": a.seed,
-         "backend": a.backend, "metric": "ImageMagick PSNR/SSIM vs the 16-step render", "runs": rows}, indent=2))
+         "backend": a.backend, "metric": "ImageMagick PSNR (dB, higher=closer) / DSSIM (normalised, 0=identical) vs the 16-step render", "runs": rows}, indent=2))
     return 0 if all(r["exit_code"] == 0 for r in rows) else 1
 
 

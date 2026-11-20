@@ -12,7 +12,7 @@ loopback HTTP API, an MCP stdio server, an embedded local web UI (HCS Studio), a
 supervisor (ADR-011) and a real text benchmark command run on the target machine.
 **Custom Vulkan kernels, the Model Vault in the engine load path, the single-file EXE, `tune`,
 `models load|unload` as CLI commands and Streamable HTTP are not
-implemented. The FLUX.3 Klein render, a real `prime-agent` session, a real training run and real WebGPU inference
+implemented. A real `prime-agent` session, a real training run and real WebGPU inference
 are NOT RUN / BLOCKED.** V1 is not released. See `docs/roadmap/STATUS.md` (it also holds the V1 release checklist)
 for the evidence behind every row below.
 
@@ -25,7 +25,7 @@ for the evidence behind every row below.
 | Text chat, Vulkan (Radeon 680M) | Implemented | requires the `windows-msvc-release-vulkan` build; explicit `--backend vulkan` fails loudly instead of falling back |
 | Image generation + img2img (`image generate/edit`, stable-diffusion.cpp adapter), CPU and Vulkan | Implemented (CLI) | tested with SD1.5 Q8_0 only; other model families not tested |
 | Vision / image understanding (libmtmd): `HCSInfer vision`, CPU and Vulkan | Implemented (alpha) | tested with SmolVLM2-500M Q8_0 and LFM3-Omni-2B (+ their mmproj); one image per request, no video/audio; `docs/test-evidence/M2-vision/`, `lfm3/` |
-| FLUX.3 Image Klein through the diffusion adapter (`--llm`, `--vae`, `--preset fast\|quality`, `.components.json` sidecar) | Experimental plumbing; **render BLOCKED** | the pinned stable-diffusion.cpp recognises the model, but the gated encoder/VAE could not be downloaded, so no FLUX.3 image has been produced; the `fast` preset is provisional and unmeasured; `docs/supported-models.md`, `docs/test-evidence/flux3/` |
+| FLUX.3 Image Klein through the diffusion adapter (`--llm`, `--vae`, `--preset fast\|quality`, `.components.json` sidecar) | Experimental; **rendered** (Vulkan + CPU, t2i + i2i) | real 512x512 renders with the approved substitute Qwen3-VL-4B Q4_K_M encoder and FLUX.2 VAE; ~6-8 min per image on Radeon 680M (single samples); `fast` = 6 steps measured by a PSNR/DSSIM sweep; `docs/supported-models.md`, `docs/test-evidence/flux3/` |
 | Model registry, lifecycle, job queue, cancellation, memory-budget arithmetic, approved-root path guard | Implemented | |
 | HTTP API: `/v1/models`, `/v1/chat/completions` (streaming), `/hcs/v1/*` | Experimental | loopback by default, bearer token, size limits; `docs/api.md` |
 | HTTP API: image input on chat (`image_url` data URIs, streaming, cancellation) | Experimental | needs a model + its mmproj in one folder; `docs/api.md` |
@@ -201,7 +201,7 @@ No performance claim is made beyond those files.
 - Vision is limited to one image per single-turn request and one tested model family (SmolVLM2); no custom kernels and no scheduler beyond the single-worker job queue.
 - Image routes are text-to-image and img2img only (`b64_json`); `url` responses, `mask`/inpainting and `multipart/form-data` uploads are rejected with a clear error.
 - The GUI is served on the loopback API listener and needs a browser; model load and rendering show an indeterminate busy state, not real progress. Its playwright interaction phase and a Vulkan-build UI run are NOT RUN.
-- No image model other than SD1.5 Q8_0 has produced output; FLUX.3 Klein is BLOCKED (gated encoder/VAE). FP8/INT8 diffusion paths are unavailable with upstream GGML.
+- No image model other than SD1.5 Q8_0 has produced output; FLUX.3 Klein renders with a substitute encoder/VAE (the gated BFL files are not accessible) and is slow (minutes per image). FP8/INT8 diffusion paths are unavailable with upstream GGML.
 - Tool calling: the tested model emits one call per turn (parallel calls 0/3 on the eval); `tool_choice` required / named function is `501`.
 - LFM3-Omni audio/video input and speech output are not wired. No real training run, no real `prime-agent` session and no real WebGPU inference have been executed.
 - One model resident and one job at a time (single worker). USB-unplug and OOM-injection behaviour are not tested.

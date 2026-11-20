@@ -289,6 +289,12 @@ TEST(DiffusionPreset, Flux3PresetsReplaceStepsAndReportThem) {
     ASSERT_TRUE(r) << r.error().message;
     EXPECT_EQ(r.value().steps, 16u);
     EXPECT_EQ(r.value().preset, "quality");
+    // The measured `fast` point (docs/test-evidence/wave-f/README.md): 6 steps.
+    q.preset = "fast";
+    auto f = engine.generate_image(q, CancellationToken{});
+    ASSERT_TRUE(f) << f.error().message;
+    EXPECT_EQ(f.value().steps, 6u);
+    EXPECT_EQ(f.value().preset, "fast");
     (void)engine.unload();
     queue.shutdown();
 }

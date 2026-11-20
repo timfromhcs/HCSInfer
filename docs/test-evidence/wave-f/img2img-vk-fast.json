@@ -1,0 +1,16 @@
+{
+  "backend": "vulkan",
+  "bytes": 555972,
+  "device": "AMD Radeon(TM) Graphics (Vulkan0)",
+  "generation_ms": 373873.4266,
+  "height": 512,
+  "load_ms": 495.0583,
+  "mode": "edit",
+  "model": "D:/HCSModels/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf",
+  "output": "docs/test-evidence/wave-f/img2img-vk-fast.png",
+  "preset": "fast",
+  "schema_version": 1,
+  "steps": 6,
+  "total_ms": 373877.4826,
+  "width": 512
+}

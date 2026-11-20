@@ -1,0 +1,75 @@
+{
+  "prompt_chars": 69,
+  "width": 512,
+  "height": 512,
+  "seed": 42,
+  "backend": "vulkan",
+  "metric": "ImageMagick 7.1.2 PSNR (dB, higher=closer) / DSSIM (normalised, 0=identical) vs the 16-step render",
+  "runs": [
+    {
+      "steps": 16,
+      "repeat": 0,
+      "exit_code": 0,
+      "wall_ms": 470673.4,
+      "png": "steps16_r0.png",
+      "generation_ms": 468754.0639,
+      "load_ms": 503.4565,
+      "backend": "vulkan",
+      "device": "AMD Radeon(TM) Graphics (Vulkan0)",
+      "psnr_db_vs_16": 120.0,
+      "dssim_vs_16": 0.0
+    },
+    {
+      "steps": 12,
+      "repeat": 0,
+      "exit_code": 0,
+      "wall_ms": 431601.7,
+      "png": "steps12_r0.png",
+      "generation_ms": 429683.1046,
+      "load_ms": 503.339,
+      "backend": "vulkan",
+      "device": "AMD Radeon(TM) Graphics (Vulkan0)",
+      "psnr_db_vs_16": 30.0298,
+      "dssim_vs_16": 0.0236075
+    },
+    {
+      "steps": 8,
+      "repeat": 0,
+      "exit_code": 0,
+      "wall_ms": 399234.2,
+      "png": "steps08_r0.png",
+      "generation_ms": 397081.8231,
+      "load_ms": 515.2077,
+      "backend": "vulkan",
+      "device": "AMD Radeon(TM) Graphics (Vulkan0)",
+      "psnr_db_vs_16": 24.0519,
+      "dssim_vs_16": 0.0765923
+    },
+    {
+      "steps": 6,
+      "repeat": 0,
+      "exit_code": 0,
+      "wall_ms": 364048.5,
+      "png": "steps06_r0.png",
+      "generation_ms": 361989.9459,
+      "load_ms": 502.8241,
+      "backend": "vulkan",
+      "device": "AMD Radeon(TM) Graphics (Vulkan0)",
+      "psnr_db_vs_16": 24.1436,
+      "dssim_vs_16": 0.0910254
+    },
+    {
+      "steps": 4,
+      "repeat": 0,
+      "exit_code": 0,
+      "wall_ms": 370693.5,
+      "png": "steps04_r0.png",
+      "generation_ms": 368631.7504,
+      "load_ms": 492.0061,
+      "backend": "vulkan",
+      "device": "AMD Radeon(TM) Graphics (Vulkan0)",
+      "psnr_db_vs_16": 20.319,
+      "dssim_vs_16": 0.146626
+    }
+  ]
+}

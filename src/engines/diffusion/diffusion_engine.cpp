@@ -373,7 +373,9 @@ struct PresetPoint {
     float cfg;
 };
 
-constexpr PresetPoint kFlux3Fast{8, 1.0f};
+// Measured on Radeon 680M (docs/test-evidence/wave-f): 6 steps is as close to the 16-step render as 8 steps
+// (PSNR 24.1 dB vs 24.1 dB) and 23 % faster in wall time; 4 steps drops to 20.3 dB.
+constexpr PresetPoint kFlux3Fast{6, 1.0f};
 constexpr PresetPoint kFlux3Quality{16, 1.0f};
 
 std::optional<PresetPoint> preset_for(const std::string& family, const std::string& preset) {
@@ -878,6 +880,10 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std:
                                              : " family '" + family + "'"));
         req.steps = pt->steps;
         req.cfg_scale = pt->cfg;
+    } else if (family == "flux3" && req.cfg_scale == 0.0f) {
+        // FLUX.3 Klein is guidance-distilled: the engine-wide default cfg over-saturates it and produces
+        // artefacts (docs/test-evidence/wave-f/try-vk-4.png), so an unset cfg means 1.0 for this family.
+        req.cfg_scale = 1.0f;
     }
     if (req.steps == 0 || req.steps > kMaxSteps)
         return Error(ErrorCode::InvalidArgument, "steps must be in 1..150");
