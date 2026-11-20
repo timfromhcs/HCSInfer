@@ -8,7 +8,7 @@
 export const APP = Object.freeze({
   name: "HCS Studio Web",
   product: "HCSmedia",
-  version: "0.1.0",
+  version: "1.0.0-rc.1",
   scope: "v1.1 wave 2 (AGENTS.md section 26.7)",
 });
 

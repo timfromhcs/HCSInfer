@@ -62,6 +62,8 @@ $cml = Join-Path $root 'CMakeLists.txt'
 if (Test-Path -LiteralPath $cml) {
     $m = Select-String -LiteralPath $cml -Pattern 'project\(\s*HCSInfer\s+VERSION\s+([0-9.]+)' | Select-Object -First 1
     if ($m) { $version = $m.Matches[0].Groups[1].Value }
+    $sfx = Select-String -LiteralPath (Join-Path $root 'CMakeLists.txt') -Pattern 'set\(\s*HCS_VERSION_SUFFIX\s+"([^"]*)"' | Select-Object -First 1
+    if ($sfx) { $version = $version + $sfx.Matches[0].Groups[1].Value }
 }
 $gitCommit = 'unknown'
 try {

@@ -31,6 +31,8 @@ if (-not (Test-Path -LiteralPath $exe)) { throw "HCSInfer.exe not found at $exe.
 $version = '0.0.0'
 $m = Select-String -LiteralPath (Join-Path $root 'CMakeLists.txt') -Pattern 'project\(\s*HCSInfer\s+VERSION\s+([0-9.]+)' | Select-Object -First 1
 if ($m) { $version = $m.Matches[0].Groups[1].Value }
+$sfx = Select-String -LiteralPath (Join-Path $root 'CMakeLists.txt') -Pattern 'set\(\s*HCS_VERSION_SUFFIX\s+"([^"]*)"' | Select-Object -First 1
+if ($sfx) { $version = $version + $sfx.Matches[0].Groups[1].Value }
 $commit = 'unknown'
 try { $c = (& git -C $root rev-parse HEAD 2>$null); if ($LASTEXITCODE -eq 0 -and $c) { $commit = $c.Trim() } } catch { }
 $dirty = 'unknown'

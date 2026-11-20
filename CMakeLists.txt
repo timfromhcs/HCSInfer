@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.25)
 # C is enabled because the pinned engines (ggml, stable-diffusion.cpp) contain C translation units and
 # stable-diffusion.cpp exports the PUBLIC compile feature `c_std_11`, which CMake resolves in the scope of
 # the consuming target. HCS-owned code stays C++20 (AGENTS.md 3.4); this does not change that.
-project(HCSInfer VERSION 0.1.0 LANGUAGES C CXX)
+project(HCSInfer VERSION 1.0.0 LANGUAGES C CXX)
+# Pre-release label (AGENTS.md 22: core checklist rows are not all PASS, so this is a release candidate, not 1.0.0).
+# Empty it only when the checklist in docs/roadmap/STATUS.md is green. Wheel/npm spell it 1.0.0rc1 / 1.0.0-rc.1.
+set(HCS_VERSION_SUFFIX "-rc.1")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

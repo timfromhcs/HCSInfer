@@ -5,7 +5,7 @@ from ._exe import ExeNotFoundError, doctor, find_exe, run_cli, version
 from .client import Client, HcsError
 from .server import Server
 
-__version__ = "0.1.0"
+__version__ = "1.0.0rc1"
 __all__ = [
     "Client",
     "ExeNotFoundError",

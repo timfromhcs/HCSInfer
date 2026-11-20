@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hcsinfer"
-version = "0.1.0"
+version = "1.0.0rc1"
 description = "Python launcher and client for HCSInfer, a local-first AI runtime (text, vision, image generation) for Windows."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -13,7 +13,7 @@ license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 authors = [{ name = "HCSInfer contributors" }]
 keywords = ["llm", "gguf", "llama.cpp", "stable-diffusion", "vulkan", "local-ai", "openai-compatible"]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "Operating System :: Microsoft :: Windows",
   "Programming Language :: Python :: 3",
