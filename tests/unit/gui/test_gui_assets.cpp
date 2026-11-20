@@ -62,11 +62,11 @@ TEST(GuiAssets, EveryAssetIsServedWithCspAndRightType) {
 TEST(GuiAssets, StudioStructure) {
     const std::string html = asset_text("index.html");
     // every section the e2e test and the docs rely on, plus the two planned placeholders
-    for (const char* id : {"tab-chat", "tab-image", "tab-vision", "tab-models", "tab-perf", "tab-settings",
-                           "tab-agent", "tab-train", "panel-agent", "panel-train", "theme-toggle", "mem-bar",
-                           "image-gallery", "image-file", "image-strength", "chat-stop", "toast", "onboard",
-                           "ob-done", "vision-copy", "perf-tps", "perf-dev", "perf-mem-bar", "set-reset",
-                           "image-copy-prompt"})
+    for (const char* id : {"tab-chat",     "tab-image", "tab-vision",    "tab-models",  "tab-perf",
+                           "tab-settings", "tab-agent", "tab-train",     "panel-agent", "panel-train",
+                           "theme-toggle", "mem-bar",   "image-gallery", "image-file",  "image-strength",
+                           "chat-stop",    "toast",     "onboard",       "ob-done",     "vision-copy",
+                           "perf-tps",     "perf-dev",  "perf-mem-bar",  "set-reset",   "image-copy-prompt"})
         EXPECT_NE(html.find(std::string("id=\"") + id + "\""), std::string::npos) << id;
     EXPECT_NE(html.find("aria-label=\"HCSmedia\""), std::string::npos);  // inline SVG wordmark
     // Planned tabs are labelled and carry no form controls of their own.
