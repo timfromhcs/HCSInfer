@@ -152,7 +152,7 @@ def browser_boot_phase(port, token, browser, expect_models):
         check("browser rendered the UI", True)
         conn = re.search(r'id="conn"[^>]*>([^<]*)<', dom)
         check("UI connected to the API using the fragment token", bool(conn) and conn.group(1).strip() == "connected", conn.group(1) if conn else "no #conn")
-        rows = re.findall(r"<tr><td>", dom)
+        rows = re.findall(r'<tr><td class="mname"', dom)  # model rows only; the empty-state row is <td colspan=6>
         if expect_models:
             check("Models table lists registered models", len(rows) >= 1, len(rows))
         check("token not left in DOM", token not in dom)
@@ -160,8 +160,31 @@ def browser_boot_phase(port, token, browser, expect_models):
         shutil.rmtree(prof, ignore_errors=True)
 
 
+def assistant_text(page):
+    loc = page.locator(".msg-assistant .msg-body")
+    return loc.first.inner_text() if loc.count() > 0 else ""
+
+
+def poll_until(page, pred, timeout_ms):
+    """Polls from Python instead of page.wait_for_function(): that call evaluates a string in the page, which the
+    UI's strict CSP (no 'unsafe-eval') correctly refuses. The CSP is part of what this test protects, so it is not
+    relaxed (no bypass_csp)."""
+    waited = 0
+    while waited < timeout_ms:
+        if pred():
+            return
+        page.wait_for_timeout(250)
+        waited += 250
+    raise TimeoutError("condition not reached within %d ms" % timeout_ms)
+
+
 def playwright_phase(port, token, model_stem, have_model):
     print("== Phase 3: browser interaction (playwright) ==")
+    # `python -I` ignores PYTHONPATH, so a dev-only Playwright install (a venv under build/, never committed) is
+    # made visible explicitly: HCS_E2E_PYTHON_PATH = that venv's site-packages directory.
+    extra = os.environ.get("HCS_E2E_PYTHON_PATH", "")
+    if extra and os.path.isdir(extra) and extra not in sys.path:
+        sys.path.insert(0, extra)
     try:
         from playwright.sync_api import sync_playwright
     except Exception as e:  # noqa: BLE001
@@ -195,15 +218,15 @@ def playwright_phase(port, token, model_stem, have_model):
         page.click("#tab-models")
         page.wait_for_selector("#models-table tbody tr button")
         row = page.locator("#models-table tbody tr", has_text=model_stem).first
-        row.get_by_role("button", name="Load").click()
+        row.get_by_role("button", name="Load", exact=True).click()
         page.wait_for_selector("#loaded.pill-ok", timeout=180000)
         check("model loaded through the Models tab", True, page.inner_text("#loaded"))
         page.click("#tab-chat")
         page.fill("#chat-input", "Reply with exactly one short sentence about the sea.")
         page.click("#chat-send")
-        page.wait_for_function("document.querySelectorAll('.msg-assistant span')[0] && document.querySelectorAll('.msg-assistant span')[0].textContent.length > 0", timeout=120000)
+        poll_until(page, lambda: assistant_text(page) != "", 120000)
         page.wait_for_selector("#chat-send:not([disabled])", timeout=120000)
-        reply = page.locator(".msg-assistant span").first.inner_text()
+        reply = page.locator(".msg-assistant .msg-body").first.inner_text()
         check("streamed chat reply shown", len(reply.strip()) > 0, reply[:80])
         # Stop: long generation, cancel through the job cancel endpoint
         page.click("#chat-clear")
@@ -213,7 +236,7 @@ def playwright_phase(port, token, model_stem, have_model):
         page.fill("#chat-max", "1024")
         page.fill("#chat-input", "Write a very long story about a lighthouse keeper.")
         page.click("#chat-send")
-        page.wait_for_function("(document.querySelector('.msg-assistant span')||{textContent:''}).textContent.length > 20", timeout=120000)
+        poll_until(page, lambda: len(assistant_text(page)) > 20, 120000)
         page.click("#chat-stop")
         page.wait_for_selector("#chat-send:not([disabled])", timeout=30000)
         check("Stop ends generation and re-enables Send", True)

@@ -23,7 +23,7 @@ for the evidence behind every row below.
 | Hardware report `HCSInfer doctor [--json]` (CPU features, RAM, OS, GPU adapters, Vulkan devices/heaps, drive info) | Implemented | evidence `docs/test-evidence/M0`; unknown values print `unknown` |
 | Text chat (`chat`, llama.cpp adapter), CPU | Implemented | real GGUF tested (Qwen3 0.6B Q4_K_M, LFM3-Omni-2B Q8_0) |
 | Text chat, Vulkan (Radeon 680M) | Implemented | requires the `windows-msvc-release-vulkan` build; explicit `--backend vulkan` fails loudly instead of falling back |
-| Image generation + img2img (`image generate/edit`, stable-diffusion.cpp adapter), CPU and Vulkan | Implemented (CLI) | tested with SD1.5 Q8_0 only; other model families not tested |
+| Image generation + img2img (`image generate/edit`, stable-diffusion.cpp adapter), CPU and Vulkan | Implemented (CLI) | SD1.5 Q8_0 (CPU and Vulkan); FLUX.3 Klein is in the next row; other model families not tested |
 | Vision / image understanding (libmtmd): `HCSInfer vision`, CPU and Vulkan | Implemented (alpha) | tested with SmolVLM2-500M Q8_0 and LFM3-Omni-2B (+ their mmproj); one image per request, no video/audio; `docs/test-evidence/M2-vision/`, `lfm3/` |
 | FLUX.3 Image Klein through the diffusion adapter (`--llm`, `--vae`, `--preset fast\|quality`, `.components.json` sidecar) | Experimental; **rendered** (Vulkan t2i + i2i; CPU t2i only via a 256x256 engine test, no CPU i2i run) | real 512x512 renders with the approved substitute Qwen3-VL-4B Q4_K_M encoder and FLUX.2 VAE; ~6-8 min per image on Radeon 680M (single samples); `fast` = 6 steps measured by a PSNR/DSSIM sweep; `docs/supported-models.md`, `docs/test-evidence/wave-f/` |
 | Model registry, lifecycle, job queue, cancellation, memory-budget arithmetic, approved-root path guard | Implemented | |
@@ -141,6 +141,19 @@ external USB drive. HCSInfer does not create a decompressed model cache on the S
 Windows may still page memory to the system page file; HCSInfer does not change that. A USB HDD is a cold archive,
 not RAM: a cold first load of a multi-GB model is slow (a cold SD1.5 first step took about 218 s in our run; warm
 runs took seconds), and cold/warm numbers must never be compared. See `docs/model-vault.md`.
+
+## HCS Studio (local web UI)
+
+Screenshots are real captures of `HCSInfer serve` in headless Edge with the CPU build, the real LFM3-Omni-2B Q8_0
+model for chat and SD 1.5 Q8_0 for the (4-step draft) image; see `docs/gui.md` and `docs/test-evidence/wave-c/`.
+
+| Chat with safe Markdown (light) | Performance (dark) |
+|---|---|
+| ![Chat](docs/screenshots/studio-chat-light.png) | ![Performance](docs/screenshots/studio-performance-dark.png) |
+
+| Models and memory split | Image Studio (4-step SD 1.5 draft) | Phone, dark |
+|---|---|---|
+| ![Models](docs/screenshots/studio-models-light.png) | ![Image Studio](docs/screenshots/studio-image-light.png) | ![Phone](docs/screenshots/studio-phone-dark.png) |
 
 ## HCS Studio Web (browser demo)
 

@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "check": "connected",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "first-run guide visible",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "model loaded",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "reply finished",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "model echoed the markdown payload (precondition)",
+      "status": "PASS",
+      "detail": "## Heading\n**bold word** and `inline code`\n- one\n- two\n```python\nprint(1)\n```\n<img src=x onerror=document.title='pwned'>"
+    },
+    {
+      "check": "no <img>/<script>/handler element created from model output",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "page title unchanged (no script ran)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "bold rendered as <strong>",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "code block rendered with a Copy button",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "HTML payload shown as text",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "copy button reports a result",
+      "status": "PASS",
+      "detail": "Copy was refused by the browser. Select the text and press Ctrl+C."
+    },
+    {
+      "check": "Performance shows measured tokens/s after chat",
+      "status": "PASS",
+      "detail": "17.4"
+    },
+    {
+      "check": "manual dark theme applies",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "reset restores system theme + guide",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "no CSP violations",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "check": "no console errors",
+      "status": "PASS",
+      "detail": "[]"
+    }
+  ],
+  "result_status": "PASS"
+}

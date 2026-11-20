@@ -1,0 +1,44 @@
+PASS  UI connected with the fragment token
+PASS  title is HCS Studio
+PASS  token removed from the address bar
+PASS  token not in DOM
+PASS  inline SVG wordmark rendered
+PASS  agent tab is labelled Planned and has no controls
+PASS  train tab is labelled Planned and has no controls
+PASS  no horizontal page scroll: desktop/chat
+PASS  no horizontal page scroll: desktop/image
+PASS  no horizontal page scroll: desktop/vision
+PASS  no horizontal page scroll: desktop/models
+PASS  no horizontal page scroll: desktop/perf
+PASS  no horizontal page scroll: desktop/settings
+PASS  no horizontal page scroll: desktop/agent
+PASS  no horizontal page scroll: desktop/train
+PASS  no horizontal page scroll: tablet/chat
+PASS  no horizontal page scroll: tablet/image
+PASS  no horizontal page scroll: tablet/vision
+PASS  no horizontal page scroll: tablet/models
+PASS  no horizontal page scroll: tablet/perf
+PASS  no horizontal page scroll: tablet/settings
+PASS  no horizontal page scroll: tablet/agent
+PASS  no horizontal page scroll: tablet/train
+PASS  no horizontal page scroll: phone/chat
+PASS  no horizontal page scroll: phone/image
+PASS  no horizontal page scroll: phone/vision
+PASS  no horizontal page scroll: phone/models
+PASS  no horizontal page scroll: phone/perf
+PASS  no horizontal page scroll: phone/settings
+PASS  no horizontal page scroll: phone/agent
+PASS  no horizontal page scroll: phone/train
+PASS  model loaded through the Models tab
+PASS  memory split shows segments after load
+PASS  streamed chat reply shown
+PASS  Stop ends generation and re-enables Send
+PASS  busy bar shown while rendering
+PASS  text-to-image produced an image
+PASS  image has real pixels
+PASS  img2img mode with input preview
+PASS  image-to-image produced a second image
+PASS  no CSP violations logged
+PASS  no console errors or exceptions
+
+SUMMARY: 42 checks, 0 failed -> PASS

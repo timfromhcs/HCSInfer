@@ -12,6 +12,7 @@
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <div class="shell">
 
 <aside class="side" id="side" aria-label="HCS Studio navigation">
@@ -76,9 +77,34 @@
 
   <!-- ===================== Chat ===================== -->
   <section role="tabpanel" id="panel-chat" aria-labelledby="tab-chat" tabindex="0">
+    <section id="onboard" class="card onboard" aria-labelledby="onboard-h" hidden>
+      <h2 id="onboard-h">Welcome to HCS Studio</h2>
+      <p class="note lead">Everything runs on this computer. Three quick checks before you start.</p>
+      <ol class="steps">
+        <li>
+          <h3>Models</h3>
+          <p id="ob-models" class="note"></p>
+          <p class="note">Add a folder of models on the server: <code>HCSInfer models scan &lt;folder&gt;</code></p>
+          <div class="row"><button type="button" id="ob-copy" class="ghost">Copy command</button><button type="button" id="ob-open-models" class="ghost">Open Models</button></div>
+        </li>
+        <li>
+          <h3>This computer</h3>
+          <p id="ob-system" class="note">Checking...</p>
+        </li>
+        <li>
+          <h3>Mode</h3>
+          <div class="seg" role="radiogroup" aria-label="Mode">
+            <label><input type="radio" name="ob-mode" value="simple" checked><span>Simple</span></label>
+            <label><input type="radio" name="ob-mode" value="advanced"><span>Advanced</span></label>
+          </div>
+          <p class="note">Simple hides sampling and image options. You can change this later in Settings.</p>
+        </li>
+      </ol>
+      <div class="row"><button type="button" id="ob-done">Got it, hide this guide</button></div>
+    </section>
     <div class="banner" id="chat-state" role="status" aria-live="polite" hidden></div>
     <div class="chat-wrap">
-      <div id="chat-log" class="log" aria-live="polite" aria-label="Conversation"><p class="empty" id="chat-empty">Pick a model, then ask something. Replies stream in as the model writes them. Tool calls, when a model makes them, appear here as expandable blocks.</p></div>
+      <div id="chat-log" class="log" role="log" aria-live="polite" aria-busy="false" aria-label="Conversation"><p class="empty" id="chat-empty">Pick a model, then ask something. Replies stream in as the model writes them. Tool calls, when a model makes them, appear here as expandable blocks.</p></div>
       <form id="chat-form" class="composer">
         <div class="row between">
           <label class="inline-field">Model <select id="chat-model"></select></label>
@@ -131,10 +157,10 @@
         <fieldset class="presets">
           <legend>Steps preset</legend>
           <div class="seg" role="radiogroup" aria-label="Steps preset">
-            <label><input type="radio" name="image-preset" value="4"><span>Draft 4</span></label>
-            <label><input type="radio" name="image-preset" value="8"><span>Fast 8</span></label>
-            <label><input type="radio" name="image-preset" value="16"><span>Standard 16</span></label>
-            <label><input type="radio" name="image-preset" value="28"><span>Fine 28</span></label>
+            <label><input type="radio" name="image-preset" value="4"><span title="4 steps: quick preview">Draft 4</span></label>
+            <label><input type="radio" name="image-preset" value="8"><span title="8 steps: fast">Fast 8</span></label>
+            <label><input type="radio" name="image-preset" value="16"><span title="16 steps: balanced">Standard 16</span></label>
+            <label><input type="radio" name="image-preset" value="28"><span title="28 steps: quality">Fine 28</span></label>
           </div>
           <p class="note">A preset only sets the step count. Few steps look good only with a step-distilled checkpoint; other models need more.</p>
         </fieldset>
@@ -170,6 +196,7 @@
           <button type="button" id="image-save" class="ghost">Save PNG</button>
           <button type="button" id="image-reuse" class="ghost">Use as input image</button>
           <button type="button" id="image-copy-seed" class="ghost">Copy seed</button>
+          <button type="button" id="image-copy-prompt" class="ghost">Copy prompt</button>
         </div>
         <h3 class="sect">Gallery</h3>
         <ul id="image-gallery" class="gallery" aria-label="Generated images this session"></ul>
@@ -200,8 +227,8 @@
         </div>
       </form>
       <div>
-        <h3 class="sect first">Answer</h3>
-        <pre id="vision-out" class="out" aria-live="polite"></pre>
+        <div class="row between"><h3 class="sect first">Answer</h3><button type="button" id="vision-copy" class="ghost copy" aria-label="Copy answer" hidden>Copy</button></div>
+        <div id="vision-out" class="out md-out" role="region" aria-label="Answer" aria-live="polite" aria-busy="false" tabindex="0"></div>
       </div>
     </div>
   </section>
@@ -234,12 +261,23 @@
       <button type="button" id="perf-refresh" class="ghost">Refresh now</button>
     </div>
     <div class="grid">
+      <div class="card"><h3 class="sect first">Generation speed</h3>
+        <p class="bignum"><span id="perf-tps">-</span> <small>tokens/s</small></p>
+        <p class="note" id="perf-speed-note">No generation from this page yet. Send a chat message and the measured speed appears here.</p>
+        <ul id="perf-speed-hist" class="spark" aria-label="Recent runs, tokens per second"></ul>
+      </div>
+      <div class="card"><h3 class="sect first">Memory</h3>
+        <div class="membar" id="perf-mem-bar" role="img" aria-label="Memory budget split"></div>
+        <ul class="legend" id="perf-mem-legend"></ul>
+        <p class="note" id="perf-mem-note"></p>
+        <dl id="perf-memory"></dl>
+      </div>
       <div class="card"><h3 class="sect first">Runtime</h3><dl id="perf-runtime"></dl></div>
-      <div class="card"><h3 class="sect first">Memory</h3><dl id="perf-memory"></dl></div>
       <div class="card"><h3 class="sect first">Jobs started from this page</h3><dl id="perf-jobs"></dl></div>
     </div>
-    <h3 class="sect">Devices</h3>
-    <pre id="perf-devices" class="out" tabindex="0"></pre>
+    <h3 class="sect">Compute devices</h3>
+    <div id="perf-dev" class="devlist"></div>
+    <details class="raw"><summary>Raw device report (JSON)</summary><pre id="perf-devices" class="out" tabindex="0"></pre></details>
   </section>
 
   <!-- ===================== Settings ===================== -->
@@ -265,6 +303,14 @@
       <legend>Performance refresh</legend>
       <label>Interval (seconds) <input id="set-interval" type="number" min="1" max="60" value="3"></label>
       <button type="button" class="ghost" id="set-interval-reset">Reset to default</button>
+    </fieldset>
+    <fieldset>
+      <legend>This browser</legend>
+      <div class="row">
+        <button type="button" id="set-guide" class="ghost">Show the welcome guide again</button>
+        <button type="button" id="set-reset" class="ghost">Reset all UI settings</button>
+      </div>
+      <p class="note">Resets theme, mode, refresh interval and the welcome guide for this browser. The server and its token are not touched.</p>
     </fieldset>
     <p class="note">Model folders, memory profile and backend selection are server-side settings (<code>settings.json</code> and <code>serve</code> options); this page does not change them.</p>
   </section>

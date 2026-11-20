@@ -51,6 +51,102 @@
   }
   var IMG_OK = /^image\/(png|jpeg|gif|bmp)$/;
 
+  /* ---------- toast + clipboard ---------- */
+  var toastTimer = 0;
+  function toast(msg) {
+    var t = $("toast");
+    if (!t) return;
+    text(t, msg); t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 2400);
+  }
+  async function copyText(s, what) {
+    var ok = false;
+    try { await navigator.clipboard.writeText(s); ok = true; } catch (e) { ok = false; }
+    if (!ok) {
+      /* Fallback for contexts where the async clipboard is refused: a transient selection. */
+      try {
+        var ta = el("textarea"); ta.value = s; ta.setAttribute("readonly", ""); ta.className = "vh";
+        document.body.appendChild(ta); ta.select(); ok = document.execCommand("copy"); document.body.removeChild(ta);
+      } catch (e2) { ok = false; }
+    }
+    toast(ok ? (what || "Copied") + " copied to the clipboard." : "Copy was refused by the browser. Select the text and press Ctrl+C.");
+  }
+  function copyButton(getText, what, label) {
+    var b = el("button", "ghost copy", "Copy");
+    b.type = "button";
+    b.setAttribute("aria-label", label || ("Copy " + (what || "text")));
+    b.addEventListener("click", function () { copyText(getText(), what); });
+    return b;
+  }
+
+  /* ---------- safe Markdown (DOM nodes only; model output is never parsed as HTML) ---------- */
+  var INLINE = /(`[^`\n]+`)|(\*\*[^*\n]+\*\*)|(__[^_\n]+__)|(\*[^*\s][^*\n]*\*)|(\[[^\]\n]+\]\(https?:\/\/[^\s)]+\))/g;
+  function inlineMd(parent, s) {
+    var last = 0, m;
+    INLINE.lastIndex = 0;
+    while ((m = INLINE.exec(s)) !== null) {
+      if (m.index > last) parent.appendChild(document.createTextNode(s.slice(last, m.index)));
+      var tok = m[0];
+      if (m[1]) parent.appendChild(el("code", "", tok.slice(1, -1)));
+      else if (m[2] || m[3]) parent.appendChild(el("strong", "", tok.slice(2, -2)));
+      else if (m[4]) parent.appendChild(el("em", "", tok.slice(1, -1)));
+      else if (m[5]) {
+        var lm = /^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/.exec(tok);
+        var a = el("a", "", lm[1]);
+        a.href = lm[2]; a.target = "_blank"; a.rel = "noopener noreferrer nofollow"; a.title = lm[2];
+        parent.appendChild(a);
+      }
+      last = m.index + tok.length;
+    }
+    if (last < s.length) parent.appendChild(document.createTextNode(s.slice(last)));
+  }
+  function codeBlock(parent, lang, code) {
+    var wrap = el("div", "codeblock"), head = el("div", "codehead"), pre = el("pre"), c = el("code", "", code);
+    head.appendChild(el("span", "lang", lang || "text"));
+    head.appendChild(copyButton(function () { return code; }, "code", "Copy code block"));
+    pre.tabIndex = 0; pre.setAttribute("aria-label", "Code block" + (lang ? " (" + lang + ")" : ""));
+    pre.appendChild(c); wrap.appendChild(head); wrap.appendChild(pre); parent.appendChild(wrap);
+  }
+  function renderMd(root, src) {
+    clear(root);
+    var lines = String(src).replace(/\r\n?/g, "\n").split("\n"), i = 0, para = [];
+    function flush() { if (para.length) { var p = el("p"); inlineMd(p, para.join("\n")); root.appendChild(p); para = []; } }
+    while (i < lines.length) {
+      var ln = lines[i], m;
+      if ((m = /^ {0,3}```\s*([A-Za-z0-9_+#.-]*)\s*$/.exec(ln))) {          /* fenced block; an unclosed fence (still streaming) runs to the end */
+        flush();
+        var buf = []; i++;
+        while (i < lines.length && !/^ {0,3}```\s*$/.test(lines[i])) { buf.push(lines[i]); i++; }
+        i++;
+        codeBlock(root, m[1], buf.join("\n"));
+        continue;
+      }
+      if ((m = /^(#{1,4})\s+(.*)$/.exec(ln))) { flush(); var h = el("h" + (m[1].length + 2)); h.className = "mdh"; inlineMd(h, m[2]); root.appendChild(h); i++; continue; }
+      if (/^ {0,3}([-*_])( *\1){2,} *$/.test(ln)) { flush(); root.appendChild(el("hr")); i++; continue; }
+      if (/^ {0,3}>\s?/.test(ln)) {
+        flush();
+        var q = [];
+        while (i < lines.length && /^ {0,3}>\s?/.test(lines[i])) { q.push(lines[i].replace(/^ {0,3}>\s?/, "")); i++; }
+        var bq = el("blockquote"); inlineMd(bq, q.join("\n")); root.appendChild(bq);
+        continue;
+      }
+      var lm = /^ {0,3}([-*+]|\d{1,9}[.)])\s+(.*)$/.exec(ln);
+      if (lm) {
+        flush();
+        var ordered = /\d/.test(lm[1]), list = el(ordered ? "ol" : "ul");
+        while (i < lines.length && (lm = /^ {0,3}([-*+]|\d{1,9}[.)])\s+(.*)$/.exec(lines[i])) && /\d/.test(lm[1]) === ordered) {
+          var li = el("li"); inlineMd(li, lm[2]); list.appendChild(li); i++;
+        }
+        root.appendChild(list);
+        continue;
+      }
+      if (/^\s*$/.test(ln)) { flush(); i++; continue; }
+      para.push(ln); i++;
+    }
+    flush();
+  }
+
   /* ---------- panel states: idle | busy | loading | error | oom | unsupported | ok ---------- */
   function setBanner(id, kind, msg) {
     var b = $(id);
@@ -199,7 +295,7 @@
     state.mode = m === "advanced" ? "advanced" : "simple";
     lstore("hcs.mode", state.mode);
     Array.prototype.forEach.call(document.querySelectorAll("[data-advanced]"), function (n) { n.hidden = state.mode !== "advanced"; });
-    Array.prototype.forEach.call(document.querySelectorAll("input[name=mode]"), function (r) { r.checked = r.value === state.mode; });
+    Array.prototype.forEach.call(document.querySelectorAll("input[name=mode], input[name=ob-mode]"), function (r) { r.checked = r.value === state.mode; });
   }
 
   /* ---------- models ---------- */
@@ -256,8 +352,9 @@
     });
   }
   /* Memory split: the server's budget entries grouped by category against the budget total. Unknown stays unknown. */
-  function renderMemory(mem) {
-    var bar = $("mem-bar"), lg = $("mem-legend"), note = $("mem-note");
+  function renderMemory(mem, pre) {
+    pre = pre || "mem";
+    var bar = $(pre + "-bar"), lg = $(pre + "-legend"), note = $(pre + "-note");
     clear(bar); clear(lg);
     if (!mem) { text(note, "Memory report unavailable."); return; }
     var total = typeof mem.total_bytes === "number" ? mem.total_bytes : 0;
@@ -293,6 +390,7 @@
     state.models = (j && j.models) || [];
     await refreshRuntime().catch(function () {});
     renderModels();
+    renderOnboard();
     api("GET", "/hcs/v1/memory").then(renderMemory).catch(function () { renderMemory(null); });
   }
   async function refreshRuntime() {
@@ -392,9 +490,13 @@
   /* ---------- Chat ---------- */
   var chat = { history: [], ctl: null, job: "" };
   function addMsg(role, content) {
-    var d = el("div", "msg msg-" + role);
-    d.appendChild(el("b", "", role === "user" ? "You" : role === "assistant" ? "Model" : "Error"));
-    var body = el("span", "", content);
+    var d = el("div", "msg msg-" + role), head = el("div", "msghead");
+    head.appendChild(el("b", "", role === "user" ? "You" : role === "assistant" ? "Model" : "Error"));
+    var body = el("div", "msg-body");
+    body.raw = content || "";
+    if (role === "assistant") renderMd(body, body.raw); else text(body, body.raw);
+    if (role !== "error") head.appendChild(copyButton(function () { return body.raw; }, role === "user" ? "message" : "reply", "Copy " + (role === "user" ? "your message" : "model reply")));
+    d.appendChild(head);
     d.appendChild(body);
     var log = $("chat-log");
     $("chat-empty").hidden = true;
@@ -402,6 +504,13 @@
     log.scrollTop = log.scrollHeight;
     return body;
   }
+  var mdPending = null;
+  function setReply(body, s) {            /* streamed replies re-render at most once per frame */
+    body.raw = s;
+    if (mdPending) return;
+    mdPending = requestAnimationFrame(function () { mdPending = null; renderMd(body, body.raw); var l = $("chat-log"); l.scrollTop = l.scrollHeight; });
+  }
+  function finishReply(body) { if (mdPending) { cancelAnimationFrame(mdPending); mdPending = null; } renderMd(body, body.raw); }
   /* A model-requested tool call is shown, never executed (the Agent tab is planned). */
   function toolCallView(container) {
     var calls = {};
@@ -420,7 +529,7 @@
       text(c.pre, pretty || "(no arguments)");
     };
   }
-  function setChatBusy(b) { $("chat-send").disabled = b; $("chat-stop").hidden = !b; $("chat-input").disabled = b; }
+  function setChatBusy(b) { $("chat-send").disabled = b; $("chat-stop").hidden = !b; $("chat-input").disabled = b; $("chat-log").setAttribute("aria-busy", b ? "true" : "false"); }
   async function sendChat() {
     var input = $("chat-input"), msg = input.value.trim();
     if (!msg || chat.ctl) return;
@@ -444,16 +553,20 @@
     try {
       var res = await streamChat(body, chat.ctl, {
         onJob: function (id) { chat.job = id; if (id) trackJob(id, "chat", "running"); setBanner("chat-state", "busy", "generating"); },
-        onDelta: function (t) { if (!first) first = performance.now() - t0; acc += t; text(out, acc); var l = $("chat-log"); l.scrollTop = l.scrollHeight; },
+        onDelta: function (t) { if (!first) first = performance.now() - t0; acc += t; setReply(out, acc); },
         onToolCall: onTool,
         onUsage: function (u) { usage = u; }
       });
+      finishReply(out);
       chat.history.push({ role: "assistant", content: acc });
+      if (acc && lstore("hcs.onboarded") !== "1") { lstore("hcs.onboarded", "1"); $("onboard").hidden = true; }
       if (chat.job) trackJob(chat.job, "chat", "succeeded");
       setBanner("chat-state", "idle");
+      noteSpeed(usage, first, performance.now() - t0, "chat");
       text($("chat-meta"), (first ? "first token " + Math.round(first) + " ms" : "") + (usage ? " - " + (usage.completion_tokens || 0) + " tokens" : "") + (res.finish === "length" ? " - stopped at max tokens" : "") + (res.finish === "tool_calls" ? " - model requested a tool call" : ""));
     } catch (e) {
       var d = describe(e);
+      finishReply(out);
       if (acc) chat.history.push({ role: "assistant", content: acc }); else chat.history.pop();
       if (chat.job) trackJob(chat.job, "chat", d.kind === "idle" ? "cancelled" : "failed");
       if (!acc && !out.parentNode.querySelector("details")) out.parentNode.parentNode.removeChild(out.parentNode);
@@ -498,24 +611,26 @@
     if (!prompt) { setBanner("vision-state", "error", "enter a question about the image."); return; }
     var body = { model: selectedModel("vision-model"), messages: [{ role: "user", content: [{ type: "text", text: prompt }, { type: "image_url", image_url: { url: vision.dataUri } }] }] };
     if (state.mode === "advanced") { body.max_tokens = numOrUndef("vision-max"); body.temperature = numOrUndef("vision-temp"); }
-    var out = $("vision-out"); text(out, "");
+    var out = $("vision-out"); out.raw = ""; renderMd(out, ""); $("vision-copy").hidden = true; out.setAttribute("aria-busy", "true");
     vision.ctl = new AbortController(); vision.job = "";
     setVisionBusy(true);
     var willLoad = body.model && state.runtime && state.runtime.loaded_model !== body.model;
     setBanner("vision-state", willLoad ? "loading" : "busy", willLoad ? "loading " + body.model + " with its projector" : "analyzing");
-    var acc = "";
+    var acc = "", usage = null, t0 = performance.now(), first = 0;
     try {
       await streamChat(body, vision.ctl, {
         onJob: function (id) { vision.job = id; if (id) trackJob(id, "vision", "running"); setBanner("vision-state", "busy", "analyzing"); },
-        onDelta: function (t) { acc += t; text(out, acc); }
+        onDelta: function (t) { if (!first) first = performance.now() - t0; acc += t; setReply(out, acc); },
+        onUsage: function (u) { usage = u; }
       });
+      noteSpeed(usage, first, performance.now() - t0, "vision");
       if (vision.job) trackJob(vision.job, "vision", "succeeded");
       setBanner("vision-state", "idle");
     } catch (e) {
       var d = describe(e);
       if (vision.job) trackJob(vision.job, "vision", d.kind === "idle" ? "cancelled" : "failed");
       setBanner("vision-state", d.kind, d.message);
-    } finally { vision.ctl = null; vision.job = ""; setVisionBusy(false); refreshRuntime().catch(function () {}); }
+    } finally { finishReply(out); out.setAttribute("aria-busy", "false"); $("vision-copy").hidden = !out.raw; vision.ctl = null; vision.job = ""; setVisionBusy(false); refreshRuntime().catch(function () {}); }
   }
   async function stopVision() {
     if (!vision.ctl) return;
@@ -560,7 +675,7 @@
     if (!g) return;
     image.current = i;
     $("image-out").src = g.src; $("image-out").hidden = false; $("image-empty").hidden = true;
-    text($("image-meta"), g.meta);
+    text($("image-meta"), g.meta + " - prompt: " + g.prompt);
     $("image-actions").hidden = false;
     renderGallery();
   }
@@ -571,6 +686,7 @@
       var li = el("li"), b = el("button", "ghost");
       b.type = "button";
       b.setAttribute("aria-label", "Image " + (i + 1) + ": " + g.meta);
+      b.title = g.prompt + " - " + g.meta;
       if (i === image.current) b.setAttribute("aria-current", "true");
       var im = el("img"); im.src = g.src; im.alt = "";
       b.appendChild(im);
@@ -612,7 +728,7 @@
       if (!src) throw new ApiError(502, null, "the server returned no image data");
       var h = (j && j.hcs) || {};
       var meta = (i2i ? "image to image" : "text to image") + " - " + (h.width || "?") + "x" + (h.height || "?") + ", " + (h.steps || steps || "?") + " steps, seed " + seed + (typeof h.generation_ms === "number" ? ", " + (h.generation_ms / 1000).toFixed(1) + " s" : ", " + ((performance.now() - t0) / 1000).toFixed(1) + " s wall") + (h.model ? " - " + h.model : "");
-      image.gallery.push({ src: src, meta: meta, seed: seed });
+      image.gallery.push({ src: src, meta: meta, seed: seed, prompt: prompt });
       if (image.gallery.length > GALLERY_MAX) image.gallery.shift();
       showGalleryItem(image.gallery.length - 1);
       setBanner("image-state", "ok", "image generated.");
@@ -640,6 +756,58 @@
   }
 
   /* ---------- Performance ---------- */
+  var speed = [];   /* measured in this page: {kind, tokens, ttft, tps} */
+  function noteSpeed(usage, firstMs, totalMs, kind) {
+    var n = usage && typeof usage.completion_tokens === "number" ? usage.completion_tokens : 0;
+    var win = totalMs - (firstMs || 0);
+    if (n < 2 || win <= 0) return;
+    speed.push({ kind: kind, tokens: n, ttft: firstMs || 0, tps: n / (win / 1000) });
+    if (speed.length > 10) speed.shift();
+  }
+  function renderSpeed(rt) {
+    var last = speed[speed.length - 1], hist = $("perf-speed-hist");
+    clear(hist);
+    var em = rt && rt.text_engine && rt.text_engine.metrics;
+    if (last) {
+      text($("perf-tps"), last.tps.toFixed(1));
+      text($("perf-speed-note"), "Last " + last.kind + " run: " + last.tokens + " tokens, first token after " + Math.round(last.ttft) + " ms (measured in this page)." + (em && em.backend && em.backend !== "unknown" ? " Backend: " + em.backend + (em.device && em.device !== "unknown" ? " on " + em.device : "") + "." : ""));
+      var peak = Math.max.apply(null, speed.map(function (x) { return x.tps; }));
+      speed.forEach(function (x, i) {
+        var li = el("li"), b = el("span"); b.style.height = Math.max(6, Math.round(100 * x.tps / peak)) + "%";
+        li.title = x.kind + " " + (i + 1) + ": " + x.tps.toFixed(1) + " tokens/s"; li.appendChild(b); hist.appendChild(li);
+      });
+    } else if (em && typeof em.tokens_per_second === "number" && em.tokens_per_second > 0) {
+      text($("perf-tps"), em.tokens_per_second.toFixed(1));
+      text($("perf-speed-note"), "Engine-reported speed of the last run" + (em.ttft_ms ? ", first token after " + Math.round(em.ttft_ms) + " ms" : "") + ".");
+    } else {
+      text($("perf-tps"), "-");
+      text($("perf-speed-note"), "No generation from this page yet. Send a chat message and the measured speed appears here.");
+    }
+  }
+  function mib(n) { return typeof n === "number" ? fmtBytes(n) : "unknown"; }
+  function renderDevices(dev) {
+    var box = $("perf-dev"); clear(box);
+    if (!dev) return;
+    var cpu = dev.cpu;
+    if (cpu) {
+      var f = cpu.features || {}, flags = ["avx2", "fma3", "avx512f"].filter(function (k) { return f[k]; }).map(function (k) { return k.toUpperCase(); });
+      var c = el("div", "dev");
+      c.appendChild(el("b", "", "CPU"));
+      c.appendChild(el("span", "", (cpu.name || "unknown") + " - " + (cpu.physical_cores || "?") + " cores / " + (cpu.logical_processors || "?") + " threads" + (flags.length ? " - " + flags.join(" ") : "")));
+      box.appendChild(c);
+    }
+    var seen = {};
+    ((dev.gpu && dev.gpu.adapters) || []).forEach(function (g) {
+      var key = (g.name || "") + "|" + (g.device_id || "") + "|" + (g.software_adapter ? "sw" : "hw");
+      if (seen[key]) return;
+      seen[key] = true;
+      var d = el("div", "dev"), loc = g.memory_local_segment || {};
+      d.appendChild(el("b", "", g.software_adapter ? "Software renderer" : "GPU"));
+      d.appendChild(el("span", "", (g.name || "unknown") + (g.software_adapter ? " (not used for inference)" : " - " + mib(g.dedicated_video_memory_bytes) + " reserved, " + mib(g.shared_system_memory_bytes) + " shared system memory" + (typeof loc.budget_bytes === "number" && loc.budget_bytes ? ", OS budget " + mib(loc.budget_bytes) : ""))));
+      box.appendChild(d);
+    });
+    if (!box.firstChild) box.appendChild(el("p", "note", "The server returned no device list."));
+  }
   async function refreshPerf() {
     try {
       var rt = await api("GET", "/hcs/v1/runtime");
@@ -648,9 +816,24 @@
       var dev = await api("GET", "/hcs/v1/devices");
       var a = $("perf-runtime"), b = $("perf-memory"), c = $("perf-jobs");
       clear(a); clear(b); clear(c);
-      fillDl(a, rt); fillDl(b, mem);
+      function row(dl, k, v) { dl.appendChild(el("dt", "", k)); dl.appendChild(el("dd", "", v)); }
+      var te = rt.text_engine || {}, ie = rt.image_engine || {}, tm = te.metrics || {}, im = ie.metrics || {};
+      row(a, "Version", rt.version || "unknown");
+      row(a, "Uptime", typeof rt.uptime_s === "number" ? Math.round(rt.uptime_s) + " s" : "unknown");
+      row(a, "Loaded model", rt.loaded_model || "none");
+      row(a, "Jobs pending", String(rt.jobs_pending == null ? "unknown" : rt.jobs_pending));
+      row(a, "Text engine", (te.available ? "available" : "unavailable") + (tm.backend && tm.backend !== "unknown" ? ", " + tm.backend : "") + (tm.load_ms ? ", loaded in " + Math.round(tm.load_ms) + " ms" : ""));
+      row(a, "Image engine", (ie.available ? "available" : "unavailable") + (im.backend && im.backend !== "unknown" ? ", " + im.backend : "") + (im.image_generation_ms ? ", last image " + (im.image_generation_ms / 1000).toFixed(1) + " s" : ""));
+      row(a, "Chat template", rt.chat_template || "unknown");
+      [["Budget", mem.total_bytes], ["Reserved", mem.reserved_bytes], ["Remaining", mem.remaining_bytes]].forEach(function (x) { if (typeof x[1] === "number") row(b, x[0], fmtBytes(x[1])); });
+      var ms = mem.measured || {};
+      [["Available now", ms.available_physical_bytes], ["OS reserve", ms.os_reserve_bytes], ["Safety margin", ms.safety_margin_bytes]].forEach(function (x) { if (typeof x[1] === "number") row(b, x[0], fmtBytes(x[1])); });
+      row(b, "Vulkan headroom", typeof ms.vulkan_headroom_bytes === "number" ? fmtBytes(ms.vulkan_headroom_bytes) : "unknown on this build");
+      renderMemory(mem, "perf-mem");
+      renderSpeed(rt);
       Object.keys(state.jobs).slice(-12).forEach(function (id) { c.appendChild(el("dt", "", id + " (" + state.jobs[id].name + ")")); c.appendChild(el("dd", "", state.jobs[id].state)); });
       if (!Object.keys(state.jobs).length) { c.appendChild(el("dt", "", "none")); c.appendChild(el("dd", "", "")); }
+      renderDevices(dev);
       text($("perf-devices"), JSON.stringify(dev, null, 2));
       setBanner("perf-state", "idle");
       setConn(true, "connected");
@@ -658,6 +841,32 @@
   }
   function startPerf() { stopPerf(); refreshPerf(); var s = Math.max(1, Math.min(60, Number($("set-interval").value) || DEFAULTS.interval)); state.perfTimer = setInterval(function () { if ($("perf-auto").checked && !document.hidden) refreshPerf(); }, s * 1000); }
   function stopPerf() { if (state.perfTimer) { clearInterval(state.perfTimer); state.perfTimer = 0; } }
+
+  /* ---------- first-run guide ---------- */
+  async function renderOnboard() {
+    var box = $("onboard");
+    if (lstore("hcs.onboarded") === "1") { box.hidden = true; return; }
+    box.hidden = false;
+    var real = state.models.filter(function (m) { return !/^mmproj/i.test(m.id); });
+    text($("ob-models"), real.length ? real.length + " model" + (real.length === 1 ? "" : "s") + " registered on the server." : "No models registered yet.");
+    if (state.obSys) { text($("ob-system"), state.obSys); }
+    else try {
+      var dev = await api("GET", "/hcs/v1/devices"), mem = await api("GET", "/hcs/v1/memory"), parts = [];
+      if (dev.cpu) parts.push((dev.cpu.name || "CPU") + ", " + (dev.cpu.physical_cores || "?") + " cores");
+      var gpus = ((dev.gpu && dev.gpu.adapters) || []).filter(function (g) { return !g.software_adapter; });
+      parts.push(gpus.length ? "GPU: " + gpus[0].name : "no GPU adapter reported (CPU only)");
+      if (mem.measured && typeof mem.measured.available_physical_bytes === "number") parts.push(fmtBytes(mem.measured.available_physical_bytes) + " memory available");
+      state.obSys = parts.join(" - ") + ".";
+      text($("ob-system"), state.obSys);
+    } catch (e) { text($("ob-system"), "Could not read the device report: " + describe(e).message); }
+    Array.prototype.forEach.call(document.querySelectorAll("input[name=ob-mode]"), function (r) { r.checked = r.value === state.mode; });
+  }
+  function resetUi() {
+    ["hcs.theme", "hcs.mode", "hcs.onboarded"].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } });
+    $("set-interval").value = String(DEFAULTS.interval);
+    setTheme("system"); setMode("simple"); renderOnboard();
+    toast("UI settings reset.");
+  }
 
   /* ---------- advanced reset ---------- */
   var RESETS = {
@@ -726,15 +935,23 @@
       setInitImage(g.src, "Previous result is the input image.");
       setImageMode("img2img");
     });
+    $("image-copy-prompt").addEventListener("click", function () { var g = image.gallery[image.current]; if (g) copyText(g.prompt, "Prompt"); });
     $("image-copy-seed").addEventListener("click", function () {
       var g = image.gallery[image.current];
       if (!g) return;
       $("image-seed").value = String(g.seed);
-      try { navigator.clipboard.writeText(String(g.seed)).catch(function () { /* clipboard may be refused */ }); } catch (e) { /* ignore */ }
+      copyText(String(g.seed), "Seed");
       setBanner("image-state", "ok", "seed " + g.seed + " is now in the Seed field.");
     });
     $("image-steps").value = "16"; syncPreset();
     setImageMode("txt2img");
+    $("vision-copy").addEventListener("click", function () { copyText($("vision-out").raw || "", "Answer"); });
+    $("ob-copy").addEventListener("click", function () { copyText("HCSInfer models scan <folder>", "Command"); });
+    $("ob-open-models").addEventListener("click", function () { showPanel("models"); $("tab-models").focus(); });
+    $("ob-done").addEventListener("click", function () { lstore("hcs.onboarded", "1"); $("onboard").hidden = true; toast("Guide hidden. It is in Settings if you want it back."); });
+    Array.prototype.forEach.call(document.querySelectorAll("input[name=ob-mode]"), function (r) { r.addEventListener("change", function () { if (r.checked) setMode(r.value); }); });
+    $("set-guide").addEventListener("click", function () { try { localStorage.removeItem("hcs.onboarded"); } catch (e) { /* ignore */ } renderOnboard(); showPanel("chat"); });
+    $("set-reset").addEventListener("click", resetUi);
     $("models-refresh").addEventListener("click", function () { refreshModels().catch(function (e) { var d = describe(e); setBanner("models-state", d.kind, d.message); }); });
     $("perf-refresh").addEventListener("click", refreshPerf);
     connect();

@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "checks": [
+    {
+      "check": "UI connected with the fragment token",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "title is HCS Studio",
+      "status": "PASS",
+      "detail": "HCS Studio"
+    },
+    {
+      "check": "token removed from the address bar",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "token not in DOM",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "inline SVG wordmark rendered",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "agent tab is labelled Planned and has no controls",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "train tab is labelled Planned and has no controls",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: desktop/chat",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: desktop/image",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: desktop/vision",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: desktop/models",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: desktop/perf",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: desktop/settings",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: desktop/agent",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: desktop/train",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: tablet/chat",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: tablet/image",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: tablet/vision",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: tablet/models",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: tablet/perf",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: tablet/settings",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: tablet/agent",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: tablet/train",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: phone/chat",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: phone/image",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: phone/vision",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: phone/models",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: phone/perf",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: phone/settings",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: phone/agent",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "no horizontal page scroll: phone/train",
+      "status": "PASS",
+      "detail": "0"
+    },
+    {
+      "check": "model loaded through the Models tab",
+      "status": "PASS",
+      "detail": "loaded: lfm3-omni-2b-q8_0"
+    },
+    {
+      "check": "memory split shows segments after load",
+      "status": "PASS",
+      "detail": "Budget 8.1 GiB, reserved 3.7 GiB. Available physical memory now: 6.9 GiB."
+    },
+    {
+      "check": "streamed chat reply shown",
+      "status": "PASS",
+      "detail": "The sea is vast and endlessly beautiful."
+    },
+    {
+      "check": "Stop ends generation and re-enables Send",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "busy bar shown while rendering",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "text-to-image produced an image",
+      "status": "PASS",
+      "detail": "Done: image generated."
+    },
+    {
+      "check": "image has real pixels",
+      "status": "PASS",
+      "detail": "256"
+    },
+    {
+      "check": "img2img mode with input preview",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "image-to-image produced a second image",
+      "status": "PASS",
+      "detail": "Done: image generated."
+    },
+    {
+      "check": "no CSP violations logged",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "check": "no console errors or exceptions",
+      "status": "PASS",
+      "detail": "[]"
+    }
+  ],
+  "result_status": "PASS"
+}

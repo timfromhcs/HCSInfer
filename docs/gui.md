@@ -32,6 +32,23 @@ with a **Reset to defaults** button.
 The step presets only set the step count. The UI makes no LoRA or "fast model" claim: few-step quality needs a
 step-distilled checkpoint (AGENTS.md 26.1) and there is no LoRA control in the image API.
 
+### Wave C polish (2026-11-20)
+
+* **Safe Markdown in replies.** Chat and Vision answers are rendered by a small parser that builds DOM nodes only
+  (headings, bold, italic, inline code, lists, quotes, rules, fenced code blocks, `http(s)` links with
+  `rel="noopener noreferrer nofollow"`). Model output is never parsed as HTML; `<img onerror>` / `<script>` text from a
+  model is shown as text. An unclosed code fence while streaming renders as code until it closes.
+* **Copy** buttons on every message, every code block, the Vision answer and (Image Studio) seed and prompt. The
+  async clipboard is tried first, then a transient selection; a toast (aria-live) says whether it worked.
+* **First-run guide** on the Chat tab: models registered, a device/memory summary read from `/hcs/v1/devices` and
+  `/hcs/v1/memory`, and the Simple/Advanced choice. It hides after "Got it" or the first successful reply; Settings has
+  "Show the welcome guide again" and "Reset all UI settings".
+* **Performance Center**: measured tokens per second and first-token time of the last runs (client-side, from the stream's
+  usage), a memory split bar with free/reserved/measured values, a curated runtime card, CPU / GPU / software-renderer
+  device cards, and the raw device JSON behind a disclosure. No synthetic numbers: before any generation it says so.
+* The log is `role="log"` and `aria-busy` while streaming so screen readers announce a finished reply, not every token.
+* Contrast: every text/background token pair in both themes is >= 4.5:1 (computed from the tokens, light and dark).
+
 ### States
 
 Every panel has a live-region banner with one of: **Working/Loading** (busy), **Error**, **Out of memory** (HTTP 503 or
@@ -55,7 +72,7 @@ connect-src 'self'; font-src 'none'; media-src 'none'; object-src 'none'; frame-
 base-uri 'none'; form-action 'none'; frame-ancestors 'none'`, plus `X-Frame-Options: DENY`, `Referrer-Policy:
 no-referrer`, `Cross-Origin-Opener-Policy/Resource-Policy: same-origin`, `Permissions-Policy` (camera, mic, geolocation,
 payment, usb off). `ApiHandler::handle()` already appends `Cache-Control: no-store` and `X-Content-Type-Options: nosniff`
-to every response. The JS uses only `textContent` (no `innerHTML`/`eval`), no inline handlers or styles, no
+to every response. The JS uses only `textContent` and DOM node construction (no `innerHTML`/`eval`), no inline handlers or styles, no
 `XMLHttpRequest`/`WebSocket`/`EventSource` (all enforced by unit tests). Asset paths are whitelisted
 (`[A-Za-z0-9._-]`, no leading dot, no `..`): anything else is `400`, unknown `404`, non-GET/HEAD `405`.
 

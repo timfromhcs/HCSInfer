@@ -64,7 +64,9 @@ TEST(GuiAssets, StudioStructure) {
     // every section the e2e test and the docs rely on, plus the two planned placeholders
     for (const char* id : {"tab-chat", "tab-image", "tab-vision", "tab-models", "tab-perf", "tab-settings",
                            "tab-agent", "tab-train", "panel-agent", "panel-train", "theme-toggle", "mem-bar",
-                           "image-gallery", "image-file", "image-strength", "chat-stop"})
+                           "image-gallery", "image-file", "image-strength", "chat-stop", "toast", "onboard",
+                           "ob-done", "vision-copy", "perf-tps", "perf-dev", "perf-mem-bar", "set-reset",
+                           "image-copy-prompt"})
         EXPECT_NE(html.find(std::string("id=\"") + id + "\""), std::string::npos) << id;
     EXPECT_NE(html.find("aria-label=\"HCSmedia\""), std::string::npos);  // inline SVG wordmark
     // Planned tabs are labelled and carry no form controls of their own.
@@ -131,6 +133,19 @@ TEST(GuiAssets, NoExternalUrlsOrInlineCode) {
     for (const char* bad : {"eval(", "new Function", "document.write", "innerHTML", "outerHTML",
                             "insertAdjacentHTML", "XMLHttpRequest", "WebSocket", "EventSource"})
         EXPECT_EQ(js.find(bad), std::string::npos) << bad;
+}
+
+TEST(GuiAssets, ModelOutputIsRenderedAsDomNodesNeverAsHtml) {
+    const std::string js = asset_text("app.js");
+    // The safe Markdown renderer exists and links are limited to http(s) with a hardened rel.
+    EXPECT_NE(js.find("function renderMd"), std::string::npos);
+    EXPECT_NE(js.find("noopener noreferrer nofollow"), std::string::npos);
+    EXPECT_NE(js.find("https?:"), std::string::npos);
+    EXPECT_EQ(js.find("javascript:"), std::string::npos);
+    // streamed replies are announced once finished, not token by token
+    EXPECT_NE(js.find("aria-busy"), std::string::npos);
+    const std::string html = asset_text("index.html");
+    EXPECT_NE(html.find("role=\"log\""), std::string::npos);
 }
 
 TEST(GuiAssets, TokenComesFromFragmentNeverQueryString) {

@@ -202,3 +202,50 @@ footer{text-align:center;color:var(--mut);font-size:.82rem;padding:1rem}
 }
 @media (max-width:480px){.top{gap:.4rem}.status #conn{display:none}.roadmap{grid-template-columns:minmax(0,1fr)}.roadmap dt{margin-top:.4rem}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.busybar span{width:100%;opacity:.5}}
+
+/* ---------- wave C: markdown, copy, toast, onboarding, perf ---------- */
+.msghead{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.msghead b{margin-bottom:0}
+button.copy{min-height:1.8rem;padding:.1rem .6rem;font-size:.78rem}
+.msg-user .msg-body{white-space:pre-wrap}
+.msg-assistant .msg-body{white-space:normal}
+.msg-body>:first-child{margin-top:0}
+.msg-body>:last-child{margin-bottom:0}
+.msg-body p{margin:.45rem 0;white-space:pre-wrap}
+.msg-body ul,.msg-body ol{margin:.4rem 0;padding-left:1.4rem}
+.msg-body li{margin:.15rem 0}
+.msg-body blockquote{margin:.5rem 0;padding:.1rem .8rem;border-left:4px solid var(--acc);color:var(--mut);white-space:pre-wrap}
+.msg-body hr{border:0;border-top:1px solid var(--bd);margin:.7rem 0}
+.msg-body h3.mdh,.msg-body h4.mdh,.msg-body h5.mdh,.msg-body h6.mdh{margin:.7rem 0 .25rem;font-size:1rem;letter-spacing:0}
+.msg-body h3.mdh{font-size:1.12rem}
+.msg-body a{color:var(--acc);text-underline-offset:2px}
+.msg-body code,.out code{font:.86em var(--mono)}
+.codeblock{margin:.55rem 0;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:var(--surface)}
+.codehead{display:flex;justify-content:space-between;align-items:center;padding:.15rem .5rem .15rem .75rem;background:var(--surface2);border-bottom:1px solid var(--bd2)}
+.codehead .lang{font:.74rem var(--mono);color:var(--mut);text-transform:lowercase}
+.codeblock pre{margin:0;padding:.6rem .8rem;overflow:auto;font:.85rem/1.45 var(--mono);white-space:pre}
+.codeblock pre code{background:none;border:0;padding:0;font:inherit}
+.md-out{white-space:normal;font:.95rem/1.5 var(--sans)}
+.md-out p{margin:.4rem 0;white-space:pre-wrap}
+.md-out ul,.md-out ol{padding-left:1.4rem}
+.toast{position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%);z-index:60;background:var(--fg);color:var(--bg);border-radius:10px;padding:.55rem 1rem;font-size:.9rem;box-shadow:0 6px 24px rgba(0,0,0,.28);max-width:min(32rem,92vw)}
+.onboard{border-color:var(--acc);border-width:2px}
+.onboard h2{margin-top:0}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem;counter-reset:s}
+.steps li{counter-increment:s;background:var(--surface2);border:1px solid var(--bd2);border-radius:12px;padding:.7rem .9rem;min-width:0}
+.steps h3{margin:0 0 .35rem;font-size:1rem}
+.steps h3::before{content:counter(s);display:inline-flex;align-items:center;justify-content:center;width:1.5rem;height:1.5rem;margin-right:.5rem;border-radius:50%;background:var(--acc);color:var(--accfg);font-size:.82rem}
+.bignum{font-size:2.3rem;font-weight:650;letter-spacing:-.02em;margin:.1rem 0;line-height:1.1;font-variant-numeric:tabular-nums}
+.bignum small{font-size:.9rem;font-weight:500;color:var(--mut);letter-spacing:0}
+.spark{list-style:none;display:flex;align-items:flex-end;gap:.25rem;height:3rem;margin:.4rem 0 0;padding:0}
+.spark li{flex:1 1 0;max-width:1.6rem;height:100%;display:flex;align-items:flex-end;background:var(--surface2);border-radius:3px}
+.spark li span{display:block;width:100%;background:var(--acc);border-radius:3px 3px 0 0}
+.devlist{display:grid;gap:.5rem}
+.dev{display:flex;gap:.8rem;align-items:baseline;background:var(--surface);border:1px solid var(--bd);border-radius:10px;padding:.5rem .8rem;overflow-wrap:anywhere}
+.dev b{flex:none;min-width:7.5rem;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+details.raw{margin:.8rem 0}
+details.raw summary{cursor:pointer;color:var(--mut);padding:.3rem 0}
+.log{scroll-behavior:smooth}
+@media (max-width:480px){.dev{flex-direction:column;gap:.1rem}.bignum{font-size:2rem}}
+label.inline input{vertical-align:middle;margin-right:.3rem}
+dl dd{min-width:0}
