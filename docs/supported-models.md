@@ -33,7 +33,7 @@ reason. Model files live outside the repository (the evidence uses `<MODELS>`).
 | Model | Files | Status | Evidence |
 |---|---|---|---|
 | Stable Diffusion 1.5 Q8_0 | one GGUF | Verified (txt2img, img2img, CPU + Vulkan) | `docs/test-evidence/M1/sd`, `M3-image`, `B7-params` |
-| FLUX.3 Image Klein (5.6B distilled), unsloth `UD-Q4_K_XL` | DiT GGUF + Qwen3-VL-4B-Instruct text encoder + FLUX.2 VAE | Rendered (Vulkan and CPU, text-to-image and image-to-image) | `docs/test-evidence/wave-f` |
+| FLUX.3 Image Klein (5.6B distilled), unsloth `UD-Q4_K_XL` | DiT GGUF + Qwen3-VL-4B-Instruct text encoder + FLUX.2 VAE | Rendered (Vulkan: text-to-image and image-to-image; CPU: text-to-image only, n=1, no CPU image-to-image evidence) | `docs/test-evidence/wave-f` |
 
 ### FLUX.3 Image Klein
 

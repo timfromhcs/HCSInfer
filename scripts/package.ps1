@@ -159,7 +159,7 @@ Status: release candidate (see the version in the manifest). See README.md for w
 [ordered]@{
     name = $name; version = $version; preset = $Preset; git_commit = $commit; git_tree_dirty = $dirty
     created_utc = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')
-    single_exe = $singleExe; crt = $(if ($isStatic) { 'static (/MT)' } else { 'dynamic (/MD, default)' }); signed = $false
+    static_system_dlls_only = $singleExe; single_file_claim = $false; crt = $(if ($isStatic) { 'static (/MT)' } else { 'dynamic (/MD, default)' }); signed = $false
     imports = $importReport; vulkan_exe = [bool]$VulkanPreset
     clean_machine_test = 'NOT RUN'
     source_exe_sha256 = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant()
