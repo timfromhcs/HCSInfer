@@ -154,3 +154,21 @@ Every wave ends with the full CTest suite green plus its own new tests, an updat
 Outside the waves (owner-dependent, stay BLOCKED / NOT RUN): FLUX.3 render (gated encoder/VAE access), M5 Stage B
 (a model larger than RAM and an administrator cache flush), real WebGPU inference and the Vercel deploy of `web/`,
 the self-hosted hardware runner.
+
+## Wave plan 2 (2026-11-20): from analysis to V1 stable
+
+Analysis snapshot (2026-11-20): `main` == `origin/main` == `3d14149`; the two sibling branches
+(`claude/flux3-agent-engine-v1-665ab0`, `claude/repo-analysis-v1-stable-80f8d6`) have **0 unique commits** (both are
+ancestors of `main`); their worktrees only hold uncommitted leftovers that the W2/W4 waves already ported or superseded.
+They are left untouched. Remaining open items, in dependency order:
+
+| Wave | Scope | Exit criteria |
+|---|---|---|
+| **F** FLUX.3 unblock | Download the user-approved substitutes (Qwen3-VL-4B Q4_K_M encoder, FLUX.2 VAE, hash-checked), build the pinned sd.cpp path (upstream GGML), render FLUX.3 Klein on CPU and Vulkan, run the 4/6/8/12/16 step sweep, replace the provisional `fast` preset by the measured value, un-skip `Flux3PresetsReplaceStepsAndReportThem`. | A real FLUX.3 PNG with evidence; the sweep and preset change are measured; or a precise upstream/memory root cause is recorded (BLOCKED with evidence) |
+| **G** hardening gaps | OOM injection at the allocator boundary, USB-disconnect simulation on the storage reader, shutdown while idle/loading/generating, dependency/vulnerability scan (`npm audit`, `cargo` crates, licence), restricted-environment run of the static EXE. | New red->green tests; scan results recorded; clean-machine test stays NOT RUN unless a clean environment exists |
+| **K** M8 baseline | Profile upstream GGML Vulkan decode on the 680M and compare it with the HCS Q8_0 GEMV; keep it OFF unless a repeatable benefit is measured. | Evidence + an honest default decision |
+| **R** release candidate | Full CTest, clang-format/tidy, CHANGELOG, release notes, support matrix/STATUS reconciled, merge to `main` (never force-push). Push/tag only with the owner's go-ahead. | Every STATUS row PASS, or listed as BLOCKED / NOT RUN with a reason |
+
+Owner-dependent and therefore not claimable: M5 Stage B (model larger than RAM, administrator cache flush), a real
+`prime-agent` session, real WebGPU inference, the Vercel deploy, the self-hosted hardware runner, a clean Windows
+machine, code signing.
