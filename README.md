@@ -166,7 +166,11 @@ Routes, options and error codes: [`docs/api.md`](docs/api.md). Tools and protoco
 
 ## Benchmarks
 
-Measured on the final static EXEs on one machine (Windows 11, Ryzen 7 7735HS, Radeon 680M, 21 GB RAM, models on a USB 3
+Measured with the wave-B static EXEs (embedded commit `cca2c68+dirty`, SHA-256 `c3a613e6...` CPU and
+`b94a6e06...` Vulkan) - **not** the byte-identical release binaries, which were rebuilt afterwards from the same engine sources.
+The shipped EXEs were re-checked separately (a quick benchmark plus an empty-PATH run; see
+[`docs/test-evidence/release-final/`](docs/test-evidence/release-final/) and the end of [`docs/benchmarks.md`](docs/benchmarks.md)).
+Machine: Windows 11, Ryzen 7 7735HS, Radeon 680M, 21 GB RAM, models on a USB 3
 drive). Medians of 5 iterations for text; image rows state their sample count (FLUX is a single, provisional sample).
 Same model and quantisation in both columns; thermals were not measured.
 

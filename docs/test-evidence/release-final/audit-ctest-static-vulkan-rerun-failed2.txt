@@ -1,0 +1,13 @@
+Test project Y:/build/windows-msvc-release-static-vulkan
+    Start 809: e2e_api_mcp_real
+1/2 Test #809: e2e_api_mcp_real .................   Passed    9.84 sec
+    Start 814: e2e_llama_agentic_real
+2/2 Test #814: e2e_llama_agentic_real ...........   Passed   57.84 sec
+
+100% tests passed out of 2
+
+Label Time Summary:
+e2e    =  67.68 sec*proc (2 tests)
+
+Total Test time (real) =  75.10 sec
+exit=0 

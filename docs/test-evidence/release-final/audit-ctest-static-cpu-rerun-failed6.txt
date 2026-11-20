@@ -1,0 +1,24 @@
+Test project Y:/build/windows-msvc-release-static
+    Start 805: ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine
+1/7 Test #805: ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine ............   Passed   29.57 sec
+    Start 806: ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly
+2/7 Test #806: ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly ...   Passed    2.16 sec
+    Start 807: ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe
+3/7 Test #807: ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe ........   Passed    1.28 sec
+    Start 810: e2e_api_mcp_real
+4/7 Test #810: e2e_api_mcp_real .......................................................   Passed   11.53 sec
+    Start 813: e2e_image_real
+5/7 Test #813: e2e_image_real .........................................................   Passed  288.04 sec
+    Start 815: e2e_llama_agentic_real
+6/7 Test #815: e2e_llama_agentic_real .................................................   Passed  157.02 sec
+    Start 816: e2e_vision_real
+7/7 Test #816: e2e_vision_real ........................................................   Passed   18.05 sec
+
+100% tests passed out of 7
+
+Label Time Summary:
+e2e            = 474.64 sec*proc (4 tests)
+integration    =  33.02 sec*proc (3 tests)
+
+Total Test time (real) = 515.75 sec
+exit=0 
