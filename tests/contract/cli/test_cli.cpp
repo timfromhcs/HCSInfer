@@ -5,6 +5,7 @@
 
 #include "hcs/cli/cli.hpp"
 #include "hcs/result.hpp"
+#include "hcs/version.hpp"
 #include "temp_dir.hpp"
 
 using namespace hcs;
@@ -53,7 +54,7 @@ TEST(Cli, HelpWorksAtEveryLevel) {
 TEST(Cli, VersionAndNoArgs) {
     auto v = run({"--version"});
     EXPECT_EQ(v.code, 0);
-    EXPECT_TRUE(contains(v.out, "HCSInfer 0."));
+    EXPECT_TRUE(contains(v.out, std::string("HCSInfer ") + HCS_VERSION_STRING));
     auto none = run({});
     EXPECT_EQ(none.code, exit_code(ErrorCode::InvalidArgument));
     EXPECT_TRUE(contains(none.err, "Usage"));
