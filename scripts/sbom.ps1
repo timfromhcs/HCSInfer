@@ -5,12 +5,17 @@
   writes only the output file.
 .PARAMETER OutFile
   Default: <repo>/artifacts/sbom/hcsinfer.cdx.json (artifacts/ is git-ignored).
+.PARAMETER BuildDir
+  Optional CMake build directory. When given, a lock entry that carries a "linked_when" CMake cache variable
+  (for example SD_WEBP) is reported as linked only if that variable is ON in <BuildDir>/CMakeCache.txt, so the SBOM
+  follows the real build graph instead of the lock file's static claim. The build directory and the tree state
+  (dirty or clean) are recorded in the SBOM metadata.
 .NOTES
   The SBOM states what the lock file declares. It is not a vulnerability scan and not a substitute for the
   licence review required by AGENTS.md section 19.6; components with unknown licences are reported as such.
 #>
 [CmdletBinding()]
-param([string]$OutFile)
+param([string]$OutFile, [string]$BuildDir)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'common.ps1')
@@ -64,6 +69,21 @@ try {
     if ($LASTEXITCODE -eq 0 -and $c) { $gitCommit = $c.Trim() }
 } catch { }
 
+$gitDirty = 'unknown'
+try {
+    $st = (& git -C $root status --porcelain --untracked-files=no 2>$null)
+    if ($LASTEXITCODE -eq 0) { $gitDirty = if ($st) { 'true' } else { 'false' } }
+} catch { }
+
+$cacheVars = @{}
+if ($BuildDir) {
+    $cf = Join-Path $BuildDir 'CMakeCache.txt'
+    if (-not (Test-Path -LiteralPath $cf)) { throw "BuildDir given but $cf does not exist" }
+    foreach ($line in Get-Content -LiteralPath $cf) {
+        if ($line -match '^([A-Za-z0-9_]+):[A-Z]+=(.*)$') { $cacheVars[$Matches[1]] = $Matches[2] }
+    }
+}
+
 $components = New-Object System.Collections.Generic.List[object]
 $all = @($lock.dependencies) + $supplemental
 foreach ($d in $all) {
@@ -88,6 +108,12 @@ foreach ($d in $all) {
     if ($url) { $comp['externalReferences'] = @(@{ type = 'vcs'; url = [string]$url }) }
     $props = @()
     $linked = Get-Prop $d 'linked'
+    $linkedWhen = Get-Prop $d 'linked_when'
+    if ($linkedWhen -and $BuildDir) {
+        $v = if ($cacheVars.ContainsKey([string]$linkedWhen)) { $cacheVars[[string]$linkedWhen] } else { 'OFF' }
+        $linked = ($v -in 'ON', 'TRUE', '1', 'YES')
+        $props += @{ name = 'hcs:linked_evidence'; value = ("CMakeCache.txt $linkedWhen=$v") }
+    }
     if ($null -ne $linked) { $props += @{ name = 'hcs:linked'; value = ([string]$linked).ToLowerInvariant() } }
     $src = Get-Prop $d 'source'
     if ($src) { $props += @{ name = 'hcs:source'; value = [string]$src } }
@@ -119,6 +145,8 @@ $bom = [ordered]@{
             properties = @(@{ name = 'hcs:git_commit'; value = $gitCommit })
         }
         properties = @(@{ name = 'hcs:source_lock'; value = 'external/dependency-lock.json' },
+                       @{ name = 'hcs:git_tree_dirty'; value = $gitDirty },
+                       @{ name = 'hcs:build_dir'; value = $(if ($BuildDir) { 'build/' + (Split-Path -Leaf $BuildDir) } else { 'none (lock-file claims only)' }) },
                        @{ name = 'hcs:note'; value = 'Declared dependencies only; no vulnerability scan performed.' })
     }
     components = $components

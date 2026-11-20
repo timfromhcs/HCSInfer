@@ -12,6 +12,11 @@ if(NOT TARGET stable-diffusion)
   set(SD_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
   set(SD_BUILD_SHARED_GGML_LIB OFF CACHE BOOL "" FORCE)
   set(SD_SERVER_BUILD_FRONTEND OFF CACHE BOOL "" FORCE)
+  # libwebp/libwebm are only linked by stable-diffusion.cpp's own CLI/server examples (examples/*/CMakeLists.txt),
+  # which HCSInfer never builds. Pin both OFF so the result does not depend on whether the nested submodules are
+  # checked out or on a stale cached default (the SBOM reads these cache values to report what is linked).
+  set(SD_WEBP OFF CACHE BOOL "" FORCE)
+  set(SD_WEBM OFF CACHE BOOL "" FORCE)
   if(HCS_ENABLE_VULKAN)
     set(SD_VULKAN ON CACHE BOOL "" FORCE)
   else()

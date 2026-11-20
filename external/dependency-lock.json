@@ -82,11 +82,24 @@
     {
       "name": "libwebp",
       "url": "https://chromium.googlesource.com/webm/libwebp",
-      "version": "vendored in external/stable-diffusion.cpp/thirdparty/libwebp",
-      "role": "transitive dependency of the stable-diffusion.cpp static library",
+      "commit": "0c9546f7efc61eac7f79ae115c3f99c91c21c443",
+      "version": "git submodule external/stable-diffusion.cpp/thirdparty/libwebp",
+      "role": "WebP image I/O. Linked only by stable-diffusion.cpp's own CLI/server examples (examples/*/CMakeLists.txt), which HCSInfer never builds; src/engines/diffusion/CMakeLists.txt pins SD_WEBP=OFF. NOT in the HCSInfer binary; the licence text is still shipped for provenance. scripts/sbom.ps1 re-derives 'linked' from the SD_WEBP value in the build's CMakeCache.txt.",
       "licence": "BSD-3-Clause",
       "licence_file": "external/stable-diffusion.cpp/thirdparty/libwebp/COPYING",
-      "linked": true
+      "linked": false,
+      "linked_when": "SD_WEBP"
+    },
+    {
+      "name": "libwebm",
+      "url": "https://github.com/webmproject/libwebm",
+      "commit": "5bf12267eea773a32fcf4949de52b0add158a8d5",
+      "version": "git submodule external/stable-diffusion.cpp/thirdparty/libwebm",
+      "role": "WebM video muxing, used only by stable-diffusion.cpp's example programs; SD_WEBM is pinned OFF. NOT in the HCSInfer binary.",
+      "licence": "BSD-3-Clause",
+      "licence_file": "external/stable-diffusion.cpp/thirdparty/libwebm/LICENSE.TXT",
+      "linked": false,
+      "linked_when": "SD_WEBM"
     },
     {
       "name": "oniguruma",
