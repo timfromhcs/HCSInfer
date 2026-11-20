@@ -63,8 +63,14 @@ foreach ($d in $lock.dependencies) {
 $fetched = @{
     'nlohmann_json' = 'nlohmann_json-src\LICENSE.MIT'; 'cpp_httplib' = 'cpp_httplib-src\LICENSE'
     'lz4' = 'lz4-src\LICENSE'; 'zstd' = 'zstd-src\LICENSE'; 'vulkan_headers' = 'vulkan_headers-src\LICENSE.md' }
+$cacheFile = Join-Path $buildDir 'CMakeCache.txt'
 foreach ($k in $fetched.Keys) {
     $src = Join-Path $buildDir ('_deps\' + $fetched[$k])
+    if (-not (Test-Path -LiteralPath $src -PathType Leaf) -and (Test-Path -LiteralPath $cacheFile)) {
+        # FETCHCONTENT_SOURCE_DIR_<NAME> overrides (offline builds) keep the sources outside <build>/_deps.
+        $ov = Select-String -LiteralPath $cacheFile -Pattern ('^FETCHCONTENT_SOURCE_DIR_' + $k.ToUpper() + ':[A-Z]+=(.+)$') | Select-Object -First 1
+        if ($ov) { $src = Join-Path $ov.Matches[0].Groups[1].Value.Trim() (Split-Path -Leaf $fetched[$k]) }
+    }
     if (Test-Path -LiteralPath $src -PathType Leaf) { Copy-Item -LiteralPath $src -Destination (Join-Path $pkg ("licenses\$k-" + (Split-Path -Leaf $src))) }
     else { Write-Warning "FetchContent licence not found for $k at $src (configure the preset first)" }
 }

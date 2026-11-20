@@ -1,0 +1,6 @@
+SHA256SUMS entries=19 mismatches=0
+zip sha256 55850ed9cecc75cb6bf44a608fb643b70d2904db961e8d505e36493c29da2380 size 18168288
+55850ed9cecc75cb6bf44a608fb643b70d2904db961e8d505e36493c29da2380  HCSInfer-0.1.0-windows-msvc-release-portable.zip
+doctor exit=0
+SBOM format=CycloneDX spec=1.5 components=14
+20

@@ -1,0 +1,11 @@
+{
+  "name": "HCSInfer-0.1.0-windows-msvc-release-portable",
+  "version": "0.1.0",
+  "preset": "windows-msvc-release",
+  "git_commit": "4129b4d5174e8e3e58e69225c5d277f50f611f2d",
+  "created_utc": "2026-11-20T12:54:18Z",
+  "single_exe": false,
+  "crt": "dynamic (/MD, default)",
+  "signed": false,
+  "source_exe_sha256": "c3161bb05e7b5de505edf7027111d57a775eaecb4e62e738365b364b35ccd53e"
+}

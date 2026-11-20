@@ -1,0 +1,7 @@
+WARNUNG: licence file missing for stable-diffusion.cpp bundled patched GGML: external/stable-diffusion.cpp/ggml/LICENSE
+WARNUNG: licence file missing for libwebp: external/stable-diffusion.cpp/thirdparty/libwebp/COPYING
+WARNUNG: licence file for 'stable-diffusion.cpp bundled patched GGML' not found: external/stable-diffusion.cpp/ggml/LICENSE
+WARNUNG: licence file for 'libwebp' not found: external/stable-diffusion.cpp/thirdparty/libwebp/COPYING
+SBOM written: Y:\artifacts\package\HCSInfer-0.1.0-windows-msvc-release-portable\sbom.cdx.json (14 components, HCSInfer 0.1.0, commit 4129b4d5174e8e3e58e69225c5d277f50f611f2d)
+Package: Y:\artifacts\package\HCSInfer-0.1.0-windows-msvc-release-portable (19 files hashed)
+Zip: Y:\artifacts\package\HCSInfer-0.1.0-windows-msvc-release-portable.zip  sha256 55850ed9cecc75cb6bf44a608fb643b70d2904db961e8d505e36493c29da2380
