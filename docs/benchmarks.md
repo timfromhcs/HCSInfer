@@ -330,6 +330,23 @@ hypothesis was rejected and v1 stays the default (`docs/research/vulkan-gemv-v2-
 `test-evidence/M1/llama/` (llama-bench, uncontrolled, few samples; for example qwen3 0.6B Q4_K CPU pp128 416.65 t/s,
 tg64 67.89 t/s at build `d3c3e24`) and `test-evidence/M6-storage/` are not comparable with the controlled runs above.
 
+## Re-check on the shipped release binaries (audit fix)
+
+The tables above were measured on the wave-B static EXEs (embedded commit `cca2c68+dirty`). The release files were rebuilt
+afterwards from clean commit `ae3bbbd` (CPU `HCSInfer.exe` SHA-256 `d9b1a6bd...`; Vulkan `a77cf42a...`; full hashes in `release-final/SHA256SUMS-final.txt`). To avoid claiming numbers for binaries that were not measured, a short quick benchmark and an
+empty-PATH run were repeated on the **shipped** files (`docs/test-evidence/release-final/shipped-binaries/`; LFM3-Omni-2B Q8_0,
+context 4096, 64 new tokens, 1 warm-up + 3 measured iterations, warm):
+
+| Backend | decode t/s, wave D (5 it) | decode t/s, shipped (3 it) | warm TTFT ms, wave D | warm TTFT ms, shipped |
+|---|---|---|---|---|
+| CPU | 18.1 | 18.2 | 3,070 | 2,989 |
+| Vulkan (Radeon 680M) | 34.5 | 34.4 | 393 | 382 |
+
+Agreement is within 3% (a 3-iteration quick run, not a replacement for the 5-iteration full suite). The empty-PATH runs of both
+shipped EXEs passed (`--help`, `doctor --json`, a real generation - CPU, and the Radeon 680M for the Vulkan EXE - `serve` health 200,
+GUI page 200, all loaded modules under the Windows directory). The wave-D prefill sweeps, vision, image and KV tables were not repeated
+on the shipped files (NOT RUN).
+
 ## Wave B: static builds (2026-11-20)
 
 Model LFM3-Omni-2B Q8_0 (`LFM3-Omni-2B-Q8_0.gguf`), `HCSInfer benchmark --suite quick --iterations 5 --max-tokens 64`,

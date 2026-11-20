@@ -85,8 +85,8 @@ Get-ChildItem -LiteralPath $pkg -Recurse -File -Filter *.md | Where-Object { $_.
         $dest = [IO.Path]::GetFullPath((Join-Path $mdFile.DirectoryName $pathPart))
         if (Test-Path -LiteralPath $dest) { return $m.Value }
                 $label = $m.Groups[2].Value
-        if ($m.Groups[1].Value -eq '!') { return "($label: image not shipped in this package)" }
-        return "$label (source repository: $($pathPart -replace '^(\.\./)+', ''))"
+        if ($m.Groups[1].Value -eq '!') { return "(${label}: image not shipped in this package)" }
+        return "${label} (source repository: $($pathPart -replace '^(\.\./)+', ''))"
     }
     $new = $linkRe.Replace($text, $eval)
     if ($new -ne $text) { [IO.File]::WriteAllText($mdFile.FullName, $new, (New-Object Text.UTF8Encoding($false))) }

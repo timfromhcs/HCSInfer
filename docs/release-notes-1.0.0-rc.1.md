@@ -10,13 +10,15 @@ build 10.0.26200.9974, MSVC 19.44.35228, CMake 4.4.0. No other machine, GPU or O
 
 ## Wave R final verification (this release candidate)
 
-Built and verified from a clean tree at commit `e8bd522`; evidence in `docs/test-evidence/release-final/`.
+Built and verified from a clean tree at commit `e8bd522`; evidence in `docs/test-evidence/release-final/`. A later audit
+found documentation and packaging defects (below); the binaries were then rebuilt from clean commit `ae3bbbd` and re-verified, and
+**the numbers in the audit table supersede the `e8bd522` table for the shipped files**.
 
 | Gate | Result | Evidence |
 |---|---|---|
 | clang-format 19.1.5 | PASS, 221 files | `format-check.txt` |
 | clang-tidy `-Scope src -FailOnFindings` (run with PowerShell 7) | PASS, 0 diagnostics in 69 translation units | `clang-tidy.txt` |
-| Full CTest, CPU build, real models set | PASS: 815 registered, 815 passed, 4 skipped (Vulkan-only tests, NOT RUN on a CPU build) | `ctest-release-cpu.txt` |
+| Full CTest, CPU build, real models set | PASS: 815 registered, 811 passed, 4 skipped (Vulkan-only tests, NOT RUN on a CPU build) | `ctest-release-cpu.txt` |
 | Full CTest, Vulkan build, real models set | 809/814 on the first run; the 5 failures were `out_of_memory` refusals by the memory budget with about 1 GB free RAM. Re-run with about 9 GB free: 6/6 PASS | `ctest-release-vulkan.txt`, `ctest-release-vulkan-rerun-failed5.txt` |
 | `web/` `npm test` | PASS 46/46 | `web-npm-test.txt` |
 | Wheel in a fresh venv + `pytest` (real EXE, real model) | PASS 8/8 | `pytest-wheel.txt` |
@@ -24,6 +26,30 @@ Built and verified from a clean tree at commit `e8bd522`; evidence in `docs/test
 | Doc links | PASS: 0 broken (`python tools/check_links.py`) | CI-less, offline check |
 
 Earlier wave R runs (kernel tests 12/12 on the real 680M, format red-before) are in `docs/test-evidence/wave-r/`.
+
+## Audit-fix verification (binaries rebuilt from clean commit `ae3bbbd`)
+
+An audit of the release candidate found overstated or stale claims. Fixed: no "single-file" claim (two static EXEs, the Vulkan one
+also imports the system `vulkan-1.dll`; clean-machine run NOT RUN), the benchmark provenance (wave-B binaries vs shipped binaries),
+the TTFT ratio (2.8x for qwen3-0.6b, 7.8x LFM3, 7.3x vision), stale STATUS and CLI help text, the CI badge (CI has not run on this
+revision), the LFM3 byte size (1,846,240,768 on disk; `llama-bench` prints 1,837,991,168 in-memory bytes), a ZIP whose README links
+were dead (docs essentials now shipped, other links rewritten), CRLF in `SHA256SUMS.txt` (now LF), and a missing runtime XSS regression
+(`e2e_gui_xss`). Evidence: `docs/test-evidence/release-final/` (index in its `README.md`).
+
+| Gate | Result | Evidence |
+|---|---|---|
+| clang-format / clang-tidy | PASS: 221 files / 0 diagnostics in 69 TUs | `audit-format-check.txt`, `audit-clang-tidy.txt` |
+| CTest `windows-msvc-release-static` (shipped CPU EXE build), real models | PASS: 816 registered, 812 passed, 4 skipped (Vulkan-only, NOT RUN on a CPU build), 0 failed. First run: 806 passed, 6 failed with `out_of_memory` budget refusals (two real-model tests in parallel); the six re-ran 7/7 PASS serially | `audit-ctest-static-cpu.txt`, `audit-ctest-static-cpu-rerun-failed6.txt` |
+| CTest `windows-msvc-release-static-vulkan` (shipped Vulkan EXE build), real models, Radeon 680M | PASS: 815 registered, 815 passed, 0 skipped. First run: 813 passed, 2 failed (`out_of_memory` budget refusals); the two re-ran 2/2 PASS serially | `audit-ctest-static-vulkan.txt`, `audit-ctest-static-vulkan-rerun-failed2.txt` |
+| New runtime XSS regression `e2e_gui_xss` (real UI, real headless browser, fake hostile model reply) | PASS in both builds (SKIP = NOT RUN without a browser or python `websockets`) | in the CTest logs above |
+| `web/` `npm test` | PASS 46/46 | `audit-web-npm-test.txt` |
+| Doc links | PASS: 0 broken | `audit-link-check.txt` |
+| Shipped EXEs, empty PATH: `--help`, `doctor`, real generation, `serve` health + GUI | PASS for both (CPU EXE: CPU; Vulkan EXE: Radeon 680M) | `shipped-binaries/restricted-env-*.json` |
+| Shipped EXEs, quick benchmark (LFM3-Omni-2B Q8_0) | CPU 18.2 t/s, Vulkan 34.4 t/s decode, within 3% of wave D | `shipped-binaries/quick-*.json` |
+| Release set, `SHA256SUMS.txt` (LF) | PASS: every file verifies; portable ZIP inner sums verify; ZIP README links 0 broken | `SHA256SUMS-final.txt` |
+
+Binaries embed commit `ae3bbbdc4050`; commits after it change documentation, evidence and `scripts/package.ps1` only. CI for this
+revision: not run (the branch is not pushed).
 
 ## Wave B: distribution (2026-11-20)
 

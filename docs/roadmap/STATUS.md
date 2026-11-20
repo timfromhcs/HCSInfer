@@ -4,6 +4,18 @@ Last updated: 2026-11-20 (wave R final verification of 1.0.0-rc.1 on top of wave
 `f9d03a5`). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
 inspected source file; items with no evidence are NOT RUN or BLOCKED.
 
+## Audit fixes (2026-11-21, after wave R)
+
+A release audit found overstated or stale claims in README/ADR-008/STATUS/benchmarks (single-file wording, benchmark binary
+provenance, TTFT ratio, stale wave-B text and limitations, CI badge, CLI help, ZIP links, CRLF checksums, LFM3 byte size, missing
+runtime XSS test). All fixed at the root and re-verified; the version stays **1.0.0-rc.1**. Binaries were rebuilt from clean commit
+`ae3bbbd` (embedded `ae3bbbdc4050`; later commits are documentation/evidence/packaging-script only): CTest on
+`windows-msvc-release-static` 812 passed + 4 skipped (816 registered; first run 6 `out_of_memory` budget refusals under `-j2`, re-run
+serially 7/7 PASS) and on `windows-msvc-release-static-vulkan` 815 passed (815 registered; first run 2 budget refusals, re-run 2/2
+PASS); clang-format/clang-tidy/`npm test`/link check green; the shipped EXEs passed an empty-PATH run and a quick benchmark. The
+earlier "815 passed" wording for the CPU run was wrong: 811 passed + 4 skipped. Index: `docs/test-evidence/release-final/README.md`.
+CI for this revision is unknown (never pushed).
+
 ## Repository state
 
 Wave B (distribution, 2026-11-20, branch `claude/repo-analysis-v1-stable-d7c553`; the branch has not been pushed, merged or
@@ -255,10 +267,12 @@ EXEs), wheel `1.0.0rc1`, `web/package.json` `1.0.0-rc.1`, README, CHANGELOG, rel
 ```text
 HCSInfer engineering report
 - Current phase: wave R (release candidate) - final verification done
-- Commit: build/verification commit e8bd522 (clean tree, SBOM hcs:git_tree_dirty=false); later commits on this branch
-  only add documentation/evidence. Branch claude/repo-analysis-v1-stable-d7c553, NOT merged, NOT tagged, NOT pushed.
-- Build status: PASS - windows-msvc-release, -vulkan, -static (CPU) and -static-vulkan all build with /W4 /WX.
-- Tests: PASS - CPU build 811 passed, 0 failed, 4 skipped (815 registered; the 4 Vulkan-only tests are NOT RUN on a CPU build); Vulkan build 809/814 first run, the 5
+- Commit: binaries built from clean commit ae3bbbd (embedded ae3bbbdc4050, SBOM hcs:git_tree_dirty=false); later commits on this
+  branch change only documentation, evidence and scripts/package.ps1. (Wave R verification was at e8bd522.) Branch claude/repo-analysis-v1-stable-d7c553, NOT merged, NOT tagged, NOT pushed.
+- Build status: PASS - windows-msvc-release, -vulkan, -static (CPU) and -static-vulkan all build with /W4 /WX (static presets rebuilt
+  from clean commit ae3bbbd in the audit-fix pass).
+- Tests: PASS - audit pass on the static presets: CPU 812 passed, 4 skipped (816 registered), Vulkan 815 passed (815 registered), after
+  serial re-runs of budget-refused first-run failures; wave R CPU build 811 passed, 0 failed, 4 skipped (815 registered; the 4 Vulkan-only tests are NOT RUN on a CPU build); Vulkan build 809/814 first run, the 5
   failures were out_of_memory refusals at ~1 GB free RAM and re-ran 6/6 PASS; web 46/46; wheel pytest 8/8;
   format OK (221 files); clang-tidy 0 diagnostics in 69 TUs; links 0 broken.
 - Real Radeon 680M test: PASS (Vulkan CTest with the real models; benchmarks in docs/benchmarks.md).
@@ -275,16 +289,16 @@ HCSInfer engineering report
 - Remaining blockers: owner items (signing, clean-machine VM, hosted release.yml, hardware runner, WebGPU, Vercel,
   PyPI/GitHub release) and the six core rows above.
 - Exact next action: owner reviews, merges the branch to main (fast-forward), tags v1.0.0-rc.1 and uploads the files in
-  artifacts/release (hashes: docs/test-evidence/release-final/SHA256SUMS.txt); then run the soak full profile and the
+  artifacts/release (hashes: docs/test-evidence/release-final/SHA256SUMS-final.txt); then run the soak full profile and the
   clean-machine test to move to 1.0.0.
 ```
 
-Artefacts (built from the clean tree at `e8bd522` by `scripts/release-local.ps1`; hashes in
-`docs/test-evidence/release-final/SHA256SUMS.txt`, verified: 7/7 match, portable ZIP inner `SHA256SUMS.txt` 23/23 match,
-both packaged EXEs run `--version` and `doctor --json` with exit 0):
-`HCSInfer.exe` (static CPU, 44,228,608 B), `HCSInfer-vulkan.exe` (static CPU+Vulkan, 86,548,992 B), portable ZIP
-(49,830,637 B), `hcsinfer-1.0.0rc1-py3-none-win_amd64.whl` (48,991,129 B) + sdist, `hcs-studio-web-dist.zip`,
-`hcsinfer.cdx.json` (CycloneDX, 15 components). Nothing was uploaded.
+Artefacts (EXEs built from the clean tree at `ae3bbbd`, the release set assembled by `scripts/release-local.ps1` from the final
+branch head; final hashes in `docs/test-evidence/release-final/SHA256SUMS-final.txt`, LF line endings, every entry verified, portable ZIP
+inner `SHA256SUMS.txt` verified): `HCSInfer.exe` (static CPU, 44,229,120 B, SHA-256 `d9b1a6bd...`), `HCSInfer-vulkan.exe` (static
+CPU+Vulkan, 86,549,504 B, `a77cf42a...`), the portable ZIP (with README + docs essentials), `hcsinfer-1.0.0rc1-py3-none-win_amd64.whl` +
+sdist, `hcs-studio-web-dist.zip`, `hcsinfer.cdx.json` (CycloneDX, 15 components). Nothing was uploaded. The earlier
+`SHA256SUMS.txt` in that folder belongs to the superseded `e8bd522` build.
 
 ## Exact next action
 

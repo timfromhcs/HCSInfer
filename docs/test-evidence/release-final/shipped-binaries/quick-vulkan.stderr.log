@@ -1,0 +1,11 @@
+[hcsinfer] cold load
+[hcsinfer] cold generation
+[hcsinfer] warm warm-up
+[hcsinfer] warm 1/3
+[hcsinfer] warm 2/3
+[hcsinfer] warm 3/3
+[hcsinfer] warm reload 1/3
+[hcsinfer] warm reload 2/3
+[hcsinfer] warm reload 3/3
+[hcsinfer] wrote quick-vulkan-lfm3-omni-2b-q8_0.json
+EXIT 0 

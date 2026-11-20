@@ -1,0 +1,2 @@
+wrote docs\test-evidence\release-final\shipped-binaries\restricted-env-cpu-exe.json
+EXIT 0 

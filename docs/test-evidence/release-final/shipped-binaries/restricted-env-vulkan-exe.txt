@@ -1,0 +1,2 @@
+wrote docs\test-evidence\release-final\shipped-binaries\restricted-env-vulkan-exe.json
+EXIT 0 

@@ -37,6 +37,19 @@ Vercel deploy) are separate from that. Release notes: `docs/release-notes-1.0.0-
 - Two files that had drifted from `.clang-format` (diffusion engine comment, GUI asset test) were reformatted;
   the format gate is green again (221 files).
 
+## Release-candidate audit fixes (2026-11-20/21)
+
+### Fixed
+- No "single-file" claim: two static EXEs (CPU system-DLL-only; Vulkan also imports `vulkan-1.dll`); clean-machine run NOT RUN.
+- Benchmark provenance stated (wave-B binaries) and re-checked on the shipped binaries; TTFT ratio corrected per model.
+- CLI help no longer says "scaffold" / "models load|unload Planned"; it explains that a model lives in a running process.
+- Portable ZIP ships the docs essentials (dead links rewritten); `SHA256SUMS.txt` written with LF.
+- README CI badge no longer implies a green run on this revision; STATUS/support-matrix/limitations brought up to date.
+
+### Added
+- CTest `e2e_gui_xss`: runtime XSS regression with a fake hostile model reply in a headless browser.
+- `tools/check_links.py --root` to check an unpacked package.
+
 ## Wave B distribution (2026-11-20; not pushed)
 
 ### Added
