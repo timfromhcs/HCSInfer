@@ -1,168 +1,68 @@
+<div align="center">
+
 # HCSInfer
 
-HCSInfer is a local-first runtime for text chat, image understanding and image generation on Windows 11
-(target hardware: Ryzen 7 7735HS + Radeon 680M, Vulkan, external USB drive as model vault). It reuses
-`llama.cpp`/GGML and `stable-diffusion.cpp` behind one control plane (model registry, job queue,
-memory budget, HTTP API, MCP).
+**One local app for chat, image understanding and image generation on Windows. No cloud, no account, no telemetry.**
 
-**Status: 0.1.0 release candidate (alpha-quality, not tagged; see `docs/release-notes-0.1.0.md`).** Real text generation (CPU and Vulkan) with OpenAI-style tool calls,
-real image generation/editing (CLI, HTTP, MCP, GUI; CPU and Vulkan, proven with SD1.5), image understanding, a
-loopback HTTP API, an MCP stdio server, an embedded local web UI (HCS Studio), a browser-only WebGPU/WASM demo
-(`web/`, ADR-013), a local fine-tuning control plane (`HCSInfer train`, ADR-012), the HCS Agent policy and process
-supervisor (ADR-011) and a real text benchmark command run on the target machine.
-**The one custom Vulkan kernel (Q8_0 GEMV) is experimental, OFF by default and 18x slower than upstream GGML Vulkan. The Model Vault in the engine load path, `tune`,
-`models load|unload` as CLI commands and Streamable HTTP are not
-implemented. A real `prime-agent` session, a real training run and real WebGPU inference
-are NOT RUN / BLOCKED.** V1 is not released. See `docs/roadmap/STATUS.md` (it also holds the V1 release checklist)
-for the evidence behind every row below.
+[![CI](https://github.com/timfromhcs/HCSInfer/actions/workflows/pr.yml/badge.svg)](https://github.com/timfromhcs/HCSInfer/actions/workflows/pr.yml)
+![Version](https://img.shields.io/badge/version-1.0.0--rc.1-orange)
+![Platform](https://img.shields.io/badge/platform-Windows%2011%20x64-blue)
+![Backends](https://img.shields.io/badge/backends-CPU%20%7C%20Vulkan-informational)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-## Feature matrix
+![HCS Studio, chat tab](docs/screenshots/studio-chat-light.png)
 
-| Feature | State | Notes |
-|---|---|---|
-| Hardware report `HCSInfer doctor [--json]` (CPU features, RAM, OS, GPU adapters, Vulkan devices/heaps, drive info) | Implemented | evidence `docs/test-evidence/M0`; unknown values print `unknown` |
-| Text chat (`chat`, llama.cpp adapter), CPU | Implemented | real GGUF tested (Qwen3 0.6B Q4_K_M, LFM3-Omni-2B Q8_0) |
-| Text chat, Vulkan (Radeon 680M) | Implemented | requires the `windows-msvc-release-vulkan` build; explicit `--backend vulkan` fails loudly instead of falling back |
-| Image generation + img2img (`image generate/edit`, stable-diffusion.cpp adapter), CPU and Vulkan | Implemented (CLI) | SD1.5 Q8_0 (CPU and Vulkan); FLUX.3 Klein is in the next row; other model families not tested |
-| Vision / image understanding (libmtmd): `HCSInfer vision`, CPU and Vulkan | Implemented (alpha) | tested with SmolVLM2-500M Q8_0 and LFM3-Omni-2B (+ their mmproj); one image per request, no video/audio; `docs/test-evidence/M2-vision/`, `lfm3/` |
-| FLUX.3 Image Klein through the diffusion adapter (`--llm`, `--vae`, `--preset fast\|quality`, `.components.json` sidecar) | Experimental; **rendered** (Vulkan t2i + i2i; CPU t2i only via a 256x256 engine test, no CPU i2i run) | real 512x512 renders with the approved substitute Qwen3-VL-4B Q4_K_M encoder and FLUX.2 VAE; ~6-8 min per image on Radeon 680M (single samples); `fast` = 6 steps measured by a PSNR/DSSIM sweep; `docs/supported-models.md`, `docs/test-evidence/wave-f/` |
-| Model registry, lifecycle, job queue, cancellation, memory-budget arithmetic, approved-root path guard | Implemented | |
-| HTTP API: `/v1/models`, `/v1/chat/completions` (streaming), `/hcs/v1/*` | Experimental | loopback by default, bearer token, size limits; `docs/api.md` |
-| HTTP API: image input on chat (`image_url` data URIs, streaming, cancellation) | Experimental | needs a model + its mmproj in one folder; `docs/api.md` |
-| HTTP API: `/v1/images/generations`, `/v1/images/edits` | Experimental | real stable-diffusion.cpp render on CPU **and Vulkan** (47/47 checks on both builds); `b64_json` only, no `url`/`mask` (`501`); JSON body only (`multipart` -> `415`); `docs/api.md` |
-| HTTP API: OpenAI tool calling (`tools`, `tool_calls`, `tool_choice` auto/none; non-stream and SSE) | Experimental | real LFM3-Omni run on CPU and Vulkan, 37/40 on the project's own 40-task eval; `tool_choice` required / named function and legacy `functions` answer `501`; `docs/api.md`, `docs/test-evidence/lfm3/` |
-| HTTP API: `POST /hcs/v1/benchmarks` | Implemented | asynchronous job (`202` + `status_url`), cancellable; contract-tested, real-model run NOT RUN |
-| MCP stdio: models, chat, runtime, jobs, benchmark tools | Experimental | `docs/mcp.md` |
-| MCP: `hcs.runtime.benchmark` | Experimental | shared benchmark runner as a job; real LFM3-Omni-2B run recorded |
-| MCP: `hcs.vision.analyze` | Experimental | real VLM, path guarded; `docs/mcp.md` |
-| MCP: `hcs.image.generate`, `hcs.image.edit` | Experimental | real render, image returned as an MCP image content block; `docs/mcp.md` |
-| MCP Streamable HTTP | Planned | intentionally not implemented |
-| HCS Studio GUI: embedded local web UI (`GET /`, `/ui/*` on the same loopback listener) | Experimental | Chat (with tool-call display), Vision, Image Studio (text-to-image and image-to-image), Models, Performance, Settings, Simple+Advanced; the Agent and Train tabs are labelled Planned and contain no controls; no framework, no CDN; `docs/gui.md`, ADR-009 |
-| HCS Studio Web (`web/`): browser-only WebGPU/WASM demo, no server | Experimental | static site, no server inference and no analytics; Chat/Vision/Models/Performance/Settings run in the tab, Image Studio/Train/Agent are "Local only"; the shell + capability probe are proven in a real headless Chrome, **real WebGPU inference is NOT RUN here** (headless has no adapter); `web/README.md`, ADR-013 |
-| Model Vault: bounded async sequential reads, SHA-256 (`src/storage`) | Experimental | tested read-only on a real GGUF; the engines do not load through it yet |
-| HCSMODEL chunk container (Raw/LZ4/Zstd, per-chunk hashes) | Experimental | a measured loading benefit on the HDD is not proven |
-| Shared GGML (one GGML for both engines, `SD_USE_UPSTREAM_GGML=ON`) | Experimental | SD1.5 output matched the patched build once; other models untested |
-| Single-file `HCSInfer.exe` (static CRT, CPU) and `HCSInfer-vulkan.exe` (+ Vulkan; needs the system `vulkan-1.dll`) | Experimental | imports system DLLs only (`dumpbin`), restricted-environment run PASS (empty dir, empty PATH, real generation, `serve`, GUI page); **clean-machine test NOT RUN**, unsigned; `docs/packaging.md`, `docs/test-evidence/wave-b/` |
-| Python package `hcsinfer` (platform wheel with the EXEs, sdist, stdlib client, `hcsinfer` console script) | Experimental | built and `twine check`ed locally, installed into a fresh venv, real chat through `Client`; not uploaded to PyPI; `python/README.md` |
-| Portable folder/ZIP + SHA-256 + SBOM (`scripts/package.ps1`, `scripts/release-local.ps1`) | Experimental | contains both EXEs; draft release workflow `release.yml` never run (not pushed) |
-| Single `HCSInfer.exe` | Planned, unproven | dynamic CRT today, no clean-machine test (ADR-008) |
-| `benchmark` CLI (`--suite quick`): real text benchmark, AGENTS.md 21.1 JSON | Implemented | cold+warm phases, median/p90, real metrics from the engine |
-| `benchmark --suite full` (prefill/decode sweeps, `--sweep-sizes`) | Implemented | `SKIPPED`/`FAIL` points, `result_status` `PARTIAL`; contract-tested and run on a real model (LFM3-Omni-2B Q8_0, CPU) |
-| `cache stats` / `cache clear [--yes] [--json]` | Implemented | only HCS-owned state-dir `cache/`, `scratch/` and orphaned `.tmp.<n>` files; exit 2 without `--yes`, 8 if partial |
-| HCS Train: `train validate\|gate\|adapter\|pipeline` (dataset validation, eval gate, adapter bookkeeping) | Implemented (logic) | a trainer is external (ADR-012) and has not been run; promotion is refused unless the gate kept the adapter; `docs/train.md` |
-| HCS Agent foundations: tool-call policy, loopback provider document, launch plan, process supervisor (Job Object tree-kill) | Implemented (logic + supervision) | a real `prime-agent` sidecar session is NOT RUN; `docs/agent.md`, ADR-011 |
-| `tune`, `models load`, `models unload` CLI commands | Planned | exit code 10 (model load/unload works over HTTP and MCP) |
-| HCS Vulkan kernel: Q8_0 GEMV (`src/kernels/vulkan`, `shaders/llm/`) | Experimental | feature-flagged **OFF**, not on the model load path; independent CPU reference + `spirv-val`'d SPIR-V + real-device correctness (4/4 on the Radeon 680M); **not** default-enabled (no measured benefit over the real baseline); `docs/vulkan-kernels.md` |
-| Scheduler, further custom kernels, advanced research features | Planned | only with measured benefit |
-| CI (GitHub Actions) | Green | `.github/workflows/`; public repo `timfromhcs/HCSInfer`. `pr-quick-gate` run 44607088082 is green on `main` (clang-format, clang-tidy, SBOM, `web`, Release and Debug build+ctest, and the Release leg builds + verifies + uploads the portable package); model/GPU tests skip there and stay NOT RUN, and the feature-flagged Vulkan kernel is not built in CI. The self-hosted `hardware.yml` has never run |
+</div>
 
-Legend: Implemented / Experimental / Planned / Unsupported.
+HCSInfer puts [llama.cpp](https://github.com/ggml-org/llama.cpp) (text, vision) and
+[stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp) (image generation) behind one control plane:
+a model registry, a job queue with cancellation, a memory budget, an OpenAI-style HTTP API, an MCP server, a CLI and a
+local web UI (HCS Studio). It runs on the CPU or, on an AMD iGPU such as the Radeon 680M, through Vulkan. It ships as a
+single static `HCSInfer.exe`, a Python wheel and a portable ZIP.
 
-## Requirements
+> **Status: 1.0.0-rc.1, release candidate.** Everything below is backed by a file under
+> [`docs/test-evidence/`](docs/test-evidence/README.md), but it was verified on **one machine** (Ryzen 7 7735HS,
+> Radeon 680M, Windows 11) and the binaries are **unsigned and untested on a clean Windows install**. It is a release
+> candidate rather than 1.0.0 because some core gates are not green yet (see [Limitations](#limitations) and the
+> checklist in [`docs/roadmap/STATUS.md`](docs/roadmap/STATUS.md)).
 
-- Windows 11 x64, Visual Studio 2022 (Desktop development with C++, MSVC v143), CMake >= 3.25, Ninja, Git.
-- Vulkan build: LunarG Vulkan SDK (build time only; version used so far: 1.4.357.0). At run time the installed
-  AMD/OEM graphics driver provides Vulkan; HCSInfer never bundles or replaces it.
-- Verified only on: Ryzen 7 7735HS, Radeon 680M (AMD proprietary driver), Windows 11 build 26200. Other GPUs are untested.
-- Radeon 680M uses shared system memory: CPU and GPU compete for RAM capacity and bandwidth. The Vulkan heap
-  size reported by the driver is not extra RAM.
+## Contents
+
+[Install](#install) - [60-second quick start](#60-second-quick-start) - [Features](#feature-matrix) -
+[Requirements](#requirements) - [Models and licences](#models-and-licences) - [CLI, API, MCP](#cli-api-and-mcp) -
+[Benchmarks](#benchmarks) - [Architecture](#architecture) - [Troubleshooting](#troubleshooting) -
+[Security and privacy](#security-and-privacy) - [Limitations](#limitations) - [Build from source](#build-from-source) -
+[Contributing](#contributing) - [Licence](#licence)
 
 ## Install
 
-Download-based install (nothing is published yet; the files are produced by `scripts/release-local.ps1`): see
-[`docs/install.md`](docs/install.md). Short version:
+Nothing is published yet (no GitHub release, no PyPI upload; that is the owner's step). The release files are built
+locally by [`scripts/release-local.ps1`](scripts/release-local.ps1); every file is listed with its SHA-256 in
+`SHA256SUMS.txt`. Details: [`docs/install.md`](docs/install.md), [`docs/packaging.md`](docs/packaging.md).
+
+| You want | File | How |
+|---|---|---|
+| a single executable, CPU only | `HCSInfer.exe` | run it; imports Windows system DLLs only |
+| the same with GPU support | `HCSInfer-vulkan.exe` | run it; needs the `vulkan-1.dll` that your AMD/OEM graphics driver installs |
+| everything with licences, SBOM, checksums | `HCSInfer-<version>-windows-msvc-release-static-portable.zip` | unzip, run `HCSInfer.exe doctor` |
+| use it from Python | `hcsinfer-1.0.0rc1-py3-none-win_amd64.whl` | `pip install <wheel>` (bundles both EXEs) |
+| the browser demo | `hcs-studio-web-dist.zip` | static files, see [`web/README.md`](web/README.md) |
+
+Models are **not** included. See [Models and licences](#models-and-licences).
+
+## 60-second quick start
 
 ```powershell
-.\HCSInfer.exe doctor --json                  # single file, no Visual C++ Redistributable needed
-pip install .\hcsinfer-0.1.0-py3-none-win_amd64.whl ; hcsinfer --help   # Python wheel (bundles both EXEs)
+.\HCSInfer.exe doctor                           # what HCSInfer sees: CPU, RAM, GPU, Vulkan, drives
+.\HCSInfer.exe chat --model E:\models\model.gguf --prompt "Hello" --backend cpu
+.\HCSInfer.exe serve --model-root E:\models     # http://127.0.0.1:8765, the bearer token is printed on stderr
 ```
 
-`HCSInfer-vulkan.exe` is the same program with GPU support and additionally needs the `vulkan-1.dll` that your GPU driver
-installs. The binaries are unsigned. A run on a fresh machine is NOT RUN.
+Open the URL that `serve` prints to use **HCS Studio** (chat, vision, image studio, models, performance, settings) in
+your browser. Use `HCSInfer-vulkan.exe ... --backend vulkan` to run on the iGPU; an explicit `--backend vulkan` fails
+loudly instead of silently falling back to the CPU.
 
-## Quick start
-
-```powershell
-git clone --recurse-submodules https://github.com/timfromhcs/HCSInfer.git ; cd HCSInfer
-.\scripts\build.ps1 -Preset windows-msvc-release -RunTests            # CPU build
-.\scripts\build.ps1 -Preset windows-msvc-release-vulkan              # Vulkan build (needs the Vulkan SDK)
-$exe = '.\build\windows-msvc-release\bin\HCSInfer.exe'
-& $exe --help
-& $exe doctor --json
-& $exe chat --model E:\models\model.gguf --prompt "Hello" --backend cpu
-& $exe image generate --model D:\models\sd15-q8_0.gguf --prompt "a red apple on a plain table" `
-   --width 256 --height 256 --steps 2 --backend cpu --json
-& $exe serve --model-root E:\models                                   # 127.0.0.1:8765, token printed on stderr
-                                                                    # open the printed web UI URL, or use the API
-& $exe benchmark --suite quick --model E:\models\model.gguf --backend cpu --export bench.json
-& $exe benchmark --suite full --model E:\models\model.gguf --backend cpu --sweep-sizes 128,512
-& $exe cache stats --json          # what HCS itself keeps as cache; `cache clear --yes` deletes exactly that
-& $exe benchmark --suite quick --model E:\models\model.gguf --backend cpu --load-mode auto   # or none|mmap|mlock|mmap+mlock|direct_io
-& $exe mcp stdio --model-root E:\models
-```
-
-The native CTest suite registered 518 tests at the last recorded run; the 46 `web/` tests run separately with `npm test`.
-Exact build commands and troubleshooting: `docs/build.md`; single-file and wheel builds: `docs/packaging.md`. Tests that need a real model skip (and say so) unless the
-matching variable points at one: `HCS_TEST_GGUF` (text), `HCS_TEST_VLM` + `HCS_TEST_MMPROJ` (vision),
-`HCS_TEST_DIFFUSION_MODEL` (image).
-
-## Models and licences
-
-Models are never part of this repository or the executable. You are responsible for the licence of every model you
-download. `models scan` only reads headers; it never writes into your model folder.
-
-### Importing models
-
-1. Put the files in a folder you control (it may be on an external drive). A vision model needs its `mmproj*.gguf`
-   projector **in the same folder**; FLUX.3 Klein needs its text encoder and VAE (`--llm`, `--vae` or a
-   `<model>.components.json` sidecar, see `docs/supported-models.md`).
-2. Register them: `HCSInfer models scan E:\models` (read-only: validates GGUF/safetensors headers and writes only into
-   the state directory), then check with `HCSInfer models list`.
-3. Use the model id (not a path) from the API, MCP and GUI; `chat`, `vision` and `image` also accept a file path.
-   The server and MCP only load files that resolve inside an approved root (`--model-root`, or `model_roots` in
-   `settings.json`).
-
-Check the licence of every model before use. Two licences in the current evidence are restrictive: LFM3-Omni uses the
-LFM Open License v1.0 (commercial use limited by a revenue threshold) and FLUX.3 Klein uses the FLUX Kommunity
-licence (`THIRD_PARTY_NOTICES.md`).
-
-## API and MCP configuration
-
-```powershell
-# HTTP API: loopback, random bearer token printed on stderr (or pass --token / set HCS_API_TOKEN)
-& $exe serve --model-root E:\models
-curl.exe http://127.0.0.1:8765/hcs/v1/health                                  # no auth, {"status","version"}
-curl.exe -H "Authorization: Bearer <token>" http://127.0.0.1:8765/v1/models
-curl.exe -H "Authorization: Bearer <token>" -H "Content-Type: application/json" `
-  -d '{"model":"<id>","messages":[{"role":"user","content":"Hello"}],"max_tokens":32}' `
-  http://127.0.0.1:8765/v1/chat/completions
-```
-
-MCP is stdio only. A generic client entry (client config formats differ; only a scripted stdio client has been run
-against it, no third-party MCP client has):
-
-```json
-{ "command": "C:\\path\\to\\HCSInfer.exe", "args": ["mcp", "stdio", "--model-root", "E:\\models"] }
-```
-
-Routes, options and error codes: `docs/api.md`; tools and protocol versions: `docs/mcp.md`.
-
-## Model Vault and storage
-
-Scope: the Model Vault (`src/storage`: read-only validation, bounded asynchronous sequential reads, SHA-256, the
-optional HCSMODEL container) is experimental and **not yet in the engine load path**; the engines load GGUF files
-themselves (llama.cpp `mmap` by default, other load modes through `--load-mode`). The model folder may live on an
-external USB drive. HCSInfer does not create a decompressed model cache on the SSD.
-Windows may still page memory to the system page file; HCSInfer does not change that. A USB HDD is a cold archive,
-not RAM: a cold first load of a multi-GB model is slow (a cold SD1.5 first step took about 218 s in our run; warm
-runs took seconds), and cold/warm numbers must never be compared. See `docs/model-vault.md`.
-
-## HCS Studio (local web UI)
-
-Screenshots are real captures of `HCSInfer serve` in headless Edge with the CPU build, the real LFM3-Omni-2B Q8_0
-model for chat and SD 1.5 Q8_0 for the (4-step draft) image; see `docs/gui.md` and `docs/test-evidence/wave-c/`.
-
-| Chat with safe Markdown (light) | Performance (dark) |
+| Chat with safe Markdown | Performance (dark) |
 |---|---|
 | ![Chat](docs/screenshots/studio-chat-light.png) | ![Performance](docs/screenshots/studio-performance-dark.png) |
 
@@ -170,108 +70,216 @@ model for chat and SD 1.5 Q8_0 for the (4-step draft) image; see `docs/gui.md` a
 |---|---|---|
 | ![Models](docs/screenshots/studio-models-light.png) | ![Image Studio](docs/screenshots/studio-image-light.png) | ![Phone](docs/screenshots/studio-phone-dark.png) |
 
-## HCS Studio Web (browser demo)
+The screenshots are real captures of `HCSInfer serve` in headless Edge with the real LFM3-Omni-2B Q8_0 and SD 1.5 Q8_0
+models ([`docs/gui.md`](docs/gui.md), `docs/test-evidence/wave-c/`).
 
-`web/` is a separate deliverable (not part of the native EXE): a static site whose inference runs entirely in the
-browser through WebGPU, with a WebAssembly fallback. No prompt, image or model file leaves the tab; there is no
-server inference and no analytics. Chat, Vision, Models, Performance and Settings run in the browser; Image Studio,
-Train, the shell-based Agent and the Model Vault are shown as "Local only". The one third-party runtime
-(`@huggingface/transformers` 4.3.2, Apache-2.0) is version-pinned and loaded from a CDN.
+## Feature matrix
+
+Legend: **Implemented** = works and is covered by evidence; **Experimental** = works in the tested cases, API or
+behaviour may change; **Planned** = not built (a stub says so, exit code 10 / HTTP 501); **Unsupported** = rejected on
+purpose.
+
+| Area | State | Notes |
+|---|---|---|
+| Hardware report `doctor [--json]` | Implemented | CPU features, RAM, OS, GPU adapters, Vulkan devices/heaps, drive info; unknown values print `unknown` |
+| Text chat on CPU | Implemented | llama.cpp; Qwen3 0.6B Q4_K_M, LFM3-Omni-2B Q8_0 tested |
+| Text chat on Vulkan (Radeon 680M) | Implemented | needs the Vulkan build / `HCSInfer-vulkan.exe` |
+| OpenAI-style tool calls (`tools`, `tool_calls`) | Experimental | one call per turn; `tool_choice` required / named function answers `501` |
+| Vision (image in, text out) | Experimental | one image per single-turn request; SmolVLM2-500M and LFM3-Omni-2B, CPU and Vulkan; no video/audio |
+| Image generation and image-to-image | Experimental | SD 1.5 Q8_0 (CPU and Vulkan) and FLUX.3 Klein (Vulkan; minutes per 512x512 image); `url`, `mask`, `multipart` are rejected |
+| Model registry, lifecycle, job queue, cancellation, memory budget, approved-root path guard | Implemented | |
+| HTTP API (`/v1/chat/completions` streaming, `/v1/models`, `/v1/images/*`, `/hcs/v1/*`) | Experimental | loopback + bearer token; [`docs/api.md`](docs/api.md) |
+| MCP over stdio (models, chat, vision, image, runtime, jobs, benchmark tools) | Experimental | [`docs/mcp.md`](docs/mcp.md); exercised by a scripted stdio client, not by a third-party MCP client |
+| MCP Streamable HTTP | Planned | out of scope for this release |
+| HCS Studio (embedded web UI on the same loopback listener) | Experimental | Chat, Vision, Image Studio, Models, Performance, Settings; Agent and Train tabs are labelled Planned |
+| `benchmark --suite quick\|full`, `POST /hcs/v1/benchmarks`, MCP `hcs.runtime.benchmark` | Implemented | machine-readable JSON with provenance |
+| `cache stats\|clear` | Implemented | touches only HCS-owned state |
+| Single-file static `HCSInfer.exe` / `HCSInfer-vulkan.exe` | Experimental | system DLLs only; clean-machine run NOT RUN; unsigned |
+| Python package `hcsinfer` (wheel, sdist, client, `Server`) | Experimental | built, `twine check`ed, installed into a fresh venv; not on PyPI |
+| Model Vault (bounded async reads, SHA-256) and HCSMODEL container | Experimental | **not in the engine load path**; no measured HDD benefit yet |
+| HCS Studio Web (`web/`, WebGPU/WASM, no server) | Experimental | shell proven in headless Chrome; real WebGPU inference NOT RUN |
+| HCS Train, HCS Agent (policy + process supervisor) | Implemented (logic) | a real training run and a real `prime-agent` session are NOT RUN |
+| HCS Vulkan kernel (Q8_0 GEMV) | Experimental, OFF by default | correct on the 680M but 18x slower than upstream GGML Vulkan |
+| `tune`, `models load`, `models unload` CLI commands | Planned | exit code 10; load/unload works over HTTP and MCP |
+| Scheduler, telemetry module, further custom kernels | Planned | only with measured benefit |
+| Linux, other GPUs, ROCm | Unsupported | not built or tested |
+
+## Requirements
+
+- **To run:** Windows 11 x64. For GPU acceleration: an installed graphics driver that provides Vulkan (verified: AMD
+  driver 32.0.21043.12001, Vulkan 1.4.315). HCSInfer never bundles or replaces the driver.
+- **Memory:** the Radeon 680M is an iGPU that shares system RAM with the CPU; the Vulkan heap size the driver reports
+  is not extra memory. Verified with ~21 GB RAM; a 4B-parameter FLUX.3 render used nearly all of it.
+- **Verified only on** Ryzen 7 7735HS + Radeon 680M, Windows 11 build 26200. Other GPUs and CPUs are untested
+  ([`docs/support-matrix.md`](docs/support-matrix.md), [`docs/hardware-support.md`](docs/hardware-support.md)).
+- **To build:** Visual Studio 2022 (C++ workload), CMake >= 3.25, Ninja, Git; Vulkan SDK for the Vulkan build (build time
+  only). See [Build from source](#build-from-source).
+
+## Models and licences
+
+Weights are never part of this repository or the executables, and you are responsible for each model's licence.
+Two licences in the tested set are restrictive: LFM3-Omni uses the LFM Open License v1.0 (commercial use limited by a
+revenue threshold) and FLUX.3 Klein uses the FLUX Kommunity licence (non-commercial unless a qualifying user). See
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md), [`docs/licence-audit.md`](docs/licence-audit.md) and
+[`docs/supported-models.md`](docs/supported-models.md) (what was actually run).
+
+1. Put the files in a folder you control (an external drive is fine). A vision model needs its `mmproj*.gguf` in the
+   **same folder**; FLUX.3 Klein needs its text encoder and VAE (`--llm`, `--vae`, or a `<model>.components.json`).
+2. `HCSInfer models scan E:\models` validates headers read-only; `HCSInfer models list` shows what was found.
+3. Use the model id from the API, MCP and GUI; `chat`, `vision` and `image` also take a file path. The server and MCP
+   only load files inside an approved root (`--model-root`, or `model_roots` in `settings.json`).
+
+## CLI, API and MCP
 
 ```powershell
-cd web
-npm test                            # 46 unit + static security tests (no dependencies)
-node tests/e2e/boot.mjs             # real static server + real headless Chrome (14 checks)
-node tools/serve.mjs 8080           # then open http://127.0.0.1:8080/
+$exe = '.\HCSInfer.exe'
+& $exe --help
+& $exe doctor --json
+& $exe chat --model E:\models\model.gguf --prompt "Hello" --backend cpu
+& $exe vision --model E:\models\vlm.gguf --image .\photo.png --prompt "Describe this image"
+& $exe image generate --model E:\models\sd15-q8_0.gguf --prompt "a red apple on a plain table" `
+   --width 256 --height 256 --steps 2 --backend cpu --json
+& $exe benchmark --suite quick --model E:\models\model.gguf --backend cpu --export bench.json
+& $exe cache stats --json
 ```
 
-The shell and the capability probe are verified in a real headless Chrome; **real WebGPU inference is NOT RUN in
-this environment** (headless has no WebGPU adapter) and must be tested in a real WebGPU browser. Details, security
-model and the Vercel deploy (`NOT RUN`, needs owner credentials): `web/README.md`, ADR-013.
+**HTTP API**: loopback only, random bearer token printed on stderr (or `--token` / `HCS_API_TOKEN`).
 
-## Security and privacy (current behaviour)
+```powershell
+& $exe serve --model-root E:\models
+curl.exe http://127.0.0.1:8765/hcs/v1/health                       # no auth
+curl.exe -H "Authorization: Bearer <token>" -H "Content-Type: application/json" `
+  -d '{"model":"<id>","messages":[{"role":"user","content":"Hello"}],"max_tokens":32}' `
+  http://127.0.0.1:8765/v1/chat/completions
+```
 
-- The API binds to `127.0.0.1` by default, requires a bearer token, validates `Host`/`Origin`, and caps body size and
-  concurrency. LAN exposure is an explicit opt-in (`--lan`).
-- MCP and API file arguments go through the approved-root guard (`..`, symlink/junction escape, reserved Windows
-  device names such as `NUL`/`CON`, trailing dots/spaces rejected). No shell or arbitrary file tool exists.
-- Untrusted JSON bodies and MCP lines are rejected before parsing when they nest too deeply (stack-exhaustion guard);
-  image dimensions/size and the number of concurrent jobs are bounded.
-- Logs go to stderr as JSON lines and never contain prompts or images.
-- No network access at run time. The build fetches pinned GoogleTest, nlohmann/json, cpp-httplib, LZ4, Zstandard and Vulkan-Headers.
-- The agent sidecar is designed to be loopback-only and offline, started without a shell inside a kill-on-close Job
-  Object (`docs/agent.md`); a real `prime-agent` session has not been run.
-- Privacy: prompts, completions and images are not logged and there is no telemetry; `web/` contacts only
-  `huggingface.co` (model files) and one pinned CDN script. The API token is per run and never embedded in the UI.
-- Not done yet (NOT RUN): a dependency vulnerability scan, long/scheduled fuzzing and a formal licence review.
+**MCP** (stdio). A generic client entry; only a scripted stdio client has been run against it:
 
-See `SECURITY.md`.
+```json
+{ "command": "C:\\path\\to\\HCSInfer.exe", "args": ["mcp", "stdio", "--model-root", "E:\\models"] }
+```
+
+Routes, options and error codes: [`docs/api.md`](docs/api.md). Tools and protocol versions: [`docs/mcp.md`](docs/mcp.md).
+**Python:** `from hcsinfer import Client, Server` ([`python/README.md`](python/README.md)).
 
 ## Benchmarks
 
-Measured on the final single-file static EXEs on one machine (Windows 11, Ryzen 7 7735HS, Radeon 680M, 21 GB RAM, models on a
-USB 3 drive). Medians of 5 iterations for text; image rows state their sample count (FLUX is a single provisional sample).
+Measured on the final static EXEs on one machine (Windows 11, Ryzen 7 7735HS, Radeon 680M, 21 GB RAM, models on a USB 3
+drive). Medians of 5 iterations for text; image rows state their sample count (FLUX is a single, provisional sample).
 Same model and quantisation in both columns; thermals were not measured.
 
-| Workload (this PC, Ryzen 7 7735HS + Radeon 680M) | CPU | Vulkan |
+| Workload | CPU | Vulkan |
 |---|---|---|
-| qwen3-0.6b Q4_K_M: decode tokens/s (median) | 60.7 | 119.4 |
-| qwen3-0.6b Q4_K_M: warm TTFT ms (median, ~200-225-token prompt) | 444 | 156 |
-| LFM3-Omni-2B Q8_0: decode tokens/s (median) | 18.1 | 34.5 |
-| LFM3-Omni-2B Q8_0: warm TTFT ms (median, ~200-225-token prompt) | 3,070 | 393 |
-| SD1.5 Q8_0 512x512, 20 steps (wall s) | 249 (n=2) | 48 |
-| FLUX.3 Klein 512x512, `fast` preset (wall s) | 508 (n=1) | 566 (n=1) |
-| FLUX.3 Klein 512x512, `quality` preset (wall s) | 664 (n=1) | 576 (n=1) |
-| Vision (LFM3-Omni + mmproj, 512x512 image): TTFT ms | 5,898 | 810 |
+| qwen3-0.6b Q4_K_M, decode tokens/s | 60.7 | 119.4 |
+| qwen3-0.6b Q4_K_M, warm TTFT ms (~200-token prompt) | 444 | 156 |
+| LFM3-Omni-2B Q8_0, decode tokens/s | 18.1 | 34.5 |
+| LFM3-Omni-2B Q8_0, warm TTFT ms (~220-token prompt) | 3,070 | 393 |
+| SD 1.5 Q8_0 512x512, 20 steps, wall seconds | 249 (n=2) | 48 (n=5) |
+| FLUX.3 Klein 512x512, `fast` preset (6 steps), wall seconds | 508 (n=1) | 566 (n=1) |
+| Vision, LFM3-Omni + mmproj, 512x512 image, TTFT ms | 5,898 | 810 |
 
 ![Decode throughput](docs/benchmarks/chart-decode-tps.svg)
 
-Highlights: Vulkan roughly doubles decode and cuts prefill/vision time by 7-8x for the text models; SD1.5 is 5x faster on
-Vulkan; FLUX.3 Klein is dominated by a fixed ~7-9 minute per-process cost on this 21 GB machine and is not faster on Vulkan
-here. Quantised KV cache is only worthwhile on Vulkan (q8_0: about 4% slower prefill, 22% less memory at 8K); on CPU it is
-4-5x slower. Streaming HTTP TTFT is 100 ms (Vulkan) / 318 ms (CPU) for a short prompt. Cold reads from the model drive run at
-38-63 MiB/s.
+Vulkan roughly doubles decode and cuts prefill and vision time 7-8x for the text models; SD 1.5 is 5x faster on Vulkan;
+FLUX.3 Klein is not faster on Vulkan here (unexplained). Cold reads from the model drive ran at 38-63 MiB/s. Full
+methodology, all tables, charts and NOT RUN items: [`docs/benchmarks.md`](docs/benchmarks.md); raw JSON:
+`docs/test-evidence/benchmarks/`; reproduce with `tools/bench/run_matrix.py` and `tools/bench/make_report.py`.
 
-Full methodology, every table (prefill sweeps, KV cache types, API latency, drive reads, `llama-bench` cross-check), charts,
-limits and NOT RUN items: `docs/benchmarks.md`. Raw JSON: `docs/test-evidence/benchmarks/`. Reproduce with
-`tools/bench/run_matrix.py` and `tools/bench/make_report.py`; the >5% regression alert is
-`tools/bench/regression-thresholds.json` + `tools/bench/check_regression.py`. Methodology: `docs/decisions/ADR-010-benchmark-methodology.md`.
-`HCSInfer benchmark --suite quick|full --model <gguf>` produces the AGENTS.md 21.1 JSON (unmeasurable values are the string `unknown`).
+## Architecture
 
-## Known limitations
+```mermaid
+flowchart TB
+    subgraph Front["Front ends (never call llama_* / sd_* directly)"]
+        CLI["CLI"]
+        GUI["HCS Studio (embedded web UI)"]
+        API["HTTP API (loopback, bearer token)"]
+        MCP["MCP stdio"]
+    end
+    subgraph CP["Control plane"]
+        REG["Model registry + lifecycle"]
+        JOBS["Job queue + cancellation"]
+        MEM["Memory budget"]
+        GUARD["Approved-root path guard"]
+    end
+    subgraph ENG["Engine adapters"]
+        TXT["Text + vision adapter"]
+        IMG["Diffusion adapter"]
+    end
+    subgraph UP["Pinned upstream"]
+        LL["llama.cpp + libmtmd"]
+        SD["stable-diffusion.cpp"]
+        GG["GGML (one shared copy)"]
+    end
+    BK["CPU / Vulkan backends"]
+    Front --> CP --> ENG
+    TXT --> LL --> GG
+    IMG --> SD --> GG
+    GG --> BK
+    VAULT["Model Vault + HCSMODEL (experimental, not in the load path)"] -.-> CP
+```
 
-- Vision is limited to one image per single-turn request and one tested model family (SmolVLM2); no default-enabled custom kernels and no scheduler beyond the single-worker job queue.
-- Image routes are text-to-image and img2img only (`b64_json`); `url` responses, `mask`/inpainting and `multipart/form-data` uploads are rejected with a clear error.
-- The GUI is served on the loopback API listener and needs a browser; model load and rendering show an indeterminate busy state, not real progress. Its playwright interaction phase and a Vulkan-build UI run are NOT RUN.
-- Image output is proven for SD1.5 Q8_0 and FLUX.3 Klein only; FLUX.3 Klein renders with a substitute encoder/VAE (the gated BFL files are not accessible) and is slow (minutes per image). FP8/INT8 diffusion paths are unavailable with upstream GGML.
-- Tool calling: the tested model emits one call per turn (parallel calls 0/3 on the eval); `tool_choice` required / named function is `501`.
-- LFM3-Omni audio/video input and speech output are not wired. No real training run, no real `prime-agent` session and no real WebGPU inference have been executed.
-- One model resident and one job at a time (single worker). USB-unplug and OOM-injection behaviour are not tested.
-- Output of Vulkan diffusion was once not byte-reproducible run to run (not investigated).
-- Real-model tests skip without `HCS_TEST_GGUF`; GPU tests only run on the Vulkan build.
-- `models scan` rejects relative paths containing `..` by design.
+[`docs/architecture.md`](docs/architecture.md) and the ADRs in [`docs/decisions/`](docs/decisions/README.md) explain each
+choice (one shared GGML, loopback-only API, static CRT, ...).
 
 ## Troubleshooting
 
-- *Vulkan missing or `--backend vulkan` fails:* run `HCSInfer doctor`; install/repair the AMD driver; use `--backend cpu`.
-- *Out of memory on load:* unload the previous model, use a smaller quantization, lower context/resolution.
-- *Model unsupported:* the adapter returns a clear `Unsupported` error (exit code 10); this is not a crash.
-- *USB drive disconnected during load:* load fails; handling under unplug is not yet tested.
-- *`401` or `403` from the API:* use the token printed on stderr by `serve` (`Authorization: Bearer ...`); the `Host` header must be loopback and a browser `Origin` must be this server's.
-- *`501 unsupported` for a vision request:* the model has no `mmproj*.gguf` in its folder. *`501` on the image routes:* the build has no image engine.
-- *FLUX.3 load fails and asks for `--llm`/`--vae`:* it is a multi-file model; see `docs/supported-models.md`.
-- *The CLI says "planned" (exit code 10):* `tune`, `models load|unload` are not implemented; load models through `serve`/`mcp`, or give `chat`/`vision`/`image` a model path.
-- *Very slow first load from the USB drive:* the tested drive reads about 65 MiB/s raw; run again for a warm figure and never compare cold with warm.
+| Symptom | What to do |
+|---|---|
+| `--backend vulkan` fails | run `HCSInfer doctor`; install or repair the AMD/OEM driver; use `HCSInfer-vulkan.exe`; or `--backend cpu` |
+| out of memory on load | unload the previous model, use a smaller quantisation, lower context or resolution |
+| "model unsupported" (exit code 10) | an `Unsupported` error by design, not a crash; see [`docs/supported-models.md`](docs/supported-models.md) |
+| `401` / `403` from the API | send the token printed by `serve` as `Authorization: Bearer ...`; `Host` must be loopback |
+| `501` for a vision request | the model has no `mmproj*.gguf` in its folder |
+| FLUX.3 asks for `--llm` / `--vae` | it is a multi-file model, see [`docs/supported-models.md`](docs/supported-models.md) |
+| very slow first load from a USB drive | the tested drive reads ~40-65 MiB/s; a second run is warm. Never compare cold with warm |
+| SmartScreen warns about the EXE | the binaries are unsigned (no certificate); verify `SHA256SUMS.txt` |
+| CLI says "planned" (exit code 10) | `tune`, `models load\|unload` are not implemented; load models through `serve` or `mcp` |
 
-## Documentation
+## Security and privacy
 
-`docs/architecture.md`, `docs/build.md`, `docs/api.md`, `docs/mcp.md`, `docs/model-vault.md`,
-`docs/hardware-support.md`, `docs/gui.md`, `docs/supported-models.md`, `docs/benchmarks.md`, `docs/train.md`,
-`docs/licence-audit.md`, `docs/support-matrix.md`,
-`docs/agent.md`, `docs/static-analysis.md`, `web/README.md`, `CHANGELOG.md`, `SECURITY.md`, `CONTRIBUTING.md`,
-`docs/roadmap/IMPLEMENTATION_PLAN.md`, `docs/roadmap/STATUS.md` (with the V1 release checklist),
-`docs/decisions/README.md` (ADR index), `docs/test-evidence/README.md`, `AGENTS.md` (binding engineering specification).
+- The API binds to `127.0.0.1`, requires a bearer token, validates `Host` and `Origin`, and caps body size, JSON depth,
+  image size and concurrency. LAN exposure is an explicit opt-in (`--lan`) and still needs the token.
+- Every file path goes through an approved-root guard (`..`, symlink/junction escape and reserved Windows device names
+  are rejected). There is no shell or arbitrary-file tool in MCP or the API.
+- No prompts, completions or images are logged; there is no telemetry and no network access at run time. The browser
+  demo contacts only `huggingface.co` (model files) and one pinned CDN script.
+- Dependencies are pinned to exact commits; a CycloneDX SBOM and SHA-256 checksums are generated per package.
+
+Reporting and scope: [`SECURITY.md`](SECURITY.md). Audit notes: `docs/test-evidence/M10/security-audit.md`.
+
+## Limitations
+
+The authoritative list is [`docs/roadmap/STATUS.md`](docs/roadmap/STATUS.md). The ones that matter to a user:
+
+- One machine, one OS, one GPU were tested. The EXEs are unsigned and not yet run on a clean Windows install.
+- One model is resident and one job runs at a time; vision takes one image per turn; image output is slow
+  (FLUX.3 Klein: minutes per image) and the official gated BFL text encoder/VAE files were not available, so FLUX.3
+  renders with a substitute encoder and VAE.
+- Engines load model files themselves; the Model Vault is not in the load path, so there is no bounded HDD streaming yet.
+- `models load|unload` and `tune` are not CLI commands; Streamable HTTP MCP is not implemented.
+- NOT RUN: real WebGPU inference, a real `prime-agent` session, a real training run, a physical USB unplug, the full soak
+  profile, a page-cache-cold load, signing, a hosted run of the release workflow.
+
+## Build from source
+
+```powershell
+git clone --recurse-submodules https://github.com/timfromhcs/HCSInfer.git ; cd HCSInfer
+.\scripts\build.ps1 -Preset windows-msvc-release -RunTests            # CPU build + tests
+.\scripts\build.ps1 -Preset windows-msvc-release-vulkan              # Vulkan build (needs the Vulkan SDK)
+.\scripts\build.ps1 -Preset windows-msvc-release-static              # single-file static EXE
+.\scripts\release-local.ps1                                          # EXEs, ZIP, wheel, sdist, SBOM, checksums
+python tools\check_links.py                                          # documentation link check
+```
+
+Tests that need a real model skip (and report NOT RUN) unless `HCS_TEST_GGUF`, `HCS_TEST_VLM` + `HCS_TEST_MMPROJ` or
+`HCS_TEST_DIFFUSION_MODEL` point at one. Exact commands and troubleshooting: [`docs/build.md`](docs/build.md).
+
+## Contributing
+
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`AGENTS.md`](AGENTS.md) (the binding engineering specification). In short:
+small changes with tests and docs, never weaken a test to get green, no fake features, pinned dependencies.
+History: [`CHANGELOG.md`](CHANGELOG.md); release notes: [`docs/release-notes-1.0.0-rc.1.md`](docs/release-notes-1.0.0-rc.1.md).
 
 ## Licence
 
-MIT, see `LICENSE`. Third-party notices: `THIRD_PARTY_NOTICES.md`.
+MIT, see [`LICENSE`](LICENSE). Third-party components and their licences: [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

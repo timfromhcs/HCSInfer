@@ -1,8 +1,41 @@
 # Changelog
 
-Derived from `git log` (all 28 commits are dated 2026-11-17). No release has been tagged; the portable package built
-by `scripts/package.ps1` is named `0.1.0`. Entries describe what the commits changed; PASS/NOT RUN state of each
-feature is in `docs/roadmap/STATUS.md`.
+Derived from `git log`. No release has been tagged. The version is `1.0.0-rc.1` (CMake `project(VERSION 1.0.0)` plus
+`HCS_VERSION_SUFFIX "-rc.1"`; the wheel spells it `1.0.0rc1`, npm `1.0.0-rc.1`). Entries describe what the commits
+changed; PASS/NOT RUN state of each feature is in `docs/roadmap/STATUS.md`.
+
+## 1.0.0-rc.1 (release candidate, 2026-11-20; not tagged, not merged, not pushed)
+
+Why a release candidate and not 1.0.0: the AGENTS.md section 22 checklist still has core rows that are not PASS (the
+Model Vault is not in the engine load path, `models load|unload` are not CLI commands, the full soak profile and a
+clean-machine run were not done, scanners for vendored C libraries and `cargo deny` were not run). The owner-dependent
+items (signing certificate, clean Windows machine, physical USB pull, self-hosted hardware runner, real WebGPU browser,
+Vercel deploy) are separate from that. Release notes: `docs/release-notes-1.0.0-rc.1.md`; the verification record is
+`docs/test-evidence/release/`.
+
+### Added
+- README rewritten for release: real CI badge, screenshots, install table (EXE, wheel, portable ZIP), 60-second quick
+  start, honest feature matrix, benchmark table, mermaid architecture, troubleshooting, security/privacy, limitations.
+- `tools/check_links.py` (offline Markdown link and anchor checker) and its use in CONTRIBUTING.
+- `HCS_VERSION_SUFFIX` pre-release label; `scripts/package.ps1` and `scripts/sbom.ps1` carry it into package names and
+  the SBOM.
+- Wave A (real-model verification and GUI browser interaction on CPU and Vulkan builds), wave B (single-file static EXEs,
+  Python wheel/sdist, release workflow), wave C (HCS Studio polish: safe Markdown, copy buttons, onboarding, live
+  performance tab, screenshots) and wave D (benchmarks of the final EXEs, charts, regression thresholds): see the entries
+  below and `docs/test-evidence/wave-a` .. `wave-c`, `benchmarks/`.
+
+### Changed
+- Version 0.1.0 -> 1.0.0-rc.1 everywhere (CMake, wheel, npm package, web config, docs); the Python development status
+  classifier is now Beta.
+- Personal absolute paths were scrubbed from committed docs, scripts and evidence (placeholders `<MODELS>`, `<REPO>`);
+  `scripts/soak.ps1` takes the model root from `HCS_SOAK_MODEL_ROOT`.
+- `release-notes-0.1.0.md` became `release-notes-1.0.0-rc.1.md`; install, SECURITY, CONTRIBUTING and support-matrix refreshed.
+
+### Fixed
+- `Cli.VersionAndNoArgs` hard-coded the `0.` version prefix and went red with the version bump; it now compares against
+  `HCS_VERSION_STRING`.
+- Two files that had drifted from `.clang-format` (diffusion engine comment, GUI asset test) were reformatted;
+  the format gate is green again (221 files).
 
 ## Wave B distribution (2026-11-20; not pushed)
 
@@ -17,10 +50,10 @@ feature is in `docs/roadmap/STATUS.md`.
   `.github/actionlint.yaml`.
 - `docs/install.md`, `docs/packaging.md`.
 
-## 0.1.0 release candidate (wave R, 2026-11-20; not tagged, not merged, not pushed)
+## 0.1.0 release candidate (wave R, 2026-11-20; superseded by 1.0.0-rc.1)
 
 First release candidate of the portable folder package `HCSInfer-0.1.0-windows-msvc-release-portable` (version from
-`CMakeLists.txt`). Release notes with the full what-works / BLOCKED / NOT RUN list: `docs/release-notes-0.1.0.md`.
+`CMakeLists.txt`). Release notes with the full what-works / BLOCKED / NOT RUN list: `docs/release-notes-1.0.0-rc.1.md`.
 Verification record: `docs/test-evidence/wave-r/RESULTS.md`.
 
 ### Changed

@@ -251,5 +251,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ github.ref_name }}" release/* --draft --title "HCSInfer ${{ github.ref_name }}" `
-            --notes "Draft. Hardware tests (Radeon 680M, real models) must be run on the target machine before publishing. See docs/release-notes-0.1.0.md."
+          gh release create "${{ github.ref_name }}" release/* --draft --prerelease --title "HCSInfer ${{ github.ref_name }}" `
+            --notes "Draft. Hardware tests (Radeon 680M, real models) must be run on the target machine before publishing. See docs/release-notes-1.0.0-rc.1.md."

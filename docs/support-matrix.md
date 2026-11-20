@@ -1,6 +1,6 @@
 # Support matrix (tested hardware, OS and models)
 
-Status: **one machine, one OS** — exactly what the evidence files show. This is not a compatibility guarantee; it is
+Version 1.0.0-rc.1. Status: **one machine, one OS** — exactly what the evidence files show. This is not a compatibility guarantee; it is
 the list of configurations HCSInfer has actually been built and run on, with the status of each. AGENTS.md 20:
 general RDNA/Radeon or Windows claims are **not** made from one device.
 
@@ -47,10 +47,11 @@ Test machine (target hardware, AGENTS.md 1.3):
 | Chat, HTTP API, MCP stdio | PASS | `M3-api-mcp/`, `mcp-benchmark/` |
 | Vision (one image, single turn) | PASS | SmolVLM2 + LFM3-VL only |
 | Image generation / editing | PASS | SD1.5 and FLUX.3 Klein (slow: minutes per image); `url`/`mask`/multipart rejected by design |
-| Embedded web UI (HCS Studio) | PASS (HTTP + headless boot) | interactive playwright phase NOT RUN |
+| Embedded web UI (HCS Studio) | PASS (HTTP + real headless-browser interaction, CPU and Vulkan builds) | `wave-a/gui-cpu`, `wave-a/gui-vulkan`, `wave-c/`; a human-driven session on a second machine NOT RUN |
 | Model Vault (bounded reads) | PARTIAL | engines do not load through it; HDD-bound case BLOCKED |
 | HCSMODEL container | PASS (experimental) | no measured HDD benefit |
-| Single `HCSInfer.exe` (static CRT) | **NOT RUN** on a clean machine | static build proven offline (`W4-static-exe/`) |
+| Single-file `HCSInfer.exe` (static CRT, CPU) and `HCSInfer-vulkan.exe` | system-DLL-only imports (`dumpbin`) and restricted-environment run PASS; **clean machine NOT RUN**; unsigned | `wave-b/`, `wave-g/restricted-env-static-exe.json` |
+| Python wheel / sdist `hcsinfer` | PASS locally (fresh venv, real chat); not on PyPI | `wave-b/` |
 | Training / agent sidecar / web demo | logic-tested only | real runs NOT RUN (`train/`, `agent/`, `web/`) |
 
 ## How to extend this matrix

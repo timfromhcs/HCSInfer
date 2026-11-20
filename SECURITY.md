@@ -1,8 +1,8 @@
 # Security policy
 
-HCSInfer is alpha software (no release has been made). Report vulnerabilities privately to the repository owner (do
-not open a public issue with exploit details). Include version, OS build and a minimal reproducer; redact personal
-paths.
+HCSInfer 1.0.0-rc.1 is a release candidate (no release has been published). Report vulnerabilities privately to the
+repository owner (do not open a public issue with exploit details). Include version, OS build and a minimal
+reproducer; redact personal paths and tokens. Expect an acknowledgement, not an SLA: this is a one-maintainer project.
 
 ## Design rules (enforced by tests where code exists)
 
@@ -22,8 +22,12 @@ paths.
 - `web/` runs inference in the visitor's browser under a strict CSP; a Hugging Face token is kept only in memory or
   `sessionStorage` and sent only to `huggingface.co` (`web/README.md`, ADR-013).
 - Dependencies are pinned (`external/dependency-lock.json`, FetchContent tags). The package script generates a CycloneDX
-  SBOM and SHA-256 checksums. A dependency vulnerability scan and a formal licence review have **not** been run.
+  SBOM and SHA-256 checksums. Dependency scans were run once (wave G, `docs/test-evidence/wave-g/`: `npm audit` 0 findings, OSV query of the native
+  pins which led to the cpp-httplib v0.44.0 bump, `cargo audit` of prime-agent with the findings analysed in
+  `docs/licence-audit.md`); scanners for the vendored C libraries and a literal `cargo deny` run are NOT RUN. The
+  licence review is `docs/licence-audit.md`.
 
 ## Supported versions
 
-Only the current `main`. No release has been made.
+Only the latest release candidate / `main`. No stable release has been made; binaries are unsigned (check
+`SHA256SUMS.txt`).

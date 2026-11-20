@@ -1,0 +1,4 @@
+clang-format: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-format.exe (clang-format version 19.1.5)
+needs formatting: src\engines\diffusion\diffusion_engine.cpp
+needs formatting: tests\unit\gui\test_gui_assets.cpp
+FORMAT CHECK FAILED: 2 of 221 files differ (run scripts\format.ps1 -Fix).

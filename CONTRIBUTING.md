@@ -15,7 +15,8 @@ HCSInfer follows `AGENTS.md` (binding). Short version:
 9. Pull requests never run on the self-hosted hardware runner; hardware gates run on `main`/tags (`.github/workflows/hardware.yml`, never executed so far). Report results as PASS / FAIL / BLOCKED / NOT RUN.
 10. The browser demo lives in `web/` (needs only Node, no npm dependencies): `cd web; npm test` and
     `node tests/e2e/boot.mjs` must pass; the CI `web` job runs both.
-11. Tests that need a real model skip unless `HCS_TEST_GGUF`, `HCS_TEST_VLM` + `HCS_TEST_MMPROJ` or
+11. Documentation links must resolve: `python tools/check_links.py` (offline, checks relative links and anchors).
+12. Tests that need a real model skip unless `HCS_TEST_GGUF`, `HCS_TEST_VLM` + `HCS_TEST_MMPROJ` or
     `HCS_TEST_DIFFUSION_MODEL` is set; report those runs as NOT RUN, never as PASS.
 
 ## Adding a module

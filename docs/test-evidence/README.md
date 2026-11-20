@@ -52,3 +52,9 @@ Per AGENTS.md 16.2: mocks are never accepted as evidence for inference, model lo
 generation or MCP end-to-end behaviour. Every directory above that claims one of those states which real model and
 machine was used, and marks what is NOT RUN.
 - `wave-g/` - hardening gaps: OOM injection, USB-disconnect simulation, shutdown (fake + real model), supply-chain scans (npm, cargo audit, OSV, licences), restricted-environment static-EXE run (2026-11-20).
+- `wave-a/` - real-model verification and GUI browser interaction (playwright) on the CPU and Vulkan builds (2026-11-20).
+- `wave-b/` - single-file static EXEs, Python wheel/sdist, portable ZIP, release workflow lint (2026-11-20).
+- `wave-c/` - HCS Studio polish: Markdown safety, real-browser screenshots (2026-11-20).
+- `benchmarks/` - wave D: benchmark JSON of the final static EXEs (text, KV cache, vision, image, API, drive reads); report in `docs/benchmarks.md`.
+- `wave-r/` - release-candidate 0.1.0 verification (superseded by `release/`).
+- `release/` - **1.0.0-rc.1 final verification**: format, clang-tidy, full CTest on the CPU and Vulkan builds with real models, web and Python tests, packaging, wheel, SHA-256 hashes; see `release/RESULTS.md`.
