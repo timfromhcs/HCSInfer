@@ -29,7 +29,7 @@ build 10.0.26200.9974, MSVC 19.44.35228, CMake 4.4.0. No other machine, GPU or O
 - **Vision** (one image per single-turn request) with SmolVLM2-500M and LFM3-Omni-2B, CPU and Vulkan (`M2-vision/`).
 - **Image generation and editing**: SD1.5 Q8_0 on CPU and Vulkan (`M3-image/`, 47/47 checks over a real socket on both
   builds) and **FLUX.3 Image Klein** (unsloth UD-Q4_K_XL) through stable-diffusion.cpp, text-to-image and
-  image-to-image on Vulkan and CPU, with the substitute Qwen3-VL-4B Q4_K_M text encoder and FLUX.2 VAE (the gated
+  image-to-image on Vulkan (CPU: text-to-image engine test only, no CPU image-to-image run), with the substitute Qwen3-VL-4B Q4_K_M text encoder and FLUX.2 VAE (the gated
   official Black Forest Labs files were not accessible). 512x512 takes 364-471 s on the 680M (single samples). The
   `fast` preset is 6 steps, chosen by a measured 4/6/8/12/16 sweep with PSNR/DSSIM against the 16-step reference; the
   default cfg for FLUX.3 was fixed to 1.0 after the default over-saturated (`wave-f/`).

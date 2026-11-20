@@ -137,7 +137,7 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 |---|---|---|
 | Actual GGUF text generation | PASS | `M1/llama`, `M2/`, `benchmark/`, `lfm3/` |
 | Actual supported VLM image analysis | PASS | `M2-vision/` (SmolVLM2-500M), `lfm3/` (LFM3-Omni-2B) |
-| Actual diffusion image generation | PASS for SD1.5 Q8_0 and FLUX.3 Klein (substitute Qwen3-VL-4B encoder + FLUX.2 VAE; Vulkan + CPU, t2i + i2i) | `M1/sd`, `M3-image/`; `wave-f/` |
+| Actual diffusion image generation | PASS for SD1.5 Q8_0 and FLUX.3 Klein (substitute Qwen3-VL-4B encoder + FLUX.2 VAE; Vulkan t2i + i2i; CPU t2i via 256x256 test only) | `M1/sd`, `M3-image/`; `wave-f/` |
 | Model manager scan / inspect | PASS | `tests/contract/cli`, registry unit tests |
 | Model load / unload | PASS over HTTP and MCP; FAIL as a CLI command (exit code 10, Planned) | `M3-api-mcp/`, `src/cli/cli.cpp` |
 | Model switch and memory reclamation | PASS for switching and freeing the previous model; memory actually returned is NOT RUN | `M2/image/README.md`, `M3-image/` |

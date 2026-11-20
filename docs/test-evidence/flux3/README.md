@@ -18,8 +18,8 @@ commit than the lock-file pin `d3c3e24`; another workstream moved it, not this c
 | CPU + Vulkan build with `SD_USE_UPSTREAM_GGML=ON` | PASS (`build/f3`, 674 targets, no errors) |
 | SD1.5 regression | PASS (below) |
 | Approved downloads | PARTIAL: unsloth GGUF PASS (sha256 verified); LFM3 Q8_0 + mmproj downloaded (hash file below); BFL text encoder + VAE BLOCKED |
-| FLUX.3 text-to-image / image-to-image, Vulkan and CPU | **PASS** with the approved substitute encoder/VAE; see `../wave-f/README.md` (2026-11-20) |
-| Memory split DiT / Qwen3-VL encoder / VAE, params-backend cpu vs disk on FLUX | **BLOCKED**, same reason |
+| FLUX.3 text-to-image + image-to-image on Vulkan; CPU text-to-image (256x256 test) only | **PASS** with the approved substitute encoder/VAE; see `../wave-f/README.md` (2026-11-20) |
+| Memory split DiT / Qwen3-VL encoder / VAE, params-backend cpu vs disk on FLUX | **NOT RUN** (render no longer blocked; not measured) |
 | Step sweep 4/6/8/12/16 and image diff | **PASS** (PSNR/DSSIM, single sample); LPIPS NOT RUN. `../wave-f/sweep-vulkan/` |
 | Fast LoRA | NOT RUN: no public FLUX.3 Klein fast LoRA exists; none was claimed or downloaded |
 | Presets in ImageRequest / CLI / HTTP / MCP | PASS (code + tests); `fast` = 6 steps is now measured (wave F) |

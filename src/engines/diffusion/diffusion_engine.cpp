@@ -373,8 +373,9 @@ struct PresetPoint {
     float cfg;
 };
 
-// Measured on Radeon 680M (docs/test-evidence/wave-f): 6 steps is as close to the 16-step render as 8 steps
-// (PSNR 24.1 dB vs 24.1 dB) and 23 % faster in wall time; 4 steps drops to 20.3 dB.
+// Measured on Radeon 680M (docs/test-evidence/wave-f, single noisy samples): 6 steps matches 8 steps on PSNR vs the
+// 16-step render (24.1 dB each; DSSIM 0.091 vs 0.077) and is ~23 % faster than 16 steps (~9 % faster than 8);
+// 4 steps drops to 20.3 dB and was not faster in this sample.
 constexpr PresetPoint kFlux3Fast{6, 1.0f};
 constexpr PresetPoint kFlux3Quality{16, 1.0f};
 
