@@ -1,0 +1,758 @@
+[0/2] Re-checking globbed directories...
+[1/441] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-alloc.c.obj
+[2/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml.cpp.obj
+[3/441] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml.c.obj
+[4/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-threading.cpp.obj
+[5/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-opt.cpp.obj
+[6/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-backend.cpp.obj
+[7/441] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ggml-cpu.c.obj
+[8/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-backend-meta.cpp.obj
+[9/441] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-quants.c.obj
+[10/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ggml-cpu.cpp.obj
+[11/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\hbm.cpp.obj
+[12/441] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\quants.c.obj
+[13/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\traits.cpp.obj
+[14/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\amx\amx.cpp.obj
+[15/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\amx\mmq.cpp.obj
+[16/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\gguf.cpp.obj
+[17/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\repack.cpp.obj
+[18/441] Linking CXX static library lib\ggml-base.lib
+[19/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\tiled\tiled-kernel.cpp.obj
+Y:\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(280): warning C4068: unknown pragma 'GCC'
+Y:\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(289): warning C4068: unknown pragma 'GCC'
+Y:\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(297): warning C4068: unknown pragma 'GCC'
+Y:\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(320): warning C4068: unknown pragma 'GCC'
+Y:\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(329): warning C4068: unknown pragma 'GCC'
+Y:\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(337): warning C4068: unknown pragma 'GCC'
+[20/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\vec.cpp.obj
+[21/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\binary-ops.cpp.obj
+[22/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\tiled\tiled.cpp.obj
+[23/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\unary-ops.cpp.obj
+[24/441] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\arch\x86\quants.c.obj
+[25/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\llamafile\sgemm.cpp.obj
+[26/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml.dir\ggml-backend-dl.cpp.obj
+[27/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ops.cpp.obj
+[28/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\arch\x86\repack.cpp.obj
+[29/441] Linking CXX static library lib\ggml-cpu.lib
+[30/441] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml.dir\ggml-backend-reg.cpp.obj
+[31/441] Linking CXX static library lib\ggml.lib
+[32/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_11_cxx.cxx.obj
+[33/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_10_cxx.cxx.obj
+[34/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_9_cxx.cxx.obj
+[35/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_8_cxx.cxx.obj
+[36/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_7_cxx.cxx.obj
+[37/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_6_cxx.cxx.obj
+[38/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_5_cxx.cxx.obj
+[39/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_4_cxx.cxx.obj
+[40/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_3_cxx.cxx.obj
+[41/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_2_cxx.cxx.obj
+[42/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_0_cxx.cxx.obj
+[43/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama.cpp.obj
+[44/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_1_cxx.cxx.obj
+[45/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-adapter.cpp.obj
+[46/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-arch.cpp.obj
+[47/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-batch.cpp.obj
+[48/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-cparams.cpp.obj
+[49/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-chat.cpp.obj
+[50/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-hparams.cpp.obj
+[51/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-context.cpp.obj
+[52/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-io.cpp.obj
+[53/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-impl.cpp.obj
+[54/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-grammar.cpp.obj
+[55/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-graph.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3630): warning C4244: 'argument': conversion from 'const int64_t' to 'uint32_t', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3630): note: the template instantiation context (the oldest one first) is
+Y:\external\llama.cpp\src\llama-graph.cpp(2896): note: see reference to function template instantiation 'std::unique_ptr<llm_graph_input_out_ids,std::default_delete<llm_graph_input_out_ids>> std::make_unique<llm_graph_input_out_ids,const llama_hparams&,const llama_cparams&,const int64_t&,0>(const llama_hparams &,const llama_cparams &,const int64_t &)' being compiled
+[56/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache-iswa.cpp.obj
+[57/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache-dsa.cpp.obj
+[58/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache-dsa-iswa.cpp.obj
+[59/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache-msa.cpp.obj
+[60/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache.cpp.obj
+[61/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-memory.cpp.obj
+[62/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-memory-hybrid.cpp.obj
+[63/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-memory-hybrid-iswa.cpp.obj
+[64/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-moe-cache.cpp.obj
+[65/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache-dsv4.cpp.obj
+[66/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-mmap.cpp.obj
+[67/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-memory-hybrid-idx.cpp.obj
+[68/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-memory-recurrent.cpp.obj
+[69/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-model-saver.cpp.obj
+[70/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-model-loader.cpp.obj
+[71/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-sampler.cpp.obj
+[72/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-quant.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\type_traits(1680): warning C4244: 'argument': conversion from 'unsigned __int64' to 'int', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\type_traits(1680): note: the template instantiation context (the oldest one first) is
+Y:\external\llama.cpp\src\llama-quant.cpp(290): note: see reference to function template instantiation 'std::thread &std::vector<std::thread,std::allocator<std::thread>>::emplace_back<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const uint8_t*,float*,size_t&>(llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const uint8_t *&&,float *&&,size_t &)' being compiled
+Y:\external\llama.cpp\src\llama-quant.cpp(290): note: see the first reference to 'std::vector<std::thread,std::allocator<std::thread>>::emplace_back' in 'llama_tensor_dequantize_impl'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(924): note: see reference to function template instantiation '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_one_at_back<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const unsigned char*,float*,size_t&>(llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const unsigned char *&&,float *&&,size_t &)' being compiled
+        with
+        [
+            _Ty=std::thread
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(845): note: see reference to function template instantiation '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_back_with_unused_capacity<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const unsigned char*,float*,size_t&>(llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const unsigned char *&&,float *&&,size_t &)' being compiled
+        with
+        [
+            _Ty=std::thread
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(863): note: see reference to function template instantiation 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const unsigned char*,float*,size_t&>(_Alloc &,_Objty *const ,llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const unsigned char *&&,float *&&,size_t &)' being compiled
+        with
+        [
+            _Alloc=std::allocator<std::thread>,
+            _Ty=std::thread,
+            _Objty=std::thread
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xmemory(732): note: see reference to function template instantiation 'std::thread::thread<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,_T,float*,size_t&,0>(_Fn,ggml_type &,_T &&,float *&&,size_t &)' being compiled
+        with
+        [
+            _T=const uint8_t *,
+            _Fn=llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\thread(93): note: see reference to function template instantiation 'void std::thread::_Start<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,_Ty,float*,size_t&>(_Fn,ggml_type &,_Ty &&,float *&&,size_t &)' being compiled
+        with
+        [
+            _Ty=const uint8_t *,
+            _Fn=llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\thread(76): note: see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<std::thread::_Start::_Tuple,0,1,2,3,4>(std::integer_sequence<size_t,0,1,2,3,4>) noexcept)(void *) noexcept' being compiled
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\thread(67): note: see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3,4>(void *) noexcept' being compiled
+        with
+        [
+            _Tuple=std::thread::_Start::_Tuple
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\thread(60): note: see reference to function template instantiation 'void std::invoke<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>,ggml_type,const uint8_t*,_Ty*,unsigned __int64>(_Callable &&,_Ty1 &&,const uint8_t *&&,_Ty *&&,unsigned __int64 &&) noexcept(false)' being compiled
+        with
+        [
+            _Ty=float,
+            _Callable=llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>,
+            _Ty1=ggml_type
+        ]
+[73/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-model.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+        with
+        [
+            _Ty=int64_t
+        ]
+        and
+        [
+            _Ty2=uint32_t
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): note: the template instantiation context (the oldest one first) is
+Y:\external\llama.cpp\src\llama-model.cpp(727): note: see reference to function template instantiation 'std::pair<int64_t,uint32_t>::pair<const int64_t&,int64_t,0>(_Other1,_Other2 &&) noexcept' being compiled
+        with
+        [
+            _Other1=const int64_t &,
+            _Other2=int64_t
+        ]
+Y:\external\llama.cpp\src\llama-model.cpp(727): note: see the first reference to 'std::pair<int64_t,uint32_t>::pair' in 'llama_meta_device_get_split_state::<lambda_a406b740da689b29102f8d1813242b14>::operator ()'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): warning C4244: 'initializing': conversion from 'const int64_t' to '_Ty2', possible loss of data
+        with
+        [
+            _Ty2=uint32_t
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): note: the template instantiation context (the oldest one first) is
+Y:\external\llama.cpp\src\llama-model.cpp(738): note: see reference to function template instantiation 'std::pair<int64_t,uint32_t>::pair<const int64_t&,const int64_t&,0>(_Other1,_Other2) noexcept' being compiled
+        with
+        [
+            _Other1=const int64_t &,
+            _Other2=const int64_t &
+        ]
+Y:\external\llama.cpp\src\llama-model.cpp(738): note: see the first reference to 'std::pair<int64_t,uint32_t>::pair' in 'llama_meta_device_get_split_state::<lambda_a406b740da689b29102f8d1813242b14>::operator ()'
+[74/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\unicode.cpp.obj
+[75/441] Building C object external\llama.cpp\vendor\hash\CMakeFiles\vendor-hash.dir\xxhash\xxhash.c.obj
+[76/441] Building CXX object external\llama.cpp\vendor\hash\CMakeFiles\vendor-hash.dir\hash.cpp.obj
+[77/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-vocab.cpp.obj
+[78/441] Building CXX object external\llama.cpp\vendor\hash\CMakeFiles\vendor-hash.dir\sha1\sha1.c.obj
+[79/441] Building C object external\llama.cpp\vendor\hash\CMakeFiles\vendor-hash.dir\sha256\sha256.c.obj
+[80/441] Linking CXX static library lib\vendor-hash.lib
+[81/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\Unity\unity_4_cxx.cxx.obj
+[82/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\Unity\unity_3_cxx.cxx.obj
+[83/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\Unity\unity_2_cxx.cxx.obj
+[84/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\Unity\unity_1_cxx.cxx.obj
+[85/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\Unity\unity_0_cxx.cxx.obj
+[86/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-audio.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(5310): warning C4244: '=': conversion from 'const _Ty' to 'float', possible loss of data
+        with
+        [
+            _Ty=int
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(5310): note: the template instantiation context (the oldest one first) is
+Y:\external\llama.cpp\tools\mtmd\mtmd-audio.cpp(378): note: see reference to function template instantiation 'void std::fill<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,int>(const _FwdIt,const _FwdIt,const int &)' being compiled
+        with
+        [
+            _Ty=float,
+            _FwdIt=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<float>>>
+        ]
+[87/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd.cpp.obj
+[88/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-image.cpp.obj
+[89/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-helper-gen.cpp.obj
+[90/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-helper.cpp.obj
+[91/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-graph.cpp.obj
+[92/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-subcontext.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(5310): warning C4244: '=': conversion from 'const _Ty' to 'float', possible loss of data
+        with
+        [
+            _Ty=double
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(5310): note: the template instantiation context (the oldest one first) is
+Y:\external\llama.cpp\tools\mtmd\mtmd-subcontext.cpp(1214): note: see reference to function template instantiation 'void std::fill<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,double>(const _FwdIt,const _FwdIt,const double &)' being compiled
+        with
+        [
+            _Ty=float,
+            _FwdIt=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<float>>>
+        ]
+[93/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\api\api.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[94/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\api\options.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[95/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\api\result.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[96/441] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-model.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1461): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1461): note: the template instantiation context (the oldest one first) is
+Y:\external\llama.cpp\tools\mtmd\mtmd-model.cpp(3245): note: see reference to function template instantiation 'void std::vector<int,std::allocator<int>>::assign<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,0>(_Iter,_Iter)' being compiled
+        with
+        [
+            _Ty=float,
+            _Iter=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<float>>>
+        ]
+Y:\external\llama.cpp\tools\mtmd\mtmd-model.cpp(3245): note: see the first reference to 'std::vector<int,std::allocator<int>>::assign' in 'mtmd_model_loader::load_tensors'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1491): note: see reference to function template instantiation 'void std::vector<int,std::allocator<int>>::_Assign_counted_range<float*>(_Iter,const unsigned __int64)' being compiled
+        with
+        [
+            _Iter=float *
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813): note: the template instantiation context (the oldest one first) is
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1491): note: see reference to function template instantiation 'void std::vector<int,std::allocator<int>>::_Assign_counted_range<float*>(_Iter,const unsigned __int64)' being compiled
+        with
+        [
+            _Iter=float *
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1475): note: see reference to function template instantiation '_OutIt *std::_Copy_n_unchecked4<float*,unsigned __int64,int*>(_InIt,_SizeTy,_OutIt)' being compiled
+        with
+        [
+            _OutIt=int *,
+            _InIt=float *,
+            _SizeTy=unsigned __int64
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xmemory(732): warning C4244: 'initializing': conversion from 'float' to '_Objty', possible loss of data
+        with
+        [
+            _Objty=int
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xmemory(732): note: the template instantiation context (the oldest one first) is
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1436): note: see reference to function template instantiation 'int *std::_Uninitialized_copy_n<float*,std::allocator<int>>(_InIt,size_t,int *,_Alloc &)' being compiled
+        with
+        [
+            _InIt=float *,
+            _Alloc=std::allocator<int>
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xmemory(1938): note: see reference to function template instantiation 'void std::_Uninitialized_backout_al<_Alloc>::_Emplace_back<float&>(float &)' being compiled
+        with
+        [
+            _Alloc=std::allocator<int>
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xmemory(1844): note: see reference to function template instantiation 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,float&>(_Alloc &,_Objty *const ,float &)' being compiled
+        with
+        [
+            _Alloc=std::allocator<int>,
+            _Ty=int,
+            _Objty=int
+        ]
+[97/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\conditioning\wan_audio.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[98/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\config.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[99/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\conditioning\prompt_input.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[100/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\api\tensor.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[101/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\compute_workspace.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[102/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\cpu\int8.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[103/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\cpu\modulate.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[104/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\cpu\registration.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[105/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\cpu\rope.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[106/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\cpu\w4.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[107/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\backend_fit.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[108/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\convert.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[109/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_compat.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[110/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_extend.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[111/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_extensions.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[112/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_extend_backend.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[113/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\execution_engine.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[114/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_tensor_utils.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[115/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_runner.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[116/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\option_types.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[117/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_graph_cut.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[118/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\parallel.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[119/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\pe_cache.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[120/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\layer_split_partition.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[121/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\probe\backend_probe.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[122/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\probe\conv_direct.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[123/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\regex.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[124/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\probe\flash_attn.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[125/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\runner_cache.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[126/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\segment_graph_bindings.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[127/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\segment_weight_pipeline.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[128/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\util.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[129/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\extensions\photomaker_extension.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[130/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\detailer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[131/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\extensions\pulid_extension.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[132/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\adapter\lora_ops.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[133/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\generation_info.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[134/441] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\unicode-data.cpp.obj
+[135/441] Linking CXX static library lib\llama.lib
+[136/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\anima.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[137/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\boogu_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[138/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\ernie_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[139/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\fibo2.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[140/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\flux.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[141/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\flux2.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[142/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\flux3.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[143/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\hidream_o1.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[144/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\hunyuan_video.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[145/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\ideogram4.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[146/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\krea2.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[147/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\iris.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[148/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\lens.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[149/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\lingbot_video.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[150/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\llada_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[151/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\longcat.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[152/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\ltxav.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[153/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\ming_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[154/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\minit2i.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[155/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\mage_flow.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[156/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\minimax_h3.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[157/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\pixart.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[158/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\moss_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[159/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\pid.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[160/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\qwen_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[161/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\sd3.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[162/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\sd.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[163/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\sensenova_u1.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[164/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_io\gguf_io.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[165/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_io\pickle_io.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[166/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\wan.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[167/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_io\torch_legacy_io.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[168/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_io\torch_zip_io.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[169/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_io\safetensors_io.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[170/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\z_image_l2p.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[171/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\z_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[172/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_loader_files.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[173/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_loader.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[174/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_manager_files.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[175/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_registry.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[176/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_manager_prefetch.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[177/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_manager.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[178/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\name_conversion.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[179/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\image_upscale.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[180/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[181/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\relay_vsr.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[182/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\seedvr2.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[183/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\diffusion_engine.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[184/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\request.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[185/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\model_builders.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[186/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\audio_processing.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[187/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\guidance.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[188/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\video_upscale.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[189/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\image_preprocess.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[190/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\imatrix.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[191/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\tiling.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[192/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\sample-cache.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[193/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\bpe_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[194/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\clip_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[195/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\stable-diffusion.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[196/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\gemma_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[197/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\video.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[198/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\sensenova_u1_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[199/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\qwen2_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[200/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\tokenize_util.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[201/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\mistral_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[202/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[203/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\hf_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[204/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\tokenizer_config.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[205/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\version.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[206/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\zip.dir\zip.c.obj
+[207/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\ascii.c.obj
+[208/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\t5_unigram_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[209/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\regenc.c.obj
+[210/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\regcomp.c.obj
+[211/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\regerror.c.obj
+[212/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\regparse.c.obj
+[213/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\st.c.obj
+[214/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\unicode.c.obj
+[215/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\unicode_fold1_key.c.obj
+[216/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\unicode_fold2_key.c.obj
+[217/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\upscaler.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[218/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\unicode_fold3_key.c.obj
+[219/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\utf8.c.obj
+[220/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\unicode_unfold_key.c.obj
+[221/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\regexec.c.obj
+[222/441] Embedding GUI assets
+[223/441] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\sd-utf8proc.dir\utf8proc\utf8proc.c.obj
+[224/441] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\cpu_info.cpp.obj
+[225/441] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\system_info.cpp.obj
+[226/441] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\doctor.cpp.obj
+[227/441] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\gpu_info.cpp.obj
+[228/441] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\storage_info.cpp.obj
+[229/441] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\vulkan_info.cpp.obj
+[230/441] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\memory_probe.cpp.obj
+[231/441] Building C object _deps\lz4-build\CMakeFiles\lz4_static.dir\__\__\lib\lz4file.c.obj
+[232/441] Building C object _deps\lz4-build\CMakeFiles\lz4_static.dir\__\__\lib\lz4frame.c.obj
+[233/441] Building C object _deps\lz4-build\CMakeFiles\lz4_static.dir\__\__\lib\lz4.c.obj
+[234/441] Building C object _deps\lz4-build\CMakeFiles\lz4_static.dir\__\__\lib\xxhash.c.obj
+[235/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\debug.c.obj
+[236/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\entropy_common.c.obj
+[237/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\error_private.c.obj
+[238/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\fse_decompress.c.obj
+[239/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\pool.c.obj
+[240/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\threading.c.obj
+[241/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\xxhash.c.obj
+[242/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\zstd_common.c.obj
+[243/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\fse_compress.c.obj
+[244/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\hist.c.obj
+[245/441] Building C object _deps\lz4-build\CMakeFiles\lz4_static.dir\__\__\lib\lz4hc.c.obj
+[246/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\huf_compress.c.obj
+[247/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_compress_literals.c.obj
+[248/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_compress_sequences.c.obj
+[249/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_compress.c.obj
+[250/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_compress_superblock.c.obj
+[251/441] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\report_format.cpp.obj
+[252/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_double_fast.c.obj
+[253/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_fast.c.obj
+[254/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_ldm.c.obj
+[255/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_preSplit.c.obj
+[256/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstdmt_compress.c.obj
+[257/441] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\vocab\vocab.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[258/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_lazy.c.obj
+[259/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_opt.c.obj
+[260/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\decompress\zstd_ddict.c.obj
+[261/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\decompress\zstd_decompress.c.obj
+[262/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\dictBuilder\cover.c.obj
+[263/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\decompress\huf_decompress.c.obj
+[264/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\dictBuilder\divsufsort.c.obj
+[265/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\dictBuilder\zdict.c.obj
+[266/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\dictBuilder\fastcover.c.obj
+[267/441] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\decompress\zstd_decompress_block.c.obj
+[268/441] Linking CXX static library lib\mtmd.lib
+[269/441] Building CXX object src\gui\CMakeFiles\hcs_gui.dir\gui_assets.cpp.obj
+[270/441] Building CXX object src\engines\llama\CMakeFiles\hcs_engine_llama.dir\llama_engine.cpp.obj
+[271/441] Linking CXX static library lib\stable-diffusion.lib
+[272/441] Building CXX object src\engines\diffusion\CMakeFiles\hcs_engine_diffusion.dir\diffusion_engine.cpp.obj
+[273/441] Linking CXX static library lib\hcs_hardware.lib
+[274/441] Building CXX object src\gui\CMakeFiles\hcs_gui.dir\__\__\generated\gui\gui_assets_data.cpp.obj
+[275/441] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\sha256.cpp.obj
+[276/441] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\codec.cpp.obj
+[277/441] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\hcsmodel.cpp.obj
+[278/441] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\file_source.cpp.obj
+[279/441] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\stream.cpp.obj
+[280/441] Linking C static library lib\lz4.lib
+[281/441] Linking C static library lib\zstd_static.lib
+[282/441] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\gguf.cpp.obj
+[283/441] Linking CXX static library lib\hcs_engine_llama.lib
+[284/441] Linking CXX static library lib\hcs_engine_diffusion.lib
+[285/441] Linking CXX static library lib\hcs_gui.lib
+[286/441] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\model_reader.cpp.obj
+[287/441] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\writer.cpp.obj
+[288/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\json_schema.cpp.obj
+[289/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane.cpp.obj
+[290/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\runtime.cpp.obj
+[291/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\http_api.cpp.obj
+[292/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane_vision.cpp.obj
+[293/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\image_probe.cpp.obj
+[294/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\data_uri.cpp.obj
+[295/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane_image.cpp.obj
+[296/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane_benchmark.cpp.obj
+[297/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\http_server.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[298/441] Linking CXX static library lib\hcs_storage.lib
+[299/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\llama_stream_adapter.cpp.obj
+[300/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\diffusion_default_engine.cpp.obj
+[301/441] Building CXX object src\api\CMakeFiles\hcs_api.dir\chat_tools.cpp.obj
+[302/441] Building CXX object src\process\CMakeFiles\hcs_process.dir\child_process.cpp.obj
+[303/441] Building CXX object src\train\CMakeFiles\hcs_train.dir\eval_gate.cpp.obj
+[304/441] Building CXX object src\process\CMakeFiles\hcs_process.dir\launcher.cpp.obj
+[305/441] Building CXX object src\train\CMakeFiles\hcs_train.dir\pipeline.cpp.obj
+[306/441] Building CXX object src\train\CMakeFiles\hcs_train.dir\dataset_validator.cpp.obj
+[307/441] Building CXX object src\train\CMakeFiles\hcs_train.dir\eval_report.cpp.obj
+[308/441] Building CXX object src\train\CMakeFiles\hcs_train.dir\adapter_book.cpp.obj
+[309/441] Linking CXX static library lib\hcs_api.lib
+[310/441] Building CXX object src\train\CMakeFiles\hcs_train.dir\rsi_loop.cpp.obj
+[311/441] Building CXX object src\train\CMakeFiles\hcs_train.dir\chat_template.cpp.obj
+[312/441] Building CXX object src\train\CMakeFiles\hcs_train.dir\dataset_prep.cpp.obj
+[313/441] Linking CXX static library lib\hcs_process.lib
+[314/441] Building CXX object tests\unit\process\CMakeFiles\hcs_child_probe.dir\child_probe.cpp.obj
+[315/441] Building CXX object src\mcp\CMakeFiles\hcs_mcp.dir\stdio.cpp.obj
+[316/441] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\agent_redact.cpp.obj
+[317/441] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\sandbox_policy.cpp.obj
+[318/441] Building CXX object src\mcp\CMakeFiles\hcs_mcp.dir\mcp_server.cpp.obj
+[319/441] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\agent_config.cpp.obj
+[320/441] Linking CXX static library lib\hcs_train.lib
+[321/441] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\event_parser.cpp.obj
+[322/441] Linking CXX static library lib\hcs_mcp.lib
+[323/441] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\tool_audit.cpp.obj
+[324/441] Building CXX object src\kernels\vulkan\CMakeFiles\hcs_kernels_vulkan.dir\gemv_q8_0.cpp.obj
+[325/441] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\session_manager.cpp.obj
+[326/441] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\cli.cpp.obj
+[327/441] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\cache_cmd.cpp.obj
+[328/441] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\chat_cmd.cpp.obj
+[329/441] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\image_cmd.cpp.obj
+[330/441] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\vision_cmd.cpp.obj
+[331/441] Linking CXX executable bin\hcs_child_probe.exe
+[332/441] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\benchmark_cmd.cpp.obj
+[333/441] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\train_cmd.cpp.obj
+[334/441] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock_main.dir\src\gmock-all.cc.obj
+[335/441] Linking CXX static library lib\hcs_agent.lib
+[336/441] Linking CXX static library lib\hcs_kernels_vulkan.lib
+[337/441] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock_main.dir\src\gmock_main.cc.obj
+[338/441] Linking CXX static library lib\hcs_cli.lib
+[339/441] Building CXX object src\app\CMakeFiles\hcsinfer.dir\main.cpp.obj
+[340/441] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock_main.dir\__\googletest\src\gtest-all.cc.obj
+[341/441] Building CXX object src\kernels\vulkan\CMakeFiles\hcs_kernel_bench.dir\__\__\__\tools\kernel-bench\kernel_bench.cpp.obj
+[342/441] Building CXX object src\storage\CMakeFiles\hcs_storage_bench.dir\__\__\tools\benchmark-runner\storage_bench.cpp.obj
+[343/441] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_sandbox_policy.cpp.obj
+[344/441] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_agent_redact.cpp.obj
+[345/441] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_agent_config.cpp.obj
+[346/441] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_event_parser.cpp.obj
+[347/441] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_tool_audit.cpp.obj
+[348/441] Building CXX object tests\unit\api_schema\CMakeFiles\hcs_test_api_schema.dir\test_json_guard_base64.cpp.obj
+[349/441] Building CXX object tests\unit\api_chat_tools\CMakeFiles\hcs_test_api_chat_tools.dir\test_chat_tools.cpp.obj
+[350/441] Building CXX object tests\unit\api_schema\CMakeFiles\hcs_test_api_schema.dir\test_json_schema.cpp.obj
+[351/441] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_session_manager.cpp.obj
+[352/441] Building CXX object tests\unit\api_vision\CMakeFiles\hcs_test_api_vision.dir\test_image_input.cpp.obj
+[353/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_checked_math.cpp.obj
+[354/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_result.cpp.obj
+[355/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_memory_budget.cpp.obj
+[356/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_lifecycle.cpp.obj
+[357/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_path_guard.cpp.obj
+[358/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_job_queue.cpp.obj
+[359/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_model_registry.cpp.obj
+[360/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_engine_interface.cpp.obj
+[361/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_settings.cpp.obj
+[362/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_logger.cpp.obj
+[363/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_gguf_probe.cpp.obj
+[364/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_fs_util.cpp.obj
+[365/441] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_benchmark.cpp.obj
+[366/441] Building CXX object tests\unit\gui\CMakeFiles\hcs_test_gui_assets.dir\test_gui_assets.cpp.obj
+[367/441] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_formatting.cpp.obj
+[368/441] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_memory_probe.cpp.obj
+[369/441] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_cpu_decode.cpp.obj
+[370/441] Building CXX object tests\unit\process\CMakeFiles\hcs_test_process.dir\test_child_process.cpp.obj
+[371/441] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_sha256.cpp.obj
+[372/441] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_doctor_live.cpp.obj
+[373/441] Building CXX object tests\unit\process\CMakeFiles\hcs_test_process.dir\test_child_process_stream.cpp.obj
+[374/441] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_codec.cpp.obj
+[375/441] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_hcsmodel_parser.cpp.obj
+[376/441] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_stream.cpp.obj
+[377/441] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_roundtrip.cpp.obj
+[378/441] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_gguf.cpp.obj
+[379/441] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_source_faults.cpp.obj
+[380/441] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_eval_gate.cpp.obj
+[381/441] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_unplug.cpp.obj
+[382/441] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_dataset_validator.cpp.obj
+[383/441] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_eval_report.cpp.obj
+[384/441] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_adapter_book.cpp.obj
+[385/441] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_pipeline.cpp.obj
+[386/441] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_chat_template.cpp.obj
+[387/441] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_dataset_prep.cpp.obj
+[388/441] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_rsi_loop.cpp.obj
+[389/441] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_http_benchmarks.cpp.obj
+[390/441] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_runtime_lifecycle.cpp.obj
+[391/441] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_oom_injection.cpp.obj
+[392/441] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_http_handler.cpp.obj
+[393/441] Building CXX object tests\contract\api_chat_tools\CMakeFiles\hcs_test_api_chat_tools_contract.dir\test_chat_tools_contract.cpp.obj
+[394/441] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_transport_negative.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[395/441] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_socket.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[396/441] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_shutdown.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[397/441] Building CXX object tests\contract\api_image\CMakeFiles\hcs_test_api_image.dir\test_image_routes.cpp.obj
+[398/441] Building CXX object tests\contract\api_vision\CMakeFiles\hcs_test_api_vision_contract.dir\test_vision_contract.cpp.obj
+[399/441] Building CXX object tests\contract\cli\CMakeFiles\hcs_test_cli.dir\test_cli_cache.cpp.obj
+[400/441] Building CXX object tests\contract\cli\CMakeFiles\hcs_test_cli.dir\test_cli.cpp.obj
+[401/441] Building CXX object tests\parser-fuzz\storage\CMakeFiles\hcs_test_storage_mutation_fuzz.dir\test_mutation_fuzz.cpp.obj
+[402/441] Building CXX object tests\integration\diffusion_engine\CMakeFiles\hcs_test_diffusion_engine.dir\test_diffusion_engine.cpp.obj
+[403/441] Building CXX object tests\integration\kernels_vulkan\CMakeFiles\hcs_test_kernels_vulkan.dir\test_gemv_q8_0_vk.cpp.obj
+[404/441] Building CXX object tests\contract\mcp\CMakeFiles\hcs_test_mcp.dir\test_mcp.cpp.obj
+[405/441] Building CXX object tests\contract\mcp_image\CMakeFiles\hcs_test_mcp_image.dir\test_mcp_image.cpp.obj
+[406/441] Building CXX object tests\integration\llama_engine\CMakeFiles\hcs_test_llama_engine.dir\test_llama_engine.cpp.obj
+[407/441] Building CXX object tests\integration\storage\CMakeFiles\hcs_test_storage_real_model.dir\test_real_gguf.cpp.obj
+[408/441] Linking CXX static library lib\gmock_main.lib
+[409/441] Linking CXX executable bin\hcs_storage_bench.exe
+[410/441] Linking CXX executable bin\hcs_kernel_bench.exe
+[411/441] Building CXX object tests\integration\llama_vision\CMakeFiles\hcs_test_llama_vision.dir\test_llama_vision.cpp.obj
+[412/441] Linking CXX executable bin\hcs_test_agent.exe
+[413/441] Linking CXX executable bin\hcs_test_api_chat_tools.exe
+[414/441] Linking CXX executable bin\hcs_test_api_schema.exe
+[415/441] Linking CXX executable bin\hcs_test_api_vision.exe
+[416/441] Linking CXX executable bin\hcs_test_core.exe
+[417/441] Linking CXX executable bin\hcs_test_gui_assets.exe
+[418/441] Linking CXX executable bin\hcs_test_hardware.exe
+[419/441] Linking CXX executable bin\HCSInfer.exe
+[420/441] Linking CXX executable bin\hcs_test_process.exe
+[421/441] Linking CXX executable bin\hcs_test_storage.exe
+[422/441] Linking CXX executable bin\hcs_test_train.exe
+[423/441] Linking CXX executable bin\hcs_test_api_chat_tools_contract.exe
+[424/441] Building CXX object tests\integration\shutdown_real\CMakeFiles\hcs_test_shutdown_real.dir\test_shutdown_real.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[425/441] Linking CXX executable bin\hcs_test_api_image.exe
+[426/441] Linking CXX executable bin\hcs_test_api.exe
+[427/441] Building CXX object tests\soak\soak_core\CMakeFiles\hcs_test_soak_core.dir\test_soak_core.cpp.obj
+[428/441] Linking CXX executable bin\hcs_test_api_vision_contract.exe
+[429/441] Linking CXX executable bin\hcs_test_mcp.exe
+[430/441] Linking CXX executable bin\hcs_test_api_http.exe
+[431/441] Linking CXX executable bin\hcs_test_storage_mutation_fuzz.exe
+[432/441] Linking CXX executable bin\hcs_test_mcp_image.exe
+[433/441] Linking CXX executable bin\hcs_test_kernels_vulkan.exe
+[434/441] Linking CXX executable bin\hcs_test_llama_engine.exe
+[435/441] Linking CXX executable bin\hcs_test_llama_vision.exe
+[436/441] Linking CXX executable bin\hcs_test_diffusion_engine.exe
+[437/441] Linking CXX executable bin\hcs_test_cli.exe
+[438/441] Linking CXX executable bin\hcs_test_storage_real_model.exe
+[439/441] Linking CXX executable bin\hcs_test_shutdown_real.exe
+[440/441] Linking CXX executable bin\hcs_test_soak_core.exe
+Test project Y:/build/windows-msvc-release-kernels
+      Start 337: KernelCpuFp16.RoundTripsRepresentableValuesExactly
+ 1/12 Test #337: KernelCpuFp16.RoundTripsRepresentableValuesExactly ......................................   Passed    0.05 sec
+      Start 338: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns
+ 2/12 Test #338: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns ................................   Passed    0.05 sec
+      Start 339: KernelCpuSizing.RowAndTotalBytes
+ 3/12 Test #339: KernelCpuSizing.RowAndTotalBytes ........................................................   Passed    0.05 sec
+      Start 340: KernelCpuGemv.MatchesADirectDequantisedDotProduct
+ 4/12 Test #340: KernelCpuGemv.MatchesADirectDequantisedDotProduct .......................................   Passed    0.05 sec
+      Start 341: KernelCpuGemv.SingleRowSingleBlockAndZeroWeights
+ 5/12 Test #341: KernelCpuGemv.SingleRowSingleBlockAndZeroWeights ........................................   Passed    0.05 sec
+      Start 342: KernelCpuGemv.NonPowerOfTwoRowsAndColumns
+ 6/12 Test #342: KernelCpuGemv.NonPowerOfTwoRowsAndColumns ...............................................   Passed    0.06 sec
+      Start 777: KernelVulkanGemv.FeatureFlagIsOffByDefault
+ 7/12 Test #777: KernelVulkanGemv.FeatureFlagIsOffByDefault ..............................................   Passed    0.06 sec
+      Start 778: KernelVulkanGemv.ShapeValidation
+ 8/12 Test #778: KernelVulkanGemv.ShapeValidation ........................................................   Passed    0.05 sec
+      Start 779: KernelVulkanGemv.MatchesTheCpuReferenceAcrossShapes
+ 9/12 Test #779: KernelVulkanGemv.MatchesTheCpuReferenceAcrossShapes .....................................   Passed    0.27 sec
+      Start 780: KernelVulkanGemv.RepeatsAreStableAndTheDeviceSurvivesManyCalls
+10/12 Test #780: KernelVulkanGemv.RepeatsAreStableAndTheDeviceSurvivesManyCalls ..........................   Passed    0.22 sec
+      Start 781: KernelVulkanFallback.DisabledFlagFallsBackToTheCpuReferenceWithTheCorrectResult
+11/12 Test #781: KernelVulkanFallback.DisabledFlagFallsBackToTheCpuReferenceWithTheCorrectResult .........   Passed    0.06 sec
+      Start 782: KernelVulkanFallback.InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextCallRecovers
+12/12 Test #782: KernelVulkanFallback.InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextCallRecovers ...   Passed    0.37 sec
+
+100% tests passed out of 12
+
+Label Time Summary:
+kernel-cpu       =   0.33 sec*proc (6 tests)
+kernel-vulkan    =   1.03 sec*proc (6 tests)
+
+Total Test time (real) =   3.30 sec

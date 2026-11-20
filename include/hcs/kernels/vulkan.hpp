@@ -53,7 +53,8 @@ Result<void> gemv_q8_0(const GemvRequest& req, std::string_view device_name_subs
                        Variant variant = Variant::Scalar);
 
 // Test seam (not for production use): the next dispatch behaves as if vkQueueSubmit returned
-// VK_ERROR_DEVICE_LOST. The kernel must return BackendError, reset its cached context and recover on the next call.
+// VK_ERROR_DEVICE_LOST. The kernel must return BackendError, reset its cached context and recover on the next
+// call.
 enum class TestFault { None = 0, DeviceLostOnSubmit = 1 };
 void inject_fault_for_testing(TestFault f) noexcept;
 

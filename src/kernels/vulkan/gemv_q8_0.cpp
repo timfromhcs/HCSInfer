@@ -613,24 +613,26 @@ Result<void> run_gemv(const GemvRequest& req, Variant variant) {
             break;
         }
         // Test seam: pretend the submit hit a lost device without touching the real queue.
-        const bool injected_lost =
-            g_fault.exchange(static_cast<int>(TestFault::None)) == static_cast<int>(TestFault::DeviceLostOnSubmit);
+        const bool injected_lost = g_fault.exchange(static_cast<int>(TestFault::None)) ==
+                                   static_cast<int>(TestFault::DeviceLostOnSubmit);
         VkResult sr = injected_lost ? VK_ERROR_DEVICE_LOST : a.queue_submit(c.queue, 1, &si, c.fence);
         if (sr != VK_SUCCESS) {
             device_lost = (sr == VK_ERROR_DEVICE_LOST);
-            result = make_error(ErrorCode::BackendError,
-                                device_lost ? std::string("Vulkan device lost during vkQueueSubmit; the kernel "
-                                                          "context was reset, fall back to the CPU path")
-                                            : "vkQueueSubmit failed (" + std::to_string(sr) + ")");
+            result =
+                make_error(ErrorCode::BackendError,
+                           device_lost ? std::string("Vulkan device lost during vkQueueSubmit; the kernel "
+                                                     "context was reset, fall back to the CPU path")
+                                       : "vkQueueSubmit failed (" + std::to_string(sr) + ")");
             break;
         }
         if (VkResult r = a.wait_fence(c.device, 1, &c.fence, VK_TRUE, 60ull * 1000 * 1000 * 1000);
             r != VK_SUCCESS) {
             device_lost = (r == VK_ERROR_DEVICE_LOST);
-            result = make_error(ErrorCode::BackendError,
-                                device_lost ? std::string("Vulkan device lost while waiting for the kernel; the "
-                                                          "kernel context was reset, fall back to the CPU path")
-                                            : "vkWaitForFences failed / timed out (" + std::to_string(r) + ")");
+            result =
+                make_error(ErrorCode::BackendError,
+                           device_lost ? std::string("Vulkan device lost while waiting for the kernel; the "
+                                                     "kernel context was reset, fall back to the CPU path")
+                                       : "vkWaitForFences failed / timed out (" + std::to_string(r) + ")");
             break;
         }
         std::memcpy(req.y, y.mapped, static_cast<std::size_t>(req.m) * 4);
@@ -643,8 +645,8 @@ Result<void> run_gemv(const GemvRequest& req, Variant variant) {
     destroy_buffer(c, x);
     destroy_buffer(c, w);
     destroy_buffer(c, y);
-    // AGENTS.md 12.4: after VK_ERROR_DEVICE_LOST stop submitting and rebuild only through a controlled path. The
-    // cached context is torn down here so the next call creates a fresh device (or reports Unsupported).
+    // AGENTS.md 12.4: after VK_ERROR_DEVICE_LOST stop submitting and rebuild only through a controlled path.
+    // The cached context is torn down here so the next call creates a fresh device (or reports Unsupported).
     if (device_lost)
         destroy_context(c);
     return result;

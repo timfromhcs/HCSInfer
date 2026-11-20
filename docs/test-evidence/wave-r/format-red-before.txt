@@ -1,0 +1,6 @@
+clang-format: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-format.exe (clang-format version 19.1.5)
+needs formatting: src\kernels\vulkan\gemv_q8_0.cpp
+needs formatting: include\hcs\kernels\vulkan.hpp
+needs formatting: tests\integration\kernels_vulkan\test_gemv_q8_0_vk.cpp
+needs formatting: tools\kernel-bench\kernel_bench.cpp
+FORMAT CHECK FAILED: 4 of 221 files differ (run scripts\format.ps1 -Fix).

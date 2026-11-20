@@ -74,9 +74,10 @@ int main(int argc, char** argv) {
     struct Shape {
         std::uint32_t m, k;
     };
-    const std::vector<Shape> shapes = {{512, 512},   {1024, 1024},  {2048, 2048},
-                                       {4096, 4096}, {4096, 11008}, {11008, 4096},
-                                       {4096, 14336}};  // 4096x14336 matches the upstream test-backend-ops MUL_MAT perf shape
+    const std::vector<Shape> shapes = {
+        {512, 512},    {1024, 1024},  {2048, 2048}, {4096, 4096},
+        {4096, 11008}, {11008, 4096}, {4096, 14336}};  // 4096x14336 matches the upstream test-backend-ops
+                                                       // MUL_MAT perf shape
     nlohmann::json results = nlohmann::json::array();
     bool any_fail = false;
     const std::vector<hcs::kernels::vulkan::Variant> variants = {hcs::kernels::vulkan::Variant::Scalar,
@@ -93,13 +94,14 @@ int main(int argc, char** argv) {
         e["cpu_ms_median"] = median_ms(
             [&] { hcs::kernels::cpu::gemv_q8_0(x.data(), w.data(), y_cpu.data(), s.m, s.k); }, reps);
         const double bytes = static_cast<double>(hcs::kernels::cpu::q8_0_bytes(s.m, s.k));
-        // Floor of the per-call host cost: gemv_q8_0() currently allocates host-visible buffers and memcpy's the
-        // whole weight matrix on every call, so its wall time includes at least one such copy. The upstream
-        // GGML Vulkan path keeps weights resident, so the two are only comparable after subtracting this.
+        // Floor of the per-call host cost: gemv_q8_0() currently allocates host-visible buffers and memcpy's
+        // the whole weight matrix on every call, so its wall time includes at least one such copy. The
+        // upstream GGML Vulkan path keeps weights resident, so the two are only comparable after subtracting
+        // this.
         {
             std::vector<std::uint8_t> scratch(static_cast<std::size_t>(bytes));
-            e["weight_memcpy_ms_median"] = median_ms(
-                [&] { std::memcpy(scratch.data(), w.data(), scratch.size()); }, reps);
+            e["weight_memcpy_ms_median"] =
+                median_ms([&] { std::memcpy(scratch.data(), w.data(), scratch.size()); }, reps);
         }
         bool shape_ok = true;
         for (const auto variant : variants) {

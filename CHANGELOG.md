@@ -4,6 +4,20 @@ Derived from `git log` (all 28 commits are dated 2026-11-17). No release has bee
 by `scripts/package.ps1` is named `0.1.0`. Entries describe what the commits changed; PASS/NOT RUN state of each
 feature is in `docs/roadmap/STATUS.md`.
 
+## 0.1.0 release candidate (wave R, 2026-11-20; not tagged, not merged, not pushed)
+
+First release candidate of the portable folder package `HCSInfer-0.1.0-windows-msvc-release-portable` (version from
+`CMakeLists.txt`). Release notes with the full what-works / BLOCKED / NOT RUN list: `docs/release-notes-0.1.0.md`.
+Verification record: `docs/test-evidence/wave-r/RESULTS.md`.
+
+### Changed
+- Reformatted the four wave-K Vulkan-kernel files that failed `scripts/format.ps1` (formatting only, no behaviour
+  change); clang-format 19.1.5 now passes over 221 files, clang-tidy reports 0 diagnostics in 69 TUs.
+- Reconciled README, `docs/support-matrix.md`, `docs/supported-models.md` and STATUS with the wave-F result: FLUX.3
+  Klein is rendered (not BLOCKED) and the `fast` preset is the measured 6 steps (was documented as a provisional 8).
+- Verified on the target machine: Release CTest 814 registered / 778 passed / 36 skipped (NOT RUN) / 0 failed;
+  `kernel-cpu` + `kernel-vulkan` 12/12 on the real Radeon 680M; `web/` `npm test` 46/46.
+
 ## Unreleased - V1.1 / V1-stable waves (on `main`, several commits ahead of the V1.1-wave-2 tag `35bd39d`)
 
 `origin/main` was at `35bd39d` (V1.1 wave 2) before W1-W3; the V1-stable wave commits since are `902b41e` (W1),

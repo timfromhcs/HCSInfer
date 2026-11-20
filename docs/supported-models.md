@@ -79,7 +79,7 @@ with the point for the loaded model family. Only the `flux3` family has a table:
 | preset | steps | cfg | basis |
 |---|---|---|---|
 | `quality` | 16 | 1.0 | the upstream stable-diffusion.cpp FLUX.3 reference (`docs/models/flux3.md`: 16 steps, CFG 1.0) |
-| `fast` | 8 | 1.0 | **PROVISIONAL, not measured.** Half the reference step count. The step sweep that picks the real quality/time point (`docs/test-evidence/flux3/sweep.py`) could not run without the text encoder and VAE. |
+| `fast` | 6 | 1.0 | **Measured (wave F, single sample per point, ADR-010 provisional).** The step sweep 4/6/8/12/16 on the Radeon 680M picked 6 steps as the quality/time point; PSNR/DSSIM vs the 16-step reference and timings are in `docs/test-evidence/wave-f/` (LPIPS NOT RUN). |
 
 A preset on a model family without a table (for example SD1.5) is rejected with `InvalidArgument`; it is never
 silently ignored. The applied preset and the effective step count are returned in the result.

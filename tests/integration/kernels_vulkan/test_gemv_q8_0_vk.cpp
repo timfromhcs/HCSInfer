@@ -97,7 +97,8 @@ TEST(KernelVulkanGemv, RepeatsAreStableAndTheDeviceSurvivesManyCalls) {
 
 namespace {
 
-// The caller-side contract documented in docs/vulkan-kernels.md: try the GPU, keep the CPU result on any error.
+// The caller-side contract documented in docs/vulkan-kernels.md: try the GPU, keep the CPU result on any
+// error.
 std::vector<float> gemv_with_cpu_fallback(const std::vector<float>& x, const std::vector<std::uint8_t>& w,
                                           std::uint32_t m, std::uint32_t k, bool* used_gpu) {
     std::vector<float> y(m, 0.0f);
@@ -125,8 +126,8 @@ TEST(KernelVulkanFallback, DisabledFlagFallsBackToTheCpuReferenceWithTheCorrectR
 }
 
 // AGENTS.md 12.4: on VK_ERROR_DEVICE_LOST stop submitting, report a BackendError, and recover only through a
-// controlled path (the cached context is rebuilt by the next call). The loss is injected at the submit seam; the
-// real queue is not touched, so the test is safe on the real device.
+// controlled path (the cached context is rebuilt by the next call). The loss is injected at the submit seam;
+// the real queue is not touched, so the test is safe on the real device.
 TEST(KernelVulkanFallback, InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextCallRecovers) {
     require_device();
     vulkan::set_enabled(true);
@@ -153,7 +154,6 @@ TEST(KernelVulkanFallback, InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextC
     // Fault consumed: the next call rebuilds the context and matches the reference again.
     std::vector<float> y2(m, 0.0f);
     ASSERT_TRUE(vulkan::gemv_q8_0(vulkan::GemvRequest{x.data(), w.data(), y2.data(), m, k}).ok());
-    for (std::uint32_t i = 0; i < m; ++i)
-        EXPECT_NEAR(y2[i], ref[i], 1e-3f * (1.0f + std::fabs(ref[i]))) << i;
+    for (std::uint32_t i = 0; i < m; ++i) EXPECT_NEAR(y2[i], ref[i], 1e-3f * (1.0f + std::fabs(ref[i]))) << i;
     vulkan::inject_fault_for_testing(vulkan::TestFault::None);
 }

@@ -38,7 +38,7 @@ Test machine (target hardware, AGENTS.md 1.3):
 | LiquidAI LFM3-Omni-2B Q8_0 (+ mmproj) | text, tool calls, vision | CPU + Vulkan | PASS | `lfm3/` |
 | SmolVLM2-500M-Video-Instruct Q8_0 (+ mmproj) | vision | CPU + Vulkan | PASS | `M2-vision/` |
 | SD 1.5 Q8_0 | diffusion (t2i, i2i) | CPU + Vulkan | PASS | `M1/sd`, `M3-image/` |
-| FLUX.3 Image Klein (unsloth UD-Q4_K_XL) | diffusion | — | **BLOCKED** (gated text encoder/VAE) | `flux3/` |
+| FLUX.3 Image Klein (unsloth UD-Q4_K_XL, substitute Qwen3-VL-4B Q4_K_M encoder + FLUX.2 VAE) | diffusion (t2i, i2i) | Vulkan + CPU | PASS (single samples, 364-471 s per 512x512 on the 680M; the gated official BFL encoder/VAE files were not accessible) | `wave-f/` |
 
 ## Feature status by area
 
@@ -46,7 +46,7 @@ Test machine (target hardware, AGENTS.md 1.3):
 |---|---|---|
 | Chat, HTTP API, MCP stdio | PASS | `M3-api-mcp/`, `mcp-benchmark/` |
 | Vision (one image, single turn) | PASS | SmolVLM2 + LFM3-VL only |
-| Image generation / editing | PASS | SD1.5-class only; `url`/`mask`/multipart rejected by design |
+| Image generation / editing | PASS | SD1.5 and FLUX.3 Klein (slow: minutes per image); `url`/`mask`/multipart rejected by design |
 | Embedded web UI (HCS Studio) | PASS (HTTP + headless boot) | interactive playwright phase NOT RUN |
 | Model Vault (bounded reads) | PARTIAL | engines do not load through it; HDD-bound case BLOCKED |
 | HCSMODEL container | PASS (experimental) | no measured HDD benefit |

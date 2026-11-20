@@ -5,12 +5,12 @@ HCSInfer is a local-first runtime for text chat, image understanding and image g
 `llama.cpp`/GGML and `stable-diffusion.cpp` behind one control plane (model registry, job queue,
 memory budget, HTTP API, MCP).
 
-**Status: alpha (pre-V1, V1.1 work in progress).** Real text generation (CPU and Vulkan) with OpenAI-style tool calls,
+**Status: 0.1.0 release candidate (alpha-quality, not tagged; see `docs/release-notes-0.1.0.md`).** Real text generation (CPU and Vulkan) with OpenAI-style tool calls,
 real image generation/editing (CLI, HTTP, MCP, GUI; CPU and Vulkan, proven with SD1.5), image understanding, a
 loopback HTTP API, an MCP stdio server, an embedded local web UI (HCS Studio), a browser-only WebGPU/WASM demo
 (`web/`, ADR-013), a local fine-tuning control plane (`HCSInfer train`, ADR-012), the HCS Agent policy and process
 supervisor (ADR-011) and a real text benchmark command run on the target machine.
-**Custom Vulkan kernels, the Model Vault in the engine load path, the single-file EXE, `tune`,
+**The one custom Vulkan kernel (Q8_0 GEMV) is experimental, OFF by default and 18x slower than upstream GGML Vulkan. The Model Vault in the engine load path, the single-file EXE, `tune`,
 `models load|unload` as CLI commands and Streamable HTTP are not
 implemented. A real `prime-agent` session, a real training run and real WebGPU inference
 are NOT RUN / BLOCKED.** V1 is not released. See `docs/roadmap/STATUS.md` (it also holds the V1 release checklist)
@@ -25,7 +25,7 @@ for the evidence behind every row below.
 | Text chat, Vulkan (Radeon 680M) | Implemented | requires the `windows-msvc-release-vulkan` build; explicit `--backend vulkan` fails loudly instead of falling back |
 | Image generation + img2img (`image generate/edit`, stable-diffusion.cpp adapter), CPU and Vulkan | Implemented (CLI) | tested with SD1.5 Q8_0 only; other model families not tested |
 | Vision / image understanding (libmtmd): `HCSInfer vision`, CPU and Vulkan | Implemented (alpha) | tested with SmolVLM2-500M Q8_0 and LFM3-Omni-2B (+ their mmproj); one image per request, no video/audio; `docs/test-evidence/M2-vision/`, `lfm3/` |
-| FLUX.3 Image Klein through the diffusion adapter (`--llm`, `--vae`, `--preset fast\|quality`, `.components.json` sidecar) | Experimental; **rendered** (Vulkan + CPU, t2i + i2i) | real 512x512 renders with the approved substitute Qwen3-VL-4B Q4_K_M encoder and FLUX.2 VAE; ~6-8 min per image on Radeon 680M (single samples); `fast` = 6 steps measured by a PSNR/DSSIM sweep; `docs/supported-models.md`, `docs/test-evidence/flux3/` |
+| FLUX.3 Image Klein through the diffusion adapter (`--llm`, `--vae`, `--preset fast\|quality`, `.components.json` sidecar) | Experimental; **rendered** (Vulkan + CPU, t2i + i2i) | real 512x512 renders with the approved substitute Qwen3-VL-4B Q4_K_M encoder and FLUX.2 VAE; ~6-8 min per image on Radeon 680M (single samples); `fast` = 6 steps measured by a PSNR/DSSIM sweep; `docs/supported-models.md`, `docs/test-evidence/wave-f/` |
 | Model registry, lifecycle, job queue, cancellation, memory-budget arithmetic, approved-root path guard | Implemented | |
 | HTTP API: `/v1/models`, `/v1/chat/completions` (streaming), `/hcs/v1/*` | Experimental | loopback by default, bearer token, size limits; `docs/api.md` |
 | HTTP API: image input on chat (`image_url` data URIs, streaming, cancellation) | Experimental | needs a model + its mmproj in one folder; `docs/api.md` |
@@ -198,10 +198,10 @@ No performance claim is made beyond those files.
 
 ## Known limitations
 
-- Vision is limited to one image per single-turn request and one tested model family (SmolVLM2); no custom kernels and no scheduler beyond the single-worker job queue.
+- Vision is limited to one image per single-turn request and one tested model family (SmolVLM2); no default-enabled custom kernels and no scheduler beyond the single-worker job queue.
 - Image routes are text-to-image and img2img only (`b64_json`); `url` responses, `mask`/inpainting and `multipart/form-data` uploads are rejected with a clear error.
 - The GUI is served on the loopback API listener and needs a browser; model load and rendering show an indeterminate busy state, not real progress. Its playwright interaction phase and a Vulkan-build UI run are NOT RUN.
-- No image model other than SD1.5 Q8_0 has produced output; FLUX.3 Klein renders with a substitute encoder/VAE (the gated BFL files are not accessible) and is slow (minutes per image). FP8/INT8 diffusion paths are unavailable with upstream GGML.
+- Image output is proven for SD1.5 Q8_0 and FLUX.3 Klein only; FLUX.3 Klein renders with a substitute encoder/VAE (the gated BFL files are not accessible) and is slow (minutes per image). FP8/INT8 diffusion paths are unavailable with upstream GGML.
 - Tool calling: the tested model emits one call per turn (parallel calls 0/3 on the eval); `tool_choice` required / named function is `501`.
 - LFM3-Omni audio/video input and speech output are not wired. No real training run, no real `prime-agent` session and no real WebGPU inference have been executed.
 - One model resident and one job at a time (single worker). USB-unplug and OOM-injection behaviour are not tested.
