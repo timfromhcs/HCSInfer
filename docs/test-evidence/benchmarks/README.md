@@ -7,7 +7,7 @@ with the final static EXEs of wave B; summarised by `tools/bench/make_report.py`
 |---|---|
 | `environment.json` | EXE hashes, `doctor --json`, power plan, AC/battery, drive bus type, free RAM at start, repo HEAD |
 | `text-full-<cpu\|vulkan>-<model>.json` (+ `.run.json`) | `HCSInfer benchmark --suite full`, 5 iterations, AGENTS.md 21.1 schema; `.run.json` = process exit code, wall, sampled peak memory |
-| `llamabench-*.json` | upstream `llama-bench` pp512/tg128, 5 repetitions, raw `samples_ts` |
+| `llamabench-*.json` | upstream `llama-bench` pp512/tg128, 5 repetitions, raw `samples_ts`. Its `model_size` for LFM3-Omni-2B Q8_0 is 1,837,991,168 bytes: that is the tensor bytes llama.cpp holds in memory. The file on disk (`Get-Item ... .Length`, also `model_size_bytes` in the HCS JSON and `hdd-read.json`) is 1,846,240,768 bytes; the 8,249,600-byte difference is GGUF header/metadata/alignment, not a different model (same SHA-256). |
 | `kv-<backend>-<type>-<ctx>.json` | `llama-bench` KV cache type x context (5 reps; CPU q8_0/q4_0 at 8192: 2 reps) |
 | `vision-*.json`, `image-*.json`, `api-latency-*.json`, `hdd-read.json` | per-run records with exit codes, wall time, peak memory |
 | `images/` | one rendered PNG per image configuration (not blank, 512x512) |

@@ -24,7 +24,10 @@ Get-FileHash -Algorithm SHA256 HCSInfer.exe     # compare with the line in SHA25
 
 The binaries are **unsigned**; Windows SmartScreen may show a warning. Code signing is NOT RUN (no certificate).
 
-## Single file
+## Run the static EXEs
+
+Two static EXEs: `HCSInfer.exe` imports Windows system DLLs only; `HCSInfer-vulkan.exe` also imports the system
+`vulkan-1.dll`. They are not called "single-file" until a clean-machine run exists (NOT RUN).
 
 ```powershell
 .\HCSInfer.exe --help

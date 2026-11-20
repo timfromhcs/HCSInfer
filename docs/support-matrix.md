@@ -38,7 +38,7 @@ Test machine (target hardware, AGENTS.md 1.3):
 | LiquidAI LFM3-Omni-2B Q8_0 (+ mmproj) | text, tool calls, vision | CPU + Vulkan | PASS | `lfm3/` |
 | SmolVLM2-500M-Video-Instruct Q8_0 (+ mmproj) | vision | CPU + Vulkan | PASS | `M2-vision/` |
 | SD 1.5 Q8_0 | diffusion (t2i, i2i) | CPU + Vulkan | PASS | `M1/sd`, `M3-image/` |
-| FLUX.3 Image Klein (unsloth UD-Q4_K_XL, substitute Qwen3-VL-4B Q4_K_M encoder + FLUX.2 VAE) | diffusion (t2i, i2i) | Vulkan + CPU | PASS (single samples, 364-471 s per 512x512 on the 680M; the gated official BFL encoder/VAE files were not accessible) | `wave-f/` |
+| FLUX.3 Image Klein (unsloth UD-Q4_K_XL, substitute Qwen3-VL-4B Q4_K_M encoder + FLUX.2 VAE) | diffusion (t2i, i2i) | Vulkan: t2i + i2i; CPU: t2i only (n=1), no CPU i2i | PASS (single samples, 364-471 s per 512x512 on the 680M; the gated official BFL encoder/VAE files were not accessible) | `wave-f/` |
 
 ## Feature status by area
 
@@ -46,11 +46,11 @@ Test machine (target hardware, AGENTS.md 1.3):
 |---|---|---|
 | Chat, HTTP API, MCP stdio | PASS | `M3-api-mcp/`, `mcp-benchmark/` |
 | Vision (one image, single turn) | PASS | SmolVLM2 + LFM3-VL only |
-| Image generation / editing | PASS | SD1.5 and FLUX.3 Klein (slow: minutes per image); `url`/`mask`/multipart rejected by design |
+| Image generation / editing | PASS | SD1.5 and FLUX.3 Klein (slow: minutes per image; FLUX.3 image-to-image on Vulkan only, CPU text-to-image only, n=1); `url`/`mask`/multipart rejected by design |
 | Embedded web UI (HCS Studio) | PASS (HTTP + real headless-browser interaction, CPU and Vulkan builds) | `wave-a/gui-cpu`, `wave-a/gui-vulkan`, `wave-c/`; a human-driven session on a second machine NOT RUN |
 | Model Vault (bounded reads) | PARTIAL | engines do not load through it; HDD-bound case BLOCKED |
 | HCSMODEL container | PASS (experimental) | no measured HDD benefit |
-| Single-file `HCSInfer.exe` (static CRT, CPU) and `HCSInfer-vulkan.exe` | system-DLL-only imports (`dumpbin`) and restricted-environment run PASS; **clean machine NOT RUN**; unsigned | `wave-b/`, `wave-g/restricted-env-static-exe.json` |
+| Static `HCSInfer.exe` (CPU, system-DLL-only imports) and `HCSInfer-vulkan.exe` (also imports the system `vulkan-1.dll`); not called single-file | system-DLL-only imports (`dumpbin`) and restricted-environment run PASS; **clean machine NOT RUN**; unsigned | `wave-b/`, `wave-g/restricted-env-static-exe.json` |
 | Python wheel / sdist `hcsinfer` | PASS locally (fresh venv, real chat); not on PyPI | `wave-b/` |
 | Training / agent sidecar / web demo | logic-tested only | real runs NOT RUN (`train/`, `agent/`, `web/`) |
 

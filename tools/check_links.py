@@ -5,7 +5,7 @@ Checks every relative link / image in tracked-style Markdown files: the target f
 `file.md#anchor` / `#anchor`, the anchor must match a heading in the target (GitHub slug rules). http(s) links are
 not fetched (offline check); they are only counted. Exit code 1 when anything is broken.
 
-    python tools/check_links.py [--include-evidence]
+    python tools/check_links.py [--include-evidence] [--root <dir>]
 """
 from __future__ import annotations
 
@@ -66,7 +66,11 @@ def markdown_files(include_evidence: bool) -> list[Path]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--include-evidence", action="store_true", help="also check docs/test-evidence/**")
+    ap.add_argument("--root", type=Path, default=None, help="check another tree (e.g. an unpacked release ZIP)")
     args = ap.parse_args()
+    global ROOT
+    if args.root:
+        ROOT = args.root.resolve()
     cache: dict[Path, set[str]] = {}
     broken: list[str] = []
     checked = external = 0

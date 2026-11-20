@@ -37,7 +37,7 @@ tested on this machine (it has a driver).
 
 Deep Vulkan builds exceed `MAX_PATH`; on this machine the worktree is mapped with `subst Y:` (see `docs/build.md`).
 
-Verify a single-file claim yourself:
+Check the import claim yourself (a clean-machine run, which this repository has NOT done, is what would justify the word "single-file"):
 
 ```powershell
 dumpbin /dependents artifacts\release\HCSInfer.exe        # expect only ADVAPI32 / WS2_32 / KERNEL32

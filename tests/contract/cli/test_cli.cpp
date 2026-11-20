@@ -82,6 +82,14 @@ TEST(Cli, PlannedCommandsReturnUnsupported) {
     EXPECT_TRUE(contains(root_help_text(), "Planned"));
     EXPECT_EQ(run({"models", "load", "x"}).code, 10);
     EXPECT_EQ(run({"models", "unload"}).code, 10);
+    // models load/unload are not CLI features (a model lives in a running process); the message must say
+    // where to go.
+    auto ml = run({"models", "load", "x"});
+    EXPECT_TRUE(contains(ml.err, "one-shot CLI"));
+    EXPECT_TRUE(contains(ml.err, "serve"));
+    EXPECT_FALSE(contains(ml.err, "adapters are not implemented"));
+    EXPECT_FALSE(contains(root_help_text(), "scaffold"));
+    EXPECT_FALSE(contains(root_help_text(), "needs the control-plane model lifecycle"));
 }
 
 TEST(Cli, BenchmarkHelpAndArgumentValidationBeforeLoadingAnything) {

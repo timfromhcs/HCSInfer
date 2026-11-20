@@ -9,5 +9,11 @@ if(TARGET hcsinfer)
               --exe "$<TARGET_FILE:hcsinfer>"
               --evidence "${CMAKE_SOURCE_DIR}/artifacts/e2e-gui")
     set_tests_properties(e2e_gui_real PROPERTIES LABELS "e2e" SKIP_RETURN_CODE 77 TIMEOUT 1800)
+    # Runtime XSS regression: real UI assets + a fake hostile model reply in headless Edge/Chrome (no model needed).
+    # BLOCKED (exit 77 -> SKIP) without a browser or the python `websockets` package.
+    add_test(NAME e2e_gui_xss
+      COMMAND "${Python3_EXECUTABLE}" -I "${CMAKE_CURRENT_SOURCE_DIR}/studio_xss.py"
+              --out "${CMAKE_SOURCE_DIR}/artifacts/e2e-gui-xss")
+    set_tests_properties(e2e_gui_xss PROPERTIES LABELS "e2e" SKIP_RETURN_CODE 77 TIMEOUT 300)
   endif()
 endif()

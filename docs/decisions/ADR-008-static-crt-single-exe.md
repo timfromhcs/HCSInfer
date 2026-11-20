@@ -69,6 +69,9 @@ Add the preset, rebuild everything in a fresh build directory (a CRT change need
   `doctor --json`, a real LFM3-Omni-2B Q8_0 generation (CPU; Radeon 680M for the Vulkan EXE, 25 layers offloaded), `serve`
   health 200, the GUI page 200, and every module the live server loaded lives under the Windows directory.
 * `GGML_OPENMP=OFF` costs about 2% decode / 4% prefill on this CPU in a single A/B run (`docs/benchmarks.md`).
-* Verdict: the **single-file executable claim is made for the CPU `HCSInfer.exe`** with the explicit limits that the
-  clean-machine test is NOT RUN and the binary is unsigned. The Vulkan EXE is single-file but needs the system loader.
+* Verdict (corrected in the release-candidate audit): **no "single-file" or "single executable" claim is made for either
+  EXE yet.** There are two static EXEs: the CPU `HCSInfer.exe` imports Windows system DLLs only (`dumpbin`), and
+  `HCSInfer-vulkan.exe` additionally imports the system `vulkan-1.dll` that the GPU driver installs. "Single-file" may be
+  used only after the clean-machine test (fresh Windows, no redistributable, no SDK) has been run; it is NOT RUN, and both
+  binaries are unsigned. The restricted-environment run (empty PATH) is a proxy, not that test.
   Full CTest was not re-run on the new presets (no C++ change); the static Vulkan preset's tests were never built.

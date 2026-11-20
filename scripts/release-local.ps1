@@ -72,8 +72,10 @@ Compress-Archive -Path (Join-Path $root 'web\dist\*') -DestinationPath (Join-Pat
 & (Join-Path $PSScriptRoot 'sbom.ps1') -OutFile (Join-Path $out 'hcsinfer.cdx.json') -BuildDir (Get-BuildDir $(if ($haveVk) { $VulkanPreset } else { $CpuPreset }))
 
 $sum = Join-Path $out 'SHA256SUMS.txt'
-Get-ChildItem $out -File | Where-Object { $_.Name -ne 'SHA256SUMS.txt' } | Sort-Object Name | ForEach-Object {
+$sumLines = Get-ChildItem $out -File | Where-Object { $_.Name -ne 'SHA256SUMS.txt' } | Sort-Object Name | ForEach-Object {
     '{0}  {1}' -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant(), $_.Name
-} | Set-Content $sum -Encoding ascii
+}
+# LF-only (sha256sum-compatible); Set-Content would write CRLF.
+[IO.File]::WriteAllText($sum, (($sumLines -join "`n") + "`n"), [Text.Encoding]::ASCII)
 Get-Content $sum
 Write-Host "Release files: $out"

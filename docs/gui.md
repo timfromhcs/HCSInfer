@@ -38,6 +38,10 @@ step-distilled checkpoint (AGENTS.md 26.1) and there is no LoRA control in the i
   (headings, bold, italic, inline code, lists, quotes, rules, fenced code blocks, `http(s)` links with
   `rel="noopener noreferrer nofollow"`). Model output is never parsed as HTML; `<img onerror>` / `<script>` text from a
   model is shown as text. An unclosed code fence while streaming renders as code until it closes.
+  Regression test in CTest: `e2e_gui_xss` (`tests/e2e/gui_real/studio_xss.py`) serves the real UI assets with a **fake** hostile
+  model reply (`<img onerror>`, `<script>`, `<svg onload>`, `javascript:` link, `<iframe>`, unclosed fence) to a headless Edge/Chrome and
+  asserts no element, no handler, no CSP violation. It needs a browser and the python `websockets` package (else SKIP = NOT RUN;
+  `HCS_E2E_PYTHON_PATH` points at a dev venv). It proves UI sanitisation only; `studio_md.py` is the real-model variant.
 * **Copy** buttons on every message, every code block, the Vision answer and (Image Studio) seed and prompt. The
   async clipboard is tried first, then a transient selection; a toast (aria-live) says whether it worked.
 * **First-run guide** on the Chat tab: models registered, a device/memory summary read from `/hcs/v1/devices` and

@@ -20,6 +20,10 @@ import tempfile
 import time
 import urllib.parse
 
+# `python -I` ignores PYTHONPATH; a dev-only venv (never committed) is made visible explicitly, as in e2e_gui.py.
+_extra = os.environ.get("HCS_E2E_PYTHON_PATH", "")
+if _extra and os.path.isdir(_extra) and _extra not in sys.path:
+    sys.path.insert(0, _extra)
 try:
     from websockets.sync.client import connect
 except Exception:  # noqa: BLE001

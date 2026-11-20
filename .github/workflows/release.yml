@@ -1,4 +1,4 @@
-# Release pipeline (wave B): single-file Windows EXE(s), Python wheels, portable ZIP, checksums, SBOM, web demo dist.
+# Release pipeline (wave B): static Windows EXE(s), Python wheels, portable ZIP, checksums, SBOM, web demo dist.
 #
 # Trigger: a pushed tag `v*` (creates a DRAFT release; nothing is published automatically) or manual dispatch (build
 # and upload artifacts only). Hardware tests (Radeon/Vulkan execution, real models) are NOT part of this workflow:

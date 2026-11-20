@@ -40,7 +40,7 @@ Vercel deploy) are separate from that. Release notes: `docs/release-notes-1.0.0-
 ## Wave B distribution (2026-11-20; not pushed)
 
 ### Added
-- Preset `windows-msvc-release-static-vulkan` (/MT + Vulkan) and a two-executable single-file layout: `HCSInfer.exe` (CPU,
+- Preset `windows-msvc-release-static-vulkan` (/MT + Vulkan) and a two-executable layout (not called single-file until a clean-machine run, NOT RUN): `HCSInfer.exe` (CPU,
   system DLLs only) and `HCSInfer-vulkan.exe` (+ `vulkan-1.dll`). ADR-008 updated.
 - Python package `python/` (`hcsinfer`: platform wheel with the EXEs, sdist, `hcsinfer` console script, stdlib `Client`,
   `Server`, `doctor()`; `mypy --strict`, pytest).

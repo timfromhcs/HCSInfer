@@ -1,5 +1,7 @@
 # `HCSInfer benchmark --suite quick` - first real runs (B0 CPU, B1 Vulkan)
 
+> **Superseded** by `docs/test-evidence/benchmarks/text-full-*.json` (wave D); see [SUPERSEDED.md](SUPERSEDED.md).
+
 Date: 2026-11-17. Machine: Windows 11 build 10.0.26200.9974, AMD Ryzen 7 7735HS (8C/16T) with Radeon 680M,
 21,245,952,000 bytes RAM installed, external USB (NTFS) drive as the model source. Compiler MSVC 19.44.35228 x64,
 CMake 4.4.0, Ninja 1.13.2, both builds `CMAKE_BUILD_TYPE=Release`, git `fddc30df1218` (clean tree at configure time,

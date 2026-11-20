@@ -6,7 +6,7 @@ All numbers come from **one machine** and must not be generalised to other hardw
 
 ## Wave D: final binaries
 
-**Binaries under test** (`environment.json`): the single-file static EXEs of wave B, `windows-msvc-release-static`
+**Binaries under test** (`environment.json`): the static EXEs of wave B (not the final shipped release binaries, see below), `windows-msvc-release-static`
 (CPU, 44,229,120 bytes, SHA-256 `c3a613e6...c717`) and `windows-msvc-release-static-vulkan`
 (86,548,992 bytes, SHA-256 `b94a6e06...cbe8`; full hashes in `environment.json`). The EXEs embed the build commit
 `cca2c6896c58+dirty` (shown in every `text-full-*.json`); the repository HEAD when the runs started was `5b3214d`
@@ -240,7 +240,7 @@ and `decompression_mib_s_median` is `not_applicable` because the Model Vault is 
 
 Source: `test-evidence/lfm3/README.md` (the `-quiet` runs, one controlled run each; the other three files were recorded
 while other processes were compiling and are kept for honesty). Same parameters as B0/B1 except a 223-token prompt.
-Model `LFM3-Omni-2B-Q8_0.gguf`, 1,846,240,768 bytes, SHA-256
+Model `LFM3-Omni-2B-Q8_0.gguf`, 1,846,240,768 bytes on disk (verified with `Get-Item`; `llama-bench` prints 1,837,991,168 in `model_size` because it reports the in-memory tensor bytes, 8,249,600 fewer), SHA-256
 `59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4`.
 
 | Metric (warm medians) | CPU, 8 threads | Vulkan (Radeon 680M) |
@@ -330,7 +330,7 @@ hypothesis was rejected and v1 stays the default (`docs/research/vulkan-gemv-v2-
 `test-evidence/M1/llama/` (llama-bench, uncontrolled, few samples; for example qwen3 0.6B Q4_K CPU pp128 416.65 t/s,
 tg64 67.89 t/s at build `d3c3e24`) and `test-evidence/M6-storage/` are not comparable with the controlled runs above.
 
-## Wave B: static single-file builds (2026-11-20)
+## Wave B: static builds (2026-11-20)
 
 Model LFM3-Omni-2B Q8_0 (`LFM3-Omni-2B-Q8_0.gguf`), `HCSInfer benchmark --suite quick --iterations 5 --max-tokens 64`,
 same machine (Ryzen 7 7735HS, Radeon 680M, other work idle), one run per variant, median / p90. Raw JSON:

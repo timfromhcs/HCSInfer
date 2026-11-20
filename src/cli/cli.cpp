@@ -46,7 +46,7 @@ namespace {
 constexpr const char* kPlanned[] = {"tune"};
 
 const char* kRootHelp =
-    "HCSInfer - local-first AI runtime (control-plane scaffold)\n"
+    "HCSInfer - local-first AI runtime (text, vision, image generation)\n"
     "\n"
     "Usage: HCSInfer [--state-dir <dir>] <command> [options]\n"
     "\n"
@@ -56,7 +56,9 @@ const char* kRootHelp =
     "  models list [--json]          List registered models\n"
     "  models scan <dir> [--json]    Read-only scan of a model folder (GGUF/safetensors headers validated)\n"
     "  models inspect <id>           Show a model manifest as JSON\n"
-    "  models load|unload            Planned (needs the control-plane model lifecycle)\n"
+    "  models load|unload            Not in the one-shot CLI (a model lives in a running process): use\n"
+    "                                `serve` (POST /hcs/v1/models/<id>/load), MCP, or --model on "
+    "chat/vision/image\n"
     "  chat --model <path-or-id> [--prompt ...] [--backend cpu|vulkan] [--json]\n"
     "                                Text generation via llama.cpp (see `chat --help`)\n"
     "  image generate|edit ...       Image generation/edit via stable-diffusion.cpp (see `image --help`)\n"
@@ -103,7 +105,9 @@ const char* kModelsHelp =
     "  list [--json]          List registered models\n"
     "  scan <dir> [--json]    Scan <dir> (read-only). <dir> becomes the approved root for this scan.\n"
     "  inspect <id>           Print the manifest of one model as JSON\n"
-    "  load <id>, unload      Planned (exit code 10)\n";
+    "  load <id>, unload      Not in the one-shot CLI (exit code 10): pass --model to chat/vision/image, or "
+    "load\n"
+    "                         in a running `serve` / MCP process (POST /hcs/v1/models/<id>/load)\n";
 
 const char* kModelsListHelp = "Usage: HCSInfer models list [--json]\n";
 const char* kModelsScanHelp =
@@ -348,8 +352,11 @@ int cmd_models(std::vector<std::string> args, const std::string& state_override,
             out << kModelsHelp;
             return 0;
         }
-        return fail(err, ErrorCode::Unsupported,
-                    "models " + sub + " is planned: engine adapters are not implemented yet");
+        return fail(
+            err, ErrorCode::Unsupported,
+            "models " + sub +
+                " is not available in the one-shot CLI: pass --model to chat/vision/image, or use `serve` "
+                "(POST /hcs/v1/models/<id>/load) or MCP");
     }
     return fail(err, ErrorCode::InvalidArgument, "unknown models subcommand: " + sub);
 }

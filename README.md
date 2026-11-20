@@ -4,7 +4,7 @@
 
 **One local app for chat, image understanding and image generation on Windows. No cloud, no account, no telemetry.**
 
-[![CI](https://github.com/timfromhcs/HCSInfer/actions/workflows/pr.yml/badge.svg)](https://github.com/timfromhcs/HCSInfer/actions/workflows/pr.yml)
+[![CI: not yet run on this revision](https://img.shields.io/badge/CI-not%20yet%20run%20on%20this%20revision-lightgrey)](https://github.com/timfromhcs/HCSInfer/actions/workflows/pr.yml)
 ![Version](https://img.shields.io/badge/version-1.0.0--rc.1-orange)
 ![Platform](https://img.shields.io/badge/platform-Windows%2011%20x64-blue)
 ![Backends](https://img.shields.io/badge/backends-CPU%20%7C%20Vulkan-informational)
@@ -17,8 +17,10 @@
 HCSInfer puts [llama.cpp](https://github.com/ggml-org/llama.cpp) (text, vision) and
 [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp) (image generation) behind one control plane:
 a model registry, a job queue with cancellation, a memory budget, an OpenAI-style HTTP API, an MCP server, a CLI and a
-local web UI (HCS Studio). It runs on the CPU or, on an AMD iGPU such as the Radeon 680M, through Vulkan. It ships as a
-single static `HCSInfer.exe`, a Python wheel and a portable ZIP.
+local web UI (HCS Studio). It runs on the CPU or, on an AMD iGPU such as the Radeon 680M, through Vulkan. It ships as two
+static EXEs (a CPU `HCSInfer.exe` that imports only Windows system DLLs, and `HCSInfer-vulkan.exe`, which also imports the
+system `vulkan-1.dll` from your GPU driver), a Python wheel and a portable ZIP. It is not labelled "single-file" until a
+clean-machine test has been run (NOT RUN).
 
 > **Status: 1.0.0-rc.1, release candidate.** Everything below is backed by a file under
 > [`docs/test-evidence/`](docs/test-evidence/README.md), but it was verified on **one machine** (Ryzen 7 7735HS,
@@ -42,7 +44,7 @@ locally by [`scripts/release-local.ps1`](scripts/release-local.ps1); every file 
 
 | You want | File | How |
 |---|---|---|
-| a single executable, CPU only | `HCSInfer.exe` | run it; imports Windows system DLLs only |
+| the CPU program, one static EXE | `HCSInfer.exe` | run it; imports Windows system DLLs only (checked with `dumpbin`; clean-machine run NOT RUN) |
 | the same with GPU support | `HCSInfer-vulkan.exe` | run it; needs the `vulkan-1.dll` that your AMD/OEM graphics driver installs |
 | everything with licences, SBOM, checksums | `HCSInfer-<version>-windows-msvc-release-static-portable.zip` | unzip, run `HCSInfer.exe doctor` |
 | use it from Python | `hcsinfer-1.0.0rc1-py3-none-win_amd64.whl` | `pip install <wheel>` (bundles both EXEs) |
@@ -94,7 +96,7 @@ purpose.
 | HCS Studio (embedded web UI on the same loopback listener) | Experimental | Chat, Vision, Image Studio, Models, Performance, Settings; Agent and Train tabs are labelled Planned |
 | `benchmark --suite quick\|full`, `POST /hcs/v1/benchmarks`, MCP `hcs.runtime.benchmark` | Implemented | machine-readable JSON with provenance |
 | `cache stats\|clear` | Implemented | touches only HCS-owned state |
-| Single-file static `HCSInfer.exe` / `HCSInfer-vulkan.exe` | Experimental | system DLLs only; clean-machine run NOT RUN; unsigned |
+| Two static EXEs: CPU `HCSInfer.exe` (system DLLs only) and `HCSInfer-vulkan.exe` (also imports the system `vulkan-1.dll`) | Experimental | not labelled "single-file" until the clean-machine run (NOT RUN); unsigned |
 | Python package `hcsinfer` (wheel, sdist, client, `Server`) | Experimental | built, `twine check`ed, installed into a fresh venv; not on PyPI |
 | Model Vault (bounded async reads, SHA-256) and HCSMODEL container | Experimental | **not in the engine load path**; no measured HDD benefit yet |
 | HCS Studio Web (`web/`, WebGPU/WASM, no server) | Experimental | shell proven in headless Chrome; real WebGPU inference NOT RUN |
@@ -180,7 +182,7 @@ Same model and quantisation in both columns; thermals were not measured.
 
 ![Decode throughput](docs/benchmarks/chart-decode-tps.svg)
 
-Vulkan roughly doubles decode and cuts prefill and vision time 7-8x for the text models; SD 1.5 is 5x faster on Vulkan;
+Vulkan roughly doubles decode; warm TTFT drops 2.8x for qwen3-0.6b (~200-token prompt) and 7.8x for LFM3-Omni-2B, vision TTFT 7.3x; SD 1.5 is 5x faster on Vulkan;
 FLUX.3 Klein is not faster on Vulkan here (unexplained). Cold reads from the model drive ran at 38-63 MiB/s. Full
 methodology, all tables, charts and NOT RUN items: [`docs/benchmarks.md`](docs/benchmarks.md); raw JSON:
 `docs/test-evidence/benchmarks/`; reproduce with `tools/bench/run_matrix.py` and `tools/bench/make_report.py`.
@@ -266,7 +268,7 @@ The authoritative list is [`docs/roadmap/STATUS.md`](docs/roadmap/STATUS.md). Th
 git clone --recurse-submodules https://github.com/timfromhcs/HCSInfer.git ; cd HCSInfer
 .\scripts\build.ps1 -Preset windows-msvc-release -RunTests            # CPU build + tests
 .\scripts\build.ps1 -Preset windows-msvc-release-vulkan              # Vulkan build (needs the Vulkan SDK)
-.\scripts\build.ps1 -Preset windows-msvc-release-static              # single-file static EXE
+.\scripts\build.ps1 -Preset windows-msvc-release-static              # static CPU EXE (system DLL imports only)
 .\scripts\release-local.ps1                                          # EXEs, ZIP, wheel, sdist, SBOM, checksums
 python tools\check_links.py                                          # documentation link check
 ```

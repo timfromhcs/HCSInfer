@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Builds a PORTABLE FOLDER package from an existing build (the EXE is single-file only when the preset is static and its imports are system DLLs), with licences, SBOM and
+  Builds a PORTABLE FOLDER package from an existing build (the CPU EXE imports only system DLLs when the preset is static; this is not a clean-machine proof of a single file), with licences, SBOM and
   SHA256SUMS.txt. Does not build, sign, install or modify anything outside <repo>/artifacts/package.
 .PARAMETER Preset
   CMake preset whose build directory (<repo>/build/<Preset>) is packaged. Default windows-msvc-release.
@@ -57,9 +57,39 @@ if ($VulkanPreset) {
 }
 Get-ChildItem -LiteralPath $bin -File -Filter *.dll | ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination $pkg }
 
-foreach ($f in 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'README.md', 'SECURITY.md') {
+foreach ($f in 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'README.md', 'SECURITY.md', 'CHANGELOG.md', 'CONTRIBUTING.md') {
     $src = Join-Path $root $f
     if (Test-Path -LiteralPath $src) { Copy-Item -LiteralPath $src -Destination $pkg } else { Write-Warning "missing $f" }
+}
+
+# Documentation essentials, so the relative links of README.md work inside the ZIP: docs/*.md, the ADRs, the benchmark
+# charts and the Studio screenshots. Test evidence, sources, scripts and the web/python trees are NOT shipped; links to
+# them are rewritten below to plain text that names the path in the source repository.
+$docsOut = Join-Path $pkg 'docs'
+New-Item -ItemType Directory -Path $docsOut | Out-Null
+Get-ChildItem -LiteralPath (Join-Path $root 'docs') -File -Filter *.md | Copy-Item -Destination $docsOut
+foreach ($d in 'decisions', 'benchmarks', 'screenshots') {
+    $dsrc = Join-Path $root "docs\$d"
+    if (Test-Path -LiteralPath $dsrc) { Copy-Item -LiteralPath $dsrc -Destination (Join-Path $docsOut $d) -Recurse }
+}
+$linkRe = [regex]'(!?)\[([^\]]*)\]\(\s*([^)\s]+)(?:\s+"[^"]*")?\s*\)'
+Get-ChildItem -LiteralPath $pkg -Recurse -File -Filter *.md | Where-Object { $_.Name -ne 'THIRD_PARTY_NOTICES.md' -and $_.FullName -notlike '*\licenses\*' } | ForEach-Object {
+    $mdFile = $_
+    $text = [IO.File]::ReadAllText($mdFile.FullName)
+    $eval = [System.Text.RegularExpressions.MatchEvaluator]{
+        param($m)
+        $target = $m.Groups[3].Value.Trim('<', '>')
+        if ($target -match '^[A-Za-z][A-Za-z0-9+.-]*:' -or $target.StartsWith('#')) { return $m.Value }
+        $pathPart = ($target -split '#')[0] -split '\?' | Select-Object -First 1
+        if (-not $pathPart) { return $m.Value }
+        $dest = [IO.Path]::GetFullPath((Join-Path $mdFile.DirectoryName $pathPart))
+        if (Test-Path -LiteralPath $dest) { return $m.Value }
+                $label = $m.Groups[2].Value
+        if ($m.Groups[1].Value -eq '!') { return "($label: image not shipped in this package)" }
+        return "$label (source repository: $($pathPart -replace '^(\.\./)+', ''))"
+    }
+    $new = $linkRe.Replace($text, $eval)
+    if ($new -ne $text) { [IO.File]::WriteAllText($mdFile.FullName, $new, (New-Object Text.UTF8Encoding($false))) }
 }
 
 # Licence texts declared in the lock file (submodule/vendored). FetchContent licences come from the build tree.
@@ -122,7 +152,8 @@ $vkText- No models, no graphics driver and no Vulkan SDK are included. Vulkan us
 - Run:  HCSInfer.exe --help   |   HCSInfer.exe doctor --json
 - Verify files:  Get-FileHash -Algorithm SHA256 <file>  and compare with SHA256SUMS.txt.
 - Third-party licences: THIRD_PARTY_NOTICES.md and the licenses/ folder. SBOM: sbom.cdx.json.
-Status: release candidate (see the version in the manifest). See README.md for what is implemented. Unsigned. A clean-machine run (no redistributable, fresh Windows) is NOT RUN.
+Documentation: README.md and docs/ (links to files not in this package - test evidence, sources - read "source repository: <path>").
+Status: release candidate (see the version in the manifest). See README.md for what is implemented. Built from git commit $commit (manifest.json records the exact commit and whether the tree was dirty). Unsigned. A clean-machine run (no redistributable, fresh Windows) is NOT RUN.
 "@ | Set-Content -LiteralPath (Join-Path $pkg 'PACKAGE-README.txt') -Encoding utf8
 
 [ordered]@{
@@ -140,7 +171,8 @@ $lines = Get-ChildItem -LiteralPath $pkg -Recurse -File | Where-Object { $_.Full
     $rel = $_.FullName.Substring($pkg.Length + 1).Replace('\', '/')
     '{0}  {1}' -f (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant(), $rel
 }
-$lines | Set-Content -LiteralPath $sumFile -Encoding ascii
+# LF-only (sha256sum-compatible); Set-Content would write CRLF.
+[IO.File]::WriteAllText($sumFile, (($lines -join "`n") + "`n"), [Text.Encoding]::ASCII)
 Write-Host "Package: $pkg ($(@($lines).Count) files hashed)"
 
 if ($Zip) {
@@ -148,6 +180,6 @@ if ($Zip) {
     if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force }
     Compress-Archive -Path (Join-Path $pkg '*') -DestinationPath $zipPath
     $h = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToLowerInvariant()
-    "$h  $(Split-Path -Leaf $zipPath)" | Set-Content -LiteralPath "$zipPath.sha256" -Encoding ascii
+    [IO.File]::WriteAllText("$zipPath.sha256", "$h  $(Split-Path -Leaf $zipPath)`n", [Text.Encoding]::ASCII)
     Write-Host "Zip: $zipPath  sha256 $h"
 }

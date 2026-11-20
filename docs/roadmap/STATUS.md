@@ -6,16 +6,19 @@ inspected source file; items with no evidence are NOT RUN or BLOCKED.
 
 ## Repository state
 
-Wave B (distribution, 2026-11-20, branch `claude/repo-analysis-v1-stable-d7c553`, not pushed): single-file static EXEs
-(CPU + Vulkan), Python wheel/sdist `hcsinfer`, `release-local.ps1`, `release.yml`, web dist, `docs/install.md`,
-`docs/packaging.md`; evidence `docs/test-evidence/wave-b/`. Open: clean-machine test, signing, hosted run of `release.yml`,
-CTest on the new static presets.
+Wave B (distribution, 2026-11-20, branch `claude/repo-analysis-v1-stable-d7c553`; the branch has not been pushed, merged or
+tagged): two static EXEs (CPU `HCSInfer.exe` with system-DLL imports only, `HCSInfer-vulkan.exe` which also imports the system
+`vulkan-1.dll`; neither is called "single-file" until the clean-machine test, NOT RUN), Python wheel/sdist `hcsinfer`,
+`release-local.ps1`, `release.yml`, web dist, `docs/install.md`, `docs/packaging.md`; evidence `docs/test-evidence/wave-b/`.
+Still open (owner or environment dependent): clean-machine test, signing, a hosted run of `release.yml`. CTest on the static
+presets was run in the final audit (see `docs/test-evidence/release-final/`).
 
-Wave D (benchmark data from the final binaries, 2026-11-20): **PASS (records), partial coverage.** The static CPU and Vulkan EXEs of wave B ran
+Wave D (benchmark data from the wave-B static EXEs, 2026-11-20; these are NOT the shipped release binaries, which were rebuilt
+later - see the audit-fix section of `docs/benchmarks.md` and `docs/test-evidence/release-final/`): **PASS (records), partial coverage.** The static CPU and Vulkan EXEs of wave B ran
 `benchmark --suite full` (5 iterations, medians/p90) for qwen3-0.6b Q4_K_M and LFM3-Omni-2B Q8_0, a `llama-bench` cross-check, KV cache
 types F16/Q8_0/Q4_0 at 4K/8K (llama-bench, the HCS engine has no cache-type option), real vision latency, SD1.5 and FLUX.3 Klein 512x512
 renders (FLUX: N=1 per cell, SD1.5 CPU N=2), HTTP streaming TTFT and read-only drive reads (38-63 MiB/s cold on the USB disk). Findings:
-Vulkan ~2x decode and ~7-8x TTFT/vision; FLUX.3 is not faster on Vulkan here (566 s vs 508 s fast; unexplained vs wave F's 364-471 s);
+Vulkan ~2x decode; warm TTFT 2.8x (qwen3-0.6b) to 7.8x (LFM3-Omni-2B), vision 7.3x; FLUX.3 is not faster on Vulkan here (566 s vs 508 s fast; unexplained vs wave F's 364-471 s);
 quantised KV is 4-5x slower on CPU. NOT RUN: thermals, flushed-cache cold start, image/KV-quality metrics. Evidence
 `docs/test-evidence/benchmarks/`, report `docs/benchmarks.md`, tooling `tools/bench/` (driver, report/SVG generator, `regression-thresholds.json`
 with the >5% rule, `check_regression.py`).
@@ -25,7 +28,9 @@ with the >5% rule, `check_regression.py`).
   `b02075f` (W3 soak defects + test gaps), `af884c3` (MCP `hcs.runtime.benchmark`), `7287554` (W4 static-CRT
   experiment), `dd9be7a` (D-S5 `read_file_limited`), `f9d03a5` (D-S6 benchmark prefill), `926c47c` (M8 Q8_0 GEMV
   kernel) and the docs/evidence commits after them. The history starts at `d5baf76` "Initial commit" (2026-11-17).
-- CI: `.github/workflows/pr.yml` run **44621025517** (commit `7b393eb`) is green on all six jobs (2026-11-19),
+- CI: **unknown for the release-candidate revision** (the branch was never pushed, so `pr.yml` has not run on it; the README
+  badge says so). The runs below are for older commits on `main` and prove nothing about this revision.
+  `.github/workflows/pr.yml` run **44621025517** (commit `7b393eb`) is green on all six jobs (2026-11-19),
   including the Release leg's package step (portable folder + ZIP + SBOM + `SHA256SUMS.txt` verified and uploaded as
   artifacts) and `clang-tidy` under the changed runner (VS 18 / LLVM 22; see the clang-format/clang-tidy row). It
   follows green runs 44607088082 (`427d70e`), 44598980056 (`6010bb2`), 44592044647 (`0bff2ef`) and a red-then-fixed run
@@ -56,7 +61,7 @@ with the >5% rule, `check_regression.py`).
 
 | Gate | Status | Evidence / reason |
 |---|---|---|
-| Full Release CTest suite, **with the real models** (`HCS_TEST_*` set), CPU build and Vulkan build | **PASS** | **wave R final (2026-11-20, 1.0.0-rc.1, HEAD of this branch): CPU build `windows-msvc-release`: 815 registered, 815 passed, 0 failed, 4 skipped (the four Vulkan-only real tests, NOT RUN on a CPU build) - `docs/test-evidence/release-final/ctest-release-cpu.txt` (1226 s, includes the real LFM3-Omni-2B / SmolVLM2 / SD1.5 / FLUX.3 tests and the e2e scripts). Vulkan build `windows-msvc-release-vulkan`: 814 registered, 809 passed on the first run and 5 failed - all five (`ShutdownReal.*` x2, `e2e_api_mcp_real`, `e2e_llama_agentic_real`, `e2e_vision_real`) were refused by the memory budget with `out_of_memory` because only ~0.7-1.0 GB RAM was free during that run (other processes); with ~9 GB free the same five re-ran 6/6 PASS (`ctest-release-vulkan-rerun-failed5.txt`). The first-run log is kept unedited: `ctest-release-vulkan.txt`. No source change was needed (the budget refusing a load that does not fit is the intended behaviour).** `web/` `npm test` 46/46 - `release-final/web-npm-test.txt`. Earlier runs: wave R RC (814 registered, 778 passed, 36 skipped with no models set - `wave-r/ctest-release-cpu.txt`; `kernel-cpu` + `kernel-vulkan` 12/12 on the real 680M - `wave-r/ctest-kernels.txt`) and wave G (`wave-g/ctest-release-cpu-httplib-0.44.txt`). |
+| Full Release CTest suite, **with the real models** (`HCS_TEST_*` set), CPU build and Vulkan build | **PASS** | **wave R final (2026-11-20, 1.0.0-rc.1, HEAD of this branch): CPU build `windows-msvc-release`: 815 registered, 811 passed, 0 failed, 4 skipped (the four Vulkan-only real tests, NOT RUN on a CPU build) - `docs/test-evidence/release-final/ctest-release-cpu.txt` (1226 s, includes the real LFM3-Omni-2B / SmolVLM2 / SD1.5 / FLUX.3 tests and the e2e scripts). Vulkan build `windows-msvc-release-vulkan`: 814 registered, 809 passed on the first run and 5 failed - all five (`ShutdownReal.*` x2, `e2e_api_mcp_real`, `e2e_llama_agentic_real`, `e2e_vision_real`) were refused by the memory budget with `out_of_memory` because only ~0.7-1.0 GB RAM was free during that run (other processes); with ~9 GB free the same five re-ran 6/6 PASS (`ctest-release-vulkan-rerun-failed5.txt`). The first-run log is kept unedited: `ctest-release-vulkan.txt`. No source change was needed (the budget refusing a load that does not fit is the intended behaviour).** `web/` `npm test` 46/46 - `release-final/web-npm-test.txt`. Earlier runs: wave R RC (814 registered, 778 passed, 36 skipped with no models set - `wave-r/ctest-release-cpu.txt`; `kernel-cpu` + `kernel-vulkan` 12/12 on the real 680M - `wave-r/ctest-kernels.txt`) and wave G (`wave-g/ctest-release-cpu-httplib-0.44.txt`). |
 | Configure + build Debug / Release (MSVC x64, Ninja, `/W4 /WX` on HCS targets) | PASS | `M2-core/`, `M3-api-mcp/ctest-debug.txt`; the Vulkan preset configures and builds (`M2/image/README.md`) |
 | M0 hardware doctor (CPU features, RAM, OS, Vulkan devices/heaps, GPU adapters, drive info, read bench) | PASS | `M0/` (`doctor.json`, `doctor-no-vulkan.json`, `readbench-usb-hdd.json`, `vulkaninfo-summary.txt`) |
 | M1 llama.cpp independent baseline, CPU + Vulkan, real GGUF from USB drive | PASS | `M1/llama/README.md`; qwen3-0.6b Q4_K_M, sha256 `4ea79412...` |
@@ -102,9 +107,9 @@ with the >5% rule, `check_regression.py`).
 | B2/B5/B6 (best placement reference, LZ4/Zstd chunk loading) | NOT RUN | need the Model Vault in the load path (M5 Stage B) or a further implementation; B7 (diffusion compute vs parameter backend) is now measured in `B7-params/` |
 | clang-format / clang-tidy | **PASS** (wave R: 4 wave-K kernel files were unformatted, fixed; format OK over 221 files, clang-tidy 0 diagnostics in 69 TUs - `docs/test-evidence/wave-r/`) | `scripts/format.ps1` green over 217 files with clang-format 19.1.5 (VS-bundled, pinned); `scripts/static-analysis.ps1 -Scope src -FailOnFindings` reports **0 diagnostics in 69 translation units** (Release). 2026-11-19: the hosted runner's VS 18 / MSVC 14.52 STL broke clang-tidy with `STL1000`; fixed by searching every VS install for the bundled LLVM and passing `-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH` (`docs/static-analysis.md`). **V1.1 wave 1 (`6a390b8`) broke both gates on `main`** (CI run 44154743021): 4 files needed formatting and clang-tidy 20.1.8 found 6 `bugprone-implicit-widening-of-multiplication-result` sites in `include/hcs/{agent,api,train}` plus 1 `clang-analyzer` location inside `external/.../stb_image.h`. Fixed: widened the size constants first, and `static-analysis.ps1` now ignores diagnostics located under `external/` (the gate covers HCS-owned code). Evidence `docs/test-evidence/static-analysis/wave1-*`; triage in `docs/static-analysis.md` |
 | Shader / SPIR-V validation | **PASS (one shader)** | `shaders/llm/gemv_q8_0.comp` is compiled by `glslc` and validated by `spirv-val --target-env vulkan1.1` (wave K: was 1.2, fixed after the validation layers flagged it) as part of the `windows-msvc-release-kernels` build (fails the build otherwise); the SPIR-V is embedded. No CI job runs it yet (the GPU/SDK job `hardware.yml` is NOT RUN) |
-| CI workflows | **PASS (green on `main`)** | `.github/workflows/pr.yml` run 44167798984 (2026-11-17, commit `d8a5e37`): all six jobs green - `build + ctest` Release (18m38s) and Debug (9m59s), `clang-tidy` (5m53s), `clang-format` (17s), `SBOM` (17s), `web` (26s: 46 unit + static tests and the blocking headless boot check). Model-dependent tests skip on the hosted runner (NOT RUN), so CI proves configure/build/unit/contract/parser on a clean hosted machine, not Vulkan or real-model behaviour. History: run 44104062457 failed (Visual Studio not located, fixed in `fddc30d`); run 44154743021 (V1.1 wave 1) failed `clang-format` and `clang-tidy`, fixed in `06cfbe4` / `8b29907`. `hardware.yml` (self-hosted Radeon 680M runner): **NOT RUN, never executed** |
+| CI workflows | **PASS on older `main` commits; UNKNOWN for the release-candidate revision (never pushed)** | `.github/workflows/pr.yml` run 44167798984 (2026-11-17, commit `d8a5e37`): all six jobs green - `build + ctest` Release (18m38s) and Debug (9m59s), `clang-tidy` (5m53s), `clang-format` (17s), `SBOM` (17s), `web` (26s: 46 unit + static tests and the blocking headless boot check). Model-dependent tests skip on the hosted runner (NOT RUN), so CI proves configure/build/unit/contract/parser on a clean hosted machine, not Vulkan or real-model behaviour. History: run 44104062457 failed (Visual Studio not located, fixed in `fddc30d`); run 44154743021 (V1.1 wave 1) failed `clang-format` and `clang-tidy`, fixed in `06cfbe4` / `8b29907`. `hardware.yml` (self-hosted Radeon 680M runner): **NOT RUN, never executed** |
 | Release workflow `release.yml` + `pr.yml` python/web-dist jobs (wave B) | validated with actionlint v1.7.7 only; **NOT RUN** | never pushed or executed; Vulkan job is `continue-on-error` and its SDK install step is unproven on a hosted runner (`docs/test-evidence/wave-b/actionlint.txt`) |
-| SBOM / checksums / package / wheels | PASS locally (wave B) / hosted-runner release NOT RUN | `scripts/release-local.ps1` produced `HCSInfer.exe`, `HCSInfer-vulkan.exe`, portable ZIP (both EXEs, 14 licence texts, manifest with dumpbin imports), `hcsinfer-0.1.0-py3-none-win_amd64.whl` (48.99 MB) + sdist (14.6 KB), web dist zip, CycloneDX SBOM (15 components), `SHA256SUMS.txt`; `twine check` PASSED both, fresh-venv install + real chat PASS; nothing uploaded. Signing NOT RUN, MSIX skipped. `docs/test-evidence/wave-b/`, `docs/packaging.md` |
+| SBOM / checksums / package / wheels | PASS locally (wave B) / hosted-runner release NOT RUN | `scripts/release-local.ps1` produced `HCSInfer.exe`, `HCSInfer-vulkan.exe`, portable ZIP (both EXEs, 14 licence texts, manifest with dumpbin imports), `hcsinfer-1.0.0rc1-py3-none-win_amd64.whl` (48.99 MB; named `0.1.0` in the first wave-B run, before the version bump) + sdist (14.6 KB), web dist zip, CycloneDX SBOM (15 components), `SHA256SUMS.txt`; `twine check` PASSED both, fresh-venv install + real chat PASS; nothing uploaded. Signing NOT RUN, MSIX skipped. `docs/test-evidence/wave-b/`, `docs/packaging.md` |
 | ADR-001..013 | all 13 written and accepted (001 scoped to SD1.5-class models, 004 with open validation items, 006 experimental, 008 a staged plan: the single-EXE claim is NOT made) | `docs/decisions/README.md` |
 
 ## Known limitations
@@ -112,11 +117,14 @@ with the >5% rule, `check_regression.py`).
 - Engine model loads do **not** go through the Model Vault pipeline; the engines read the file themselves
   (mmap/engine loader). M5 Stage A (upstream load modes) is measured; Stage B needs a model that does not fit in RAM
   and a controlled cache state, neither of which is available on this machine.
-- Image generation/editing is proven for SD1.5 Q8_0 at 256x256/2 steps on the CPU **and** Vulkan build, one image at
+- Image generation/editing: SD1.5 Q8_0 (256x256 smoke and 512x512 benchmark renders, CPU and Vulkan build) and FLUX.3 Klein
+  512x512 (Vulkan text-to-image and image-to-image; CPU text-to-image only, n=1, no CPU image-to-image evidence), one image at
   a time; `url` responses, `mask`/inpainting and `multipart/form-data` uploads are rejected by design.
-- Vision is limited to one image per single-turn request and one tested model family (SmolVLM2).
-- The GUI is proven over HTTP + a headless browser boot; the interactive `playwright` phase is NOT RUN on this
-  machine (playwright not installed) and the UI has not been exercised on a Vulkan build.
+- Vision is limited to one image per single-turn request and two tested model families (SmolVLM2-500M, LFM3-Omni-2B).
+- The GUI is proven over HTTP, a headless browser boot and (wave A, `docs/test-evidence/wave-a/gui-cpu`, `gui-vulkan`: 28 checks
+  each) a browser interaction phase - load a model through the Models tab, streamed chat, Stop, no CSP violation - on the CPU
+  **and** the Vulkan build. Not covered: image generation through the UI on the Vulkan build, screen-reader testing, a real
+  clipboard click in a normal browser.
 - One custom Vulkan kernel (Q8_0 GEMV, OFF by default, 18x slower than upstream GGML Vulkan), no scheduler beyond the single-worker JobQueue, no telemetry module.
 - Cold SD1.5 first step took about 218 s when tensors streamed at 5-13 MB/s (`M2/image/README.md`); cold and warm
   numbers must not be compared.
@@ -124,7 +132,7 @@ with the >5% rule, `check_regression.py`).
 - Tests that need a real model skip (NOT RUN, never a fake pass) unless `HCS_TEST_GGUF` / `HCS_TEST_VLM` +
   `HCS_TEST_MMPROJ` / `HCS_TEST_DIFFUSION_MODEL` are set; Vulkan real tests need the Vulkan build.
 - `hardware.yml` (self-hosted Radeon runner) has never run; real-GPU evidence comes from manual local runs only.
-- `models load|unload` and `tune` CLI commands are not implemented (exit code 10).
+- `models load|unload` (a model lives in a running `serve`/MCP process, so the one-shot CLI cannot hold it) and `tune` are not CLI commands (exit code 10); load over HTTP or MCP.
 
 ## V1 stable release checklist (AGENTS.md section 22)
 
@@ -136,8 +144,8 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 
 | Item | Status | Evidence / reason |
 |---|---|---|
-| Clean Windows x64 Release configure and build | PASS | CI run 44167798984 (hosted clean runner, Release leg) |
-| Debug build and tests | PASS | CI Debug leg; `M3-api-mcp/ctest-debug.txt` |
+| Clean Windows x64 Release configure and build | PASS on `main` (older commit); UNKNOWN for the RC revision | CI run 44167798984 (hosted clean runner, Release leg); not re-run on this branch |
+| Debug build and tests | PASS on `main` (older commit); UNKNOWN for the RC revision | CI Debug leg; `M3-api-mcp/ctest-debug.txt` |
 | Reproducible dependency pins and build command | PASS | `external/dependency-lock.json`, `docs/build.md`; caveat: Vulkan-Headers (FetchContent) is not in the lock file |
 | No unexplained compiler/linker warnings in HCS code | PASS | `/W4 /WX` on HCS targets; clang-tidy gate reports 0 findings |
 | Shader compilation and SPIR-V validation | PASS (one shader) | `glslc` + `spirv-val` run in the `windows-msvc-release-kernels` build; a failure fails the build (`docs/test-evidence/vulkan-kernels/`) |
@@ -153,7 +161,7 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 |---|---|---|
 | Actual GGUF text generation | PASS | `M1/llama`, `M2/`, `benchmark/`, `lfm3/` |
 | Actual supported VLM image analysis | PASS | `M2-vision/` (SmolVLM2-500M), `lfm3/` (LFM3-Omni-2B) |
-| Actual diffusion image generation | PASS for SD1.5 Q8_0 and FLUX.3 Klein (substitute Qwen3-VL-4B encoder + FLUX.2 VAE; Vulkan t2i + i2i; CPU t2i via 256x256 test only) | `M1/sd`, `M3-image/`; `wave-f/` |
+| Actual diffusion image generation | PASS for SD1.5 Q8_0 and FLUX.3 Klein (substitute Qwen3-VL-4B encoder + FLUX.2 VAE; Vulkan t2i + i2i; CPU t2i only: 256x256 test plus one 512x512 benchmark sample; no CPU i2i evidence) | `M1/sd`, `M3-image/`; `wave-f/` |
 | Model manager scan / inspect | PASS | `tests/contract/cli`, registry unit tests |
 | Model load / unload | PASS over HTTP and MCP; FAIL as a CLI command (exit code 10, Planned) | `M3-api-mcp/`, `src/cli/cli.cpp` |
 | Model switch and memory reclamation | PASS for switching and freeing the previous model; memory actually returned is NOT RUN | `M2/image/README.md`, `M3-image/` |
@@ -250,7 +258,7 @@ HCSInfer engineering report
 - Commit: build/verification commit e8bd522 (clean tree, SBOM hcs:git_tree_dirty=false); later commits on this branch
   only add documentation/evidence. Branch claude/repo-analysis-v1-stable-d7c553, NOT merged, NOT tagged, NOT pushed.
 - Build status: PASS - windows-msvc-release, -vulkan, -static (CPU) and -static-vulkan all build with /W4 /WX.
-- Tests: PASS - CPU build 815/815 passed (4 Vulkan-only skipped = NOT RUN); Vulkan build 809/814 first run, the 5
+- Tests: PASS - CPU build 811 passed, 0 failed, 4 skipped (815 registered; the 4 Vulkan-only tests are NOT RUN on a CPU build); Vulkan build 809/814 first run, the 5
   failures were out_of_memory refusals at ~1 GB free RAM and re-ran 6/6 PASS; web 46/46; wheel pytest 8/8;
   format OK (221 files); clang-tidy 0 diagnostics in 69 TUs; links 0 broken.
 - Real Radeon 680M test: PASS (Vulkan CTest with the real models; benchmarks in docs/benchmarks.md).

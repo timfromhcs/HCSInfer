@@ -70,7 +70,7 @@ Details and limits: `docs/packaging.md`, `docs/install.md`.
 
 | Item | Status | Why |
 |---|---|---|
-| Clean-machine test of the single-file EXE | NOT RUN (restricted-environment run PASS for both EXEs) | Windows Sandbox is not installed and enabling it needs elevation; no clean VM exists on this machine |
+| Clean-machine test of the static EXEs (no "single-file" claim until then) | NOT RUN (restricted-environment run PASS for both EXEs) | Windows Sandbox is not installed and enabling it needs elevation; no clean VM exists on this machine |
 | Code signing of `HCSInfer.exe` / wheel | NOT RUN | no certificate; binaries are unsigned |
 | PyPI upload, GitHub release, Vercel deploy | NOT RUN | owner-side; nothing was pushed, tagged, uploaded or deployed |
 | `release.yml` on a hosted runner (incl. Vulkan SDK install step) | NOT RUN | workflow validated with actionlint only; never executed |
