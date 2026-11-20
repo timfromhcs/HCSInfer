@@ -1,0 +1,556 @@
+{
+  "backend": "CPU",
+  "benchmark_id": "B0-text",
+  "build_type": "Release",
+  "cmake_version": "4.4.0",
+  "cold": {
+    "backend": "CPU",
+    "build_type": "Release",
+    "cmake_version": "4.4.0",
+    "cold_or_warm": "cold",
+    "compiler": "MSVC 194435228",
+    "context_tokens": 4096,
+    "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+    "decode_tokens": 63,
+    "decode_tokens_per_second_median": 17.900001895127183,
+    "decompression_mib_s_median": "not_applicable",
+    "device": "CPU",
+    "driver_version": "32.0.21043.12001",
+    "file_cache": "not_controlled",
+    "git_commit": "cca2c6896c58+dirty",
+    "gpu": "AMD Radeon(TM) Graphics",
+    "gpu_device_id": "0x1681",
+    "gpu_vendor_id": "0x1002",
+    "hdd_read_mib_s_median": "unknown",
+    "load_mode": "auto",
+    "load_ms_median": 12312.1664,
+    "load_ms_p90": 12312.1664,
+    "max_new_tokens": 64,
+    "measured_iterations": 1,
+    "model_file": "LFM3-Omni-2B-Q8_0.gguf",
+    "model_format": "GGUF",
+    "model_sha256": "59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4",
+    "model_size_bytes": 1846240768,
+    "note": "process-cold: first load and first generation, OS file cache not flushed",
+    "offloaded_layers": 0,
+    "os_build": "10.0.26200.9974",
+    "peak_commit_bytes": 527769600,
+    "peak_ram_bytes": 2057748480,
+    "prompt_tokens": 223,
+    "prompt_tokens_per_second_median": 72.67261154700013,
+    "quantization": "Q8_0",
+    "quantization_source": "file name",
+    "ram_bytes": 21245952000,
+    "result_status": "PASS",
+    "schema_version": 1,
+    "seed": 42,
+    "storage_source": "usb (NTFS, rotational: unknown)",
+    "temperature": 0.0,
+    "timestamp_utc": "2026-11-20T17:22:10Z",
+    "total_layers": 24,
+    "ttft_ms_median": 3072.3873,
+    "ttft_ms_p90": 3072.3873,
+    "vulkan_api_version": "unknown",
+    "warmup_iterations": 0
+  },
+  "cold_or_warm": "warm",
+  "compiler": "MSVC 194435228",
+  "context_tokens": 4096,
+  "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+  "decode_sweep": [
+    {
+      "cold_or_warm": "warm",
+      "decode_tokens": 63,
+      "decode_tokens_per_second_median": 18.26952879231339,
+      "decode_tokens_per_second_p90": 18.408752678144786,
+      "max_new_tokens": 64,
+      "measured_iterations": 5,
+      "prompt_tokens": 151,
+      "prompt_tokens_per_second_median": 71.98683375112712,
+      "prompt_tokens_per_second_p90": 72.93739565967431,
+      "result_status": "PASS",
+      "samples": {
+        "decode_tokens_per_second": {
+          "max": 18.408752678144786,
+          "median": 18.26952879231339,
+          "min": 18.101118016990917,
+          "p90": 18.408752678144786,
+          "samples": [
+            18.26952879231339,
+            18.280341573115084,
+            18.101118016990917,
+            18.408752678144786,
+            18.264531471425734
+          ]
+        },
+        "prompt_tokens_per_second": {
+          "max": 72.93739565967431,
+          "median": 71.98683375112712,
+          "min": 71.4878989450848,
+          "p90": 72.93739565967431,
+          "samples": [
+            72.93739565967431,
+            72.20053655996097,
+            71.98683375112712,
+            71.91117227211873,
+            71.4878989450848
+          ]
+        },
+        "ttft_ms": {
+          "max": 2115.2932,
+          "median": 2100.7623,
+          "min": 2073.3081,
+          "p90": 2115.2932,
+          "samples": [
+            2073.3081,
+            2094.4964,
+            2100.7623,
+            2102.9322,
+            2115.2932
+          ]
+        },
+        "wall_ms": {
+          "max": 5581.3341,
+          "median": 5540.9458,
+          "min": 5521.8085,
+          "p90": 5581.3341,
+          "samples": [
+            5521.8085,
+            5540.9458,
+            5581.3341,
+            5525.3386,
+            5564.7267
+          ]
+        }
+      },
+      "target_prompt_tokens": 128,
+      "ttft_ms_median": 2100.7623,
+      "ttft_ms_p90": 2115.2932,
+      "wall_ms_median": 5540.9458,
+      "warmup_iterations": 1
+    },
+    {
+      "cold_or_warm": "warm",
+      "decode_tokens": 63,
+      "decode_tokens_per_second_median": 18.009738122684908,
+      "decode_tokens_per_second_p90": 18.037653343674158,
+      "max_new_tokens": 64,
+      "measured_iterations": 5,
+      "prompt_tokens": 529,
+      "prompt_tokens_per_second_median": 74.12002714166105,
+      "prompt_tokens_per_second_p90": 74.82128109591537,
+      "result_status": "PASS",
+      "samples": {
+        "decode_tokens_per_second": {
+          "max": 18.037653343674158,
+          "median": 18.009738122684908,
+          "min": 17.582638891195252,
+          "p90": 18.037653343674158,
+          "samples": [
+            18.009738122684908,
+            17.81866353405134,
+            18.010459445676936,
+            17.582638891195252,
+            18.037653343674158
+          ]
+        },
+        "prompt_tokens_per_second": {
+          "max": 74.82128109591537,
+          "median": 74.12002714166105,
+          "min": 72.93193837099554,
+          "p90": 74.82128109591537,
+          "samples": [
+            74.800995416014,
+            74.82128109591537,
+            74.12002714166105,
+            72.93193837099554,
+            73.0865586634306
+          ]
+        },
+        "ttft_ms": {
+          "max": 7256.8869,
+          "median": 7141.2311,
+          "min": 7073.7499,
+          "p90": 7256.8869,
+          "samples": [
+            7075.8188,
+            7073.7499,
+            7141.2311,
+            7256.8869,
+            7241.5426
+          ]
+        },
+        "wall_ms": {
+          "max": 10840.0996,
+          "median": 10639.4318,
+          "min": 10574.0714,
+          "p90": 10840.0996,
+          "samples": [
+            10574.0714,
+            10609.5067,
+            10639.4318,
+            10840.0996,
+            10734.3765
+          ]
+        }
+      },
+      "target_prompt_tokens": 512,
+      "ttft_ms_median": 7141.2311,
+      "ttft_ms_p90": 7256.8869,
+      "wall_ms_median": 10639.4318,
+      "warmup_iterations": 1
+    },
+    {
+      "cold_or_warm": "warm",
+      "decode_tokens": 63,
+      "decode_tokens_per_second_median": 17.005893297845184,
+      "decode_tokens_per_second_p90": 17.110805229062077,
+      "max_new_tokens": 64,
+      "measured_iterations": 5,
+      "prompt_tokens": 2077,
+      "prompt_tokens_per_second_median": 74.00603587099995,
+      "prompt_tokens_per_second_p90": 74.46922988608598,
+      "result_status": "PASS",
+      "samples": {
+        "decode_tokens_per_second": {
+          "max": 17.110805229062077,
+          "median": 17.005893297845184,
+          "min": 16.46830979619761,
+          "p90": 17.110805229062077,
+          "samples": [
+            16.46830979619761,
+            17.059439039069417,
+            16.893576901170967,
+            17.005893297845184,
+            17.110805229062077
+          ]
+        },
+        "prompt_tokens_per_second": {
+          "max": 74.46922988608598,
+          "median": 74.00603587099995,
+          "min": 73.13946571729457,
+          "p90": 74.46922988608598,
+          "samples": [
+            73.54096756275398,
+            74.00603587099995,
+            73.13946571729457,
+            74.15653766731702,
+            74.46922988608598
+          ]
+        },
+        "ttft_ms": {
+          "max": 28403.5081,
+          "median": 28070.9021,
+          "min": 27896.52,
+          "p90": 28403.5081,
+          "samples": [
+            28248.2107,
+            28070.9021,
+            28403.5081,
+            28013.9033,
+            27896.52
+          ]
+        },
+        "wall_ms": {
+          "max": 32132.8658,
+          "median": 31764.0035,
+          "min": 31578.5393,
+          "p90": 32132.8658,
+          "samples": [
+            32073.8957,
+            31764.0035,
+            32132.8658,
+            31718.6326,
+            31578.5393
+          ]
+        }
+      },
+      "target_prompt_tokens": 2048,
+      "ttft_ms_median": 28070.9021,
+      "ttft_ms_p90": 28403.5081,
+      "wall_ms_median": 31764.0035,
+      "warmup_iterations": 1
+    }
+  ],
+  "decode_tokens": 63,
+  "decode_tokens_per_second_median": 18.115828466453713,
+  "decode_tokens_per_second_p90": 18.26863029117529,
+  "decompression_mib_s_median": "not_applicable",
+  "device": "CPU",
+  "driver_version": "32.0.21043.12001",
+  "file_cache": "not_controlled",
+  "git_commit": "cca2c6896c58+dirty",
+  "gpu": "AMD Radeon(TM) Graphics",
+  "gpu_device_id": "0x1681",
+  "gpu_vendor_id": "0x1002",
+  "hcsinfer_version": "0.1.0",
+  "hdd_read_mib_s_median": "unknown",
+  "load_mode": "auto",
+  "load_ms_median": 414.6029,
+  "load_ms_p90": 525.1081,
+  "max_new_tokens": 64,
+  "measured_iterations": 5,
+  "model_file": "LFM3-Omni-2B-Q8_0.gguf",
+  "model_format": "GGUF",
+  "model_sha256": "59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4",
+  "model_size_bytes": 1846240768,
+  "offloaded_layers": 0,
+  "os_build": "10.0.26200.9974",
+  "peak_commit_bytes": 534183936,
+  "peak_ram_bytes": 2092425216,
+  "peak_ram_note": "process peak working set since start (includes the cold phase and the warm reloads)",
+  "prefill_sweep": [
+    {
+      "cold_or_warm": "warm",
+      "max_new_tokens": 1,
+      "measured_iterations": 5,
+      "prompt_tokens": 151,
+      "prompt_tokens_per_second_median": 73.99339096912134,
+      "prompt_tokens_per_second_p90": 74.35151812259167,
+      "result_status": "PASS",
+      "samples": {
+        "prompt_tokens_per_second": {
+          "max": 74.35151812259167,
+          "median": 73.99339096912134,
+          "min": 72.04285433407186,
+          "p90": 74.35151812259167,
+          "samples": [
+            74.18658220204937,
+            72.04285433407186,
+            73.76318315393492,
+            74.35151812259167,
+            73.99339096912134
+          ]
+        },
+        "ttft_ms": {
+          "max": 2099.0533,
+          "median": 2043.9664,
+          "min": 2033.9946,
+          "p90": 2099.0533,
+          "samples": [
+            2038.7281,
+            2099.0533,
+            2050.2022,
+            2033.9946,
+            2043.9664
+          ]
+        },
+        "wall_ms": {
+          "max": 2099.228,
+          "median": 2044.1187,
+          "min": 2034.1502,
+          "p90": 2099.228,
+          "samples": [
+            2038.8773,
+            2099.228,
+            2050.37,
+            2034.1502,
+            2044.1187
+          ]
+        }
+      },
+      "target_prompt_tokens": 128,
+      "ttft_ms_median": 2043.9664,
+      "ttft_ms_p90": 2099.0533,
+      "wall_ms_median": 2044.1187,
+      "warmup_iterations": 1
+    },
+    {
+      "cold_or_warm": "warm",
+      "max_new_tokens": 1,
+      "measured_iterations": 5,
+      "prompt_tokens": 529,
+      "prompt_tokens_per_second_median": 74.73365786106395,
+      "prompt_tokens_per_second_p90": 75.65565276726926,
+      "result_status": "PASS",
+      "samples": {
+        "prompt_tokens_per_second": {
+          "max": 75.65565276726926,
+          "median": 74.73365786106395,
+          "min": 74.35976070326171,
+          "p90": 75.65565276726926,
+          "samples": [
+            74.72799820912728,
+            74.35976070326171,
+            75.65565276726926,
+            74.73365786106395,
+            75.13771969917697
+          ]
+        },
+        "ttft_ms": {
+          "max": 7117.7495,
+          "median": 7082.0849,
+          "min": 6995.8254,
+          "p90": 7117.7495,
+          "samples": [
+            7082.6881,
+            7117.7495,
+            6995.8254,
+            7082.0849,
+            7044.091
+          ]
+        },
+        "wall_ms": {
+          "max": 7118.0106,
+          "median": 7082.346,
+          "min": 6996.0864,
+          "p90": 7118.0106,
+          "samples": [
+            7082.947,
+            7118.0106,
+            6996.0864,
+            7082.346,
+            7044.4214
+          ]
+        }
+      },
+      "target_prompt_tokens": 512,
+      "ttft_ms_median": 7082.0849,
+      "ttft_ms_p90": 7117.7495,
+      "wall_ms_median": 7082.346,
+      "warmup_iterations": 1
+    },
+    {
+      "cold_or_warm": "warm",
+      "max_new_tokens": 1,
+      "measured_iterations": 5,
+      "prompt_tokens": 2077,
+      "prompt_tokens_per_second_median": 74.83230295281025,
+      "prompt_tokens_per_second_p90": 75.11421990515689,
+      "result_status": "PASS",
+      "samples": {
+        "prompt_tokens_per_second": {
+          "max": 75.11421990515689,
+          "median": 74.83230295281025,
+          "min": 74.21510964748258,
+          "p90": 75.11421990515689,
+          "samples": [
+            74.83230295281025,
+            75.11421990515689,
+            74.21510964748258,
+            74.62129745433091,
+            75.00851817967407
+          ]
+        },
+        "ttft_ms": {
+          "max": 27992.463,
+          "median": 27761.7773,
+          "min": 27657.4852,
+          "p90": 27992.463,
+          "samples": [
+            27761.7773,
+            27657.4852,
+            27992.463,
+            27840.026,
+            27701.6515
+          ]
+        },
+        "wall_ms": {
+          "max": 27992.7501,
+          "median": 27762.016,
+          "min": 27657.7134,
+          "p90": 27992.7501,
+          "samples": [
+            27762.016,
+            27657.7134,
+            27992.7501,
+            27840.166,
+            27701.7842
+          ]
+        }
+      },
+      "target_prompt_tokens": 2048,
+      "ttft_ms_median": 27761.7773,
+      "ttft_ms_p90": 27992.463,
+      "wall_ms_median": 27762.016,
+      "warmup_iterations": 1
+    }
+  ],
+  "prompt_tokens": 223,
+  "prompt_tokens_per_second_median": 72.72367953120295,
+  "prompt_tokens_per_second_p90": 73.78936795137817,
+  "quantization": "Q8_0",
+  "quantization_source": "file name",
+  "ram_bytes": 21245952000,
+  "result_status": "PASS",
+  "samples": {
+    "decode_tokens_per_second": {
+      "max": 18.26863029117529,
+      "median": 18.115828466453713,
+      "min": 17.82187948013408,
+      "p90": 18.26863029117529,
+      "samples": [
+        18.115828466453713,
+        18.149726950322123,
+        18.023355178593427,
+        18.26863029117529,
+        17.82187948013408
+      ]
+    },
+    "load_ms": {
+      "max": 525.1081,
+      "median": 414.6029,
+      "min": 396.5492,
+      "p90": 525.1081,
+      "samples": [
+        525.1081,
+        414.7019,
+        396.5492,
+        401.8874,
+        414.6029
+      ]
+    },
+    "prompt_tokens_per_second": {
+      "max": 73.78936795137817,
+      "median": 72.72367953120295,
+      "min": 71.20197717992596,
+      "p90": 73.78936795137817,
+      "samples": [
+        73.78936795137817,
+        72.29655619407067,
+        72.72367953120295,
+        73.46663035284705,
+        71.20197717992596
+      ]
+    },
+    "ttft_ms": {
+      "max": 3135.3967,
+      "median": 3069.6844,
+      "min": 3025.4712,
+      "p90": 3135.3967,
+      "samples": [
+        3025.4712,
+        3088.1407,
+        3069.6844,
+        3038.777,
+        3135.3967
+      ]
+    },
+    "wall_ms": {
+      "max": 6670.5993,
+      "median": 6559.4503,
+      "min": 6487.5332,
+      "p90": 6670.5993,
+      "samples": [
+        6503.2285,
+        6559.4503,
+        6565.3816,
+        6487.5332,
+        6670.5993
+      ]
+    }
+  },
+  "schema_version": 1,
+  "seed": 42,
+  "storage_source": "usb (NTFS, rotational: unknown)",
+  "suite": "full",
+  "sweep_note": "prompts are sized by repeating a fixed sentence to approximate target_prompt_tokens; prompt_tokens is the count the engine measured. Sweeps vary the prompt fill of one loaded context (context_tokens); the prefill sweep generates 1 token (TTFT and prompt tokens/s only).",
+  "temperature": 0.0,
+  "timestamp_utc": "2026-11-20T17:22:10Z",
+  "total_layers": 24,
+  "ttft_ms_median": 3069.6844,
+  "ttft_ms_p90": 3135.3967,
+  "vulkan_api_version": "unknown",
+  "wall_ms_median": 6559.4503,
+  "warmup_iterations": 1
+}

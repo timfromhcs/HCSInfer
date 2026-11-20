@@ -1,0 +1,8 @@
+{
+  "peak_commit_bytes": 1639104512,
+  "peak_ws_bytes": 389832704,
+  "rc": 0,
+  "stderr_tail": "[hcsinfer] decode sweep 128 2/5\r\n[hcsinfer] decode sweep 128 3/5\r\n[hcsinfer] decode sweep 128 4/5\r\n[hcsinfer] decode sweep 128 5/5\r\n[hcsinfer] decode sweep 512 warm-up\r\n[hcsinfer] decode sweep 512 1/5\r\n[hcsinfer] decode sweep 512 2/5\r\n[hcsinfer] decode sweep 512 3/5\r\n[hcsinfer] decode sweep 512 4/5\r\n[hcsinfer] decode sweep 512 5/5\r\n[hcsinfer] decode sweep 2048 warm-up\r\n[hcsinfer] decode sweep 2048 1/5\r\n[hcsinfer] decode sweep 2048 2/5\r\n[hcsinfer] decode sweep 2048 3/5\r\n[hcsinfer] decode sweep 2048 4/5\r\n[hcsinfer] decode sweep 2048 5/5\r\n[hcsinfer] wrote text-full-vulkan-qwen3-0.6b-q4_k_m.json\r\n",
+  "timed_out": false,
+  "wall_s": 53.393535599985626
+}

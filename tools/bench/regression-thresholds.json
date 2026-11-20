@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "comment": "AGENTS.md 16.6: a median regression above default_pct after repeated runs is an alert; a single noisy run is never a hard failure. Correctness, crash and security failures are hard failures elsewhere (CTest). Keys are metric-name prefixes of docs/test-evidence/benchmarks/summary.json; the longest matching prefix wins.",
+  "default_pct": 5.0,
+  "rules": [
+    {"match": "text.",       "suffix": "decode_tps",       "direction": "higher_is_better", "pct": 5.0},
+    {"match": "text.",       "suffix": "prompt_tps",       "direction": "higher_is_better", "pct": 5.0},
+    {"match": "text.",       "suffix": "ttft_ms",          "direction": "lower_is_better",  "pct": 5.0},
+    {"match": "text.",       "suffix": "warm_load_ms",     "direction": "lower_is_better",  "pct": 10.0},
+    {"match": "text.",       "contains": "prefill_ttft_ms", "direction": "lower_is_better",  "pct": 5.0},
+    {"match": "text.",       "contains": "decode_tps.",     "direction": "higher_is_better", "pct": 5.0},
+    {"match": "llamabench.", "suffix": "_tps",             "direction": "higher_is_better", "pct": 5.0},
+    {"match": "image.",      "suffix": "wall_s",           "direction": "lower_is_better",  "pct": 5.0},
+    {"match": "api.",        "suffix": "stream_ttft_ms",   "direction": "lower_is_better",  "pct": 10.0}
+  ],
+  "min_repetitions": 5,
+  "notes": "Image wall times are single or few samples on this machine and dominated by model load from a USB drive; treat their alerts as provisional (ADR-010). Compare only runs with the same model hash, backend, build and driver."
+}

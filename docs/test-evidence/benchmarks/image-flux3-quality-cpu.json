@@ -1,0 +1,37 @@
+{
+  "backend": "cpu",
+  "model_file": "flux-3-image-klein-UD-Q4_K_XL.gguf",
+  "model_sha256": "0a057e07550a5b2169e344d686171a7dd3c7d82c7d8d1d1605d8d881c16e9fa7",
+  "n": 1,
+  "preset": "quality",
+  "runs": [
+    {
+      "peak_commit_bytes": 8029929472,
+      "peak_ws_bytes": 7806091264,
+      "png_sha256": "196ca40458709ed01776313dd3523e0497c021ed1f87bc3ad4fa8badd407ec67",
+      "rc": 0,
+      "result": {
+        "backend": "cpu",
+        "bytes": 497251,
+        "device": "AMD Ryzen 7 7735HS with Radeon Graphics         (CPU)",
+        "generation_ms": 663056.83,
+        "height": 512,
+        "load_ms": 552.3555,
+        "mode": "generate",
+        "model": "D:/HCSModels\\diffusion\\flux3\\flux-3-image-klein-UD-Q4_K_XL.gguf",
+        "output": "docs/test-evidence/benchmarks\\images\\flux3-quality-cpu-0.png",
+        "preset": "quality",
+        "schema_version": 1,
+        "steps": 16,
+        "total_ms": 663060.9109,
+        "width": 512
+      },
+      "stderr_tail": "",
+      "timed_out": false,
+      "wall_s": 664.3986064000055
+    }
+  ],
+  "seed": 42,
+  "size": "512x512",
+  "timestamp_utc": "2026-11-20T19:32:08Z"
+}

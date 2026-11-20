@@ -209,20 +209,34 @@ See `SECURITY.md`.
 
 ## Benchmarks
 
-`HCSInfer benchmark --suite quick --model <gguf>` measures real load time, TTFT, prompt and decode tokens/s
-(cold process phase + warm phase with warm-up, median/p90 and the raw samples) and prints one AGENTS.md 21.1 JSON
-document with machine, model hash, quantization, backend and storage metadata. Unmeasurable values are the string
-`unknown`, never an estimate. `--suite full` is not implemented yet (it exits with an error).
+Measured on the final single-file static EXEs on one machine (Windows 11, Ryzen 7 7735HS, Radeon 680M, 21 GB RAM, models on a
+USB 3 drive). Medians of 5 iterations for text; image rows state their sample count (FLUX is a single provisional sample).
+Same model and quantisation in both columns; thermals were not measured.
 
-Two real baselines are recorded on the target machine with the same model (`qwen3-0.6b` Q4_K_M), prompt, seed and
-commit: **B0 CPU** (warm decode 66.1 t/s, warm TTFT 369 ms) and **B1 Vulkan/Radeon 680M** (warm decode 126.1 t/s,
-warm TTFT 134 ms). Both are 3-iteration medians with an uncontrolled OS file cache and an uncontrolled Vulkan
-shader cache - see `docs/test-evidence/benchmark/README.md` for the full tables and the caveats.
+| Workload (this PC, Ryzen 7 7735HS + Radeon 680M) | CPU | Vulkan |
+|---|---|---|
+| qwen3-0.6b Q4_K_M: decode tokens/s (median) | 60.7 | 119.4 |
+| qwen3-0.6b Q4_K_M: warm TTFT ms (median, ~200-225-token prompt) | 444 | 156 |
+| LFM3-Omni-2B Q8_0: decode tokens/s (median) | 18.1 | 34.5 |
+| LFM3-Omni-2B Q8_0: warm TTFT ms (median, ~200-225-token prompt) | 3,070 | 393 |
+| SD1.5 Q8_0 512x512, 20 steps (wall s) | 249 (n=2) | 48 |
+| FLUX.3 Klein 512x512, `fast` preset (wall s) | 508 (n=1) | 566 (n=1) |
+| FLUX.3 Klein 512x512, `quality` preset (wall s) | 664 (n=1) | 576 (n=1) |
+| Vision (LFM3-Omni + mmproj, 512x512 image): TTFT ms | 5,898 | 810 |
 
-Method, the load-mode matrix and the diffusion parameter-backend run are summarised in `docs/benchmarks.md`.
-Earlier provisional numbers (uncontrolled, few samples): `docs/test-evidence/M1/llama/README.md`,
-`docs/test-evidence/M6-storage/`. Methodology: `docs/decisions/ADR-010-benchmark-methodology.md`.
-No performance claim is made beyond those files.
+![Decode throughput](docs/benchmarks/chart-decode-tps.svg)
+
+Highlights: Vulkan roughly doubles decode and cuts prefill/vision time by 7-8x for the text models; SD1.5 is 5x faster on
+Vulkan; FLUX.3 Klein is dominated by a fixed ~7-9 minute per-process cost on this 21 GB machine and is not faster on Vulkan
+here. Quantised KV cache is only worthwhile on Vulkan (q8_0: about 4% slower prefill, 22% less memory at 8K); on CPU it is
+4-5x slower. Streaming HTTP TTFT is 100 ms (Vulkan) / 318 ms (CPU) for a short prompt. Cold reads from the model drive run at
+38-63 MiB/s.
+
+Full methodology, every table (prefill sweeps, KV cache types, API latency, drive reads, `llama-bench` cross-check), charts,
+limits and NOT RUN items: `docs/benchmarks.md`. Raw JSON: `docs/test-evidence/benchmarks/`. Reproduce with
+`tools/bench/run_matrix.py` and `tools/bench/make_report.py`; the >5% regression alert is
+`tools/bench/regression-thresholds.json` + `tools/bench/check_regression.py`. Methodology: `docs/decisions/ADR-010-benchmark-methodology.md`.
+`HCSInfer benchmark --suite quick|full --model <gguf>` produces the AGENTS.md 21.1 JSON (unmeasurable values are the string `unknown`).
 
 ## Known limitations
 

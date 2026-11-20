@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="720" height="340" role="img" aria-label="Prefill time of a full context by KV-cache type (lower is better)" font-family="Segoe UI, system-ui, sans-serif" font-size="12">
+<rect width="720" height="340" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+<text x="16" y="26" font-size="15" font-weight="600" fill="#1f2328">Prefill time of a full context by KV-cache type (lower is better)</text>
+<line x1="60" y1="270.0" x2="700" y2="270.0" stroke="#eaeef2"/><text x="54" y="274.0" text-anchor="end" fill="#57606a">0</text>
+<line x1="60" y1="216.5" x2="700" y2="216.5" stroke="#eaeef2"/><text x="54" y="220.5" text-anchor="end" fill="#57606a">94</text>
+<line x1="60" y1="163.0" x2="700" y2="163.0" stroke="#eaeef2"/><text x="54" y="167.0" text-anchor="end" fill="#57606a">188</text>
+<line x1="60" y1="109.5" x2="700" y2="109.5" stroke="#eaeef2"/><text x="54" y="113.5" text-anchor="end" fill="#57606a">282</text>
+<line x1="60" y1="56.0" x2="700" y2="56.0" stroke="#eaeef2"/><text x="54" y="60.0" text-anchor="end" fill="#57606a">376</text>
+<rect x="84.0" y="258.6" width="34.3" height="11.4" fill="#5b7db1" rx="2"/><text x="101.2" y="254.6" text-anchor="middle" fill="#1f2328" font-size="11">20.03</text>
+<rect x="121.3" y="220.1" width="34.3" height="49.9" fill="#3f9d73" rx="2"/><text x="138.5" y="216.1" text-anchor="middle" fill="#1f2328" font-size="11">87.75</text>
+<rect x="158.7" y="214.8" width="34.3" height="55.2" fill="#c4553f" rx="2"/><text x="175.8" y="210.8" text-anchor="middle" fill="#1f2328" font-size="11">97.05</text>
+<text x="140.0" y="288" text-anchor="middle" fill="#1f2328">cpu 4K</text>
+<rect x="244.0" y="236.5" width="34.3" height="33.5" fill="#5b7db1" rx="2"/><text x="261.2" y="232.5" text-anchor="middle" fill="#1f2328" font-size="11">58.87</text>
+<rect x="281.3" y="86.8" width="34.3" height="183.2" fill="#3f9d73" rx="2"/><text x="298.5" y="82.8" text-anchor="middle" fill="#1f2328" font-size="11">322.04</text>
+<rect x="318.7" y="78.9" width="34.3" height="191.1" fill="#c4553f" rx="2"/><text x="335.8" y="74.9" text-anchor="middle" fill="#1f2328" font-size="11">335.88</text>
+<text x="300.0" y="288" text-anchor="middle" fill="#1f2328">cpu 8K</text>
+<rect x="404.0" y="266.9" width="34.3" height="3.1" fill="#5b7db1" rx="2"/><text x="421.2" y="262.9" text-anchor="middle" fill="#1f2328" font-size="11">5.45</text>
+<rect x="441.3" y="266.7" width="34.3" height="3.3" fill="#3f9d73" rx="2"/><text x="458.5" y="262.7" text-anchor="middle" fill="#1f2328" font-size="11">5.77</text>
+<rect x="478.7" y="265.0" width="34.3" height="5.0" fill="#c4553f" rx="2"/><text x="495.8" y="261.0" text-anchor="middle" fill="#1f2328" font-size="11">8.75</text>
+<text x="460.0" y="288" text-anchor="middle" fill="#1f2328">vulkan 4K</text>
+<rect x="564.0" y="259.9" width="34.3" height="10.1" fill="#5b7db1" rx="2"/><text x="581.2" y="255.9" text-anchor="middle" fill="#1f2328" font-size="11">17.78</text>
+<rect x="601.3" y="259.5" width="34.3" height="10.5" fill="#3f9d73" rx="2"/><text x="618.5" y="255.5" text-anchor="middle" fill="#1f2328" font-size="11">18.49</text>
+<rect x="638.7" y="252.6" width="34.3" height="17.4" fill="#c4553f" rx="2"/><text x="655.8" y="248.6" text-anchor="middle" fill="#1f2328" font-size="11">30.53</text>
+<text x="620.0" y="288" text-anchor="middle" fill="#1f2328">vulkan 8K</text>
+<rect x="60" y="310" width="12" height="12" fill="#5b7db1" rx="2"/><text x="78" y="320" fill="#1f2328">f16</text>
+<rect x="105" y="310" width="12" height="12" fill="#3f9d73" rx="2"/><text x="123" y="320" fill="#1f2328">q8_0</text>
+<rect x="157" y="310" width="12" height="12" fill="#c4553f" rx="2"/><text x="175" y="320" fill="#1f2328">q4_0</text>
+<text x="700" y="320" text-anchor="end" fill="#57606a" font-size="11">seconds = context / pp t/s</text></svg>

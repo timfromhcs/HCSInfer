@@ -1,0 +1,8 @@
+{
+  "peak_commit_bytes": 534183936,
+  "peak_ws_bytes": 2092425216,
+  "rc": 0,
+  "stderr_tail": "5\r\n[hcsinfer] decode sweep 128 2/5\r\n[hcsinfer] decode sweep 128 3/5\r\n[hcsinfer] decode sweep 128 4/5\r\n[hcsinfer] decode sweep 128 5/5\r\n[hcsinfer] decode sweep 512 warm-up\r\n[hcsinfer] decode sweep 512 1/5\r\n[hcsinfer] decode sweep 512 2/5\r\n[hcsinfer] decode sweep 512 3/5\r\n[hcsinfer] decode sweep 512 4/5\r\n[hcsinfer] decode sweep 512 5/5\r\n[hcsinfer] decode sweep 2048 warm-up\r\n[hcsinfer] decode sweep 2048 1/5\r\n[hcsinfer] decode sweep 2048 2/5\r\n[hcsinfer] decode sweep 2048 3/5\r\n[hcsinfer] decode sweep 2048 4/5\r\n[hcsinfer] decode sweep 2048 5/5\r\n[hcsinfer] wrote text-full-cpu-lfm3-omni-2b-q8_0.json\r\n",
+  "timed_out": false,
+  "wall_s": 574.9504990999994
+}

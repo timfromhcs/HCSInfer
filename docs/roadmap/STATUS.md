@@ -11,6 +11,15 @@ Wave B (distribution, 2026-11-20, branch `claude/repo-analysis-v1-stable-d7c553`
 `docs/packaging.md`; evidence `docs/test-evidence/wave-b/`. Open: clean-machine test, signing, hosted run of `release.yml`,
 CTest on the new static presets.
 
+Wave D (benchmark data from the final binaries, 2026-11-20): **PASS (records), partial coverage.** The static CPU and Vulkan EXEs of wave B ran
+`benchmark --suite full` (5 iterations, medians/p90) for qwen3-0.6b Q4_K_M and LFM3-Omni-2B Q8_0, a `llama-bench` cross-check, KV cache
+types F16/Q8_0/Q4_0 at 4K/8K (llama-bench, the HCS engine has no cache-type option), real vision latency, SD1.5 and FLUX.3 Klein 512x512
+renders (FLUX: N=1 per cell, SD1.5 CPU N=2), HTTP streaming TTFT and read-only drive reads (38-63 MiB/s cold on the USB disk). Findings:
+Vulkan ~2x decode and ~7-8x TTFT/vision; FLUX.3 is not faster on Vulkan here (566 s vs 508 s fast; unexplained vs wave F's 364-471 s);
+quantised KV is 4-5x slower on CPU. NOT RUN: thermals, flushed-cache cold start, image/KV-quality metrics. Evidence
+`docs/test-evidence/benchmarks/`, report `docs/benchmarks.md`, tooling `tools/bench/` (driver, report/SVG generator, `regression-thresholds.json`
+with the >5% rule, `check_regression.py`).
+
 - Public remote `https://github.com/timfromhcs/HCSInfer`. `main` has the V1-stable waves and the M8 kernel:
   `902b41e` (W1 `POST /hcs/v1/benchmarks` + `cache` + `benchmark --suite full`), `5633450` (W2 agent/train salvage),
   `b02075f` (W3 soak defects + test gaps), `af884c3` (MCP `hcs.runtime.benchmark`), `7287554` (W4 static-CRT

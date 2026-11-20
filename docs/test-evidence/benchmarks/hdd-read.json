@@ -1,0 +1,164 @@
+{
+  "note": "read-only sequential, up to 1 GiB per sample, 4 MiB buffer; OS file cache NOT flushed (needs administrator rights)",
+  "results": [
+    {
+      "file": "LFM3-Omni-2B-Q8_0.gguf",
+      "phase": "first-read (likely cold)",
+      "rc": 0,
+      "read_benchmark": {
+        "buffer_bytes": 4194304,
+        "cold_or_warm": "unknown",
+        "file": "D:/HCSModels\\text\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf",
+        "file_size_bytes": 1846240768,
+        "max_bytes_per_sample": 1073741824,
+        "mib_s_max": 37.607682888227735,
+        "mib_s_median": 37.607682888227735,
+        "mib_s_min": 37.607682888227735,
+        "mode": "sequential, read-only, bounded buffer",
+        "note": "Windows file caching can inflate repeated samples; cold/warm state is not controlled (unknown).",
+        "samples": [
+          {
+            "bytes_read": 1073741824,
+            "elapsed_ms": 27228.4789,
+            "mib_s": 37.607682888227735
+          }
+        ],
+        "status": "ok"
+      },
+      "storage": {
+        "bus_type": "usb",
+        "device_product": "IB-1232CL-U3",
+        "device_vendor": "unknown",
+        "drive_type": "fixed",
+        "filesystem": "NTFS",
+        "free_bytes": 333434433536,
+        "removable_media": false,
+        "root": "D:\\",
+        "rotational": "unknown",
+        "total_bytes": 500105736192
+      }
+    },
+    {
+      "file": "Qwen3VL-4B-Instruct-Q4_K_M.gguf",
+      "phase": "first-read (likely cold)",
+      "rc": 0,
+      "read_benchmark": {
+        "buffer_bytes": 4194304,
+        "cold_or_warm": "unknown",
+        "file": "D:/HCSModels\\diffusion\\flux3\\qwen3vl\\Qwen3VL-4B-Instruct-Q4_K_M.gguf",
+        "file_size_bytes": 2497281664,
+        "max_bytes_per_sample": 1073741824,
+        "mib_s_max": 55.884758990646155,
+        "mib_s_median": 55.884758990646155,
+        "mib_s_min": 55.884758990646155,
+        "mode": "sequential, read-only, bounded buffer",
+        "note": "Windows file caching can inflate repeated samples; cold/warm state is not controlled (unknown).",
+        "samples": [
+          {
+            "bytes_read": 1073741824,
+            "elapsed_ms": 18323.421599999998,
+            "mib_s": 55.884758990646155
+          }
+        ],
+        "status": "ok"
+      },
+      "storage": {
+        "bus_type": "usb",
+        "device_product": "IB-1232CL-U3",
+        "device_vendor": "unknown",
+        "drive_type": "fixed",
+        "filesystem": "NTFS",
+        "free_bytes": 333434433536,
+        "removable_media": false,
+        "root": "D:\\",
+        "rotational": "unknown",
+        "total_bytes": 500105736192
+      }
+    },
+    {
+      "file": "SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
+      "phase": "first-read (likely cold)",
+      "rc": 0,
+      "read_benchmark": {
+        "buffer_bytes": 4194304,
+        "cold_or_warm": "unknown",
+        "file": "D:/HCSModels\\vision\\SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
+        "file_size_bytes": 436808704,
+        "max_bytes_per_sample": 1073741824,
+        "mib_s_max": 63.32235688296517,
+        "mib_s_median": 63.32235688296517,
+        "mib_s_min": 63.32235688296517,
+        "mode": "sequential, read-only, bounded buffer",
+        "note": "Windows file caching can inflate repeated samples; cold/warm state is not controlled (unknown).",
+        "samples": [
+          {
+            "bytes_read": 436808704,
+            "elapsed_ms": 6578.6124,
+            "mib_s": 63.32235688296517
+          }
+        ],
+        "status": "ok"
+      },
+      "storage": {
+        "bus_type": "usb",
+        "device_product": "IB-1232CL-U3",
+        "device_vendor": "unknown",
+        "drive_type": "fixed",
+        "filesystem": "NTFS",
+        "free_bytes": 333434433536,
+        "removable_media": false,
+        "root": "D:\\",
+        "rotational": "unknown",
+        "total_bytes": 500105736192
+      }
+    },
+    {
+      "file": "LFM3-Omni-2B-Q8_0.gguf",
+      "phase": "repeat (page-cache warm)",
+      "rc": 0,
+      "read_benchmark": {
+        "buffer_bytes": 4194304,
+        "cold_or_warm": "unknown",
+        "file": "D:/HCSModels\\text\\LFM3-Omni-2B\\LFM3-Omni-2B-Q8_0.gguf",
+        "file_size_bytes": 1846240768,
+        "max_bytes_per_sample": 1073741824,
+        "mib_s_max": 6296.536105776888,
+        "mib_s_median": 6162.056056657217,
+        "mib_s_min": 37.49252868000867,
+        "mode": "sequential, read-only, bounded buffer",
+        "note": "Windows file caching can inflate repeated samples; cold/warm state is not controlled (unknown).",
+        "samples": [
+          {
+            "bytes_read": 1073741824,
+            "elapsed_ms": 27312.108200000002,
+            "mib_s": 37.49252868000867
+          },
+          {
+            "bytes_read": 1073741824,
+            "elapsed_ms": 166.1783,
+            "mib_s": 6162.056056657217
+          },
+          {
+            "bytes_read": 1073741824,
+            "elapsed_ms": 162.6291,
+            "mib_s": 6296.536105776888
+          }
+        ],
+        "status": "ok"
+      },
+      "storage": {
+        "bus_type": "usb",
+        "device_product": "IB-1232CL-U3",
+        "device_vendor": "unknown",
+        "drive_type": "fixed",
+        "filesystem": "NTFS",
+        "free_bytes": 333434433536,
+        "removable_media": false,
+        "root": "D:\\",
+        "rotational": "unknown",
+        "total_bytes": 500105736192
+      }
+    }
+  ],
+  "timestamp_utc": "2026-11-20T17:09:01Z"
+}

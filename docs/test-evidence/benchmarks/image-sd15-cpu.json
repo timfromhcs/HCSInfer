@@ -1,0 +1,62 @@
+{
+  "backend": "cpu",
+  "model_file": "sd15-q8_0.gguf",
+  "model_sha256": "d0555243938c62faeefb4ac93f6c7a053ad373a4290c5256bce229aeb193bf94",
+  "n": 2,
+  "runs": [
+    {
+      "peak_commit_bytes": 3825762304,
+      "peak_ws_bytes": 3503796224,
+      "png_sha256": "7c1a1d6d6118034ee2bf8b82a4cc1cea12f20641120ffb4bde2e6befac1711ad",
+      "rc": 0,
+      "result": {
+        "backend": "cpu",
+        "bytes": 483779,
+        "device": "AMD Ryzen 7 7735HS with Radeon Graphics         (CPU)",
+        "generation_ms": 248309.604,
+        "height": 512,
+        "load_ms": 711.2565,
+        "mode": "generate",
+        "model": "D:/HCSModels\\diffusion\\sd15-q8_0.gguf",
+        "output": "docs/test-evidence/benchmarks\\images\\sd15-cpu-0.png",
+        "preset": "",
+        "schema_version": 1,
+        "steps": 20,
+        "total_ms": 248314.4527,
+        "width": 512
+      },
+      "stderr_tail": "",
+      "timed_out": false,
+      "wall_s": 249.43571290001273
+    },
+    {
+      "peak_commit_bytes": 3825807360,
+      "peak_ws_bytes": 3503529984,
+      "png_sha256": "7c1a1d6d6118034ee2bf8b82a4cc1cea12f20641120ffb4bde2e6befac1711ad",
+      "rc": 0,
+      "result": {
+        "backend": "cpu",
+        "bytes": 483779,
+        "device": "AMD Ryzen 7 7735HS with Radeon Graphics         (CPU)",
+        "generation_ms": 247612.6573,
+        "height": 512,
+        "load_ms": 170.9819,
+        "mode": "generate",
+        "model": "D:/HCSModels\\diffusion\\sd15-q8_0.gguf",
+        "output": "docs/test-evidence/benchmarks\\images\\sd15-cpu-1.png",
+        "preset": "",
+        "schema_version": 1,
+        "steps": 20,
+        "total_ms": 247617.012,
+        "width": 512
+      },
+      "stderr_tail": "",
+      "timed_out": false,
+      "wall_s": 247.96312780000153
+    }
+  ],
+  "seed": 42,
+  "size": "512x512",
+  "steps": 20,
+  "timestamp_utc": "2026-11-20T18:18:23Z"
+}

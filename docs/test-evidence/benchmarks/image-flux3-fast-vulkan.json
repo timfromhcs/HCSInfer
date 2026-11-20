@@ -1,0 +1,37 @@
+{
+  "backend": "vulkan",
+  "model_file": "flux-3-image-klein-UD-Q4_K_XL.gguf",
+  "model_sha256": "0a057e07550a5b2169e344d686171a7dd3c7d82c7d8d1d1605d8d881c16e9fa7",
+  "n": 1,
+  "preset": "fast",
+  "runs": [
+    {
+      "peak_commit_bytes": 10392338432,
+      "peak_ws_bytes": 6675697664,
+      "png_sha256": "e85be248f7784f823a4153a38c6599bb85540b7100ffa9e39d6a069d6d7ff93d",
+      "rc": 0,
+      "result": {
+        "backend": "vulkan",
+        "bytes": 495730,
+        "device": "AMD Radeon(TM) Graphics (Vulkan0)",
+        "generation_ms": 562790.1298,
+        "height": 512,
+        "load_ms": 993.2952,
+        "mode": "generate",
+        "model": "D:/HCSModels\\diffusion\\flux3\\flux-3-image-klein-UD-Q4_K_XL.gguf",
+        "output": "docs/test-evidence/benchmarks\\images\\flux3-fast-vulkan-0.png",
+        "preset": "fast",
+        "schema_version": 1,
+        "steps": 6,
+        "total_ms": 562808.3827,
+        "width": 512
+      },
+      "stderr_tail": "",
+      "timed_out": false,
+      "wall_s": 566.2148248000012
+    }
+  ],
+  "seed": 42,
+  "size": "512x512",
+  "timestamp_utc": "2026-11-20T19:01:52Z"
+}

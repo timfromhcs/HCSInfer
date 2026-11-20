@@ -1,31 +1,214 @@
 # Benchmarks
 
-Everything here is copied from the evidence files named in each section; nothing is estimated and nothing is claimed
-beyond those files. Status words: PASS / NOT RUN / BLOCKED. Methodology decision: `decisions/ADR-010-benchmark-methodology.md`.
-All numbers come from **one machine** (Windows 11 build 10.0.26200.9974, Ryzen 7 7735HS 8C/16T, Radeon 680M,
-21,245,952,000 bytes RAM, MSVC 19.44.35228, CMake 4.4.0, Ninja 1.13.2) and must not be generalised to other
-hardware, models or drivers.
+Everything here is copied or computed from the raw JSON under `docs/test-evidence/benchmarks/` (wave D, 2026-11-20); nothing is
+estimated. Status words: PASS / NOT RUN / BLOCKED. Methodology decision: `decisions/ADR-010-benchmark-methodology.md`.
+All numbers come from **one machine** and must not be generalised to other hardware, models, quantisations or drivers.
 
-## Method
+## Wave D: final binaries
 
-* Command: `HCSInfer benchmark --suite quick --model <gguf> --backend cpu|vulkan [--load-mode <m>] [--export <json>]`.
-  `quick` is 1 warm-up, 3 measured iterations, 64 new tokens. `--suite full` adds a prefill sweep (TTFT and prompt
-  tokens/s, 1 new token) and a decode sweep over `--sweep-sizes` (1..8 sizes of 16..1048576, default
-  128,512,1024,2048); every point has its own median/p90 and samples, points that do not fit `--ctx` are `SKIPPED`,
-  failed points make `result_status` `PARTIAL`. The same runner is reachable as `POST /hcs/v1/benchmarks` (a job) and
-  as the MCP tool `hcs.runtime.benchmark`. A real-model `full` run is recorded below; the `POST` API route has been
-  contract-tested but not run against a real model (NOT RUN).
-* Output: one AGENTS.md 21.1 JSON document (`schema_version 1`): machine, build, model SHA-256, quantization,
-  backend/device, context, cold and warm phases, median/p90 and the raw samples. Unmeasurable values are the string
-  `unknown` or `not_applicable`.
-* **"Cold" means process-cold, not page-cache-cold.** The OS file cache is not flushed (needs administrator rights), so
-  every record says `"file_cache": "not_controlled"`. The Vulkan driver shader cache is also not controlled.
-  Cold and warm numbers are never compared with each other, and different models, quantizations or prompts are never
-  compared as if only the backend changed.
-* Peak RAM is the process peak since start (it includes the cold phase and the warm reloads).
-* The benchmark matrix IDs of AGENTS.md 16.6: B0 and B1 are measured (below), B7 is measured as one sample per
-  configuration; **B2, B3, B4, B5, B6 and B8 are NOT RUN** (they need the Model Vault in the engine load path, HCS kernels
-  or a storage-bound model; see `roadmap/STATUS.md`).
+**Binaries under test** (`environment.json`): the single-file static EXEs of wave B, `windows-msvc-release-static`
+(CPU, 44,229,120 bytes, SHA-256 `c3a613e6...c717`) and `windows-msvc-release-static-vulkan`
+(86,548,992 bytes, SHA-256 `b94a6e06...cbe8`; full hashes in `environment.json`). The EXEs embed the build commit
+`cca2c6896c58+dirty` (shown in every `text-full-*.json`); the repository HEAD when the runs started was `5b3214d`
+(only SBOM/release metadata changed in between, no engine source). The llama.cpp (`d3c3e24`) and stable-diffusion.cpp
+(`532d2c1`) pins are unchanged.
+
+**Machine:** Windows 11 build 10.0.26200.9974, Ryzen 7 7735HS (8C/16T, AVX2/FMA3, no AVX-512), Radeon 680M (UMA reservation
+4.27 GB, Vulkan API 1.4.315, AMD proprietary driver 26.6.1 / registry 32.0.21043.12001), 21,245,952,000 bytes RAM
+(6.8-7.0 GiB free at start; ~3 GiB free during the FLUX runs), no battery (AC powered), Windows power plan
+"Balanced" (not changed), no CPU temperature or clock sensor available, so **thermal state was not measured**.
+Background services (a local LLM gateway and tool servers) were idle; no other heavy job ran at the same time. The
+repeated runs were executed strictly one after another.
+
+**Model drive:** the models are on a USB 3 bridge disk (`IB-1232CL-U3`, NTFS, `bus_type usb`; the rotational flag is
+`unknown` to Windows). Cold sequential reads measured 38-63 MiB/s (table below), which is consistent with a
+mechanical drive, but that is an inference, not a detection. The qwen3-0.6b file is on a second disk of the same
+model (`E:`).
+
+### Method
+
+* **Text:** `HCSInfer benchmark --suite full --backend cpu|vulkan --iterations 5 --warmup 1 --max-tokens 64 --sweep-sizes 128,512,2048 --ctx 4096`
+  (greedy, seed 42, one fixed prompt; 223 prompt tokens for LFM3, 199 for qwen3). Medians and p90 of the 5 measured
+  iterations; the raw samples are inside each JSON (AGENTS.md 21.1, `schema_version 1`, full machine/build/model metadata,
+  model SHA-256). Prompt throughput is reported here as **prompt tokens / TTFT**, because the Vulkan engine field is
+  inflated by asynchronous submission (known caveat, see below).
+* **Upstream cross-check:** `llama-bench -p 512 -n 128 -r 5` (`-t 8` CPU, `-ngl 99` Vulkan) from the same pinned llama.cpp.
+* **KV cache:** the HCS engine does not expose cache types, so this uses `llama-bench -p <ctx> -n 0 -fa 1 -ctk X -ctv X`
+  (K and V the same type, flash attention on, which quantised V cache requires). "TTFT proxy" = ctx / pp t/s, i.e. the
+  time to prefill a full context. Memory is the peak working set / peak commit of the `llama-bench` process sampled
+  every 200 ms (`GetProcessMemoryInfo`) and includes weights and compute buffers. Repetitions: 5 per row, except the
+  CPU rows with quantised cache at 8192 (2 repetitions each, because one repetition took ~8 minutes).
+* **Vision:** `HCSInfer vision --json` with LFM3-Omni-2B Q8_0 + its mmproj on a deterministic 512x512 synthetic PNG
+  (generated by `tools/bench/bench_common.py`, SHA-256 in the JSON), 48 new tokens, temperature 0; 5 separate processes
+  per backend, so each run includes its own model load.
+* **Image:** `HCSInfer image generate`, 512x512, seed 42. SD1.5 Q8_0 uses 20 steps; FLUX.3 Klein UD-Q4_K_XL uses the
+  `fast` (6 steps) and `quality` (16 steps) presets with the Qwen3-VL-4B Q4_K_M encoder and FLUX.2 VAE. The number is the
+  wall time of the whole process (model load + text encode + sampling + VAE + PNG). **N is stated in every row**: SD1.5
+  5 (Vulkan) / 2 (CPU); FLUX 1 per cell - those are single samples, not medians, and are provisional.
+* **API:** `HCSInfer serve` on loopback with a bearer token; a Python client measures request-sent -> first non-empty
+  content delta of a streaming `/v1/chat/completions` (10 measured requests after 1 discarded), plus non-streaming
+  latency and the first request that also loads the model. The API prompt is ~20 tokens, so its TTFT is **not
+  comparable** with the ~223-token TTFT of the engine benchmark.
+* **Drive:** `HCSInfer doctor --read-file` (read-only, 4 MiB buffer, up to 1 GiB per sample).
+* **Cold vs warm:** "cold" is *process-cold*; the OS file cache is never flushed (needs administrator rights) and the
+  driver shader cache is not controlled. Because each model was benchmarked CPU first and Vulkan second, the Vulkan
+  "cold load" figures read a file that the CPU run had just cached; **only the CPU cold load (and the first vision
+  run) reflect a real read from the drive**. Cold and warm numbers are never compared with each other, and different
+  models or quantisations are never compared as a backend comparison.
+* **Memory columns:** peak working set (WS) and peak commit. On Vulkan most weights live in UMA allocations that count as
+  commit, not working set, so a low Vulkan WS is not a memory saving.
+
+### Charts (generated from the JSON by `tools/bench/make_report.py`)
+
+![Decode throughput](benchmarks/chart-decode-tps.svg)
+![Warm TTFT](benchmarks/chart-ttft.svg)
+![Prefill TTFT vs prompt length](benchmarks/chart-prefill-ttft.svg)
+![Image generation time](benchmarks/chart-image-seconds.svg)
+![KV cache peak commit](benchmarks/chart-kv-commit.svg)
+![KV cache prefill time](benchmarks/chart-kv-ttft.svg)
+
+### What the numbers say (and do not say)
+
+* **Text on Vulkan vs CPU** (same model, same quantisation): decode 1.97x (qwen3-0.6b, 60.7 -> 119.4 t/s) and 1.90x
+  (LFM3-Omni-2B, 18.1 -> 34.5 t/s). Prefill is where the iGPU helps most: LFM3 TTFT 3,070 -> 393 ms (7.8x) and 2,077-token
+  prefill 27.8 s -> 3.4 s. `llama-bench` agrees within noise (LFM3 tg128 18.7 -> 39.2 t/s, pp512 73.9 -> 654.6 t/s).
+  The HCS adapter's decode is about 12% below `llama-bench` on Vulkan (34.5 vs 39.2 t/s) and about 3% below on CPU - not investigated.
+* **Prefill at longer prompts slows down on both backends** (qwen3 Vulkan 1,375 -> 1,032 t/s from 151 to 2,071 tokens;
+  decode at a 2K prompt is 87.8 vs 117.5 t/s at 151 tokens).
+* **Vision:** the image encode + prefill TTFT is 5.9 s on CPU and 0.81 s on Vulkan (7.3x). The CPU load p90 of 18.7 s is
+  the one run that really read the model from the USB drive.
+* **SD1.5:** Vulkan is 5.2x faster than CPU (47.6 s vs 248.7 s, n=5 / n=2).
+* **FLUX.3 Klein does not benefit from Vulkan on this machine** in these runs: fast 508 s (CPU) vs 566 s (Vulkan);
+  quality 664 s vs 576 s. On Vulkan `fast` and `quality` differ by only 10 s (566 vs 576) although they differ by 10
+  sampling steps, i.e. ~1 s per step and a fixed ~560 s per process (encoder + weights streaming from the USB drive
+  into ~10 GiB of commit with only ~3 GiB RAM free). The CPU path costs ~15.6 s per extra step with a fixed ~415 s.
+  Wave F measured 364-471 s on Vulkan with more free RAM; the difference is **not explained** (memory pressure is a
+  hypothesis, not tested). Treat every FLUX number as a single provisional sample.
+* **KV cache:** on **CPU** quantised KV with flash attention is dramatically slower (4.4x at 4K, 5.5x at 8K prefill
+  versus f16) while saving only 20-40% memory - f16 is the right CPU default. On **Vulkan** q8_0 costs ~4-6% prefill
+  time and saves 16-22% commit (1,975 -> 1,549 MiB at 8K); q4_0 saves 38% but costs 1.6-1.7x prefill time. Output quality of
+  quantised caches was **not evaluated** (NOT RUN). The commit saving is for a 0.6B model (small KV); larger models save more
+  in absolute terms.
+* **HTTP API:** streaming TTFT 100 ms (Vulkan) / 318 ms (CPU) for a ~20-token prompt; the first request that also loads a cached
+  model costs 2.3 s / 1.6 s.
+
+### Not measured / limits
+
+* Thermals, clocks and power draw: NOT RUN (no sensor access). Perf variance between sessions of up to ~10% has been seen
+  in this project, so differences under that are not claims.
+* Cold start from a flushed file cache: NOT RUN (needs administrator rights); see the cold/warm note.
+* LPIPS / image quality of the CPU vs Vulkan renders, and quality of quantised KV caches: NOT RUN.
+* FLUX.3 with N>1, CPU FLUX at other sizes, SD1.5 CPU with N=5: NOT RUN (time).
+* B2, B3, B4, B5, B6, B8 of AGENTS.md 16.6: unchanged (see the earlier sections below).
+* Hardware-flagged: the drive's media type could not be detected, so no "HDD" claim is made beyond the measured MiB/s.
+
+### Regression thresholds
+
+`tools/bench/regression-thresholds.json` defines the >5% median-regression alert (10% for load times and API TTFT, whose run-to-run
+noise is higher). `docs/test-evidence/benchmarks/summary.json` is the flat baseline produced from these runs;
+`python tools/bench/check_regression.py <baseline summary.json> <candidate summary.json>` exits 1 on an alert. It is an
+alert, not a hard failure, and needs the same model hash, backend, build and driver.
+
+### Reproduce
+
+```powershell
+# set HCS_EXE_CPU, HCS_EXE_VK, HCS_LLAMA_BENCH_CPU, HCS_LLAMA_BENCH_VK, HCS_MODELS, HCS_QWEN3 (see the header of tools/bench/run_matrix.py)
+python tools/bench/run_matrix.py env --out docs/test-evidence/benchmarks
+python tools/bench/run_matrix.py text --iterations 5 --out docs/test-evidence/benchmarks     # then: llamabench kv vision api sd flux hdd
+python tools/bench/make_report.py --data docs/test-evidence/benchmarks --charts docs/benchmarks --tables tables.md --readme-table readme-table.md
+```
+
+### Result tables
+
+### Text: `HCSInfer benchmark --suite full` (warm medians over 5 measured iterations, 1 warm-up discarded)
+
+| Model | Backend | status | cold load | cold TTFT | warm load med / p90 | warm TTFT med / p90 | prompt tokens / TTFT (t/s) | decode t/s med / p90 | peak WS / commit |
+|---|---|---|---|---|---|---|---|---|---|
+| qwen3-0.6b Q4_K_M | CPU (8 threads) | PASS | 7,650 ms | 461 ms | 549 / 596 ms | 444 / 475 ms | 448.2 | 60.73 / 61.04 | 1,126 MiB / 1,101 MiB |
+| qwen3-0.6b Q4_K_M | Vulkan (Radeon 680M) | PASS | 709 ms | 887 ms | 470 / 475 ms | 156 / 158 ms | 1,273.9 | 119.41 / 120.24 | 372 MiB / 1,563 MiB |
+| LFM3-Omni-2B Q8_0 | CPU (8 threads) | PASS | 12,312 ms | 3,072 ms | 415 / 525 ms | 3,070 / 3,135 ms | 72.6 | 18.12 / 18.27 | 1,995 MiB / 509 MiB |
+| LFM3-Omni-2B Q8_0 | Vulkan (Radeon 680M) | PASS | 1,201 ms | 384 ms | 1,116 / 1,148 ms | 393 / 478 ms | 567.8 | 34.52 / 35.64 | 496 MiB / 2,669 MiB |
+
+### Prefill sweep: TTFT and prompt throughput (1 new token; median / p90 of 5)
+
+| Model | Backend | prompt tokens | TTFT ms (med / p90) | prompt tokens / TTFT (t/s) | decode t/s at that prompt size (med) |
+|---|---|---|---|---|---|
+| qwen3-0.6b Q4_K_M | CPU (8 threads) | 151 | 336 / 343 | 449.1 | 62.21 |
+| qwen3-0.6b Q4_K_M | CPU (8 threads) | 535 | 1,224 / 1,234 | 437.1 | 49.77 |
+| qwen3-0.6b Q4_K_M | CPU (8 threads) | 2071 | 6,395 / 6,474 | 323.8 | 24.93 |
+| qwen3-0.6b Q4_K_M | Vulkan (Radeon 680M) | 151 | 110 / 111 | 1,374.9 | 117.48 |
+| qwen3-0.6b Q4_K_M | Vulkan (Radeon 680M) | 535 | 374 / 380 | 1,431.5 | 104.72 |
+| qwen3-0.6b Q4_K_M | Vulkan (Radeon 680M) | 2071 | 2,007 / 2,026 | 1,032.1 | 87.82 |
+| LFM3-Omni-2B Q8_0 | CPU (8 threads) | 151 | 2,044 / 2,099 | 73.9 | 18.27 |
+| LFM3-Omni-2B Q8_0 | CPU (8 threads) | 529 | 7,082 / 7,118 | 74.7 | 18.01 |
+| LFM3-Omni-2B Q8_0 | CPU (8 threads) | 2077 | 27,762 / 27,992 | 74.8 | 17.01 |
+| LFM3-Omni-2B Q8_0 | Vulkan (Radeon 680M) | 151 | 275 / 277 | 548.7 | 36.17 |
+| LFM3-Omni-2B Q8_0 | Vulkan (Radeon 680M) | 529 | 863 / 1,017 | 613.0 | 35.77 |
+| LFM3-Omni-2B Q8_0 | Vulkan (Radeon 680M) | 2077 | 3,409 / 4,061 | 609.2 | 34.99 |
+
+### Cross-check with upstream `llama-bench` (pp512 / tg128, 5 repetitions; same pinned llama.cpp)
+
+| Model | Backend | pp512 t/s (mean ± sd) | tg128 t/s (mean ± sd) | peak WS / commit |
+|---|---|---|---|---|
+| qwen3-0.6b Q4_K_M | CPU (8 threads) | 413.7 ± 5.8 | 70.0 ± 0.9 | 736 MiB / 682 MiB |
+| qwen3-0.6b Q4_K_M | Vulkan (Radeon 680M) | 1,511.5 ± 28.4 | 141.6 ± 5.2 | 254 MiB / 1,023 MiB |
+| LFM3-Omni-2B Q8_0 | CPU (8 threads) | 73.9 ± 0.6 | 18.7 ± 0.0 | 1,906 MiB / 406 MiB |
+| LFM3-Omni-2B Q8_0 | Vulkan (Radeon 680M) | 654.6 ± 5.2 | 39.2 ± 0.1 | 456 MiB / 2,524 MiB |
+
+### Vision: LFM3-Omni-2B Q8_0 + mmproj, 512x512 test image, 48 max new tokens (separate process per run)
+
+| Backend | n ok / n | load ms (med / p90) | TTFT incl. image encode ms (med / p90) | decode t/s (med) | wall s (med) | peak WS / commit |
+|---|---|---|---|---|---|---|
+| CPU (8 threads) | 5 / 5 | 1,099 / 18,719 | 5,898 / 6,024 | 17.3 | 9.6 | 2,544 MiB / 2,114 MiB |
+| Vulkan (Radeon 680M) | 5 / 5 | 2,006 / 2,447 | 810 / 1,271 | 34.0 | 4.0 | 1,096 MiB / 4,523 MiB |
+
+### Image generation, 512x512, seed 42, wall time of a whole `image generate` process (load + sampling + VAE + PNG)
+
+| Model | Setting | Backend | n ok / n | wall s median (p90) | all samples (s) | peak WS / commit |
+|---|---|---|---|---|---|---|
+| SD1.5 Q8_0 | 20 steps | CPU (8 threads) | 2 / 2 | 248.7 (249.4) | 249.4, 248.0 | 3,341 MiB / 3,649 MiB |
+| SD1.5 Q8_0 | 20 steps | Vulkan (Radeon 680M) | 5 / 5 | 47.6 (51.1) | 51.1, 47.5, 47.1, 48.1, 47.6 | 1,947 MiB / 4,601 MiB |
+| FLUX.3 Klein UD-Q4_K_XL | preset fast (6 steps) | CPU (8 threads) | 1 / 1 | 508.0 (508.0) | 508.0 | 7,445 MiB / 7,658 MiB |
+| FLUX.3 Klein UD-Q4_K_XL | preset fast (6 steps) | Vulkan (Radeon 680M) | 1 / 1 | 566.2 (566.2) | 566.2 | 6,366 MiB / 9,911 MiB |
+| FLUX.3 Klein UD-Q4_K_XL | preset quality (16 steps) | CPU (8 threads) | 1 / 1 | 664.4 (664.4) | 664.4 | 7,444 MiB / 7,658 MiB |
+| FLUX.3 Klein UD-Q4_K_XL | preset quality (16 steps) | Vulkan (Radeon 680M) | 1 / 1 | 576.5 (576.5) | 576.5 | 6,308 MiB / 9,899 MiB |
+
+### KV cache type x context (upstream `llama-bench`, qwen3-0.6b Q4_K_M, flash attention on, K and V same type, pp = whole context; repetitions per row in the status column)
+
+| Backend | context | cache | pp t/s (mean ± sd) | TTFT proxy s (= ctx / pp) | peak WS MiB | peak commit MiB | status |
+|---|---|---|---|---|---|---|---|
+| CPU (8 threads) | 4096 | f16 | 204.4 ± 25.0 | 20.03 | 1,142 | 1,082 | PASS, n=5 |
+| CPU (8 threads) | 4096 | q8_0 | 46.7 ± 0.8 | 87.75 | 935 | 875 | PASS, n=5 |
+| CPU (8 threads) | 4096 | q4_0 | 42.2 ± 3.7 | 97.05 | 823 | 762 | PASS, n=5 |
+| CPU (8 threads) | 8192 | f16 | 139.2 ± 0.5 | 58.87 | 1,595 | 1,536 | PASS, n=5 |
+| CPU (8 threads) | 8192 | q8_0 | 25.4 ± 0.0 | 322.04 | 1,175 | 1,118 | PASS, n=2 |
+| CPU (8 threads) | 8192 | q4_0 | 24.4 ± 0.0 | 335.88 | 951 | 893 | PASS, n=2 |
+| Vulkan (Radeon 680M) | 4096 | f16 | 751.5 ± 6.8 | 5.45 | 345 | 1,510 | PASS, n=5 |
+| Vulkan (Radeon 680M) | 4096 | q8_0 | 709.8 ± 3.3 | 5.77 | 516 | 1,268 | PASS, n=5 |
+| Vulkan (Radeon 680M) | 4096 | q4_0 | 468.1 ± 3.7 | 8.75 | 352 | 1,187 | PASS, n=5 |
+| Vulkan (Radeon 680M) | 8192 | f16 | 460.8 ± 2.1 | 17.78 | 263 | 1,975 | PASS, n=5 |
+| Vulkan (Radeon 680M) | 8192 | q8_0 | 443.1 ± 1.8 | 18.49 | 263 | 1,549 | PASS, n=5 |
+| Vulkan (Radeon 680M) | 8192 | q4_0 | 268.4 ± 0.3 | 30.53 | 515 | 1,234 | PASS, n=5 |
+
+### HTTP API latency (`HCSInfer serve`, loopback, LFM3-Omni-2B Q8_0, 10 measured requests after 1 discarded)
+
+| Backend | first request incl. model load | stream TTFT ms (med / p90) | stream total ms (med) | non-stream total ms (med / p90) | server peak WS / commit |
+|---|---|---|---|---|---|
+| CPU (8 threads) | 1,635 ms | 318 / 335 | 1,031 | 1,024 / 1,034 | 2,430 MiB / 2,094 MiB |
+| Vulkan (Radeon 680M) | 2,255 ms | 100 / 105 | 461 | 476 / 490 | 1,100 MiB / 4,473 MiB |
+
+### Model drive: sequential read, read-only (`HCSInfer doctor --read-file`, 4 MiB buffer, up to 1 GiB per sample)
+
+| File | phase | MiB/s (median) | samples |
+|---|---|---|---|
+| `LFM3-Omni-2B-Q8_0.gguf` | first-read (likely cold) | 37.6 | 1 |
+| `Qwen3VL-4B-Instruct-Q4_K_M.gguf` | first-read (likely cold) | 55.9 | 1 |
+| `SmolVLM2-500M-Video-Instruct-Q8_0.gguf` | first-read (likely cold) | 63.3 | 1 |
+| `LFM3-Omni-2B-Q8_0.gguf` | repeat (page-cache warm) | 6,162.1 | 3 |
+
+## Earlier measurements (before wave D, kept for history)
+
+The sections below predate wave D, were measured on earlier builds or with fewer repetitions, and are superseded by the tables above where they overlap.
 
 ## B0 / B1: qwen3-0.6b Q4_K_M, CPU vs Vulkan
 
