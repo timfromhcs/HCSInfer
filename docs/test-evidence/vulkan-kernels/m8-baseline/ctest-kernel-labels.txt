@@ -1,0 +1,33 @@
+Test project D:/HCSInfer/.claude/worktrees/repo-analysis-v1-stable-d7c553/build/windows-msvc-release-kernels
+      Start  8: KernelCpuFp16.RoundTripsRepresentableValuesExactly
+ 1/12 Test  #8: KernelCpuFp16.RoundTripsRepresentableValuesExactly ......................................   Passed    0.05 sec
+      Start  9: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns
+ 2/12 Test  #9: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns ................................   Passed    0.05 sec
+      Start 10: KernelCpuSizing.RowAndTotalBytes
+ 3/12 Test #10: KernelCpuSizing.RowAndTotalBytes ........................................................   Passed    0.05 sec
+      Start 11: KernelCpuGemv.MatchesADirectDequantisedDotProduct
+ 4/12 Test #11: KernelCpuGemv.MatchesADirectDequantisedDotProduct .......................................   Passed    0.05 sec
+      Start 12: KernelCpuGemv.SingleRowSingleBlockAndZeroWeights
+ 5/12 Test #12: KernelCpuGemv.SingleRowSingleBlockAndZeroWeights ........................................   Passed    0.05 sec
+      Start 13: KernelCpuGemv.NonPowerOfTwoRowsAndColumns
+ 6/12 Test #13: KernelCpuGemv.NonPowerOfTwoRowsAndColumns ...............................................   Passed    0.05 sec
+      Start 27: KernelVulkanGemv.FeatureFlagIsOffByDefault
+ 7/12 Test #27: KernelVulkanGemv.FeatureFlagIsOffByDefault ..............................................   Passed    0.05 sec
+      Start 28: KernelVulkanGemv.ShapeValidation
+ 8/12 Test #28: KernelVulkanGemv.ShapeValidation ........................................................   Passed    0.05 sec
+      Start 29: KernelVulkanGemv.MatchesTheCpuReferenceAcrossShapes
+ 9/12 Test #29: KernelVulkanGemv.MatchesTheCpuReferenceAcrossShapes .....................................   Passed    0.33 sec
+      Start 30: KernelVulkanGemv.RepeatsAreStableAndTheDeviceSurvivesManyCalls
+10/12 Test #30: KernelVulkanGemv.RepeatsAreStableAndTheDeviceSurvivesManyCalls ..........................   Passed    0.21 sec
+      Start 31: KernelVulkanFallback.DisabledFlagFallsBackToTheCpuReferenceWithTheCorrectResult
+11/12 Test #31: KernelVulkanFallback.DisabledFlagFallsBackToTheCpuReferenceWithTheCorrectResult .........   Passed    0.05 sec
+      Start 32: KernelVulkanFallback.InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextCallRecovers
+12/12 Test #32: KernelVulkanFallback.InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextCallRecovers ...   Passed    0.34 sec
+
+100% tests passed out of 12
+
+Label Time Summary:
+kernel-cpu       =   0.31 sec*proc (6 tests)
+kernel-vulkan    =   1.03 sec*proc (6 tests)
+
+Total Test time (real) =   1.50 sec

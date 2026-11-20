@@ -1,0 +1,206 @@
+Running main() from Y:\build\windows-msvc-release-kernels\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 6 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 4 tests from KernelVulkanGemv
+[ RUN      ] KernelVulkanGemv.FeatureFlagIsOffByDefault
+[       OK ] KernelVulkanGemv.FeatureFlagIsOffByDefault (0 ms)
+[ RUN      ] KernelVulkanGemv.ShapeValidation
+[       OK ] KernelVulkanGemv.ShapeValidation (0 ms)
+[ RUN      ] KernelVulkanGemv.MatchesTheCpuReferenceAcrossShapes
+[Vulkan Loader] LAYER:          Searching for implicit layer manifest files
+[Vulkan Loader] LAYER:             In following locations:
+[Vulkan Loader] LAYER:             Found no files
+[Vulkan Loader] LAYER:          Checking for Layer Manifest files in Registry at HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\Vulkan\ImplicitLayers
+[Vulkan Loader] INFO | LAYER:   Located json file "C:\Program Files (x86)\Steam\SteamOverlayVulkanLayer64.json" from registry "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\Vulkan\ImplicitLayers"
+[Vulkan Loader] INFO | LAYER:   Located json file "C:\Program Files (x86)\Steam\SteamFossilizeVulkanLayer64.json" from registry "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\Vulkan\ImplicitLayers"
+[Vulkan Loader] LAYER:          Searching for explicit layer manifest files
+[Vulkan Loader] LAYER:             In following locations:
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin
+[Vulkan Loader] LAYER:             Found the following files:
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_api_dump.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_crash_diagnostic.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_gfxreconstruct.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_profiles.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_shader_object.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_synchronization2.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_monitor.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_screenshot.json
+[Vulkan Loader] WARNING | LAYER: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
+[Vulkan Loader] WARNING | LAYER: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
+[Vulkan Loader] DEBUG | LAYER:  Loading layer library C:\VulkanSDK\1.4.357.0\Bin\.\VkLayer_khronos_validation.dll
+[Vulkan Loader] INFO | LAYER:   Insert instance layer "VK_LAYER_KHRONOS_validation" (C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll)
+[Vulkan Loader] DEBUG | LAYER:  Loading layer library C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\.\amdvlk64.dll
+[Vulkan Loader] INFO | LAYER:   Insert instance layer "VK_LAYER_AMD_switchable_graphics" (C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll)
+[Vulkan Loader] LAYER:          vkCreateInstance layer callstack setup to:
+[Vulkan Loader] LAYER:             <Application>
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             <Loader>
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             VK_LAYER_AMD_switchable_graphics
+[Vulkan Loader] LAYER:                     Type: Implicit
+[Vulkan Loader] LAYER:                     Enabled By: Implicit Layer
+[Vulkan Loader] LAYER:                         Disable Env Var:  DISABLE_LAYER_AMD_SWITCHABLE_GRAPHICS_1
+[Vulkan Loader] LAYER:                     Manifest: C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amd-vulkan64.json
+[Vulkan Loader] LAYER:                     Library:  C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             VK_LAYER_KHRONOS_validation
+[Vulkan Loader] LAYER:                     Type: Explicit
+[Vulkan Loader] LAYER:                     Enabled By: Environment Variable VK_INSTANCE_LAYERS
+[Vulkan Loader] LAYER:                     Manifest: C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.json
+[Vulkan Loader] LAYER:                     Library:  C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             <Drivers>
+[Vulkan Loader] INFO | LAYER:   Inserted device layer "VK_LAYER_KHRONOS_validation" (C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll)
+[Vulkan Loader] INFO | LAYER:   Failed to find vkGetDeviceProcAddr in layer "C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll"
+[Vulkan Loader] DRIVER:         vkCreateDevice layer callstack setup to:
+[Vulkan Loader] DRIVER:            <Application>
+[Vulkan Loader] DRIVER:              ||
+[Vulkan Loader] DRIVER:            <Loader>
+[Vulkan Loader] DRIVER:              ||
+[Vulkan Loader] LAYER:             VK_LAYER_KHRONOS_validation
+[Vulkan Loader] LAYER:                     Type: Explicit
+[Vulkan Loader] LAYER:                     Enabled By: Environment Variable VK_INSTANCE_LAYERS
+[Vulkan Loader] LAYER:                     Manifest: C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.json
+[Vulkan Loader] LAYER:                     Library:  C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] DRIVER:            <Device>
+[Vulkan Loader] DRIVER:                Using "AMD Radeon(TM) Graphics" with driver: "C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll"
+[device] AMD Radeon(TM) Graphics (integrated_gpu)
+[       OK ] KernelVulkanGemv.MatchesTheCpuReferenceAcrossShapes (237 ms)
+[ RUN      ] KernelVulkanGemv.RepeatsAreStableAndTheDeviceSurvivesManyCalls
+[       OK ] KernelVulkanGemv.RepeatsAreStableAndTheDeviceSurvivesManyCalls (33 ms)
+[----------] 4 tests from KernelVulkanGemv (270 ms total)
+
+[----------] 2 tests from KernelVulkanFallback
+[ RUN      ] KernelVulkanFallback.DisabledFlagFallsBackToTheCpuReferenceWithTheCorrectResult
+[       OK ] KernelVulkanFallback.DisabledFlagFallsBackToTheCpuReferenceWithTheCorrectResult (0 ms)
+[ RUN      ] KernelVulkanFallback.InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextCallRecovers
+[Vulkan Loader] DEBUG | LAYER:  Unloading layer library C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll
+[Vulkan Loader] DEBUG | LAYER:  Unloading layer library C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll
+[Vulkan Loader] LAYER:          Searching for implicit layer manifest files
+[Vulkan Loader] LAYER:             In following locations:
+[Vulkan Loader] LAYER:             Found no files
+[Vulkan Loader] LAYER:          Checking for Layer Manifest files in Registry at HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\Vulkan\ImplicitLayers
+[Vulkan Loader] INFO | LAYER:   Located json file "C:\Program Files (x86)\Steam\SteamOverlayVulkanLayer64.json" from registry "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\Vulkan\ImplicitLayers"
+[Vulkan Loader] INFO | LAYER:   Located json file "C:\Program Files (x86)\Steam\SteamFossilizeVulkanLayer64.json" from registry "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\Vulkan\ImplicitLayers"
+[Vulkan Loader] LAYER:          Searching for explicit layer manifest files
+[Vulkan Loader] LAYER:             In following locations:
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin
+[Vulkan Loader] LAYER:             Found the following files:
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_api_dump.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_crash_diagnostic.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_gfxreconstruct.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_profiles.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_shader_object.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_synchronization2.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_monitor.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_screenshot.json
+[Vulkan Loader] WARNING | LAYER: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
+[Vulkan Loader] WARNING | LAYER: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
+[Vulkan Loader] DEBUG | LAYER:  Loading layer library C:\VulkanSDK\1.4.357.0\Bin\.\VkLayer_khronos_validation.dll
+[Vulkan Loader] INFO | LAYER:   Insert instance layer "VK_LAYER_KHRONOS_validation" (C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll)
+[Vulkan Loader] DEBUG | LAYER:  Loading layer library C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\.\amdvlk64.dll
+[Vulkan Loader] INFO | LAYER:   Insert instance layer "VK_LAYER_AMD_switchable_graphics" (C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll)
+[Vulkan Loader] LAYER:          vkCreateInstance layer callstack setup to:
+[Vulkan Loader] LAYER:             <Application>
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             <Loader>
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             VK_LAYER_AMD_switchable_graphics
+[Vulkan Loader] LAYER:                     Type: Implicit
+[Vulkan Loader] LAYER:                     Enabled By: Implicit Layer
+[Vulkan Loader] LAYER:                         Disable Env Var:  DISABLE_LAYER_AMD_SWITCHABLE_GRAPHICS_1
+[Vulkan Loader] LAYER:                     Manifest: C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amd-vulkan64.json
+[Vulkan Loader] LAYER:                     Library:  C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             VK_LAYER_KHRONOS_validation
+[Vulkan Loader] LAYER:                     Type: Explicit
+[Vulkan Loader] LAYER:                     Enabled By: Environment Variable VK_INSTANCE_LAYERS
+[Vulkan Loader] LAYER:                     Manifest: C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.json
+[Vulkan Loader] LAYER:                     Library:  C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             <Drivers>
+[Vulkan Loader] INFO | LAYER:   Inserted device layer "VK_LAYER_KHRONOS_validation" (C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll)
+[Vulkan Loader] INFO | LAYER:   Failed to find vkGetDeviceProcAddr in layer "C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll"
+[Vulkan Loader] DRIVER:         vkCreateDevice layer callstack setup to:
+[Vulkan Loader] DRIVER:            <Application>
+[Vulkan Loader] DRIVER:              ||
+[Vulkan Loader] DRIVER:            <Loader>
+[Vulkan Loader] DRIVER:              ||
+[Vulkan Loader] LAYER:             VK_LAYER_KHRONOS_validation
+[Vulkan Loader] LAYER:                     Type: Explicit
+[Vulkan Loader] LAYER:                     Enabled By: Environment Variable VK_INSTANCE_LAYERS
+[Vulkan Loader] LAYER:                     Manifest: C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.json
+[Vulkan Loader] LAYER:                     Library:  C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] DRIVER:            <Device>
+[Vulkan Loader] DRIVER:                Using "AMD Radeon(TM) Graphics" with driver: "C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll"
+[Vulkan Loader] DEBUG | LAYER:  Unloading layer library C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll
+[Vulkan Loader] DEBUG | LAYER:  Unloading layer library C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll
+[Vulkan Loader] LAYER:          Searching for implicit layer manifest files
+[Vulkan Loader] LAYER:             In following locations:
+[Vulkan Loader] LAYER:             Found no files
+[Vulkan Loader] LAYER:          Checking for Layer Manifest files in Registry at HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\Vulkan\ImplicitLayers
+[Vulkan Loader] INFO | LAYER:   Located json file "C:\Program Files (x86)\Steam\SteamOverlayVulkanLayer64.json" from registry "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\Vulkan\ImplicitLayers"
+[Vulkan Loader] INFO | LAYER:   Located json file "C:\Program Files (x86)\Steam\SteamFossilizeVulkanLayer64.json" from registry "HKEY_LOCAL_MACHINE\SOFTWARE\Khronos\Vulkan\ImplicitLayers"
+[Vulkan Loader] LAYER:          Searching for explicit layer manifest files
+[Vulkan Loader] LAYER:             In following locations:
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin
+[Vulkan Loader] LAYER:             Found the following files:
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_api_dump.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_crash_diagnostic.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_gfxreconstruct.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_profiles.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_shader_object.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_synchronization2.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_monitor.json
+[Vulkan Loader] LAYER:                C:\VulkanSDK\1.4.357.0\Bin\VkLayer_screenshot.json
+[Vulkan Loader] WARNING | LAYER: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
+[Vulkan Loader] WARNING | LAYER: env var 'VK_INSTANCE_LAYERS' defined and adding layers "VK_LAYER_KHRONOS_validation"
+[Vulkan Loader] DEBUG | LAYER:  Loading layer library C:\VulkanSDK\1.4.357.0\Bin\.\VkLayer_khronos_validation.dll
+[Vulkan Loader] INFO | LAYER:   Insert instance layer "VK_LAYER_KHRONOS_validation" (C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll)
+[Vulkan Loader] DEBUG | LAYER:  Loading layer library C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\.\amdvlk64.dll
+[Vulkan Loader] INFO | LAYER:   Insert instance layer "VK_LAYER_AMD_switchable_graphics" (C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll)
+[Vulkan Loader] LAYER:          vkCreateInstance layer callstack setup to:
+[Vulkan Loader] LAYER:             <Application>
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             <Loader>
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             VK_LAYER_AMD_switchable_graphics
+[Vulkan Loader] LAYER:                     Type: Implicit
+[Vulkan Loader] LAYER:                     Enabled By: Implicit Layer
+[Vulkan Loader] LAYER:                         Disable Env Var:  DISABLE_LAYER_AMD_SWITCHABLE_GRAPHICS_1
+[Vulkan Loader] LAYER:                     Manifest: C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amd-vulkan64.json
+[Vulkan Loader] LAYER:                     Library:  C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             VK_LAYER_KHRONOS_validation
+[Vulkan Loader] LAYER:                     Type: Explicit
+[Vulkan Loader] LAYER:                     Enabled By: Environment Variable VK_INSTANCE_LAYERS
+[Vulkan Loader] LAYER:                     Manifest: C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.json
+[Vulkan Loader] LAYER:                     Library:  C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] LAYER:             <Drivers>
+[Vulkan Loader] INFO | LAYER:   Inserted device layer "VK_LAYER_KHRONOS_validation" (C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll)
+[Vulkan Loader] INFO | LAYER:   Failed to find vkGetDeviceProcAddr in layer "C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll"
+[Vulkan Loader] DRIVER:         vkCreateDevice layer callstack setup to:
+[Vulkan Loader] DRIVER:            <Application>
+[Vulkan Loader] DRIVER:              ||
+[Vulkan Loader] DRIVER:            <Loader>
+[Vulkan Loader] DRIVER:              ||
+[Vulkan Loader] LAYER:             VK_LAYER_KHRONOS_validation
+[Vulkan Loader] LAYER:                     Type: Explicit
+[Vulkan Loader] LAYER:                     Enabled By: Environment Variable VK_INSTANCE_LAYERS
+[Vulkan Loader] LAYER:                     Manifest: C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.json
+[Vulkan Loader] LAYER:                     Library:  C:\VulkanSDK\1.4.357.0\Bin\VkLayer_khronos_validation.dll
+[Vulkan Loader] LAYER:               ||
+[Vulkan Loader] DRIVER:            <Device>
+[Vulkan Loader] DRIVER:                Using "AMD Radeon(TM) Graphics" with driver: "C:\WINDOWS\System32\DriverStore\FileRepository\u0201163.inf_amd64_5a3558962e78d523\B026079\amdvlk64.dll"
+[       OK ] KernelVulkanFallback.InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextCallRecovers (207 ms)
+[----------] 2 tests from KernelVulkanFallback (207 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 2 test suites ran. (478 ms total)
+[  PASSED  ] 6 tests.

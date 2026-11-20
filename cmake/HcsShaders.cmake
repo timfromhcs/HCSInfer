@@ -17,10 +17,10 @@ function(hcs_add_shader target symbol stage source)
   set(_hdr "${CMAKE_BINARY_DIR}/generated/hcs/shaders/${symbol}.hpp")
   add_custom_command(
     OUTPUT "${_spv}"
-    COMMAND "${HCS_GLSLC}" --target-env=vulkan1.2 "-fshader-stage=${stage}" "${source}" -o "${_spv}"
-    COMMAND "${HCS_SPIRV_VAL}" --target-env vulkan1.2 "${_spv}"
+    COMMAND "${HCS_GLSLC}" --target-env=vulkan1.1 "-fshader-stage=${stage}" "${source}" -o "${_spv}"
+    COMMAND "${HCS_SPIRV_VAL}" --target-env vulkan1.1 "${_spv}"
     DEPENDS "${source}"
-    COMMENT "Compiling + validating shader ${symbol} (glslc ${stage}, spirv-val vulkan1.2)"
+    COMMENT "Compiling + validating shader ${symbol} (glslc ${stage}, spirv-val vulkan1.1)"
     VERBATIM)
   add_custom_command(
     OUTPUT "${_hdr}"

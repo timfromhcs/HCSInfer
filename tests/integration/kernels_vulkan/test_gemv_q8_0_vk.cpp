@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include "hcs/kernels/cpu.hpp"
@@ -92,4 +93,67 @@ TEST(KernelVulkanGemv, RepeatsAreStableAndTheDeviceSurvivesManyCalls) {
         ASSERT_TRUE(vulkan::gemv_q8_0(vulkan::GemvRequest{x.data(), w.data(), y.data(), m, k}).ok()) << i;
         EXPECT_EQ(y, first) << "call " << i << " differs from the first (must be deterministic)";
     }
+}
+
+namespace {
+
+// The caller-side contract documented in docs/vulkan-kernels.md: try the GPU, keep the CPU result on any error.
+std::vector<float> gemv_with_cpu_fallback(const std::vector<float>& x, const std::vector<std::uint8_t>& w,
+                                          std::uint32_t m, std::uint32_t k, bool* used_gpu) {
+    std::vector<float> y(m, 0.0f);
+    auto r = vulkan::gemv_q8_0(vulkan::GemvRequest{x.data(), w.data(), y.data(), m, k});
+    *used_gpu = r.ok();
+    if (!r.ok())
+        cpu::gemv_q8_0(x.data(), w.data(), y.data(), m, k);
+    return y;
+}
+
+}  // namespace
+
+// Works without a GPU: with the flag off the documented fallback pattern must still give the right answer.
+TEST(KernelVulkanFallback, DisabledFlagFallsBackToTheCpuReferenceWithTheCorrectResult) {
+    vulkan::set_enabled(false);
+    const std::uint32_t m = 40, k = 96;
+    const auto w = test::to_q8_0(test::random_vec(static_cast<std::size_t>(m) * k, 11), m, k);
+    const auto x = test::random_vec(k, 12);
+    std::vector<float> ref(m, 0.0f);
+    cpu::gemv_q8_0(x.data(), w.data(), ref.data(), m, k);
+    bool used_gpu = true;
+    const auto y = gemv_with_cpu_fallback(x, w, m, k, &used_gpu);
+    EXPECT_FALSE(used_gpu);
+    EXPECT_EQ(y, ref);
+}
+
+// AGENTS.md 12.4: on VK_ERROR_DEVICE_LOST stop submitting, report a BackendError, and recover only through a
+// controlled path (the cached context is rebuilt by the next call). The loss is injected at the submit seam; the
+// real queue is not touched, so the test is safe on the real device.
+TEST(KernelVulkanFallback, InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextCallRecovers) {
+    require_device();
+    vulkan::set_enabled(true);
+    const std::uint32_t m = 64, k = 256;
+    const auto w = test::to_q8_0(test::random_vec(static_cast<std::size_t>(m) * k, 21), m, k);
+    const auto x = test::random_vec(k, 22);
+    std::vector<float> ref(m, 0.0f);
+    cpu::gemv_q8_0(x.data(), w.data(), ref.data(), m, k);
+
+    vulkan::inject_fault_for_testing(vulkan::TestFault::DeviceLostOnSubmit);
+    std::vector<float> y(m, 0.0f);
+    auto r = vulkan::gemv_q8_0(vulkan::GemvRequest{x.data(), w.data(), y.data(), m, k});
+    ASSERT_FALSE(r.ok());
+    EXPECT_EQ(r.error().code, ErrorCode::BackendError);
+    EXPECT_NE(r.error().message.find("device lost"), std::string::npos) << r.error().message;
+
+    // The caller keeps a correct CPU result.
+    vulkan::inject_fault_for_testing(vulkan::TestFault::DeviceLostOnSubmit);
+    bool used_gpu = true;
+    const auto y_fb = gemv_with_cpu_fallback(x, w, m, k, &used_gpu);
+    EXPECT_FALSE(used_gpu);
+    EXPECT_EQ(y_fb, ref);
+
+    // Fault consumed: the next call rebuilds the context and matches the reference again.
+    std::vector<float> y2(m, 0.0f);
+    ASSERT_TRUE(vulkan::gemv_q8_0(vulkan::GemvRequest{x.data(), w.data(), y2.data(), m, k}).ok());
+    for (std::uint32_t i = 0; i < m; ++i)
+        EXPECT_NEAR(y2[i], ref[i], 1e-3f * (1.0f + std::fabs(ref[i]))) << i;
+    vulkan::inject_fault_for_testing(vulkan::TestFault::None);
 }

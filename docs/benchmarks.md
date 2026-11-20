@@ -133,8 +133,10 @@ reference, **not inside a model**. Radeon 680M, CPU reference single-threaded, 2
 | 11008x4096 | 30.00 | 14.31 | 2.1x | 3.8e-05 | 3.12 |
 
 Small shapes lose to per-call buffer/dispatch overhead; large shapes win by ~2.1-2.5x at ~3.6 GiB/s. The kernel is
-feature-flagged **OFF** and has **no upstream-Vulkan (GGML) baseline** yet, so it is not default-enabled
+feature-flagged **OFF**. Wave K measured the upstream baseline (below), so it is not default-enabled
 (`docs/vulkan-kernels.md`, AGENTS.md 16.6 B3).
+
+**Wave K upstream baseline (2026-11-20, llama.cpp `d3c3e24`, 5 repetitions, median/p90, `test-evidence/vulkan-kernels/m8-baseline/`):** GGML Vulkan `MUL_MAT` q8_0 m=4096 n=1 k=14336 = 0.822 ms (70.7 GiB/s, resident weights) vs the HCS kernel at the same shape 14.99 ms per call (3.88 GiB/s) = 18.2x slower. `llama-bench` tg128 on Vulkan: qwen3-0.6b Q4_K_M 148.1 / p90 150.1 t/s (CPU 75.1), LFM3-Omni-2B Q8_0 39.7 / 39.8 t/s (CPU 19.3). Cold (process-cold, file cache not flushed) and warm are separate files.
 
 A second variant (v2, shared-memory tiling of the activation vector) was measured against v1 (`--reps 30`,
 `test-evidence/vulkan-kernels/gemv-q8_0-variants-bench.json`): **no benefit** (within noise on every shape), so the

@@ -1,0 +1,25 @@
+Running main() from Y:\build\windows-msvc-release-kernels\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 6 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 4 tests from KernelVulkanGemv
+[ RUN      ] KernelVulkanGemv.FeatureFlagIsOffByDefault
+[       OK ] KernelVulkanGemv.FeatureFlagIsOffByDefault (0 ms)
+[ RUN      ] KernelVulkanGemv.ShapeValidation
+[       OK ] KernelVulkanGemv.ShapeValidation (0 ms)
+[ RUN      ] KernelVulkanGemv.MatchesTheCpuReferenceAcrossShapes
+[device] AMD Radeon(TM) Graphics (integrated_gpu)
+[       OK ] KernelVulkanGemv.MatchesTheCpuReferenceAcrossShapes (311 ms)
+[ RUN      ] KernelVulkanGemv.RepeatsAreStableAndTheDeviceSurvivesManyCalls
+[       OK ] KernelVulkanGemv.RepeatsAreStableAndTheDeviceSurvivesManyCalls (27 ms)
+[----------] 4 tests from KernelVulkanGemv (339 ms total)
+
+[----------] 2 tests from KernelVulkanFallback
+[ RUN      ] KernelVulkanFallback.DisabledFlagFallsBackToTheCpuReferenceWithTheCorrectResult
+[       OK ] KernelVulkanFallback.DisabledFlagFallsBackToTheCpuReferenceWithTheCorrectResult (0 ms)
+[ RUN      ] KernelVulkanFallback.InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextCallRecovers
+[       OK ] KernelVulkanFallback.InjectedDeviceLossIsReportedFallsBackToCpuAndTheNextCallRecovers (176 ms)
+[----------] 2 tests from KernelVulkanFallback (176 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 2 test suites ran. (516 ms total)
+[  PASSED  ] 6 tests.

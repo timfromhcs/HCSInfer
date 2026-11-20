@@ -68,10 +68,16 @@ memory per K-tile to cut x traffic; the hypothesis was that this was the bottlen
 default and v2 stays behind the flag for reproducibility. Full write-up:
 `docs/research/vulkan-gemv-v2-shared-memory.md`.
 
+## Wave K (2026-11-20): upstream baseline, validation layers, fallback
+
+See `m8-baseline/README.md`. Upstream Vulkan Q8_0 `mul_mat_vec` 4096x14336 n=1: 0.822 ms; HCS v1: 14.99 ms (18.2x slower)
+-> **stays OFF**. Validation layers found and fixed a SPIR-V 1.5 vs Vulkan 1.1 instance mismatch (now `vulkan1.1`, 0
+messages). Device-lost and flag-off fallback tests added (12/12 `kernel-cpu`+`kernel-vulkan` PASS).
+
 ## NOT RUN / open
 
-* **Upstream-Vulkan baseline** (GGML's Vulkan GEMV) — the kernel is not wired into GGML's backend.
-* Vulkan **validation layers** on the kernel; a **device-lost** experiment; **subgroup/fp16/int8** feature use.
+* A **real** (driver-provoked) device-lost experiment; **subgroup/fp16/int8** feature use. (Upstream baseline and
+  validation layers: DONE in wave K.)
 * A **tuned** version (staging buffers, shared-memory reduction, multiple rows per workgroup) and the
   kernel-registry/autotuner cache.
 * Any **default-enable** decision: it requires a repeatable measured benefit over the selected fallback on the

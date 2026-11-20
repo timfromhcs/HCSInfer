@@ -1,0 +1,4 @@
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon(TM) Graphics (AMD proprietary driver) | uma: 1 | rebar: 0 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 32768 | int dot: 1 | matrix cores: none
+version: 1.0.0-dev (build 1, commit d3c3e24)
+built with MSVC 19.44.35228.0 for Windows AMD64

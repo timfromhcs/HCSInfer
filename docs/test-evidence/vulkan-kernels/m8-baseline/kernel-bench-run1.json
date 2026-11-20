@@ -1,0 +1,161 @@
+{
+  "device": {
+    "device_id": 5761,
+    "name": "AMD Radeon(TM) Graphics",
+    "type": "integrated_gpu",
+    "vendor_id": 4098
+  },
+  "kernel": "gemv_q8_0",
+  "reps": 30,
+  "result_status": "PASS",
+  "schema_version": 1,
+  "shapes": [
+    {
+      "cpu_ms_median": 0.1965,
+      "k": 512,
+      "m": 512,
+      "result_status": "PASS",
+      "scalar": {
+        "gib_s": 0.18142356557735348,
+        "max_abs_err": 4.76837158203125e-06,
+        "ms_median": 1.4298,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 0.1374318086445657
+      },
+      "tiled": {
+        "gib_s": 0.1804015676072745,
+        "max_abs_err": 4.76837158203125e-06,
+        "ms_median": 1.4379,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 0.1366576257041519
+      },
+      "weight_memcpy_ms_median": 0.0109
+    },
+    {
+      "cpu_ms_median": 0.7883,
+      "k": 1024,
+      "m": 1024,
+      "result_status": "PASS",
+      "scalar": {
+        "gib_s": 0.68240556149293,
+        "max_abs_err": 1.1444091796875e-05,
+        "ms_median": 1.5205,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 0.5184478789871753
+      },
+      "tiled": {
+        "gib_s": 0.6834393731063101,
+        "max_abs_err": 1.1444091796875e-05,
+        "ms_median": 1.5182,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 0.5192333025951785
+      },
+      "weight_memcpy_ms_median": 0.0205
+    },
+    {
+      "cpu_ms_median": 3.1545,
+      "k": 2048,
+      "m": 2048,
+      "result_status": "PASS",
+      "scalar": {
+        "gib_s": 2.0485639807502474,
+        "max_abs_err": 1.9073486328125e-05,
+        "ms_median": 2.026,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 1.557008884501481
+      },
+      "tiled": {
+        "gib_s": 2.049879303106633,
+        "max_abs_err": 1.9073486328125e-05,
+        "ms_median": 2.0247,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 1.5580085938657577
+      },
+      "weight_memcpy_ms_median": 0.1166
+    },
+    {
+      "cpu_ms_median": 12.6183,
+      "k": 4096,
+      "m": 4096,
+      "result_status": "PASS",
+      "scalar": {
+        "gib_s": 3.4250505456871116,
+        "max_abs_err": 3.528594970703125e-05,
+        "ms_median": 4.8471,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 2.6032679334034783
+      },
+      "tiled": {
+        "gib_s": 3.5018483167397907,
+        "max_abs_err": 3.528594970703125e-05,
+        "ms_median": 4.7408,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 2.661639385757678
+      },
+      "weight_memcpy_ms_median": 1.0426
+    },
+    {
+      "cpu_ms_median": 33.8631,
+      "k": 11008,
+      "m": 4096,
+      "result_status": "PASS",
+      "scalar": {
+        "gib_s": 3.7107604393650817,
+        "max_abs_err": 8.392333984375e-05,
+        "ms_median": 12.0236,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 2.8163861073222662
+      },
+      "tiled": {
+        "gib_s": 3.698763054295923,
+        "max_abs_err": 8.392333984375e-05,
+        "ms_median": 12.0626,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 2.8072803541525047
+      },
+      "weight_memcpy_ms_median": 2.8221
+    },
+    {
+      "cpu_ms_median": 33.7966,
+      "k": 4096,
+      "m": 11008,
+      "result_status": "PASS",
+      "scalar": {
+        "gib_s": 3.3660024608452592,
+        "max_abs_err": 3.814697265625e-05,
+        "ms_median": 13.2551,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 2.5497053964134557
+      },
+      "tiled": {
+        "gib_s": 3.379208169075155,
+        "max_abs_err": 3.814697265625e-05,
+        "ms_median": 13.2033,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 2.5597085577090573
+      },
+      "weight_memcpy_ms_median": 2.8149
+    },
+    {
+      "cpu_ms_median": 44.1342,
+      "k": 14336,
+      "m": 4096,
+      "result_status": "PASS",
+      "scalar": {
+        "gib_s": 3.8435897965933523,
+        "max_abs_err": 7.62939453125e-05,
+        "ms_median": 15.1175,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 2.9194112783198283
+      },
+      "tiled": {
+        "gib_s": 3.8028632505203084,
+        "max_abs_err": 7.62939453125e-05,
+        "ms_median": 15.2794,
+        "result_status": "PASS",
+        "speedup_cpu_over_vulkan": 2.8884772962289094
+      },
+      "weight_memcpy_ms_median": 3.7307
+    }
+  ]
+}

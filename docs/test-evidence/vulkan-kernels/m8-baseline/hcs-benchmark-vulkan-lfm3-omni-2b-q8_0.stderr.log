@@ -1,0 +1,14 @@
+[hcsinfer] cold load
+[hcsinfer] cold generation
+[hcsinfer] warm warm-up
+[hcsinfer] warm 1/5
+[hcsinfer] warm 2/5
+[hcsinfer] warm 3/5
+[hcsinfer] warm 4/5
+[hcsinfer] warm 5/5
+[hcsinfer] warm reload 1/5
+[hcsinfer] warm reload 2/5
+[hcsinfer] warm reload 3/5
+[hcsinfer] warm reload 4/5
+[hcsinfer] warm reload 5/5
+[hcsinfer] wrote hcs-benchmark-vulkan-lfm3-omni-2b-q8_0.json

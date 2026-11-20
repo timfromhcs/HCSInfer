@@ -50,8 +50,8 @@ $env:VULKAN_SDK = "C:\VulkanSDK\1.4.357.0"
 .\scripts\build.ps1 -Preset windows-msvc-release-kernels
 ```
 
-The build compiles each `.comp` with `glslc --target-env=vulkan1.2`, validates it with `spirv-val
---target-env vulkan1.2`, and fails the build if either step fails. The engines stay CPU in this preset; use
+The build compiles each `.comp` with `glslc --target-env=vulkan1.1`, validates it with `spirv-val
+--target-env vulkan1.1`, and fails the build if either step fails. The engines stay CPU in this preset; use
 `windows-msvc-release-vulkan` for the upstream Vulkan backends.
 
 ## API and the feature flag
@@ -84,7 +84,12 @@ if (!r) {
   against an independent dequantise-and-dot loop.
 * `kernel-vulkan` (real device): the kernel against the CPU reference over power-of-two and non-power-of-two
   shapes, plus determinism across repeated calls. With no Vulkan compute device the tests **skip (NOT RUN)**.
+* `KernelVulkanFallback` (wave K): flag off -> the documented CPU fallback yields the reference result (no GPU
+  needed); injected device loss -> `BackendError`, CPU fallback correct, next call recovers.
 * `spirv-val` runs as part of every build of the shader.
+* Validation layers (`VK_LAYER_KHRONOS_validation`, sync + best practices): 0 messages on the 6 `kernel-vulkan` tests and on
+  the bench after the SPIR-V target fix (`docs/test-evidence/vulkan-kernels/m8-baseline/`). Run: set `VK_LAYER_PATH` to the
+  SDK `Bin`, `VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation`, `VK_LAYER_VALIDATE_SYNC=1`, then the test binary.
 
 ## Benchmark
 
@@ -100,10 +105,17 @@ in `docs/benchmarks.md`.
 
 * **Not default-enabled anywhere.** AGENTS.md M8: a kernel becomes default-on only with a repeatable measured
   benefit on supported hardware. This one is a candidate; the numbers, not the code, decide.
-* **No upstream-Vulkan baseline yet.** The benchmark compares against the *CPU reference*, not against GGML's
-  Vulkan GEMV. That comparison needs the kernel wired into the GGML backend and is future work.
+* **Measured against upstream: much slower (wave K, 2026-11-20).** GGML's Vulkan Q8_0 `mul_mat_vec`
+  (m=4096, n=1, k=14336) takes 0.822 ms (70.7 GiB/s, weights resident); this kernel takes 14.99 ms per call (3.88 GiB/s,
+  re-uploading the weights each call): 18.2x slower, 13.7x after subtracting the host weight copy. End to end the upstream
+  Vulkan path decodes LFM3-Omni-2B Q8_0 at 39.7 t/s (CPU 19.3) and qwen3-0.6b Q4_K_M at 148.1 t/s (CPU 75.1). The kernel
+  therefore stays default OFF. Numbers and method: `docs/test-evidence/vulkan-kernels/m8-baseline/`,
+  `docs/research/vulkan-gemv-upstream-baseline.md`.
 * **Correctness-first, not tuned.** v1 uses host-visible buffers (no staging), one thread per output row and no
   shared-memory reduction; a tuned version (thread blocks, subgroup reductions, staging) is a separate change.
-* **Vulkan API floor:** the shader targets `vulkan1.2`; running it needs a driver that supports it. The target
-  machine (Radeon 680M, AMD driver 32.0.21043.12001) is queried at runtime, never assumed.
-* **No device-lost recovery path yet** beyond returning a `BackendError`; the context is rebuilt on the next call.
+* **Vulkan API floor:** the shader targets `vulkan1.1` (SPIR-V 1.3) to match the instance the kernel creates
+  (`VK_API_VERSION_1_1`). It was `vulkan1.2` until the validation layers flagged `VUID-VkShaderModuleCreateInfo-pCode-08737`
+  (SPIR-V 1.5 on a 1.1 instance); the device is queried at runtime, never assumed.
+* **Device lost:** on `VK_ERROR_DEVICE_LOST` (submit or fence wait) the call returns `BackendError`, the cached context is
+  destroyed and the next call rebuilds it. Covered by an injected-fault test (`inject_fault_for_testing`, test seam only);
+  a real driver device loss was not provoked.

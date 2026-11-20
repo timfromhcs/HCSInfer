@@ -11,6 +11,7 @@ feature is in `docs/roadmap/STATUS.md`.
 CTest: **783 registered, 0 failed** (CPU build; model-dependent tests skip = NOT RUN).
 
 ### Added
+- **Wave K (M8 baseline)** (2026-11-20): upstream GGML Vulkan baseline on the Radeon 680M (`llama-bench` 5 reps median/p90 for qwen3-0.6b Q4_K_M and LFM3-Omni-2B Q8_0, `test-backend-ops` MUL_MAT) vs the HCS Q8_0 GEMV (18.2x slower, stays OFF); validation-layer run found and fixed a SPIR-V 1.5 shader on a Vulkan 1.1 instance (`cmake/HcsShaders.cmake` now targets `vulkan1.1`); device-lost handling with an injected-fault test seam and flag-off fallback tests; `hcs_kernel_bench` adds the 4096x14336 shape and a host weight-copy floor. `docs/test-evidence/vulkan-kernels/m8-baseline/`.
 - **Wave G hardening** (2026-11-20): `MemoryBudget::set_fault_injector` + `error_from_engine_exception` (an engine's `std::bad_alloc` is now `OutOfMemory`, was `BackendError`), `write_hcsmodel` over a `ByteSource`, 24 new tests (OOM injection, USB-unplug simulation, shutdown with fake and real model), `scripts/restricted-env-check.ps1`, and a cpp-httplib pin bump v0.37.2 -> v0.44.0 (OSV listed 9 advisories, 4 server-side). Release CTest (CPU): 814 registered, 778 passed, 36 skipped (NOT RUN), 0 failed. `docs/test-evidence/wave-g/`.
 - First **M8 HCS Vulkan kernel** (W5): a feature-flagged (OFF) Q8_0 GEMV (`src/kernels/{cpu,vulkan}`,
   `shaders/llm/gemv_q8_0.comp`) with an independent CPU reference, `glslc` + `spirv-val` at build time (SPIR-V
