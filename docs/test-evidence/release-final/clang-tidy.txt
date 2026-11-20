@@ -1,0 +1,5 @@
+clang-tidy: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-tidy.exe (LLVM version 19.1.5)
+checks: -*,clang-analyzer-*,bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-casting-through-void,-bugprone-exception-escape,-clang-analyzer-optin.core.EnumCastOutOfRange
+translation units: 69 (src)
+STATIC ANALYSIS OK: no diagnostic in 69 translation units.
+EXIT 0 

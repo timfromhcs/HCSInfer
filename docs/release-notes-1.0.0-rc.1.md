@@ -1,4 +1,4 @@
-# HCSInfer 0.1.0 release candidate (RC1)
+# HCSInfer 1.0.0-rc.1 (release candidate)
 
 Status: **release candidate, not tagged, not merged, not pushed.** This is an alpha-quality, single-machine-verified
 build. Every statement below is backed by a file under `docs/test-evidence/` or an inspected source file; anything

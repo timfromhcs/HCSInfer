@@ -1,6 +1,6 @@
 # HCSInfer status
 
-Last updated: 2026-11-20 (wave R release candidate 0.1.0 on top of waves F, G, K; wave G hardening gaps on top of wave F; earlier: 2026-11-18 V1-stable waves W1-W4 plus the MCP benchmark tool and the D-S5/D-S6 fixes; CI green on
+Last updated: 2026-11-20 (wave R final verification of 1.0.0-rc.1 on top of waves F, G, K; wave G hardening gaps on top of wave F; earlier: 2026-11-18 V1-stable waves W1-W4 plus the MCP benchmark tool and the D-S5/D-S6 fixes; CI green on
 `f9d03a5`). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
 inspected source file; items with no evidence are NOT RUN or BLOCKED.
 
@@ -56,7 +56,7 @@ with the >5% rule, `check_regression.py`).
 
 | Gate | Status | Evidence / reason |
 |---|---|---|
-| Full Release CTest suite (CPU-only, Vulkan=OFF) | **PASS** | **wave R (2026-11-20, RC): 814 registered, 778 passed, 36 skipped (NOT RUN: need a model or a GPU), 0 failed - `docs/test-evidence/wave-r/ctest-release-cpu.txt`; `kernel-cpu` + `kernel-vulkan` 12/12 on the real 680M - `wave-r/ctest-kernels.txt`; `web/` `npm test` 46/46 - `wave-r/npm-test.txt`.** Previous run (wave G, `docs/test-evidence/wave-g/ctest-release-cpu-httplib-0.44.txt`): same counts; earlier **790 registered, 0 failed** (784 + 6 `kernel-cpu`; the `windows-msvc-release-kernels` preset adds 4 `kernel-vulkan` tests, 4/4 PASS on the real 680M; CPU build, `-j4`; model-dependent tests skip = NOT RUN). The last archived raw log is the earlier 400-test run: 396 passed, 0 failed, 4 skipped (Vulkan real tests = NOT RUN on a CPU build), 223 s - `M10-fixes/ctest-full-400-green.txt`. Model-dependent tests skip (NOT RUN) unless `HCS_TEST_*` is set |
+| Full Release CTest suite, **with the real models** (`HCS_TEST_*` set), CPU build and Vulkan build | **PASS** | **wave R final (2026-11-20, 1.0.0-rc.1, HEAD of this branch): CPU build `windows-msvc-release`: 815 registered, 815 passed, 0 failed, 4 skipped (the four Vulkan-only real tests, NOT RUN on a CPU build) - `docs/test-evidence/release-final/ctest-release-cpu.txt` (1226 s, includes the real LFM3-Omni-2B / SmolVLM2 / SD1.5 / FLUX.3 tests and the e2e scripts). Vulkan build `windows-msvc-release-vulkan`: 814 registered, 809 passed on the first run and 5 failed - all five (`ShutdownReal.*` x2, `e2e_api_mcp_real`, `e2e_llama_agentic_real`, `e2e_vision_real`) were refused by the memory budget with `out_of_memory` because only ~0.7-1.0 GB RAM was free during that run (other processes); with ~9 GB free the same five re-ran 6/6 PASS (`ctest-release-vulkan-rerun-failed5.txt`). The first-run log is kept unedited: `ctest-release-vulkan.txt`. No source change was needed (the budget refusing a load that does not fit is the intended behaviour).** `web/` `npm test` 46/46 - `release-final/web-npm-test.txt`. Earlier runs: wave R RC (814 registered, 778 passed, 36 skipped with no models set - `wave-r/ctest-release-cpu.txt`; `kernel-cpu` + `kernel-vulkan` 12/12 on the real 680M - `wave-r/ctest-kernels.txt`) and wave G (`wave-g/ctest-release-cpu-httplib-0.44.txt`). |
 | Configure + build Debug / Release (MSVC x64, Ninja, `/W4 /WX` on HCS targets) | PASS | `M2-core/`, `M3-api-mcp/ctest-debug.txt`; the Vulkan preset configures and builds (`M2/image/README.md`) |
 | M0 hardware doctor (CPU features, RAM, OS, Vulkan devices/heaps, GPU adapters, drive info, read bench) | PASS | `M0/` (`doctor.json`, `doctor-no-vulkan.json`, `readbench-usb-hdd.json`, `vulkaninfo-summary.txt`) |
 | M1 llama.cpp independent baseline, CPU + Vulkan, real GGUF from USB drive | PASS | `M1/llama/README.md`; qwen3-0.6b Q4_K_M, sha256 `4ea79412...` |
@@ -217,11 +217,11 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 | Hardware-support matrix | PASS | `docs/support-matrix.md` (backends, models, feature areas, one tested device) and `docs/hardware-support.md` |
 | Benchmark methodology/results | PASS | `docs/benchmarks.md`, ADR-010 |
 | Known limitations and non-goals | PASS | `README.md`, this file |
-| Release notes | PASS (RC notes written; **not tagged**) | `docs/release-notes-0.1.0.md`, `CHANGELOG.md` 0.1.0 RC entry; the tag/merge/push is the owner's step |
+| Release notes | PASS (RC notes written; **not tagged**) | `docs/release-notes-1.0.0-rc.1.md`, `CHANGELOG.md` 1.0.0-rc.1 entry; the tag/merge/push is the owner's step |
 
 ## Exact next action
 
-**Wave R (release candidate 0.1.0) is done (2026-11-20)**, see `docs/test-evidence/wave-r/RESULTS.md` and `docs/release-notes-0.1.0.md`. Nothing is merged, tagged or pushed: the owner decides on merge to `main`, the tag and the push. The remaining BLOCKED / NOT RUN items are listed in the release notes.
+**Wave R (1.0.0-rc.1) is done (2026-11-20)**, see the sections *Version decision* and *Release-readiness report* below, `docs/test-evidence/release-final/` and `docs/release-notes-1.0.0-rc.1.md`. Nothing is merged, tagged or pushed: the owner decides on merge to `main`, the tag and the push. The remaining BLOCKED / NOT RUN items are listed in the release notes.
 
 **Wave G is done (2026-11-20)**: simulated OOM / USB-unplug / shutdown gates PASS, supply-chain scan recorded (cpp-httplib bumped), restricted-environment static-EXE run PASS. Remaining owner-side or hardware-side items: a real clean Windows machine, a physical USB cable pull, real RAM exhaustion, the literal `cargo deny`, scans of the vendored C libraries, Debug/Vulkan presets against httplib v0.44.0, and the earlier-listed BLOCKED items below.
 

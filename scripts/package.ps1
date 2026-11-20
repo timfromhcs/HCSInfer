@@ -8,7 +8,7 @@
   Also create <package>.zip and a .sha256 file next to it.
 .NOTES
   The CRT depends on the preset (ADR-008: *static* presets use /MT). The package contains no model weights, no GPU driver and no Vulkan SDK.
-  It is a development/alpha artefact: tests, the real-model suites and the clean-machine check are NOT run here.
+  It is a release-candidate artefact: tests, the real-model suites and the clean-machine check are NOT run here.
 #>
 [CmdletBinding()]
 param(
@@ -122,7 +122,7 @@ $vkText- No models, no graphics driver and no Vulkan SDK are included. Vulkan us
 - Run:  HCSInfer.exe --help   |   HCSInfer.exe doctor --json
 - Verify files:  Get-FileHash -Algorithm SHA256 <file>  and compare with SHA256SUMS.txt.
 - Third-party licences: THIRD_PARTY_NOTICES.md and the licenses/ folder. SBOM: sbom.cdx.json.
-Status: alpha. See README.md for what is implemented. Unsigned. A clean-machine run (no redistributable, fresh Windows) is NOT RUN.
+Status: release candidate (see the version in the manifest). See README.md for what is implemented. Unsigned. A clean-machine run (no redistributable, fresh Windows) is NOT RUN.
 "@ | Set-Content -LiteralPath (Join-Path $pkg 'PACKAGE-README.txt') -Encoding utf8
 
 [ordered]@{

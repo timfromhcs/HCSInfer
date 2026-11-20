@@ -1,0 +1,22 @@
+Test project Y:/build/windows-msvc-release-vulkan
+    Start 804: ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine
+1/6 Test #804: ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine ............   Passed   12.16 sec
+    Start 805: ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly
+2/6 Test #805: ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly ...   Passed    5.62 sec
+    Start 806: ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe
+3/6 Test #806: ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe ........   Passed    2.15 sec
+    Start 809: e2e_api_mcp_real
+4/6 Test #809: e2e_api_mcp_real .......................................................   Passed   14.41 sec
+    Start 813: e2e_llama_agentic_real
+5/6 Test #813: e2e_llama_agentic_real .................................................   Passed   57.70 sec
+    Start 814: e2e_vision_real
+6/6 Test #814: e2e_vision_real ........................................................   Passed    7.98 sec
+
+100% tests passed out of 6
+
+Label Time Summary:
+e2e            =  80.09 sec*proc (3 tests)
+integration    =  19.93 sec*proc (3 tests)
+
+Total Test time (real) = 105.02 sec
+EXIT 0 
