@@ -237,9 +237,11 @@ jobs:
           Copy-Item staged\python-dist\* release
           Compress-Archive -Path staged\web-dist\* -DestinationPath release\hcs-studio-web-dist.zip
           .\scripts\sbom.ps1 -OutFile release\hcsinfer.cdx.json
-          Get-ChildItem release -File | Where-Object { $_.Name -ne 'SHA256SUMS.txt' } | Sort-Object Name | ForEach-Object {
+          $lines = Get-ChildItem release -File | Where-Object { $_.Name -ne 'SHA256SUMS.txt' } | Sort-Object Name | ForEach-Object {
             '{0}  {1}' -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant(), $_.Name
-          } | Set-Content release\SHA256SUMS.txt -Encoding ascii
+          }
+          # LF line endings so `sha256sum -c` works on Linux/macOS (Set-Content would write CRLF on Windows).
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) 'release\SHA256SUMS.txt'), (($lines -join "`n") + "`n"), [System.Text.Encoding]::ASCII)
           Get-Content release\SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
         with:
