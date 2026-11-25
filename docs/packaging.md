@@ -75,4 +75,4 @@ Nothing is uploaded to PyPI by any script in this repository.
   (-1.9%), prefill 74.3 vs 77.7 tokens/s (-4.4%) against the OpenMP `/MD` build. Single run per variant, see `docs/benchmarks.md`.
 * Full CTest on the two new static presets was NOT re-run in wave B (no C++ source changed; the static CPU preset passed
   783/783 in W4 and 814/0 failed in wave G). The static Vulkan preset's tests have never been built.
-* Hosted-runner results of `release.yml` are NOT RUN: it has not been pushed.
+* The hosted `release.yml` run is done: green on `40bf581` (draft pre-release with the files above); a clean-machine run of those artifacts is NOT RUN.

@@ -1,0 +1,3 @@
+Usage: HCSInfer tune ...
+
+Planned: this command is not implemented yet (exit code 10).

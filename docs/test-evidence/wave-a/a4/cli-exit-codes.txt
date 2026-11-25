@@ -1,0 +1,9 @@
+HCSInfer models load x -> exit 10
+HCSInfer models unload -> exit 10
+HCSInfer tune -> exit 10
+HCSInfer models inspect nope -> exit 7
+HCSInfer chat -> exit 2
+HCSInfer vision -> exit 2
+HCSInfer image -> exit 2
+HCSInfer cache clear -> exit 2
+HCSInfer bogus -> exit 2

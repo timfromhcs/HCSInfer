@@ -4,7 +4,7 @@ Derived from `git log`. No release has been tagged. The version is `1.0.0-rc.1` 
 `HCS_VERSION_SUFFIX "-rc.1"`; the wheel spells it `1.0.0rc1`, npm `1.0.0-rc.1`). Entries describe what the commits
 changed; PASS/NOT RUN state of each feature is in `docs/roadmap/STATUS.md`.
 
-## 1.0.0-rc.1 (release candidate, 2026-11-20; not tagged, not merged, not pushed)
+## 1.0.0-rc.1 (release candidate, 2026-11-20; tag `v1.0.0-rc.1` pushed, GitHub release is a draft)
 
 Why a release candidate and not 1.0.0: the AGENTS.md section 22 checklist still has core rows that are not PASS (the
 Model Vault is not in the engine load path, `models load|unload` are not CLI commands, the full soak profile and a

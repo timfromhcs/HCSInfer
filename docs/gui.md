@@ -129,7 +129,7 @@ over static storage.
 
 ## Known limitations
 
-* No per-step image progress: the image routes are single blocking requests and the engine reports none, so the UI shows
+* No per-step image progress: the image routes are single blocking requests and do not expose the engine adapter's per-step progress sink yet, so the UI shows
   elapsed seconds and an indeterminate bar. Cancel drops the request, which cancels the render server-side. Per-step
   progress needs a streaming image route (API change, not part of the GUI).
 * No folder scan or settings endpoint: Models can load, unload and refresh, but folders are added with the CLI.

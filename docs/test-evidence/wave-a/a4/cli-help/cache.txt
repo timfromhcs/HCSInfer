@@ -1,0 +1,15 @@
+Usage: HCSInfer cache <subcommand>
+
+  stats [--json]        Count what HCS itself keeps in its state directory as cache
+  clear --yes [--json]  Delete exactly that (nothing is deleted without --yes)
+
+Scope - only HCS-owned files in the state directory (--state-dir, $HCS_STATE_DIR or the default):
+  cache/                reserved for HCS-owned caches (empty unless a feature writes there)
+  scratch/              reserved for HCS-owned scratch files (empty unless a feature writes there)
+  <name>.tmp.<n>        orphaned leftovers of an interrupted atomic write, in the state directory
+                        and in train/
+Never touched: model files and model folders, registry.json, settings.json, train manifests and
+adapters, anything outside the state directory. Links and junctions are skipped, not followed.
+HCS creates no decompressed model cache or staging file (docs/model-vault.md), so on a normal
+installation `cache stats` honestly reports 0 entries.
+Exit codes: 0 ok, 2 invalid argument (e.g. clear without --yes), 8 some entries could not be removed.

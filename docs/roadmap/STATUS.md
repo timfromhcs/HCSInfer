@@ -1,6 +1,6 @@
 # HCSInfer status
 
-Last updated: 2026-11-20 (wave R final verification of 1.0.0-rc.1 on top of waves F, G, K; wave G hardening gaps on top of wave F; earlier: 2026-11-18 V1-stable waves W1-W4 plus the MCP benchmark tool and the D-S5/D-S6 fixes; CI status for this revision: unknown
+Last updated: 2026-11-20 (wave R final verification of 1.0.0-rc.1 on top of waves F, G, K; wave G hardening gaps on top of wave F; earlier: 2026-11-18 V1-stable waves W1-W4 plus the MCP benchmark tool and the D-S5/D-S6 fixes; CI status: see the Wave A baseline section; the older note was "unknown"
 `f9d03a5`). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
 inspected source file; items with no evidence are NOT RUN or BLOCKED.
 
@@ -14,15 +14,14 @@ runtime XSS test). All fixed at the root and re-verified; the version stays **1.
 serially 7/7 PASS) and on `windows-msvc-release-static-vulkan` 815 passed (815 registered; first run 2 budget refusals, re-run 2/2
 PASS); clang-format/clang-tidy/`npm test`/link check green; the shipped EXEs passed an empty-PATH run and a quick benchmark. The
 earlier "815 passed" wording for the CPU run was wrong: 811 passed + 4 skipped. Index: `docs/test-evidence/release-final/README.md`.
-CI for this revision is unknown (never pushed).
+(Correction, wave A a4: this was later pushed; see the Wave A baseline section for the hosted CI state.)
 
 ## Repository state
 
-Wave B (distribution, 2026-11-20, branch `claude/repo-analysis-v1-stable-d7c553`; the branch has not been pushed, merged or
-tagged): two static EXEs (CPU `HCSInfer.exe` with system-DLL imports only, `HCSInfer-vulkan.exe` which also imports the system
+Wave B (distribution, 2026-11-20, branch `claude/repo-analysis-v1-stable-d7c553`; since merged into `main` and tagged `v1.0.0-rc.1`, see the Wave A baseline section): two static EXEs (CPU `HCSInfer.exe` with system-DLL imports only, `HCSInfer-vulkan.exe` which also imports the system
 `vulkan-1.dll`; neither is called "single-file" until the clean-machine test, NOT RUN), Python wheel/sdist `hcsinfer`,
 `release-local.ps1`, `release.yml`, web dist, `docs/install.md`, `docs/packaging.md`; evidence `docs/test-evidence/wave-b/`.
-Still open (owner or environment dependent): clean-machine test, signing, a hosted run of `release.yml`. CTest on the static
+Still open (owner or environment dependent): clean-machine test, signing (the hosted `release.yml` run is done: green on `40bf581`, draft pre-release). CTest on the static
 presets was run in the final audit (see `docs/test-evidence/release-final/`).
 
 Wave D (benchmark data from the wave-B static EXEs, 2026-11-20; these are NOT the shipped release binaries, which were rebuilt
@@ -40,8 +39,7 @@ with the >5% rule, `check_regression.py`).
   `b02075f` (W3 soak defects + test gaps), `af884c3` (MCP `hcs.runtime.benchmark`), `7287554` (W4 static-CRT
   experiment), `dd9be7a` (D-S5 `read_file_limited`), `f9d03a5` (D-S6 benchmark prefill), `926c47c` (M8 Q8_0 GEMV
   kernel) and the docs/evidence commits after them. The history starts at `d5baf76` "Initial commit" (2026-11-17).
-- CI: **unknown for the release-candidate revision** (the branch was never pushed, so `pr.yml` has not run on it; the README
-  badge says so). The runs below are for older commits on `main` and prove nothing about this revision.
+- CI (superseded, see the Wave A baseline section: `pr-quick-gate` is green on `0853143` and the hosted `release` run is green on `40bf581`). The runs below are for older commits on `main`.
   `.github/workflows/pr.yml` run **44621025517** (commit `7b393eb`) is green on all six jobs (2026-11-19),
   including the Release leg's package step (portable folder + ZIP + SBOM + `SHA256SUMS.txt` verified and uploaded as
   artifacts) and `clang-tidy` under the changed runner (VS 18 / LLVM 22; see the clang-format/clang-tidy row). It
@@ -49,7 +47,7 @@ with the >5% rule, `check_regression.py`).
   44272921951 (`af884c3`, D-S5). Model-dependent tests skip on the hosted runner (NOT RUN), so CI proves
   configure/build/unit/contract/parser and packaging on a clean hosted machine, not Vulkan or real-model behaviour; the
   M8 kernel is built and tested locally (the preset is off in CI). `hardware.yml` (self-hosted Radeon runner) has never
-  been executed.
+  completed a run (wave A a4 `gh run list`: runs cancelled, one pending).
 - Branches: `main` and the docs worktree branch `claude/repo-analysis-v1-stable-80f8d6` (== `main`). The local branch
   `claude/flux3-agent-engine-v1-665ab0` is now an **ancestor of `main`**; its unique work was salvaged selectively and
   committed in W2 (`5633450`), with the web/ and CMake differences deliberately not taken.
@@ -119,8 +117,8 @@ with the >5% rule, `check_regression.py`).
 | B2/B5/B6 (best placement reference, LZ4/Zstd chunk loading) | NOT RUN | need the Model Vault in the load path (M5 Stage B) or a further implementation; B7 (diffusion compute vs parameter backend) is now measured in `B7-params/` |
 | clang-format / clang-tidy | **PASS** (wave R: 4 wave-K kernel files were unformatted, fixed; format OK over 221 files, clang-tidy 0 diagnostics in 69 TUs - `docs/test-evidence/wave-r/`) | `scripts/format.ps1` green over 217 files with clang-format 19.1.5 (VS-bundled, pinned); `scripts/static-analysis.ps1 -Scope src -FailOnFindings` reports **0 diagnostics in 69 translation units** (Release). 2026-11-19: the hosted runner's VS 18 / MSVC 14.52 STL broke clang-tidy with `STL1000`; fixed by searching every VS install for the bundled LLVM and passing `-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH` (`docs/static-analysis.md`). **V1.1 wave 1 (`6a390b8`) broke both gates on `main`** (CI run 44154743021): 4 files needed formatting and clang-tidy 20.1.8 found 6 `bugprone-implicit-widening-of-multiplication-result` sites in `include/hcs/{agent,api,train}` plus 1 `clang-analyzer` location inside `external/.../stb_image.h`. Fixed: widened the size constants first, and `static-analysis.ps1` now ignores diagnostics located under `external/` (the gate covers HCS-owned code). Evidence `docs/test-evidence/static-analysis/wave1-*`; triage in `docs/static-analysis.md` |
 | Shader / SPIR-V validation | **PASS (one shader)** | `shaders/llm/gemv_q8_0.comp` is compiled by `glslc` and validated by `spirv-val --target-env vulkan1.1` (wave K: was 1.2, fixed after the validation layers flagged it) as part of the `windows-msvc-release-kernels` build (fails the build otherwise); the SPIR-V is embedded. No CI job runs it yet (the GPU/SDK job `hardware.yml` is NOT RUN) |
-| CI workflows | **PASS on older `main` commits; UNKNOWN for the release-candidate revision (never pushed)** | `.github/workflows/pr.yml` run 44167798984 (2026-11-17, commit `d8a5e37`): all six jobs green - `build + ctest` Release (18m38s) and Debug (9m59s), `clang-tidy` (5m53s), `clang-format` (17s), `SBOM` (17s), `web` (26s: 46 unit + static tests and the blocking headless boot check). Model-dependent tests skip on the hosted runner (NOT RUN), so CI proves configure/build/unit/contract/parser on a clean hosted machine, not Vulkan or real-model behaviour. History: run 44104062457 failed (Visual Studio not located, fixed in `fddc30d`); run 44154743021 (V1.1 wave 1) failed `clang-format` and `clang-tidy`, fixed in `06cfbe4` / `8b29907`. `hardware.yml` (self-hosted Radeon 680M runner): **NOT RUN, never executed** |
-| Release workflow `release.yml` + `pr.yml` python/web-dist jobs (wave B) | validated with actionlint v1.7.7 only; **NOT RUN** | never pushed or executed; Vulkan job is `continue-on-error` and its SDK install step is unproven on a hosted runner (`docs/test-evidence/wave-b/actionlint.txt`) |
+| CI workflows | **PASS: `pr-quick-gate` success on `0853143` and `release` success on `40bf581` (wave A a4, `gh run list`, `wave-a/a4/github-ci-state.txt`); `hardware.yml` never completed** | `.github/workflows/pr.yml` run 44167798984 (2026-11-17, commit `d8a5e37`): all six jobs green - `build + ctest` Release (18m38s) and Debug (9m59s), `clang-tidy` (5m53s), `clang-format` (17s), `SBOM` (17s), `web` (26s: 46 unit + static tests and the blocking headless boot check). Model-dependent tests skip on the hosted runner (NOT RUN), so CI proves configure/build/unit/contract/parser on a clean hosted machine, not Vulkan or real-model behaviour. History: run 44104062457 failed (Visual Studio not located, fixed in `fddc30d`); run 44154743021 (V1.1 wave 1) failed `clang-format` and `clang-tidy`, fixed in `06cfbe4` / `8b29907`. `hardware.yml` (self-hosted Radeon 680M runner): **NOT RUN, never executed** |
+| Release workflow `release.yml` + `pr.yml` python/web-dist jobs (wave B) | **PASS (hosted)**: `release` run 44849519815 green on `40bf581` (draft pre-release with 8 assets, `wave-a/a4/github-ci-state.txt`); the earlier red run 44847528343 was fixed by `40bf581` | previously actionlint v1.7.7 only; Vulkan job is `continue-on-error` and its SDK install step is unproven on a hosted runner (`docs/test-evidence/wave-b/actionlint.txt`) |
 | SBOM / checksums / package / wheels | PASS locally (wave B) / hosted-runner release NOT RUN | `scripts/release-local.ps1` produced `HCSInfer.exe`, `HCSInfer-vulkan.exe`, portable ZIP (both EXEs, 14 licence texts, manifest with dumpbin imports), `hcsinfer-1.0.0rc1-py3-none-win_amd64.whl` (48.99 MB; named `0.1.0` in the first wave-B run, before the version bump) + sdist (14.6 KB), web dist zip, CycloneDX SBOM (15 components), `SHA256SUMS.txt`; `twine check` PASSED both, fresh-venv install + real chat PASS; nothing uploaded. Signing NOT RUN, MSIX skipped. `docs/test-evidence/wave-b/`, `docs/packaging.md` |
 | ADR-001..013 | all 13 written and accepted (001 scoped to SD1.5-class models, 004 with open validation items, 006 experimental, 008 a staged plan: the single-EXE claim is NOT made) | `docs/decisions/README.md` |
 
@@ -143,7 +141,7 @@ with the >5% rule, `check_regression.py`).
 - Vulkan diffusion output was once not byte-reproducible run to run (not investigated).
 - Tests that need a real model skip (NOT RUN, never a fake pass) unless `HCS_TEST_GGUF` / `HCS_TEST_VLM` +
   `HCS_TEST_MMPROJ` / `HCS_TEST_DIFFUSION_MODEL` are set; Vulkan real tests need the Vulkan build.
-- `hardware.yml` (self-hosted Radeon runner) has never run; real-GPU evidence comes from manual local runs only.
+- `hardware.yml` (self-hosted Radeon runner) has never completed a run (cancelled/pending only); real-GPU evidence comes from manual local runs only.
 - `models load|unload` (a model lives in a running `serve`/MCP process, so the one-shot CLI cannot hold it) and `tune` are not CLI commands (exit code 10); load over HTTP or MCP.
 
 ## V1 stable release checklist (AGENTS.md section 22)
@@ -156,8 +154,8 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 
 | Item | Status | Evidence / reason |
 |---|---|---|
-| Clean Windows x64 Release configure and build | PASS on `main` (older commit); UNKNOWN for the RC revision | CI run 44167798984 (hosted clean runner, Release leg); not re-run on this branch |
-| Debug build and tests | PASS on `main` (older commit); UNKNOWN for the RC revision | CI Debug leg; `M3-api-mcp/ctest-debug.txt` |
+| Clean Windows x64 Release configure and build | PASS (hosted CI: `pr-quick-gate` success on `0853143`, `release` success on `40bf581`) | `wave-a/a4/github-ci-state.txt`; older run 44167798984 (Release leg) |
+| Debug build and tests | PASS (hosted `pr-quick-gate`, Debug leg) | CI Debug leg; `M3-api-mcp/ctest-debug.txt` |
 | Reproducible dependency pins and build command | PASS | `external/dependency-lock.json`, `docs/build.md`; caveat: Vulkan-Headers (FetchContent) is not in the lock file |
 | No unexplained compiler/linker warnings in HCS code | PASS | `/W4 /WX` on HCS targets; clang-tidy gate reports 0 findings |
 | Shader compilation and SPIR-V validation | PASS (one shader) | `glslc` + `spirv-val` run in the `windows-msvc-release-kernels` build; a failure fails the build (`docs/test-evidence/vulkan-kernels/`) |
@@ -237,7 +235,7 @@ external dependency is missing. Wave references (W1..W6) are in `IMPLEMENTATION_
 | Hardware-support matrix | PASS | `docs/support-matrix.md` (backends, models, feature areas, one tested device) and `docs/hardware-support.md` |
 | Benchmark methodology/results | PASS | `docs/benchmarks.md`, ADR-010 |
 | Known limitations and non-goals | PASS | `README.md`, this file |
-| Release notes | PASS (RC notes written; **not tagged**) | `docs/release-notes-1.0.0-rc.1.md`, `CHANGELOG.md` 1.0.0-rc.1 entry; the tag/merge/push is the owner's step |
+| Release notes | PASS (RC notes written; tag `v1.0.0-rc.1` is pushed, GitHub release is a **draft**) | `docs/release-notes-1.0.0-rc.1.md`, `CHANGELOG.md` 1.0.0-rc.1 entry; the tag/merge/push is the owner's step |
 
 ## Version decision (wave R, AGENTS.md section 22)
 
@@ -268,7 +266,7 @@ EXEs), wheel `1.0.0rc1`, `web/package.json` `1.0.0-rc.1`, README, CHANGELOG, rel
 HCSInfer engineering report
 - Current phase: wave R (release candidate) - final verification done
 - Commit: binaries built from clean commit ae3bbbd (embedded ae3bbbdc4050, SBOM hcs:git_tree_dirty=false); later commits on this
-  branch change only documentation, evidence and scripts/package.ps1. (Wave R verification was at e8bd522.) Branch claude/repo-analysis-v1-stable-d7c553, NOT merged, NOT tagged, NOT pushed.
+  branch change only documentation, evidence and scripts/package.ps1. (Wave R verification was at e8bd522.) Branch claude/repo-analysis-v1-stable-d7c553 (later merged into main; tag v1.0.0-rc.1 pushed, draft release; see Wave A baseline).
 - Build status: PASS - windows-msvc-release, -vulkan, -static (CPU) and -static-vulkan all build with /W4 /WX (static presets rebuilt
   from clean commit ae3bbbd in the audit-fix pass).
 - Tests: PASS - audit pass on the static presets: CPU 812 passed, 4 skipped (816 registered), Vulkan 815 passed (815 registered), after
@@ -288,7 +286,7 @@ HCSInfer engineering report
 - Known limitations: docs/release-notes-1.0.0-rc.1.md, README "Limitations".
 - Remaining blockers: owner items (signing, clean-machine VM, hosted release.yml, hardware runner, WebGPU, Vercel,
   PyPI/GitHub release) and the six core rows above.
-- Exact next action: owner reviews, merges the branch to main (fast-forward), tags v1.0.0-rc.1 and uploads the files in
+- Exact next action (superseded: merge and tag are done, the release is a draft; see PLAN_V1_STABLE_NEXT.md): owner publishes the draft and uploads the files in
   artifacts/release (hashes: docs/test-evidence/release-final/SHA256SUMS-final.txt); then run the soak full profile and the
   clean-machine test to move to 1.0.0.
 ```
@@ -297,12 +295,12 @@ Artefacts (EXEs built from the clean tree at `ae3bbbd`, the release set assemble
 branch head; final hashes in `docs/test-evidence/release-final/SHA256SUMS-final.txt`, LF line endings, every entry verified, portable ZIP
 inner `SHA256SUMS.txt` verified): `HCSInfer.exe` (static CPU, 44,229,120 B, SHA-256 `d9b1a6bd...`), `HCSInfer-vulkan.exe` (static
 CPU+Vulkan, 86,549,504 B, `a77cf42a...`), the portable ZIP (with README + docs essentials), `hcsinfer-1.0.0rc1-py3-none-win_amd64.whl` +
-sdist, `hcs-studio-web-dist.zip`, `hcsinfer.cdx.json` (CycloneDX, 15 components). Nothing was uploaded. The earlier
+sdist, `hcs-studio-web-dist.zip`, `hcsinfer.cdx.json` (CycloneDX, 15 components). Nothing was uploaded at that time (the hosted release workflow later produced a draft release, see Wave A baseline). The earlier
 `SHA256SUMS.txt` in that folder belongs to the superseded `e8bd522` build.
 
 ## Exact next action
 
-**Wave R (1.0.0-rc.1) is done (2026-11-20)**, see the sections *Version decision* and *Release-readiness report* below, `docs/test-evidence/release-final/` and `docs/release-notes-1.0.0-rc.1.md`. Nothing is merged, tagged or pushed: the owner decides on merge to `main`, the tag and the push. The remaining BLOCKED / NOT RUN items are listed in the release notes.
+**Wave R (1.0.0-rc.1) is done (2026-11-20)**, see the sections *Version decision* and *Release-readiness report* below, `docs/test-evidence/release-final/` and `docs/release-notes-1.0.0-rc.1.md`. (Superseded: the branch is merged into `main`, the tag `v1.0.0-rc.1` is pushed and the GitHub release is a draft; the owner still decides on publishing.) The remaining BLOCKED / NOT RUN items are listed in the release notes.
 
 **Wave G is done (2026-11-20)**: simulated OOM / USB-unplug / shutdown gates PASS, supply-chain scan recorded (cpp-httplib bumped), restricted-environment static-EXE run PASS. Remaining owner-side or hardware-side items: a real clean Windows machine, a physical USB cable pull, real RAM exhaustion, the literal `cargo deny`, scans of the vendored C libraries, Debug/Vulkan presets against httplib v0.44.0, and the earlier-listed BLOCKED items below.
 

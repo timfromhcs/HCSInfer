@@ -1,0 +1,23 @@
+Usage: HCSInfer chat --model <path-or-id> [--prompt "..."] [options]
+
+Runs a GGUF text model through the llama.cpp engine adapter. Without --prompt, reads one prompt per
+line from stdin (each line is an independent single-turn request; empty line or /exit ends).
+
+Options:
+  --model <path-or-id>   GGUF file path, or a model id from `models scan` (required)
+  --prompt <text>        Prompt (user message)
+  --system <text>        System prompt
+  --backend <b>          auto (default) | cpu | vulkan. vulkan fails (exit 4/10) if unavailable;
+                         there is no silent fallback when cpu/vulkan is requested explicitly
+  --device <name>        GPU device name/description substring (e.g. Vulkan0)
+  --gpu-layers <n>       Layers to offload (default: all when using a GPU)
+  --ctx <n>              Context tokens (default 4096)
+  --max-tokens <n>       Max generated tokens (default 256)
+  --temp <t>             Temperature; 0 = greedy (default 0.8)
+  --seed <n>             Sampling seed
+  --threads <n>          CPU threads (default: physical cores)
+  --load-mode <m>        auto|none|mmap|mlock|mmap+mlock|direct_io
+  --raw                  Do not apply the model's chat template
+  --json                 Machine-readable result (text + metrics) on stdout
+
+Ctrl-C cancels the running generation (exit code 6).

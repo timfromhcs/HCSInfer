@@ -1,0 +1,32 @@
+Usage: HCSInfer image <generate|edit> --model <path-or-id> --prompt "..." [options]
+
+Text-to-image (`generate`) and img2img/edit (`edit --input <png|jpeg>`) through the
+stable-diffusion.cpp engine adapter.
+
+Options:
+  --model <path-or-id>   Diffusion model file or a model id from `models scan` (required)
+  --prompt <text>        Positive prompt (required)
+  --negative <text>      Negative prompt
+  --input <file>         Initial image for `edit` (PNG/JPEG, <= 32 MiB, <= 16 MP)
+  --strength <0..1>      Denoising strength for `edit` (default 0.75)
+  --width <n>            Image width, 64..4096, multiple of 8 (default 512)
+  --height <n>           Image height, 64..4096, multiple of 8 (default 512)
+  --steps <n>            Sampling steps, 1..150 (default 20)
+  --preset <p>           fast | quality: measured steps/cfg point for the loaded model family
+                         (FLUX.3 Klein); overrides --steps/--cfg, rejected for other families
+  --llm <file>           Text-encoder weights for multi-file models (FLUX.3: Qwen3-VL 4B)
+  --vae <file>           VAE weights for multi-file models
+                         (without --llm/--vae a `<model>.components.json` sidecar is read)
+  --params-backend <b>   cpu (default) | disk: where module weights live between uses; disk is a
+                         capacity fallback and can be slower
+  --cfg <f>              Text CFG scale; 0 = engine/model default
+  --seed <n>             Sampling seed (default: random)
+  --backend <b>          auto (default) | cpu | vulkan; explicit failure never falls back silently
+  --device <name>        GPU device name/description substring (e.g. Vulkan0)
+  --threads <n>          CPU threads (default: engine default)
+  --load-mode <m>        auto (default) | mmap | none
+  --output <file>        Output PNG (default: hcsinfer-image-<timestamp>.png)
+  --force                Overwrite an existing output file
+  --json                 Machine-readable result on stdout
+
+Ctrl-C cancels the running generation (exit code 6).

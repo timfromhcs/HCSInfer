@@ -1,0 +1,1541 @@
+free RAM GB before phase A: 7.42
+Test project D:/HCSInfer/build/a4-cpu
+        Start   1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules
+  1/764 Test   #1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules ............................................   Passed    0.07 sec
+        Start   2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd
+  2/764 Test   #2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd ...........................................   Passed    0.07 sec
+        Start   3: SandboxPolicy.RejectsUnlistedShellsAndPathPrograms
+  3/764 Test   #3: SandboxPolicy.RejectsUnlistedShellsAndPathPrograms ................................................   Passed    0.14 sec
+        Start   4: SandboxPolicy.SubcommandMustBeArgvOneAndAllowListed
+  4/764 Test   #4: SandboxPolicy.SubcommandMustBeArgvOneAndAllowListed ...............................................   Passed    0.07 sec
+        Start   5: SandboxPolicy.DeniedArgumentsAreRejectedAlsoWithEqualsForm
+  5/764 Test   #5: SandboxPolicy.DeniedArgumentsAreRejectedAlsoWithEqualsForm ........................................   Passed    0.08 sec
+        Start   6: SandboxPolicy.NetworkIsOffByDefault
+  6/764 Test   #6: SandboxPolicy.NetworkIsOffByDefault ...............................................................   Passed    0.08 sec
+        Start   7: SandboxPolicy.PathArgumentsMustStayInsideApprovedRoots
+  7/764 Test   #7: SandboxPolicy.PathArgumentsMustStayInsideApprovedRoots ............................................   Passed    7.35 sec
+        Start   8: SandboxPolicy.WorkingDirectoryIsGuarded
+  8/764 Test   #8: SandboxPolicy.WorkingDirectoryIsGuarded ...........................................................   Passed    0.08 sec
+        Start   9: SandboxPolicy.TimeoutIsDefaultedClampedAndNeverZero
+  9/764 Test   #9: SandboxPolicy.TimeoutIsDefaultedClampedAndNeverZero ...............................................   Passed    0.08 sec
+        Start  10: SandboxPolicy.ArgumentCountAndSizeAndNulAreBounded
+ 10/764 Test  #10: SandboxPolicy.ArgumentCountAndSizeAndNulAreBounded ................................................   Passed    0.08 sec
+        Start  11: SandboxPolicy.ReadAndWritePaths
+ 11/764 Test  #11: SandboxPolicy.ReadAndWritePaths ...................................................................   Passed    0.09 sec
+        Start  12: SandboxPolicy.OutputCapTruncatesOnUtf8Boundary
+ 12/764 Test  #12: SandboxPolicy.OutputCapTruncatesOnUtf8Boundary ....................................................   Passed    0.08 sec
+        Start  13: AgentConfig.LoopbackBaseUrlAcceptsOnlyLoopbackV1
+ 13/764 Test  #13: AgentConfig.LoopbackBaseUrlAcceptsOnlyLoopbackV1 ..................................................   Passed    0.06 sec
+        Start  14: AgentConfig.ProviderJsonHasTheExpectedShape
+ 14/764 Test  #14: AgentConfig.ProviderJsonHasTheExpectedShape .......................................................   Passed    0.05 sec
+        Start  15: AgentConfig.ProviderRejectsUnsafeFields
+ 15/764 Test  #15: AgentConfig.ProviderRejectsUnsafeFields ...........................................................   Passed    0.07 sec
+        Start  16: AgentConfig.LaunchPlanIsOfflineAndScoped
+ 16/764 Test  #16: AgentConfig.LaunchPlanIsOfflineAndScoped ..........................................................   Passed    0.07 sec
+        Start  17: AgentConfig.LaunchPlanRejectsUnsafeInputs
+ 17/764 Test  #17: AgentConfig.LaunchPlanRejectsUnsafeInputs .........................................................   Passed    0.07 sec
+        Start  18: AgentConfig.TokenViaEnvKeepsTheSecretOutOfModelsJsonAndArgv
+ 18/764 Test  #18: AgentConfig.TokenViaEnvKeepsTheSecretOutOfModelsJsonAndArgv .......................................   Passed    0.07 sec
+        Start  19: AgentConfig.LiteralTokenBehaviourIsUnchangedWithoutApiKeyEnv
+ 19/764 Test  #19: AgentConfig.LiteralTokenBehaviourIsUnchangedWithoutApiKeyEnv ......................................   Passed    0.07 sec
+        Start  20: AgentConfig.ApiKeyEnvMustBeAnUpperCaseVariableName
+ 20/764 Test  #20: AgentConfig.ApiKeyEnvMustBeAnUpperCaseVariableName ................................................   Passed    0.07 sec
+        Start  21: AgentConfig.LocalServerCompatAddsTheCompatBlockOnlyWhenAsked
+ 21/764 Test  #21: AgentConfig.LocalServerCompatAddsTheCompatBlockOnlyWhenAsked ......................................   Passed    0.08 sec
+        Start  22: AgentRedact.RemovesSessionTokenLiteralEverywhere
+ 22/764 Test  #22: AgentRedact.RemovesSessionTokenLiteralEverywhere ..................................................   Passed    0.08 sec
+        Start  23: AgentRedact.IgnoresTooShortLiteralsSoOrdinaryTextSurvives
+ 23/764 Test  #23: AgentRedact.IgnoresTooShortLiteralsSoOrdinaryTextSurvives .........................................   Passed    0.07 sec
+        Start  24: AgentRedact.RemovesCommonCredentialShapes
+ 24/764 Test  #24: AgentRedact.RemovesCommonCredentialShapes .........................................................   Passed    0.07 sec
+        Start  25: AgentRedact.BearerIsCaseInsensitiveAndKeepsShortValues
+ 25/764 Test  #25: AgentRedact.BearerIsCaseInsensitiveAndKeepsShortValues ............................................   Passed    0.06 sec
+        Start  26: AgentRedact.ShortPrefixLookalikesAreLeftAlone
+ 26/764 Test  #26: AgentRedact.ShortPrefixLookalikesAreLeftAlone .....................................................   Passed    0.06 sec
+        Start  27: AgentRedact.HandlesEmptyAndSecretAtEndOfInput
+ 27/764 Test  #27: AgentRedact.HandlesEmptyAndSecretAtEndOfInput .....................................................   Passed    0.06 sec
+        Start  28: AgentRedact.DoesNotLoopOnRedactionMarkerInInput
+ 28/764 Test  #28: AgentRedact.DoesNotLoopOnRedactionMarkerInInput ...................................................   Passed    0.06 sec
+        Start  29: AgentRedact.CapUtf8NoTruncationWhenFits
+ 29/764 Test  #29: AgentRedact.CapUtf8NoTruncationWhenFits ...........................................................   Passed    0.06 sec
+        Start  30: AgentRedact.CapUtf8CutsOnCodePointBoundary
+ 30/764 Test  #30: AgentRedact.CapUtf8CutsOnCodePointBoundary ........................................................   Passed    0.07 sec
+        Start  31: AgentRedact.CapUtf8SurvivesInvalidUtf8Continuations
+ 31/764 Test  #31: AgentRedact.CapUtf8SurvivesInvalidUtf8Continuations ...............................................   Passed    0.06 sec
+        Start  32: EventParser.AgentStartAndEnd
+ 32/764 Test  #32: EventParser.AgentStartAndEnd ......................................................................   Passed    0.07 sec
+        Start  33: EventParser.ToolCallExtractsCodeOrCommandPayload
+ 33/764 Test  #33: EventParser.ToolCallExtractsCodeOrCommandPayload ..................................................   Passed    0.07 sec
+        Start  34: EventParser.ToolCallPayloadIsCappedOnUtf8Boundary
+ 34/764 Test  #34: EventParser.ToolCallPayloadIsCappedOnUtf8Boundary .................................................   Passed    0.07 sec
+        Start  35: EventParser.ToolResultJoinsTextPartsAndReadsDuration
+ 35/764 Test  #35: EventParser.ToolResultJoinsTextPartsAndReadsDuration ..............................................   Passed    0.08 sec
+        Start  36: EventParser.ToolResultWithoutResultIsEmptyOkEvent
+ 36/764 Test  #36: EventParser.ToolResultWithoutResultIsEmptyOkEvent .................................................   Passed    0.08 sec
+        Start  37: EventParser.TurnEndYieldsAssistantTextAndUsage
+ 37/764 Test  #37: EventParser.TurnEndYieldsAssistantTextAndUsage ....................................................   Passed    0.07 sec
+        Start  38: EventParser.TurnEndFromNonAssistantOrWithoutMessageIsDropped
+ 38/764 Test  #38: EventParser.TurnEndFromNonAssistantOrWithoutMessageIsDropped ......................................   Passed    0.07 sec
+        Start  39: EventParser.StreamingDeltasAndUnknownTypesProduceNothing
+ 39/764 Test  #39: EventParser.StreamingDeltasAndUnknownTypesProduceNothing ..........................................   Passed    0.07 sec
+        Start  40: EventParser.NonJsonAndStructurallyWrongLinesProduceNothing
+ 40/764 Test  #40: EventParser.NonJsonAndStructurallyWrongLinesProduceNothing ........................................   Passed    0.06 sec
+        Start  41: EventParser.WrongFieldTypesNeverThrow
+ 41/764 Test  #41: EventParser.WrongFieldTypesNeverThrow .............................................................   Passed    0.06 sec
+        Start  42: EventParser.WrongTypedUsageFallsBackToZero
+ 42/764 Test  #42: EventParser.WrongTypedUsageFallsBackToZero ........................................................   Passed    0.07 sec
+        Start  43: EventParser.DeeplyNestedAndHugeLinesAreSafe
+ 43/764 Test  #43: EventParser.DeeplyNestedAndHugeLinesAreSafe .......................................................   Passed    0.19 sec
+        Start  44: EventParser.InvalidUtf8AndControlBytesNeverThrow
+ 44/764 Test  #44: EventParser.InvalidUtf8AndControlBytesNeverThrow ..................................................   Passed    0.06 sec
+        Start  45: EventParser.RandomMutationsOfValidLinesNeverThrow
+ 45/764 Test  #45: EventParser.RandomMutationsOfValidLinesNeverThrow .................................................   Passed    0.08 sec
+        Start  46: AuditFixture.OnlyPythonReplIsAvailable
+ 46/764 Test  #46: AuditFixture.OnlyPythonReplIsAvailable ............................................................   Passed    0.07 sec
+        Start  47: AuditFixture.UnknownToolNameIsCappedInVerdict
+ 47/764 Test  #47: AuditFixture.UnknownToolNameIsCappedInVerdict .....................................................   Passed    0.06 sec
+        Start  48: AuditFixture.OrdinaryCodeIsAllowed
+ 48/764 Test  #48: AuditFixture.OrdinaryCodeIsAllowed ................................................................   Passed    0.59 sec
+        Start  49: AuditFixture.DangerousWordsInStringsAndCommentsDoNotTrip
+ 49/764 Test  #49: AuditFixture.DangerousWordsInStringsAndCommentsDoNotTrip ..........................................   Passed    1.18 sec
+        Start  50: AuditFixture.OversizedCodeIsRejectedAsMalformed
+ 50/764 Test  #50: AuditFixture.OversizedCodeIsRejectedAsMalformed ...................................................   Passed    0.70 sec
+        Start  51: AuditFixture.DynamicCodeBuiltinsAreDenied
+ 51/764 Test  #51: AuditFixture.DynamicCodeBuiltinsAreDenied .........................................................   Passed    0.47 sec
+        Start  52: AuditFixture.ExecEvalReferencedWithoutDirectCallAreDenied
+ 52/764 Test  #52: AuditFixture.ExecEvalReferencedWithoutDirectCallAreDenied .........................................   Passed    0.90 sec
+        Start  53: AuditFixture.InterpreterInternalsEscapeHatchesAreDenied
+ 53/764 Test  #53: AuditFixture.InterpreterInternalsEscapeHatchesAreDenied ...........................................   Passed    0.57 sec
+        Start  54: AuditFixture.UnicodeLookalikeIdentifiersAreDenied
+ 54/764 Test  #54: AuditFixture.UnicodeLookalikeIdentifiersAreDenied .................................................   Passed    0.43 sec
+        Start  55: AuditFixture.FStringExpressionsAreAudited
+ 55/764 Test  #55: AuditFixture.FStringExpressionsAreAudited .........................................................   Passed    1.10 sec
+        Start  56: AuditFixture.FStringsNestedFourDeepWithDistinctQuotesAreStillAudited
+ 56/764 Test  #56: AuditFixture.FStringsNestedFourDeepWithDistinctQuotesAreStillAudited ..............................   Passed    0.82 sec
+        Start  57: AuditFixture.NetworkModulesAreDeniedInEveryImportForm
+ 57/764 Test  #57: AuditFixture.NetworkModulesAreDeniedInEveryImportForm .............................................   Passed    0.59 sec
+        Start  58: AuditFixture.ProcessModulesAndCallsAreDenied
+ 58/764 Test  #58: AuditFixture.ProcessModulesAndCallsAreDenied ......................................................   Passed    0.08 sec
+        Start  59: AuditFixture.AliasingOsOrSubprocessIsDenied
+ 59/764 Test  #59: AuditFixture.AliasingOsOrSubprocessIsDenied .......................................................   Passed    0.08 sec
+        Start  60: AuditFixture.CustomDeniedImportListIsHonoured
+ 60/764 Test  #60: AuditFixture.CustomDeniedImportListIsHonoured .....................................................   Passed    0.08 sec
+        Start  61: AuditFixture.CodeAfterStringsAndCommentsIsStillScanned
+ 61/764 Test  #61: AuditFixture.CodeAfterStringsAndCommentsIsStillScanned ............................................   Passed    0.09 sec
+        Start  62: AuditFixture.LineContinuationsDoNotHideCalls
+ 62/764 Test  #62: AuditFixture.LineContinuationsDoNotHideCalls ......................................................   Passed    0.10 sec
+        Start  63: AuditFixture.HexUnicodeAndOctalEscapesInPathsAreDecoded
+ 63/764 Test  #63: AuditFixture.HexUnicodeAndOctalEscapesInPathsAreDecoded ...........................................   Passed    0.09 sec
+        Start  64: AuditFixture.EscapedCommandNamesAreDecodedBeforeChecking
+ 64/764 Test  #64: AuditFixture.EscapedCommandNamesAreDecodedBeforeChecking ..........................................   Passed    0.09 sec
+        Start  65: AuditFixture.UnterminatedAndMalformedInputNeverThrowsAndIsNotFreePass
+ 65/764 Test  #65: AuditFixture.UnterminatedAndMalformedInputNeverThrowsAndIsNotFreePass .............................   Passed    0.10 sec
+        Start  66: AuditFixture.HostileBytesNeverThrow
+ 66/764 Test  #66: AuditFixture.HostileBytesNeverThrow ...............................................................   Passed    0.09 sec
+        Start  67: AuditFixture.AllowedLiteralCommandsPass
+ 67/764 Test  #67: AuditFixture.AllowedLiteralCommandsPass ...........................................................   Passed    0.09 sec
+        Start  68: AuditFixture.CommandsOutsideTheAllowListAreDenied
+ 68/764 Test  #68: AuditFixture.CommandsOutsideTheAllowListAreDenied .................................................   Passed    0.08 sec
+        Start  69: AuditFixture.ShellMetacharactersAreUnauditable
+ 69/764 Test  #69: AuditFixture.ShellMetacharactersAreUnauditable ....................................................   Passed    0.08 sec
+        Start  70: AuditFixture.CommandLineQuotingAndLimits
+ 70/764 Test  #70: AuditFixture.CommandLineQuotingAndLimits ..........................................................   Passed    0.10 sec
+        Start  71: AuditFixture.ProgramNamesAreCanonicalised
+ 71/764 Test  #71: AuditFixture.ProgramNamesAreCanonicalised .........................................................   Passed    0.08 sec
+        Start  72: AuditFixture.NonLiteralCommandsAreUnauditable
+ 72/764 Test  #72: AuditFixture.NonLiteralCommandsAreUnauditable .....................................................   Passed    0.08 sec
+        Start  73: AuditFixture.AdjacentLiteralsAreConcatenatedBeforeAudit
+ 73/764 Test  #73: AuditFixture.AdjacentLiteralsAreConcatenatedBeforeAudit ...........................................   Passed    0.08 sec
+        Start  74: AuditFixture.SubprocessWithoutLiteralOrWithUnlistedFunctionIsDenied
+ 74/764 Test  #74: AuditFixture.SubprocessWithoutLiteralOrWithUnlistedFunctionIsDenied ...............................   Passed    0.11 sec
+        Start  75: AuditFixture.NetworkArgumentsToAllowedProgramsAreDenied
+ 75/764 Test  #75: AuditFixture.NetworkArgumentsToAllowedProgramsAreDenied ...........................................   Passed    0.09 sec
+        Start  76: AuditFixture.PathsInCommandsMustStayInsideTheRoot
+ 76/764 Test  #76: AuditFixture.PathsInCommandsMustStayInsideTheRoot .................................................   Passed    0.09 sec
+        Start  77: AuditFixture.PythonCommandForms
+ 77/764 Test  #77: AuditFixture.PythonCommandForms ...................................................................   Passed    0.08 sec
+        Start  78: AuditFixture.ExtraCommandsAreAppliedOnTopOfTheDefaults
+ 78/764 Test  #78: AuditFixture.ExtraCommandsAreAppliedOnTopOfTheDefaults ............................................   Passed    0.07 sec
+        Start  79: AuditFixture.AbsoluteAndTraversalPathLiteralsOutsideTheRootAreDenied
+ 79/764 Test  #79: AuditFixture.AbsoluteAndTraversalPathLiteralsOutsideTheRootAreDenied ..............................   Passed    0.07 sec
+        Start  80: AuditFixture.PathLiteralsInsideTheRootAreAllowed
+ 80/764 Test  #80: AuditFixture.PathLiteralsInsideTheRootAreAllowed ..................................................   Passed    0.08 sec
+        Start  81: AuditFixture.TextThatOnlyLooksLikeAPathIsNotFlagged
+ 81/764 Test  #81: AuditFixture.TextThatOnlyLooksLikeAPathIsNotFlagged ...............................................   Passed    0.06 sec
+        Start  82: AuditFixture.FStringPathPrefixIsChecked
+ 82/764 Test  #82: AuditFixture.FStringPathPrefixIsChecked ...........................................................   Passed    0.08 sec
+        Start  83: AuditFixture.DocumentedLimit_RuntimeBuiltStringsAreNotFollowed
+ 83/764 Test  #83: AuditFixture.DocumentedLimit_RuntimeBuiltStringsAreNotFollowed ....................................   Passed    0.09 sec
+        Start  84: AuditFixture.DocumentedLimit_AllowListedBuildToolsRunProjectCode
+ 84/764 Test  #84: AuditFixture.DocumentedLimit_AllowListedBuildToolsRunProjectCode ..................................   Passed    0.08 sec
+        Start  85: SessionCreate.RejectsBadTasks
+ 85/764 Test  #85: SessionCreate.RejectsBadTasks .....................................................................   Passed    0.10 sec
+        Start  86: SessionCreate.RejectsBadRoots
+ 86/764 Test  #86: SessionCreate.RejectsBadRoots .....................................................................   Passed    0.11 sec
+        Start  87: SessionCreate.WorkspaceMustNotContainTheAgentState
+ 87/764 Test  #87: SessionCreate.WorkspaceMustNotContainTheAgentState ................................................   Passed    0.14 sec
+        Start  88: SessionCreate.RejectsBadConfiguration
+ 88/764 Test  #88: SessionCreate.RejectsBadConfiguration .............................................................   Passed    0.13 sec
+        Start  89: SessionLaunch.ArgvEnvironmentAndLimitsComeFromTheLaunchPlan
+ 89/764 Test  #89: SessionLaunch.ArgvEnvironmentAndLimitsComeFromTheLaunchPlan .......................................   Passed    0.13 sec
+        Start  90: SessionLaunch.TheChildEnvironmentIsRebuiltFromAnAllowList
+ 90/764 Test  #90: SessionLaunch.TheChildEnvironmentIsRebuiltFromAnAllowList .........................................   Passed    0.13 sec
+        Start  91: SessionLaunch.ModelsJsonOnDiskNamesTheVariableNeverTheToken
+ 91/764 Test  #91: SessionLaunch.ModelsJsonOnDiskNamesTheVariableNeverTheToken .......................................   Passed    0.14 sec
+        Start  92: SessionLaunch.LaunchFailureEndsTheSessionAsFailed
+ 92/764 Test  #92: SessionLaunch.LaunchFailureEndsTheSessionAsFailed .................................................   Passed    0.16 sec
+        Start  93: SessionEvents.HappyPathProducesOrderedBoundedEvents
+ 93/764 Test  #93: SessionEvents.HappyPathProducesOrderedBoundedEvents ...............................................   Passed    0.29 sec
+        Start  94: SessionEvents.EventsPagingAfterAndMaxCount
+ 94/764 Test  #94: SessionEvents.EventsPagingAfterAndMaxCount ........................................................   Passed    0.38 sec
+        Start  95: SessionEvents.LongPollWakesWhenAnEventArrivesAndAtTheEnd
+ 95/764 Test  #95: SessionEvents.LongPollWakesWhenAnEventArrivesAndAtTheEnd ..........................................   Passed    0.67 sec
+        Start  96: SessionEvents.UnknownOrMalformedIdsAreNotFound
+ 96/764 Test  #96: SessionEvents.UnknownOrMalformedIdsAreNotFound ....................................................   Passed    0.38 sec
+        Start  97: SessionEvents.MalformedHostileOutputIsIgnoredNotFatal
+ 97/764 Test  #97: SessionEvents.MalformedHostileOutputIsIgnoredNotFatal .............................................   Passed    0.41 sec
+        Start  98: SessionEvents.OversizedOutputLineIsDroppedAndTheStreamRecovers
+ 98/764 Test  #98: SessionEvents.OversizedOutputLineIsDroppedAndTheStreamRecovers ....................................   Passed    0.47 sec
+        Start  99: SessionEvents.EventCountCapKeepsTheFinalEventAndSaysSo
+ 99/764 Test  #99: SessionEvents.EventCountCapKeepsTheFinalEventAndSaysSo ............................................   Passed    0.39 sec
+        Start 100: SessionEvents.TotalEventByteCapIsEnforced
+100/764 Test #100: SessionEvents.TotalEventByteCapIsEnforced .........................................................   Passed    0.36 sec
+        Start 101: SessionEvents.StderrBecomesAtMost200CappedLogEvents
+101/764 Test #101: SessionEvents.StderrBecomesAtMost200CappedLogEvents ...............................................   Passed    0.37 sec
+        Start 102: SessionSecrets.TheTokenIsRedactedFromEventsLogsAndPersistedFiles
+102/764 Test #102: SessionSecrets.TheTokenIsRedactedFromEventsLogsAndPersistedFiles ..................................   Passed    0.36 sec
+        Start 103: SessionSecrets.TaskPreviewIsCappedOnAUtf8Boundary
+103/764 Test #103: SessionSecrets.TaskPreviewIsCappedOnAUtf8Boundary .................................................   Passed    0.27 sec
+        Start 104: SessionSecrets.ToolCallLogsCarryMetadataNotCode
+104/764 Test #104: SessionSecrets.ToolCallLogsCarryMetadataNotCode ...................................................   Passed    0.28 sec
+        Start 105: SessionPolicy.ABrokenToolCallKillsTheTreeAndEndsPolicyKilled
+105/764 Test #105: SessionPolicy.ABrokenToolCallKillsTheTreeAndEndsPolicyKilled ......................................   Passed    0.28 sec
+        Start 106: SessionPolicy.UnknownToolAndDynamicCodeAndPathEscapeAreAllViolations
+106/764 Test #106: SessionPolicy.UnknownToolAndDynamicCodeAndPathEscapeAreAllViolations ..............................   Passed    0.61 sec
+        Start 107: SessionPolicy.WithoutEnforcementViolationsAreRecordedButNothingIsKilled
+107/764 Test #107: SessionPolicy.WithoutEnforcementViolationsAreRecordedButNothingIsKilled ...........................   Passed    0.46 sec
+        Start 108: SessionPolicy.AllowedToolCallsAreNotViolations
+108/764 Test #108: SessionPolicy.AllowedToolCallsAreNotViolations ....................................................   Passed    0.44 sec
+        Start 109: SessionExit.OutcomeDependsOnExitCodeAndAgentEnd
+109/764 Test #109: SessionExit.OutcomeDependsOnExitCodeAndAgentEnd ...................................................   Passed    0.52 sec
+        Start 110: SessionTimeout.TheWatchdogKillsAHungAgent
+110/764 Test #110: SessionTimeout.TheWatchdogKillsAHungAgent .........................................................   Passed    0.72 sec
+        Start 111: SessionTimeout.RequestedTimeoutIsClampedToTheConfiguredMaximum
+111/764 Test #111: SessionTimeout.RequestedTimeoutIsClampedToTheConfiguredMaximum ....................................   Passed    0.55 sec
+        Start 112: SessionCancel.CancelKillsTheChildAndIsOnlyValidWhileRunning
+112/764 Test #112: SessionCancel.CancelKillsTheChildAndIsOnlyValidWhileRunning .......................................   Passed    0.50 sec
+        Start 113: SessionCancel.CancelRightAfterCreateStillEndsTheSession
+113/764 Test #113: SessionCancel.CancelRightAfterCreateStillEndsTheSession ...........................................   Passed    1.39 sec
+        Start 114: SessionConcurrency.OnlyOneSessionRunsAtATime
+114/764 Test #114: SessionConcurrency.OnlyOneSessionRunsAtATime ......................................................   Passed    0.37 sec
+        Start 115: SessionConcurrency.FinishedSessionsAreEvictedBeyondTheCap
+115/764 Test #115: SessionConcurrency.FinishedSessionsAreEvictedBeyondTheCap .........................................   Passed    0.26 sec
+        Start 116: SessionConcurrency.ParallelReadersAndCancelNeverDeadlockOrCrash
+116/764 Test #116: SessionConcurrency.ParallelReadersAndCancelNeverDeadlockOrCrash ...................................   Passed    0.58 sec
+        Start 117: SessionShutdown.ShutdownCancelsRunningSessionsAndRefusesNewOnes
+117/764 Test #117: SessionShutdown.ShutdownCancelsRunningSessionsAndRefusesNewOnes ...................................   Passed    0.58 sec
+        Start 118: SessionShutdown.DestroyingTheManagerWhileRunningEndsTheChild
+118/764 Test #118: SessionShutdown.DestroyingTheManagerWhileRunningEndsTheChild ......................................   Passed    1.16 sec
+        Start 119: SessionJson.InfoSerialisesWithoutEndTimeWhileRunning
+119/764 Test #119: SessionJson.InfoSerialisesWithoutEndTimeWhileRunning ..............................................   Passed    0.72 sec
+        Start 120: SessionReal.ScriptedAgentCompletesThroughTheJobObjectLauncher
+120/764 Test #120: SessionReal.ScriptedAgentCompletesThroughTheJobObjectLauncher .....................................   Passed    1.20 sec
+        Start 121: SessionReal.TheChildSeesTheTokenOnlyInItsEnvironmentAndNothingFromTheParent
+121/764 Test #121: SessionReal.TheChildSeesTheTokenOnlyInItsEnvironmentAndNothingFromTheParent .......................   Passed    0.77 sec
+        Start 122: SessionReal.AnEchoedTokenIsRedactedEvenWhenTheChildPrintsIt
+122/764 Test #122: SessionReal.AnEchoedTokenIsRedactedEvenWhenTheChildPrintsIt .......................................   Passed    0.43 sec
+        Start 123: SessionReal.APolicyViolationKillsTheRealProcessPromptly
+123/764 Test #123: SessionReal.APolicyViolationKillsTheRealProcessPromptly ...........................................   Passed    0.35 sec
+        Start 124: SessionReal.WallClockTimeoutKillsTheRealProcess
+124/764 Test #124: SessionReal.WallClockTimeoutKillsTheRealProcess ...................................................   Passed    1.11 sec
+        Start 125: SessionReal.CancelKillsTheWholeTreeIncludingAGrandchild
+125/764 Test #125: SessionReal.CancelKillsTheWholeTreeIncludingAGrandchild ...........................................   Passed    2.44 sec
+        Start 126: SessionReal.EventAndLineCapsHoldAgainstARealFloodingProcess
+126/764 Test #126: SessionReal.EventAndLineCapsHoldAgainstARealFloodingProcess .......................................   Passed    0.85 sec
+        Start 127: SessionReal.ExitCodesMapToStates
+127/764 Test #127: SessionReal.ExitCodesMapToStates ..................................................................   Passed    0.68 sec
+        Start 128: SessionReal.ShutdownWithARunningRealChildLeavesNothingBehind
+128/764 Test #128: SessionReal.ShutdownWithARunningRealChildLeavesNothingBehind ......................................   Passed    2.57 sec
+        Start 129: ChatToolsRequest.NoToolsIsOff
+129/764 Test #129: ChatToolsRequest.NoToolsIsOff .....................................................................   Passed    0.26 sec
+        Start 130: ChatToolsRequest.ParsesToolsAndDefaultsToAuto
+130/764 Test #130: ChatToolsRequest.ParsesToolsAndDefaultsToAuto .....................................................   Passed    0.33 sec
+        Start 131: ChatToolsRequest.ToolChoiceNoneAndAuto
+131/764 Test #131: ChatToolsRequest.ToolChoiceNoneAndAuto ............................................................   Passed    0.40 sec
+        Start 132: ChatToolsRequest.RequiredAndNamedChoiceAreUnsupported
+132/764 Test #132: ChatToolsRequest.RequiredAndNamedChoiceAreUnsupported .............................................   Passed    0.36 sec
+        Start 133: ChatToolsRequest.LegacyFunctionsAreUnsupported
+133/764 Test #133: ChatToolsRequest.LegacyFunctionsAreUnsupported ....................................................   Passed    0.43 sec
+        Start 134: ChatToolsRequest.RejectsMalformedDefinitions
+134/764 Test #134: ChatToolsRequest.RejectsMalformedDefinitions ......................................................   Passed    0.24 sec
+        Start 135: ChatToolsRequest.RejectsTooManyAndTooLarge
+135/764 Test #135: ChatToolsRequest.RejectsTooManyAndTooLarge ........................................................   Passed    0.50 sec
+        Start 136: ChatToolsRender.ToolsBlockUsesPythonJsonLayout
+136/764 Test #136: ChatToolsRender.ToolsBlockUsesPythonJsonLayout ....................................................   Passed    0.34 sec
+        Start 137: ChatToolsRender.AssistantToolCallsAreXml
+137/764 Test #137: ChatToolsRender.AssistantToolCallsAreXml ..........................................................   Passed    0.33 sec
+        Start 138: ChatToolsRender.RejectsBadAssistantToolCalls
+138/764 Test #138: ChatToolsRender.RejectsBadAssistantToolCalls ......................................................   Passed    0.43 sec
+        Start 139: ChatToolsRender.ToolResponseWrapsOnce
+139/764 Test #139: ChatToolsRender.ToolResponseWrapsOnce .............................................................   Passed    0.30 sec
+        Start 140: ChatToolsParse.PlainTextHasNoCalls
+140/764 Test #140: ChatToolsParse.PlainTextHasNoCalls ................................................................   Passed    0.15 sec
+        Start 141: ChatToolsParse.XmlCallIsTypedBySchema
+141/764 Test #141: ChatToolsParse.XmlCallIsTypedBySchema .............................................................   Passed    0.18 sec
+        Start 142: ChatToolsParse.MultipleCallsAndHermesJson
+142/764 Test #142: ChatToolsParse.MultipleCallsAndHermesJson .........................................................   Passed    0.20 sec
+        Start 143: ChatToolsParse.UnparseableBlockStaysVisible
+143/764 Test #143: ChatToolsParse.UnparseableBlockStaysVisible .......................................................   Passed    0.16 sec
+        Start 144: ChatToolsParse.TruncatedBlockWithoutFunctionEndIsKeptAsText
+144/764 Test #144: ChatToolsParse.TruncatedBlockWithoutFunctionEndIsKeptAsText .......................................   Passed    0.20 sec
+        Start 145: ChatToolsStream.PlainTextStreamsWithoutLoss
+145/764 Test #145: ChatToolsStream.PlainTextStreamsWithoutLoss .......................................................   Passed    0.20 sec
+        Start 146: ChatToolsStream.HoldsBackTagPrefixAndParsesCall
+146/764 Test #146: ChatToolsStream.HoldsBackTagPrefixAndParsesCall ...................................................   Passed    0.20 sec
+        Start 147: ChatToolsStream.UnusableCallRegionIsReturnedAsContent
+147/764 Test #147: ChatToolsStream.UnusableCallRegionIsReturnedAsContent .............................................   Passed    0.21 sec
+        Start 148: JsonSchema.TypesAndRequired
+148/764 Test #148: JsonSchema.TypesAndRequired .......................................................................   Passed    0.16 sec
+        Start 149: JsonSchema.AdditionalPropertiesFalseRejectsUnknown
+149/764 Test #149: JsonSchema.AdditionalPropertiesFalseRejectsUnknown ................................................   Passed    0.18 sec
+        Start 150: JsonSchema.NumericAndStringBounds
+150/764 Test #150: JsonSchema.NumericAndStringBounds .................................................................   Passed    0.12 sec
+        Start 151: JsonSchema.ArraysEnumsAndAnyOf
+151/764 Test #151: JsonSchema.ArraysEnumsAndAnyOf ....................................................................   Passed    0.34 sec
+        Start 152: JsonSchema.ErrorMessageCarriesPath
+152/764 Test #152: JsonSchema.ErrorMessageCarriesPath ................................................................   Passed    0.13 sec
+        Start 153: JsonSchema.UnsupportedKeywordNeverSilentlyWeakens
+153/764 Test #153: JsonSchema.UnsupportedKeywordNeverSilentlyWeakens .................................................   Passed    0.29 sec
+        Start 154: JsonSchema.DeepSchemaIsBounded
+154/764 Test #154: JsonSchema.DeepSchemaIsBounded ....................................................................   Passed    0.22 sec
+        Start 155: Base64.Rfc4648Vectors
+155/764 Test #155: Base64.Rfc4648Vectors .............................................................................   Passed    0.27 sec
+        Start 156: Base64.BinaryAlphabetEdgesAndLength
+156/764 Test #156: Base64.BinaryAlphabetEdgesAndLength ...............................................................   Passed    0.24 sec
+        Start 157: Base64.ZeroLengthWithNullPointerIsSafe
+157/764 Test #157: Base64.ZeroLengthWithNullPointerIsSafe ............................................................   Passed    0.22 sec
+        Start 158: JsonGuard.AcceptsShallowAndRejectsDeep
+158/764 Test #158: JsonGuard.AcceptsShallowAndRejectsDeep ............................................................   Passed    0.33 sec
+        Start 159: JsonGuard.BracketsInsideStringsDoNotCount
+159/764 Test #159: JsonGuard.BracketsInsideStringsDoNotCount .........................................................   Passed    0.33 sec
+        Start 160: JsonGuard.UnbalancedInputIsDecidedWithoutCrashing
+160/764 Test #160: JsonGuard.UnbalancedInputIsDecidedWithoutCrashing .................................................   Passed    0.40 sec
+        Start 161: JsonGuard.BoundaryAtMaxDepth
+161/764 Test #161: JsonGuard.BoundaryAtMaxDepth ......................................................................   Passed    0.43 sec
+        Start 162: JsonGuard.VeryDeepDocumentIsFlaggedBeforeAnyRecursiveParse
+162/764 Test #162: JsonGuard.VeryDeepDocumentIsFlaggedBeforeAnyRecursiveParse ........................................   Passed    0.47 sec
+        Start 163: ImageProbe.PngDimensionsFromHeaderOnly
+163/764 Test #163: ImageProbe.PngDimensionsFromHeaderOnly ............................................................   Passed    0.40 sec
+        Start 164: ImageProbe.RealGeneratedPng
+164/764 Test #164: ImageProbe.RealGeneratedPng .......................................................................   Passed    0.43 sec
+        Start 165: ImageProbe.GifBmpJpeg
+165/764 Test #165: ImageProbe.GifBmpJpeg .............................................................................   Passed    0.29 sec
+        Start 166: ImageProbe.RejectsGarbageTruncatedAndZeroSized
+166/764 Test #166: ImageProbe.RejectsGarbageTruncatedAndZeroSized ....................................................   Passed    0.31 sec
+        Start 167: DataUri.RoundTripsBytes
+167/764 Test #167: DataUri.RoundTripsBytes ...........................................................................   Passed    0.58 sec
+        Start 168: DataUri.RejectsEverythingThatIsNotAStrictImageDataUri
+168/764 Test #168: DataUri.RejectsEverythingThatIsNotAStrictImageDataUri .............................................   Passed    0.38 sec
+        Start 169: DataUri.SizeLimitIsCheckedBeforeDecoding
+169/764 Test #169: DataUri.SizeLimitIsCheckedBeforeDecoding ..........................................................   Passed    0.46 sec
+        Start 170: Result.ValueAndError
+170/764 Test #170: Result.ValueAndError ..............................................................................   Passed    0.43 sec
+        Start 171: Result.VoidSpecialisation
+171/764 Test #171: Result.VoidSpecialisation .........................................................................   Passed    0.23 sec
+        Start 172: Result.MoveOnlyAndString
+172/764 Test #172: Result.MoveOnlyAndString ..........................................................................   Passed    0.30 sec
+        Start 173: ErrorTaxonomy.ExitCodesAreStable
+173/764 Test #173: ErrorTaxonomy.ExitCodesAreStable ..................................................................   Passed    0.33 sec
+        Start 174: ErrorTaxonomy.NamesAreUniqueAndKnown
+174/764 Test #174: ErrorTaxonomy.NamesAreUniqueAndKnown ..............................................................   Passed    0.44 sec
+        Start 175: CheckedMath.Add
+175/764 Test #175: CheckedMath.Add ...................................................................................   Passed    0.78 sec
+        Start 176: CheckedMath.Mul
+176/764 Test #176: CheckedMath.Mul ...................................................................................   Passed    0.51 sec
+        Start 177: CheckedMath.SaturatingSub
+177/764 Test #177: CheckedMath.SaturatingSub .........................................................................   Passed    0.35 sec
+        Start 178: CheckedMath.RangeWithin
+178/764 Test #178: CheckedMath.RangeWithin ...........................................................................   Passed    0.42 sec
+        Start 179: Lifecycle.StaticTableMatchesSpecification
+179/764 Test #179: Lifecycle.StaticTableMatchesSpecification .........................................................   Passed    0.13 sec
+        Start 180: Lifecycle.EveryPairBehavesAccordingToTable
+180/764 Test #180: Lifecycle.EveryPairBehavesAccordingToTable ........................................................   Passed    0.13 sec
+        Start 181: Lifecycle.FullHappyPathAndReload
+181/764 Test #181: Lifecycle.FullHappyPathAndReload ..................................................................   Passed    0.21 sec
+        Start 182: Lifecycle.TransitionToFailedRequiresFail
+182/764 Test #182: Lifecycle.TransitionToFailedRequiresFail ..........................................................   Passed    0.06 sec
+        Start 183: Lifecycle.RecoverableFailureCanRevalidate
+183/764 Test #183: Lifecycle.RecoverableFailureCanRevalidate .........................................................   Passed    0.07 sec
+        Start 184: Lifecycle.NonRecoverableFailureOnlyAllowsUnloading
+184/764 Test #184: Lifecycle.NonRecoverableFailureOnlyAllowsUnloading ................................................   Passed    0.12 sec
+        Start 185: Lifecycle.CannotFailFromIdleStates
+185/764 Test #185: Lifecycle.CannotFailFromIdleStates ................................................................   Passed    0.24 sec
+        Start 186: Lifecycle.CompareAndTransition
+186/764 Test #186: Lifecycle.CompareAndTransition ....................................................................   Passed    0.08 sec
+        Start 187: Lifecycle.ExactlyOneConcurrentOwnerWinsTheLoad
+187/764 Test #187: Lifecycle.ExactlyOneConcurrentOwnerWinsTheLoad ....................................................   Passed    0.11 sec
+        Start 188: Lifecycle.NamesAreDistinct
+188/764 Test #188: Lifecycle.NamesAreDistinct ........................................................................   Passed    0.07 sec
+        Start 189: MemoryBudgetMath.PhysicalOnly
+189/764 Test #189: MemoryBudgetMath.PhysicalOnly .....................................................................   Passed    0.07 sec
+        Start 190: MemoryBudgetMath.VulkanHeadroomCapsBudget
+190/764 Test #190: MemoryBudgetMath.VulkanHeadroomCapsBudget .........................................................   Passed    0.06 sec
+        Start 191: MemoryBudgetMath.SaturatesInsteadOfUnderflowing
+191/764 Test #191: MemoryBudgetMath.SaturatesInsteadOfUnderflowing ...................................................   Passed    0.06 sec
+        Start 192: MemoryBudget.ReserveAndRelease
+192/764 Test #192: MemoryBudget.ReserveAndRelease ....................................................................   Passed    0.07 sec
+        Start 193: MemoryBudget.ExceedingBudgetFailsAndLeavesStateUntouched
+193/764 Test #193: MemoryBudget.ExceedingBudgetFailsAndLeavesStateUntouched ..........................................   Passed    0.06 sec
+        Start 194: MemoryBudget.OverflowIsOutOfMemoryNotWraparound
+194/764 Test #194: MemoryBudget.OverflowIsOutOfMemoryNotWraparound ...................................................   Passed    0.12 sec
+        Start 195: MemoryBudget.NoDoubleCountingOfSharedRegion
+195/764 Test #195: MemoryBudget.NoDoubleCountingOfSharedRegion .......................................................   Passed    0.22 sec
+        Start 196: MemoryBudget.InvalidArguments
+196/764 Test #196: MemoryBudget.InvalidArguments .....................................................................   Passed    0.15 sec
+        Start 197: MemoryBudget.Resize
+197/764 Test #197: MemoryBudget.Resize ...............................................................................   Passed    0.15 sec
+        Start 198: MemoryBudget.RemeasureCanOvercommit
+198/764 Test #198: MemoryBudget.RemeasureCanOvercommit ...............................................................   Passed    0.24 sec
+        Start 199: MemoryBudget.ConstructFromMeasurements
+199/764 Test #199: MemoryBudget.ConstructFromMeasurements ............................................................   Passed    0.16 sec
+        Start 200: PathGuard.AcceptsPathsInsideRoot
+200/764 Test #200: PathGuard.AcceptsPathsInsideRoot ..................................................................   Passed    0.33 sec
+        Start 201: PathGuard.RejectsDotDotTraversal
+201/764 Test #201: PathGuard.RejectsDotDotTraversal ..................................................................   Passed    0.52 sec
+        Start 202: PathGuard.RejectsAbsolutePathOutside
+202/764 Test #202: PathGuard.RejectsAbsolutePathOutside ..............................................................   Passed    0.33 sec
+        Start 203: PathGuard.RejectsSiblingWithSharedPrefix
+203/764 Test #203: PathGuard.RejectsSiblingWithSharedPrefix ..........................................................   Passed    0.40 sec
+        Start 204: PathGuard.RejectsEmptyAndNul
+204/764 Test #204: PathGuard.RejectsEmptyAndNul ......................................................................   Passed    0.33 sec
+        Start 205: PathGuard.EmptyGuardRejectsEverything
+205/764 Test #205: PathGuard.EmptyGuardRejectsEverything .............................................................   Passed    0.31 sec
+        Start 206: PathGuard.AddRootValidation
+206/764 Test #206: PathGuard.AddRootValidation .......................................................................   Passed    0.29 sec
+        Start 207: PathGuard.LinkInsideRootPointingOutsideIsRejected
+207/764 Test #207: PathGuard.LinkInsideRootPointingOutsideIsRejected .................................................   Passed    0.46 sec
+        Start 208: PathGuard.LinkInsideRootPointingInsideIsAccepted
+208/764 Test #208: PathGuard.LinkInsideRootPointingInsideIsAccepted ..................................................   Passed    0.57 sec
+        Start 209: PathGuard.WindowsCaseInsensitiveRootMatch
+209/764 Test #209: PathGuard.WindowsCaseInsensitiveRootMatch .........................................................   Passed    0.32 sec
+        Start 210: PathGuard.WindowsRejectsDeviceNamespaceAndStreams
+210/764 Test #210: PathGuard.WindowsRejectsDeviceNamespaceAndStreams .................................................   Passed    0.35 sec
+        Start 211: PathGuard.WindowsRejectsDosDeviceNamesInsideRoot
+211/764 Test #211: PathGuard.WindowsRejectsDosDeviceNamesInsideRoot ..................................................   Passed    0.41 sec
+        Start 212: PathGuard.WindowsRejectsWildcardsAndTrailingDotsInsideRoot
+212/764 Test #212: PathGuard.WindowsRejectsWildcardsAndTrailingDotsInsideRoot ........................................   Passed    0.40 sec
+        Start 213: PathGuard.WindowsStillAcceptsLookalikeLegitimateNames
+213/764 Test #213: PathGuard.WindowsStillAcceptsLookalikeLegitimateNames .............................................   Passed    0.43 sec
+        Start 214: JobQueue.RunsJobToSuccessWithEvents
+214/764 Test #214: JobQueue.RunsJobToSuccessWithEvents ...............................................................   Passed    0.36 sec
+        Start 215: JobQueue.FailureCarriesError
+215/764 Test #215: JobQueue.FailureCarriesError ......................................................................   Passed    0.41 sec
+        Start 216: JobQueue.ThrowingJobBecomesInternalFailureAndQueueSurvives
+216/764 Test #216: JobQueue.ThrowingJobBecomesInternalFailureAndQueueSurvives ........................................   Passed    0.34 sec
+        Start 217: JobQueue.CancelRunningJobIsCooperative
+217/764 Test #217: JobQueue.CancelRunningJobIsCooperative ............................................................   Passed    0.34 sec
+        Start 218: JobQueue.CancelQueuedJobNeverRuns
+218/764 Test #218: JobQueue.CancelQueuedJobNeverRuns .................................................................   Passed    0.39 sec
+        Start 219: JobQueue.CancelFinishedIsNoOpAndUnknownIsNotFound
+219/764 Test #219: JobQueue.CancelFinishedIsNoOpAndUnknownIsNotFound .................................................   Passed    0.34 sec
+        Start 220: JobQueue.FullQueueRejectsWithBusy
+220/764 Test #220: JobQueue.FullQueueRejectsWithBusy .................................................................   Passed    0.33 sec
+        Start 221: JobQueue.JobsRunInSubmissionOrderOnOneWorker
+221/764 Test #221: JobQueue.JobsRunInSubmissionOrderOnOneWorker ......................................................   Passed    0.47 sec
+        Start 222: JobQueue.MultipleWorkersRunConcurrently
+222/764 Test #222: JobQueue.MultipleWorkersRunConcurrently ...........................................................   Passed    0.43 sec
+        Start 223: JobQueue.EventCallbackReceivesStreamAndMayThrow
+223/764 Test #223: JobQueue.EventCallbackReceivesStreamAndMayThrow ...................................................   Passed    0.30 sec
+        Start 224: JobQueue.ProgressEventsAreBoundedButOutputIsNot
+224/764 Test #224: JobQueue.ProgressEventsAreBoundedButOutputIsNot ...................................................   Passed    0.32 sec
+        Start 225: JobQueue.ShutdownCancelsRunningAndQueuedAndRejectsNewWork
+225/764 Test #225: JobQueue.ShutdownCancelsRunningAndQueuedAndRejectsNewWork .........................................   Passed    0.35 sec
+        Start 226: JobQueue.DestructorCancelsWithoutHanging
+226/764 Test #226: JobQueue.DestructorCancelsWithoutHanging ..........................................................   Passed    0.37 sec
+        Start 227: JobQueue.RetainsBoundedNumberOfFinishedJobs
+227/764 Test #227: JobQueue.RetainsBoundedNumberOfFinishedJobs .......................................................   Passed    0.33 sec
+        Start 228: JobQueue.RejectsEmptyFunction
+228/764 Test #228: JobQueue.RejectsEmptyFunction .....................................................................   Passed    0.46 sec
+        Start 229: CancellationToken.SourceAndToken
+229/764 Test #229: CancellationToken.SourceAndToken ..................................................................   Passed    0.39 sec
+        Start 230: Settings.DefaultsAreSafeAndValid
+230/764 Test #230: Settings.DefaultsAreSafeAndValid ..................................................................   Passed    0.41 sec
+        Start 231: Settings.RoundTripThroughFile
+231/764 Test #231: Settings.RoundTripThroughFile .....................................................................   Passed    0.41 sec
+        Start 232: Settings.MissingFileYieldsDefaults
+232/764 Test #232: Settings.MissingFileYieldsDefaults ................................................................   Passed    0.36 sec
+        Start 233: Settings.AtomicWriteReplacesAndLeavesNoTempFiles
+233/764 Test #233: Settings.AtomicWriteReplacesAndLeavesNoTempFiles ..................................................   Passed    0.37 sec
+        Start 234: Settings.FailedSaveKeepsPreviousFile
+234/764 Test #234: Settings.FailedSaveKeepsPreviousFile ..............................................................   Passed    0.33 sec
+        Start 235: Settings.MigratesLegacyV0
+235/764 Test #235: Settings.MigratesLegacyV0 .........................................................................   Passed    0.28 sec
+        Start 236: Settings.MigratedFileIsRewrittenAtCurrentVersion
+236/764 Test #236: Settings.MigratedFileIsRewrittenAtCurrentVersion ..................................................   Passed    0.38 sec
+        Start 237: Settings.NewerSchemaIsRejectedNotDowngraded
+237/764 Test #237: Settings.NewerSchemaIsRejectedNotDowngraded .......................................................   Passed    0.34 sec
+        Start 238: Settings.RejectsCorruptAndMistypedInput
+238/764 Test #238: Settings.RejectsCorruptAndMistypedInput ...........................................................   Passed    0.27 sec
+        Start 239: Settings.IgnoresUnknownKeys
+239/764 Test #239: Settings.IgnoresUnknownKeys .......................................................................   Passed    0.29 sec
+        Start 240: Settings.ValidationBounds
+240/764 Test #240: Settings.ValidationBounds .........................................................................   Passed    0.33 sec
+        Start 241: Settings.NonLoopbackBindNeedsExplicitLanOptIn
+241/764 Test #241: Settings.NonLoopbackBindNeedsExplicitLanOptIn .....................................................   Passed    0.39 sec
+        Start 242: Settings.LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch
+242/764 Test #242: Settings.LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch ...........................................   Passed    0.31 sec
+        Start 243: Settings.ContextTokenCapMatchesEngineCap
+243/764 Test #243: Settings.ContextTokenCapMatchesEngineCap ..........................................................   Passed    0.36 sec
+        Start 244: Settings.ProfileNames
+244/764 Test #244: Settings.ProfileNames .............................................................................   Passed    0.38 sec
+        Start 245: ModelId.Validation
+245/764 Test #245: ModelId.Validation ................................................................................   Passed    0.24 sec
+        Start 246: ModelId.MakeIdSanitises
+246/764 Test #246: ModelId.MakeIdSanitises ...........................................................................   Passed    0.45 sec
+        Start 247: ModelRegistry.AddGetListRemove
+247/764 Test #247: ModelRegistry.AddGetListRemove ....................................................................   Passed    0.35 sec
+        Start 248: ModelRegistry.RejectsBadAndDuplicateIds
+248/764 Test #248: ModelRegistry.RejectsBadAndDuplicateIds ...........................................................   Passed    0.57 sec
+        Start 249: ModelRegistry.LifecycleThroughRegistryAndRemovalGuard
+249/764 Test #249: ModelRegistry.LifecycleThroughRegistryAndRemovalGuard .............................................   Passed    0.36 sec
+        Start 250: ModelRegistry.FailMarksFailed
+250/764 Test #250: ModelRegistry.FailMarksFailed .....................................................................   Passed    0.45 sec
+        Start 251: ModelRegistry.JsonRoundTrip
+251/764 Test #251: ModelRegistry.JsonRoundTrip .......................................................................   Passed    0.39 sec
+        Start 252: ModelRegistry.LoadJsonRejectsGarbage
+252/764 Test #252: ModelRegistry.LoadJsonRejectsGarbage ..............................................................   Passed    0.42 sec
+        Start 253: ModelRegistryScan.FindsValidatesAndIsIdempotent
+253/764 Test #253: ModelRegistryScan.FindsValidatesAndIsIdempotent ...................................................   Passed    0.36 sec
+        Start 254: ModelRegistryScan.DuplicateStemsGetSuffixedIds
+254/764 Test #254: ModelRegistryScan.DuplicateStemsGetSuffixedIds ....................................................   Passed    0.38 sec
+        Start 255: ModelRegistryScan.SafetensorsHeaderChecked
+255/764 Test #255: ModelRegistryScan.SafetensorsHeaderChecked ........................................................   Passed    0.40 sec
+        Start 256: ModelRegistryScan.DoesNotFollowLinksOutOfRoot
+256/764 Test #256: ModelRegistryScan.DoesNotFollowLinksOutOfRoot .....................................................   Passed    0.65 sec
+        Start 257: ModelRegistryScan.RootOutsideGuardIsRejected
+257/764 Test #257: ModelRegistryScan.RootOutsideGuardIsRejected ......................................................   Passed    0.22 sec
+        Start 258: ModelRegistryScan.NeverModifiesScannedFiles
+258/764 Test #258: ModelRegistryScan.NeverModifiesScannedFiles .......................................................   Passed    0.29 sec
+        Start 259: Logger.WritesOneJsonObjectPerLine
+259/764 Test #259: Logger.WritesOneJsonObjectPerLine .................................................................   Passed    0.36 sec
+        Start 260: Logger.LevelFiltering
+260/764 Test #260: Logger.LevelFiltering .............................................................................   Passed    0.40 sec
+        Start 261: Logger.EscapesControlCharacters
+261/764 Test #261: Logger.EscapesControlCharacters ...................................................................   Passed    0.32 sec
+        Start 262: Logger.ParseLevel
+262/764 Test #262: Logger.ParseLevel .................................................................................   Passed    0.28 sec
+        Start 263: Logger.DefaultGlobalLoggerExists
+263/764 Test #263: Logger.DefaultGlobalLoggerExists ..................................................................   Passed    0.32 sec
+        Start 264: EngineInterface.TextAdapterContract
+264/764 Test #264: EngineInterface.TextAdapterContract ...............................................................   Passed    0.26 sec
+        Start 265: EngineInterface.ImageAdapterContract
+265/764 Test #265: EngineInterface.ImageAdapterContract ..............................................................   Passed    0.41 sec
+        Start 266: EngineInterface.DefaultsAreConservative
+266/764 Test #266: EngineInterface.DefaultsAreConservative ...........................................................   Passed    0.22 sec
+        Start 267: GgufProbe.TextModelWithArchitecture
+267/764 Test #267: GgufProbe.TextModelWithArchitecture ...............................................................   Passed    0.21 sec
+        Start 268: GgufProbe.DiffusionModelIsClassifiedAsImageWithoutMetadata
+268/764 Test #268: GgufProbe.DiffusionModelIsClassifiedAsImageWithoutMetadata ........................................   Passed    0.29 sec
+        Start 269: GgufProbe.ArchitectureMarksDiffusion
+269/764 Test #269: GgufProbe.ArchitectureMarksDiffusion ..............................................................   Passed    0.31 sec
+        Start 270: GgufProbe.UnknownContentStaysUnknown
+270/764 Test #270: GgufProbe.UnknownContentStaysUnknown ..............................................................   Passed    0.28 sec
+        Start 271: GgufProbe.StringArrayMetadataIsSkipped
+271/764 Test #271: GgufProbe.StringArrayMetadataIsSkipped ............................................................   Passed    0.29 sec
+        Start 272: GgufProbe.TruncatedTensorTableIsIncompleteNotFatal
+272/764 Test #272: GgufProbe.TruncatedTensorTableIsIncompleteNotFatal ................................................   Passed    0.33 sec
+        Start 273: GgufProbe.TinyInputsAreRejectedWithoutReading
+273/764 Test #273: GgufProbe.TinyInputsAreRejectedWithoutReading .....................................................   Passed    0.34 sec
+        Start 274: GgufProbe.BadMagicIsRejected
+274/764 Test #274: GgufProbe.BadMagicIsRejected ......................................................................   Passed    0.32 sec
+        Start 275: GgufProbe.UnsupportedVersionIsRejected
+275/764 Test #275: GgufProbe.UnsupportedVersionIsRejected ............................................................   Passed    0.30 sec
+        Start 276: GgufProbe.V1IsValidButNotParsed
+276/764 Test #276: GgufProbe.V1IsValidButNotParsed ...................................................................   Passed    0.33 sec
+        Start 277: GgufProbe.AbsurdStringLengthIsRejected
+277/764 Test #277: GgufProbe.AbsurdStringLengthIsRejected ............................................................   Passed    0.27 sec
+        Start 278: GgufProbe.AbsurdArrayCountIsRejectedWithoutAllocating
+278/764 Test #278: GgufProbe.AbsurdArrayCountIsRejectedWithoutAllocating .............................................   Passed    0.21 sec
+        Start 279: GgufProbe.HugeFixedArrayCountIsRejectedByBufferBounds
+279/764 Test #279: GgufProbe.HugeFixedArrayCountIsRejectedByBufferBounds .............................................   Passed    0.23 sec
+        Start 280: GgufProbe.TooManyTensorDimsIsRejected
+280/764 Test #280: GgufProbe.TooManyTensorDimsIsRejected .............................................................   Passed    0.07 sec
+        Start 281: GgufProbe.UnknownMetadataTypeIsRejected
+281/764 Test #281: GgufProbe.UnknownMetadataTypeIsRejected ...........................................................   Passed    0.10 sec
+        Start 282: GgufProbe.NameCapStopsWalking
+282/764 Test #282: GgufProbe.NameCapStopsWalking .....................................................................   Passed    0.07 sec
+        Start 283: GgufProbe.FileProbeReadsAndReportsMissingFiles
+283/764 Test #283: GgufProbe.FileProbeReadsAndReportsMissingFiles ....................................................   Passed    0.08 sec
+        Start 284: GgufProbe.FileProbeHonoursTheByteLimit
+284/764 Test #284: GgufProbe.FileProbeHonoursTheByteLimit ............................................................   Passed    0.08 sec
+        Start 285: BenchStats.MedianPercentileAndStatsShape
+285/764 Test #285: BenchStats.MedianPercentileAndStatsShape ..........................................................   Passed    0.07 sec
+        Start 286: BenchPlan.ValidationBounds
+286/764 Test #286: BenchPlan.ValidationBounds ........................................................................   Passed    0.07 sec
+        Start 287: BenchQuick.DocumentShapeAndMeasuredStatistics
+287/764 Test #287: BenchQuick.DocumentShapeAndMeasuredStatistics .....................................................   Passed    0.07 sec
+        Start 288: BenchQuick.UnloadAtEndCanBeDisabled
+288/764 Test #288: BenchQuick.UnloadAtEndCanBeDisabled ...............................................................   Passed    0.08 sec
+        Start 289: BenchQuick.ColdNoteComesFromMeta
+289/764 Test #289: BenchQuick.ColdNoteComesFromMeta ..................................................................   Passed    0.08 sec
+        Start 290: BenchQuick.LoadFailureAndZeroTokenGenerationAreErrors
+290/764 Test #290: BenchQuick.LoadFailureAndZeroTokenGenerationAreErrors .............................................   Passed    0.07 sec
+        Start 291: BenchQuick.InvalidPlanIsRejectedBeforeTouchingTheTarget
+291/764 Test #291: BenchQuick.InvalidPlanIsRejectedBeforeTouchingTheTarget ...........................................   Passed    0.08 sec
+        Start 292: BenchQuick.CancellationStopsBetweenSamplesAndUnloads
+292/764 Test #292: BenchQuick.CancellationStopsBetweenSamplesAndUnloads ..............................................   Passed    0.07 sec
+        Start 293: BenchFull.OneTokenPrefillPointIsNotAFailureWhenTheDecodeCountIsZero
+293/764 Test #293: BenchFull.OneTokenPrefillPointIsNotAFailureWhenTheDecodeCountIsZero ...............................   Passed    0.07 sec
+        Start 294: BenchFull.SweepsAreMeasuredPerSizeAndCarryRawSamples
+294/764 Test #294: BenchFull.SweepsAreMeasuredPerSizeAndCarryRawSamples ..............................................   Passed    0.07 sec
+        Start 295: BenchFull.PointsThatDoNotFitTheContextAreSkippedWithAReason
+295/764 Test #295: BenchFull.PointsThatDoNotFitTheContextAreSkippedWithAReason .......................................   Passed    0.17 sec
+        Start 296: BenchFull.AFailingSweepPointIsRecordedAndMakesTheRunPartial
+296/764 Test #296: BenchFull.AFailingSweepPointIsRecordedAndMakesTheRunPartial .......................................   Passed    0.07 sec
+        Start 297: BenchFull.CancellationInsideASweepAborts
+297/764 Test #297: BenchFull.CancellationInsideASweepAborts ..........................................................   Passed    0.08 sec
+        Start 298: BenchPrompt.SizedPromptsGrowAndAreDeterministic
+298/764 Test #298: BenchPrompt.SizedPromptsGrowAndAreDeterministic ...................................................   Passed    0.08 sec
+        Start 299: FsUtil.AtomicWriteCreatesParentsAndRoundTripsBinary
+299/764 Test #299: FsUtil.AtomicWriteCreatesParentsAndRoundTripsBinary ...............................................   Passed    0.10 sec
+        Start 300: FsUtil.AtomicWriteReplacesExistingAndEmptyContentIsAllowed
+300/764 Test #300: FsUtil.AtomicWriteReplacesExistingAndEmptyContentIsAllowed ........................................   Passed    0.10 sec
+        Start 301: FsUtil.FailedRenameLeavesPreviousStateAndNoTempFile
+301/764 Test #301: FsUtil.FailedRenameLeavesPreviousStateAndNoTempFile ...............................................   Passed    0.09 sec
+        Start 302: FsUtil.ParentThatIsAFileIsAnErrorNotACrash
+302/764 Test #302: FsUtil.ParentThatIsAFileIsAnErrorNotACrash ........................................................   Passed    0.09 sec
+        Start 303: FsUtil.ConcurrentWritersNeverProduceMixedContent
+303/764 Test #303: FsUtil.ConcurrentWritersNeverProduceMixedContent ..................................................   Passed    1.92 sec
+        Start 304: FsUtil.ReadFileLimitedEnforcesTheBoundBeforeAllocating
+304/764 Test #304: FsUtil.ReadFileLimitedEnforcesTheBoundBeforeAllocating ............................................   Passed    0.11 sec
+        Start 305: GuiAssets.RootServesIndexHtmlWithStrictCsp
+305/764 Test #305: GuiAssets.RootServesIndexHtmlWithStrictCsp ........................................................   Passed    0.10 sec
+        Start 306: GuiAssets.EveryAssetIsServedWithCspAndRightType
+306/764 Test #306: GuiAssets.EveryAssetIsServedWithCspAndRightType ...................................................   Passed    0.12 sec
+        Start 307: GuiAssets.StudioStructure
+307/764 Test #307: GuiAssets.StudioStructure .........................................................................   Passed    0.06 sec
+        Start 308: GuiAssets.EmbeddedBytesMatchExpectedMarkers
+308/764 Test #308: GuiAssets.EmbeddedBytesMatchExpectedMarkers .......................................................   Passed    0.08 sec
+        Start 309: GuiAssets.NoExternalUrlsOrInlineCode
+309/764 Test #309: GuiAssets.NoExternalUrlsOrInlineCode ..............................................................   Passed    0.28 sec
+        Start 310: GuiAssets.ModelOutputIsRenderedAsDomNodesNeverAsHtml
+310/764 Test #310: GuiAssets.ModelOutputIsRenderedAsDomNodesNeverAsHtml ..............................................   Passed    0.08 sec
+        Start 311: GuiAssets.TokenComesFromFragmentNeverQueryString
+311/764 Test #311: GuiAssets.TokenComesFromFragmentNeverQueryString ..................................................   Passed    0.07 sec
+        Start 312: GuiAssets.TraversalAndMalformedPathsAreRejected
+312/764 Test #312: GuiAssets.TraversalAndMalformedPathsAreRejected ...................................................   Passed    0.06 sec
+        Start 313: GuiAssets.UnknownAssetIs404AndNamespaceEdges
+313/764 Test #313: GuiAssets.UnknownAssetIs404AndNamespaceEdges ......................................................   Passed    0.06 sec
+        Start 314: GuiAssets.OtherPathsAreNotHandled
+314/764 Test #314: GuiAssets.OtherPathsAreNotHandled .................................................................   Passed    0.06 sec
+        Start 315: GuiAssets.MethodHandling
+315/764 Test #315: GuiAssets.MethodHandling ..........................................................................   Passed    0.06 sec
+        Start 316: GuiAssets.NoSecretsEmbedded
+316/764 Test #316: GuiAssets.NoSecretsEmbedded .......................................................................   Passed    0.07 sec
+        Start 317: GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles
+317/764 Test #317: GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles ..................................................   Passed    0.11 sec
+        Start 318: HardwareFormat.Bytes
+318/764 Test #318: HardwareFormat.Bytes ..............................................................................   Passed    0.07 sec
+        Start 319: HardwareFormat.MibS
+319/764 Test #319: HardwareFormat.MibS ...............................................................................   Passed    0.07 sec
+        Start 320: HardwareFormat.BusAndDriveTypes
+320/764 Test #320: HardwareFormat.BusAndDriveTypes ...................................................................   Passed    0.06 sec
+        Start 321: HardwareFormat.TimestampLooksLikeUtcIso
+321/764 Test #321: HardwareFormat.TimestampLooksLikeUtcIso ...........................................................   Passed    0.06 sec
+        Start 322: HardwareFormat.RenderTextHandlesEmptyReportWithUnknown
+322/764 Test #322: HardwareFormat.RenderTextHandlesEmptyReportWithUnknown ............................................   Passed    0.07 sec
+        Start 323: HardwareFormat.RenderTextShowsSyntheticValues
+323/764 Test #323: HardwareFormat.RenderTextShowsSyntheticValues .....................................................   Passed    0.06 sec
+        Start 324: CpuDecode.IdentityFamilyModelStepping
+324/764 Test #324: CpuDecode.IdentityFamilyModelStepping .............................................................   Passed    0.07 sec
+        Start 325: CpuDecode.FeaturesRequireOsSupport
+325/764 Test #325: CpuDecode.FeaturesRequireOsSupport ................................................................   Passed    0.08 sec
+        Start 326: CpuDecode.Avx512NeedsZmmState
+326/764 Test #326: CpuDecode.Avx512NeedsZmmState .....................................................................   Passed    0.07 sec
+        Start 327: CpuDecode.NoCpuidReportsUnknownNotFalse
+327/764 Test #327: CpuDecode.NoCpuidReportsUnknownNotFalse ...........................................................   Passed    0.07 sec
+        Start 328: DoctorLive.ReportStructureNoVulkan
+328/764 Test #328: DoctorLive.ReportStructureNoVulkan ................................................................   Passed    0.11 sec
+        Start 329: DoctorLive.CpuFeaturesPresent
+329/764 Test #329: DoctorLive.CpuFeaturesPresent .....................................................................   Passed    0.10 sec
+        Start 330: DoctorLive.VulkanReportWhenAvailable
+330/764 Test #330: DoctorLive.VulkanReportWhenAvailable ..............................................................   Passed    0.26 sec
+        Start 331: DoctorLive.ReadBenchmarkOnTempFile
+331/764 Test #331: DoctorLive.ReadBenchmarkOnTempFile ................................................................   Passed    0.15 sec
+        Start 332: DoctorLive.ReadBenchmarkMissingFileIsErrorNotCrash
+332/764 Test #332: DoctorLive.ReadBenchmarkMissingFileIsErrorNotCrash ................................................   Passed    0.12 sec
+        Start 333: DoctorLive.RejectsInvalidOptions
+333/764 Test #333: DoctorLive.RejectsInvalidOptions ..................................................................   Passed    0.07 sec
+        Start 334: DoctorLive.TextAndJsonRunnersWork
+334/764 Test #334: DoctorLive.TextAndJsonRunnersWork .................................................................   Passed    0.10 sec
+        Start 335: MemoryProbe.PolicyReservesTenPercentWithAOneGiBFloorAndHalfGiBMargin
+335/764 Test #335: MemoryProbe.PolicyReservesTenPercentWithAOneGiBFloorAndHalfGiBMargin ..............................   Passed    0.07 sec
+        Start 336: MemoryProbe.BudgetNeverUnderflowsWhenTheMachineIsAlmostFull
+336/764 Test #336: MemoryProbe.BudgetNeverUnderflowsWhenTheMachineIsAlmostFull .......................................   Passed    0.07 sec
+        Start 337: MemoryProbe.LiveMeasurementIsPlausible
+337/764 Test #337: MemoryProbe.LiveMeasurementIsPlausible ............................................................   Passed    0.07 sec
+        Start 338: KernelCpuFp16.RoundTripsRepresentableValuesExactly
+338/764 Test #338: KernelCpuFp16.RoundTripsRepresentableValuesExactly ................................................   Passed    0.08 sec
+        Start 339: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns
+339/764 Test #339: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns ..........................................   Passed    0.06 sec
+        Start 340: KernelCpuSizing.RowAndTotalBytes
+340/764 Test #340: KernelCpuSizing.RowAndTotalBytes ..................................................................   Passed    0.07 sec
+        Start 341: KernelCpuGemv.MatchesADirectDequantisedDotProduct
+341/764 Test #341: KernelCpuGemv.MatchesADirectDequantisedDotProduct .................................................   Passed    0.06 sec
+        Start 342: KernelCpuGemv.SingleRowSingleBlockAndZeroWeights
+342/764 Test #342: KernelCpuGemv.SingleRowSingleBlockAndZeroWeights ..................................................   Passed    0.06 sec
+        Start 343: KernelCpuGemv.NonPowerOfTwoRowsAndColumns
+343/764 Test #343: KernelCpuGemv.NonPowerOfTwoRowsAndColumns .........................................................   Passed    0.06 sec
+        Start 344: ChildProcess.CapturesMergedStdoutAndStderr
+344/764 Test #344: ChildProcess.CapturesMergedStdoutAndStderr ........................................................   Passed    0.13 sec
+        Start 345: ChildProcess.ReportsTheExitCode
+345/764 Test #345: ChildProcess.ReportsTheExitCode ...................................................................   Passed    0.11 sec
+        Start 346: ChildProcess.TimesOutThenTerminateKills
+346/764 Test #346: ChildProcess.TimesOutThenTerminateKills ...........................................................   Passed    0.28 sec
+        Start 347: ChildProcess.CapsCapturedOutput
+347/764 Test #347: ChildProcess.CapsCapturedOutput ...................................................................   Passed    0.11 sec
+        Start 348: ChildProcess.DestroyingTheObjectKillsTheWholeTree
+348/764 Test #348: ChildProcess.DestroyingTheObjectKillsTheWholeTree .................................................   Passed    2.09 sec
+        Start 349: ChildProcess.PassesEnvironmentOverrides
+349/764 Test #349: ChildProcess.PassesEnvironmentOverrides ...........................................................   Passed    0.11 sec
+        Start 350: ChildProcess.RejectsARelativeProgram
+350/764 Test #350: ChildProcess.RejectsARelativeProgram ..............................................................   Passed    0.10 sec
+        Start 351: ChildProcess.RejectsARelativeCwd
+351/764 Test #351: ChildProcess.RejectsARelativeCwd ..................................................................   Passed    0.16 sec
+        Start 352: ChildProcessStream.StdoutAndStderrArriveOnSeparatePipes
+352/764 Test #352: ChildProcessStream.StdoutAndStderrArriveOnSeparatePipes ...........................................   Passed    0.43 sec
+        Start 353: ChildProcessStream.ReadsReturnZeroWhenNotStreaming
+353/764 Test #353: ChildProcessStream.ReadsReturnZeroWhenNotStreaming ................................................   Passed    0.28 sec
+        Start 354: ChildProcessStream.TerminateFromAnotherThreadUnblocksBlockedReaders
+354/764 Test #354: ChildProcessStream.TerminateFromAnotherThreadUnblocksBlockedReaders ...............................   Passed    0.75 sec
+        Start 355: ChildProcessStream.TerminateRacingWithWaitAndRepeatedTerminateAreSafe
+355/764 Test #355: ChildProcessStream.TerminateRacingWithWaitAndRepeatedTerminateAreSafe .............................   Passed    0.62 sec
+        Start 356: ChildProcessEnv.DefaultInheritsTheParentEnvironment
+356/764 Test #356: ChildProcessEnv.DefaultInheritsTheParentEnvironment ...............................................   Passed    0.60 sec
+        Start 357: ChildProcessEnv.ReplacedEnvironmentContainsOnlyWhatWasGiven
+357/764 Test #357: ChildProcessEnv.ReplacedEnvironmentContainsOnlyWhatWasGiven .......................................   Passed    0.54 sec
+        Start 358: ChildProcessEnv.EmptyReplacedEnvironmentIsValid
+358/764 Test #358: ChildProcessEnv.EmptyReplacedEnvironmentIsValid ...................................................   Passed    0.57 sec
+        Start 359: ChildProcessJob.ActiveProcessLimitStopsAForkBomb
+359/764 Test #359: ChildProcessJob.ActiveProcessLimitStopsAForkBomb ..................................................   Passed    4.65 sec
+        Start 360: ChildProcessJob.MemoryLimitStopsARunawayAllocation
+360/764 Test #360: ChildProcessJob.MemoryLimitStopsARunawayAllocation ................................................   Passed    1.28 sec
+        Start 361: NativeLauncher.StreamsStdoutAndStderrSeparatelyAndReportsExitCode
+361/764 Test #361: NativeLauncher.StreamsStdoutAndStderrSeparatelyAndReportsExitCode .................................   Passed    0.37 sec
+        Start 362: NativeLauncher.ChildSeesOnlyTheSuppliedEnvironment
+362/764 Test #362: NativeLauncher.ChildSeesOnlyTheSuppliedEnvironment ................................................   Passed    0.38 sec
+        Start 363: NativeLauncher.WaitReturnsNulloptWhileRunningAndTerminateEndsTheTree
+363/764 Test #363: NativeLauncher.WaitReturnsNulloptWhileRunningAndTerminateEndsTheTree ..............................   Passed    2.23 sec
+        Start 364: NativeLauncher.DroppingTheChildKillsItsTree
+364/764 Test #364: NativeLauncher.DroppingTheChildKillsItsTree .......................................................   Passed    2.50 sec
+        Start 365: NativeLauncher.ActiveProcessAndMemoryCapsAreApplied
+365/764 Test #365: NativeLauncher.ActiveProcessAndMemoryCapsAreApplied ...............................................   Passed    4.59 sec
+        Start 366: NativeLauncher.RejectsRelativePathsAndMissingExecutables
+366/764 Test #366: NativeLauncher.RejectsRelativePathsAndMissingExecutables ..........................................   Passed    0.11 sec
+        Start 367: Sha256.KnownVectorsDefaultImplementation
+367/764 Test #367: Sha256.KnownVectorsDefaultImplementation ..........................................................   Passed    0.10 sec
+        Start 368: Sha256.KnownVectorsPortableImplementation
+368/764 Test #368: Sha256.KnownVectorsPortableImplementation .........................................................   Passed    0.09 sec
+        Start 369: Sha256.MillionAs
+369/764 Test #369: Sha256.MillionAs ..................................................................................   Passed    0.13 sec
+        Start 370: Sha256.HardwareMatchesPortableOnManyLengthsAndSplits
+370/764 Test #370: Sha256.HardwareMatchesPortableOnManyLengthsAndSplits ..............................................   Passed    0.08 sec
+        Start 371: Sha256.HexRoundTrip
+371/764 Test #371: Sha256.HexRoundTrip ...............................................................................   Passed    1.55 sec
+        Start 372: Codec.CompressibleDataActuallyShrinks
+372/764 Test #372: Codec.CompressibleDataActuallyShrinks .............................................................   Passed    0.53 sec
+        Start 373: Codec.CorruptBlockIsRejectedNotCrashing
+373/764 Test #373: Codec.CorruptBlockIsRejectedNotCrashing ...........................................................   Passed    0.11 sec
+        Start 374: Codec.NamesAndIds
+374/764 Test #374: Codec.NamesAndIds .................................................................................   Passed    1.14 sec
+        Start 375: HcsModelParser.AcceptsValidContainerAndExposesFields
+375/764 Test #375: HcsModelParser.AcceptsValidContainerAndExposesFields ..............................................   Passed    0.27 sec
+        Start 376: HcsModelParser.TruncatedHeader
+376/764 Test #376: HcsModelParser.TruncatedHeader ....................................................................   Passed    1.15 sec
+        Start 377: HcsModelParser.TruncatedTableAndTruncatedPayload
+377/764 Test #377: HcsModelParser.TruncatedTableAndTruncatedPayload ..................................................   Passed    0.32 sec
+        Start 378: HcsModelParser.BadMagicVersionEndianFlagsReserved
+378/764 Test #378: HcsModelParser.BadMagicVersionEndianFlagsReserved .................................................   Passed    0.11 sec
+        Start 379: HcsModelParser.HeaderAndTableChecksumMismatch
+379/764 Test #379: HcsModelParser.HeaderAndTableChecksumMismatch .....................................................   Passed    1.41 sec
+        Start 380: HcsModelParser.UnknownCodecAndFlags
+380/764 Test #380: HcsModelParser.UnknownCodecAndFlags ...............................................................   Passed    0.11 sec
+        Start 381: HcsModelParser.OffsetPlusSizeOverflow
+381/764 Test #381: HcsModelParser.OffsetPlusSizeOverflow .............................................................   Passed    0.13 sec
+        Start 382: HcsModelParser.OverlappingChunkPayloads
+382/764 Test #382: HcsModelParser.OverlappingChunkPayloads ...........................................................   Passed    0.13 sec
+        Start 383: HcsModelParser.ChunkOverlapsTableOrHeader
+383/764 Test #383: HcsModelParser.ChunkOverlapsTableOrHeader .........................................................   Passed    0.09 sec
+        Start 384: HcsModelParser.HugeDeclaredAllocationsAreCapped
+384/764 Test #384: HcsModelParser.HugeDeclaredAllocationsAreCapped ...................................................   Passed    0.09 sec
+        Start 385: HcsModelParser.NonContiguousOrInconsistentSizes
+385/764 Test #385: HcsModelParser.NonContiguousOrInconsistentSizes ...................................................   Passed    0.09 sec
+        Start 386: HcsModelParser.BadTextFields
+386/764 Test #386: HcsModelParser.BadTextFields ......................................................................   Passed    0.08 sec
+        Start 387: HcsModelParser.WrongChunkHashDetectedAtDecode
+387/764 Test #387: HcsModelParser.WrongChunkHashDetectedAtDecode .....................................................   Passed    0.13 sec
+        Start 388: HcsModelParser.CorruptCompressedBlockDetectedAtDecode
+388/764 Test #388: HcsModelParser.CorruptCompressedBlockDetectedAtDecode .............................................   Passed    0.08 sec
+        Start 389: HcsModelParser.SerializationRoundTrip
+389/764 Test #389: HcsModelParser.SerializationRoundTrip .............................................................   Passed    0.06 sec
+        Start 390: CheckedMath.StorageRelevantBoundaries
+390/764 Test #390: CheckedMath.StorageRelevantBoundaries .............................................................   Passed    0.07 sec
+        Start 391: Writer.RawFallbackWhenSavingsBelowThreshold
+391/764 Test #391: Writer.RawFallbackWhenSavingsBelowThreshold .......................................................   Passed    0.13 sec
+        Start 392: Writer.MixedChunkCodecsInOneContainer
+392/764 Test #392: Writer.MixedChunkCodecsInOneContainer .............................................................   Passed    0.09 sec
+        Start 393: Writer.RefusesToOverwriteAndValidatesOptions
+393/764 Test #393: Writer.RefusesToOverwriteAndValidatesOptions ......................................................   Passed    0.09 sec
+        Start 394: Writer.CancelledWriteRemovesOnlyItsOwnPartialFile
+394/764 Test #394: Writer.CancelledWriteRemovesOnlyItsOwnPartialFile .................................................   Passed    0.10 sec
+        Start 395: RandomAccess.OneChunkDecodesWithoutTouchingOthers
+395/764 Test #395: RandomAccess.OneChunkDecodesWithoutTouchingOthers .................................................   Passed    0.11 sec
+        Start 396: Reader.FactorySniffsFormatAndRejectsGarbage
+396/764 Test #396: Reader.FactorySniffsFormatAndRejectsGarbage .......................................................   Passed    0.11 sec
+        Start 397: Stream.InOrderDeliveryAcrossBufferAndWorkerCounts
+397/764 Test #397: Stream.InOrderDeliveryAcrossBufferAndWorkerCounts .................................................   Passed    0.38 sec
+        Start 398: Stream.BufferMemoryIsBoundedAndBudgetEnforced
+398/764 Test #398: Stream.BufferMemoryIsBoundedAndBudgetEnforced .....................................................   Passed    0.19 sec
+        Start 399: Stream.SlowSinkBackPressuresWithoutGrowingMemory
+399/764 Test #399: Stream.SlowSinkBackPressuresWithoutGrowingMemory ..................................................   Passed    0.19 sec
+        Start 400: Stream.CancellationFromSinkStopsPromptlyAndLeaksNothing
+400/764 Test #400: Stream.CancellationFromSinkStopsPromptlyAndLeaksNothing ...........................................   Passed    0.35 sec
+        Start 401: Stream.PreCancelledTokenReturnsCancelled
+401/764 Test #401: Stream.PreCancelledTokenReturnsCancelled ..........................................................   Passed    0.13 sec
+        Start 402: Stream.SinkErrorPropagatesAndStops
+402/764 Test #402: Stream.SinkErrorPropagatesAndStops ................................................................   Passed    0.13 sec
+        Start 403: Stream.SinkExceptionBecomesInternalError
+403/764 Test #403: Stream.SinkExceptionBecomesInternalError ..........................................................   Passed    0.10 sec
+        Start 404: Stream.CorruptChunkOnDiskIsDetectedWithoutHang
+404/764 Test #404: Stream.CorruptChunkOnDiskIsDetectedWithoutHang ....................................................   Passed    0.19 sec
+        Start 405: Stream.SubRangeOfChunks
+405/764 Test #405: Stream.SubRangeOfChunks ...........................................................................   Passed    0.09 sec
+        Start 406: Stream.PlainFileStreamsWithoutHashes
+406/764 Test #406: Stream.PlainFileStreamsWithoutHashes ..............................................................   Passed    0.08 sec
+        Start 407: Stream.RepeatedStartStopIsStable
+407/764 Test #407: Stream.RepeatedStartStopIsStable ..................................................................   Passed    0.14 sec
+        Start 408: Gguf.ParsesValidFile
+408/764 Test #408: Gguf.ParsesValidFile ..............................................................................   Passed    0.07 sec
+        Start 409: Gguf.RejectsBadMagicAndVersions
+409/764 Test #409: Gguf.RejectsBadMagicAndVersions ...................................................................   Passed    0.08 sec
+        Start 410: Gguf.TruncationAtEveryPositionIsRejectedSafely
+410/764 Test #410: Gguf.TruncationAtEveryPositionIsRejectedSafely ....................................................   Passed    0.13 sec
+        Start 411: Gguf.HugeCountsAreRejectedBeforeAllocation
+411/764 Test #411: Gguf.HugeCountsAreRejectedBeforeAllocation ........................................................   Passed    0.06 sec
+        Start 412: Gguf.HugeStringLengthIsRejected
+412/764 Test #412: Gguf.HugeStringLengthIsRejected ...................................................................   Passed    0.06 sec
+        Start 413: Gguf.TensorBeyondFileOrMisalignedOrBadDims
+413/764 Test #413: Gguf.TensorBeyondFileOrMisalignedOrBadDims ........................................................   Passed    0.06 sec
+        Start 414: Gguf.ArrayDepthAndLengthLimits
+414/764 Test #414: Gguf.ArrayDepthAndLengthLimits ....................................................................   Passed    0.06 sec
+        Start 415: Gguf.InvalidAlignment
+415/764 Test #415: Gguf.InvalidAlignment .............................................................................   Passed    0.07 sec
+        Start 416: Gguf.TypeLayoutTable
+416/764 Test #416: Gguf.TypeLayoutTable ..............................................................................   Passed    0.08 sec
+        Start 417: SourceFaults.GgufParseFailsCleanlyForEveryInjectionPoint
+417/764 Test #417: SourceFaults.GgufParseFailsCleanlyForEveryInjectionPoint ..........................................   Passed    0.09 sec
+        Start 418: SourceFaults.ReadErrorClassIsPropagatedNotMasked
+418/764 Test #418: SourceFaults.ReadErrorClassIsPropagatedNotMasked ..................................................   Passed    0.06 sec
+        Start 419: SourceFaults.MemorySourceRejectsOutOfRangeAndOverflowingReads
+419/764 Test #419: SourceFaults.MemorySourceRejectsOutOfRangeAndOverflowingReads .....................................   Passed    0.06 sec
+        Start 420: SourceFaults.FileSourceReadBeyondEndIsAnErrorNeverAShortSuccess
+420/764 Test #420: SourceFaults.FileSourceReadBeyondEndIsAnErrorNeverAShortSuccess ...................................   Passed    0.06 sec
+        Start 421: SourceFaults.MissingFileIsAnErrorNotACrash
+421/764 Test #421: SourceFaults.MissingFileIsAnErrorNotACrash ........................................................   Passed    0.09 sec
+        Start 422: SourceFaults.StreamOverFileCutShortFailsWithoutHangAndRecovers
+422/764 Test #422: SourceFaults.StreamOverFileCutShortFailsWithoutHangAndRecovers ....................................   Passed    0.13 sec
+        Start 423: Unplug.WriterSourceVanishesMidStreamAtEveryChunkBoundaryLeavesNoPartialFile
+423/764 Test #423: Unplug.WriterSourceVanishesMidStreamAtEveryChunkBoundaryLeavesNoPartialFile .......................   Passed    0.11 sec
+        Start 424: Unplug.WriterIsReusableAfterAFailureAndProducesAValidContainer
+424/764 Test #424: Unplug.WriterIsReusableAfterAFailureAndProducesAValidContainer ....................................   Passed    0.08 sec
+        Start 425: Unplug.WriterFromARealFileThatIsCutShortFailsAndLeavesNothing
+425/764 Test #425: Unplug.WriterFromARealFileThatIsCutShortFailsAndLeavesNothing .....................................   Passed    0.08 sec
+        Start 426: Unplug.FailedStreamReleasesTheFileHandleSoTheFileCanBeDeleted
+426/764 Test #426: Unplug.FailedStreamReleasesTheFileHandleSoTheFileCanBeDeleted .....................................   Passed    0.11 sec
+        Start 427: Unplug.InvalidFileHandleIsAStructuredIoErrorNotACrash
+427/764 Test #427: Unplug.InvalidFileHandleIsAStructuredIoErrorNotACrash .............................................   Passed    0.06 sec
+        Start 428: Unplug.InvalidRandomAccessHandleFailsCleanlyWhileStreamingKeepsItsOwnHandle
+428/764 Test #428: Unplug.InvalidRandomAccessHandleFailsCleanlyWhileStreamingKeepsItsOwnHandle .......................   Passed    0.09 sec
+        Start 429: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <00-00 00-00>, 0)
+429/764 Test #429: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <00-00 00-00>, 0) ....   Passed    0.08 sec
+        Start 430: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 0)
+430/764 Test #430: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 0) ....   Passed    0.09 sec
+        Start 431: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 9)
+431/764 Test #431: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 9) ....   Passed    0.18 sec
+        Start 432: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 0)
+432/764 Test #432: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 0) ....   Passed    0.08 sec
+        Start 433: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 1)
+433/764 Test #433: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 1) ....   Passed    0.07 sec
+        Start 434: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 12)
+434/764 Test #434: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 12) ...   Passed    0.12 sec
+        Start 435: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <00-00 00-00>
+435/764 Test #435: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <00-00 00-00> ..............   Passed    0.10 sec
+        Start 436: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <01-00 00-00>
+436/764 Test #436: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <01-00 00-00> ..............   Passed    0.10 sec
+        Start 437: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <02-00 00-00>
+437/764 Test #437: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <02-00 00-00> ..............   Passed    0.11 sec
+        Start 438: DatasetValidator.AcceptsAWellFormedRecordAndCountsByLicence
+438/764 Test #438: DatasetValidator.AcceptsAWellFormedRecordAndCountsByLicence .......................................   Passed    0.06 sec
+        Start 439: DatasetValidator.AcceptsToolCallTrajectories
+439/764 Test #439: DatasetValidator.AcceptsToolCallTrajectories ......................................................   Passed    0.07 sec
+        Start 440: DatasetValidator.RejectsToolCallsWithBadArguments
+440/764 Test #440: DatasetValidator.RejectsToolCallsWithBadArguments .................................................   Passed    0.07 sec
+        Start 441: DatasetValidator.LicenceIsRequiredAndMustBeAllowed
+441/764 Test #441: DatasetValidator.LicenceIsRequiredAndMustBeAllowed ................................................   Passed    0.07 sec
+        Start 442: DatasetValidator.RejectsClaudeDistillationProvenance
+442/764 Test #442: DatasetValidator.RejectsClaudeDistillationProvenance ..............................................   Passed    0.07 sec
+        Start 443: DatasetValidator.SchemaViolationsAreReportedWithLineNumbers
+443/764 Test #443: DatasetValidator.SchemaViolationsAreReportedWithLineNumbers .......................................   Passed    0.06 sec
+        Start 444: DatasetValidator.DeduplicatesAfterWhitespaceAndCaseNormalisation
+444/764 Test #444: DatasetValidator.DeduplicatesAfterWhitespaceAndCaseNormalisation ..................................   Passed    0.07 sec
+        Start 445: DatasetValidator.EnforcesSizeCapsWithoutBufferingHostileLines
+445/764 Test #445: DatasetValidator.EnforcesSizeCapsWithoutBufferingHostileLines .....................................   Passed    0.06 sec
+        Start 446: DatasetValidator.RejectsDeeplyNestedJsonWithoutCrashing
+446/764 Test #446: DatasetValidator.RejectsDeeplyNestedJsonWithoutCrashing ...........................................   Passed    0.06 sec
+        Start 447: DatasetValidator.RejectsRecordsContainingSecrets
+447/764 Test #447: DatasetValidator.RejectsRecordsContainingSecrets ..................................................   Passed    0.18 sec
+        Start 448: DatasetValidator.IgnoresBlankLinesAndHandlesCrLf
+448/764 Test #448: DatasetValidator.IgnoresBlankLinesAndHandlesCrLf ..................................................   Passed    0.06 sec
+        Start 449: DatasetValidator.EmptyInputIsNotClean
+449/764 Test #449: DatasetValidator.EmptyInputIsNotClean .............................................................   Passed    0.06 sec
+        Start 450: DatasetValidator.IssueListIsCappedButCountsAreExact
+450/764 Test #450: DatasetValidator.IssueListIsCappedButCountsAreExact ...............................................   Passed    0.07 sec
+        Start 451: EvalGate.KeepsWhenHeldoutImprovesAndNothingRegresses
+451/764 Test #451: EvalGate.KeepsWhenHeldoutImprovesAndNothingRegresses ..............................................   Passed    0.07 sec
+        Start 452: EvalGate.KeepsWhenRegressionSuitesImproveOrStayEqual
+452/764 Test #452: EvalGate.KeepsWhenRegressionSuitesImproveOrStayEqual ..............................................   Passed    0.06 sec
+        Start 453: EvalGate.RollsBackWhenAnyRegressionSuiteDrops
+453/764 Test #453: EvalGate.RollsBackWhenAnyRegressionSuiteDrops .....................................................   Passed    0.06 sec
+        Start 454: EvalGate.ToleranceAllowsSmallNoiseOnlyWhenConfigured
+454/764 Test #454: EvalGate.ToleranceAllowsSmallNoiseOnlyWhenConfigured ..............................................   Passed    0.06 sec
+        Start 455: EvalGate.RollsBackWhenHeldoutDoesNotImproveEnough
+455/764 Test #455: EvalGate.RollsBackWhenHeldoutDoesNotImproveEnough .................................................   Passed    0.06 sec
+        Start 456: EvalGate.GainWithRegressionIsStillRollback
+456/764 Test #456: EvalGate.GainWithRegressionIsStillRollback ........................................................   Passed    0.07 sec
+        Start 457: EvalGate.IncomparableInputsAreInvalidAndFailClosed
+457/764 Test #457: EvalGate.IncomparableInputsAreInvalidAndFailClosed ................................................   Passed    0.11 sec
+        Start 458: EvalGate.NonFiniteOrOutOfRangeScoresAreInvalid
+458/764 Test #458: EvalGate.NonFiniteOrOutOfRangeScoresAreInvalid ....................................................   Passed    0.06 sec
+        Start 459: EvalReport.ParsesAValidReport
+459/764 Test #459: EvalReport.ParsesAValidReport .....................................................................   Passed    0.06 sec
+        Start 460: EvalReport.RoundTripsThroughJson
+460/764 Test #460: EvalReport.RoundTripsThroughJson ..................................................................   Passed    0.08 sec
+        Start 461: EvalReport.ScoresFeedTheGate
+461/764 Test #461: EvalReport.ScoresFeedTheGate ......................................................................   Passed    0.06 sec
+        Start 462: EvalReport.RejectsMissingOrMalformedFields
+462/764 Test #462: EvalReport.RejectsMissingOrMalformedFields ........................................................   Passed    0.08 sec
+        Start 463: EvalReport.RejectsNonJsonAndDeepNesting
+463/764 Test #463: EvalReport.RejectsNonJsonAndDeepNesting ...........................................................   Passed    0.06 sec
+        Start 464: EvalReport.ReadsFromAFile
+464/764 Test #464: EvalReport.ReadsFromAFile .........................................................................   Passed    0.07 sec
+        Start 465: EvalReport.ComparabilityRequiresSameSuiteAndSet
+465/764 Test #465: EvalReport.ComparabilityRequiresSameSuiteAndSet ...................................................   Passed    0.10 sec
+        Start 466: AdapterBook.InstallGetAndList
+466/764 Test #466: AdapterBook.InstallGetAndList .....................................................................   Passed    0.08 sec
+        Start 467: AdapterBook.DuplicateIdFailsUnlessOverwrite
+467/764 Test #467: AdapterBook.DuplicateIdFailsUnlessOverwrite .......................................................   Passed    0.07 sec
+        Start 468: AdapterBook.MissingAdapterIsNotFound
+468/764 Test #468: AdapterBook.MissingAdapterIsNotFound ..............................................................   Passed    0.06 sec
+        Start 469: AdapterBook.ActivateIsRefusedUnlessTheGateKeptIt
+469/764 Test #469: AdapterBook.ActivateIsRefusedUnlessTheGateKeptIt ..................................................   Passed    0.08 sec
+        Start 470: AdapterBook.ActivateThenActiveReportsIt
+470/764 Test #470: AdapterBook.ActivateThenActiveReportsIt ...........................................................   Passed    0.07 sec
+        Start 471: AdapterBook.RollbackMovesThePointerBackWithoutDeleting
+471/764 Test #471: AdapterBook.RollbackMovesThePointerBackWithoutDeleting ............................................   Passed    0.09 sec
+        Start 472: AdapterBook.RollbackWithoutActivationIsNotFound
+472/764 Test #472: AdapterBook.RollbackWithoutActivationIsNotFound ...................................................   Passed    0.07 sec
+        Start 473: AdapterBook.RejectsUnsafeAdapterIds
+473/764 Test #473: AdapterBook.RejectsUnsafeAdapterIds ...............................................................   Passed    0.06 sec
+        Start 474: AdapterBook.ActiveOnAnUnknownBaseIsEmptyNotAnError
+474/764 Test #474: AdapterBook.ActiveOnAnUnknownBaseIsEmptyNotAnError ................................................   Passed    0.09 sec
+        Start 475: AdapterBook.CorruptManifestFailsClosed
+475/764 Test #475: AdapterBook.CorruptManifestFailsClosed ............................................................   Passed    0.08 sec
+        Start 476: AdapterBook.PointerPersistsAcrossInstances
+476/764 Test #476: AdapterBook.PointerPersistsAcrossInstances ........................................................   Passed    0.07 sec
+        Start 477: AdapterBook.ManifestJsonRoundTripsAndRejectsDefects
+477/764 Test #477: AdapterBook.ManifestJsonRoundTripsAndRejectsDefects ...............................................   Passed    0.07 sec
+        Start 478: AdapterBook.ActivatingTheSameAdapterTwiceDoesNotErasePreviousFromHistory
+478/764 Test #478: AdapterBook.ActivatingTheSameAdapterTwiceDoesNotErasePreviousFromHistory ..........................   Passed    0.09 sec
+        Start 479: AdapterBook.HistoryIsOneStepDeepAndRollbackSwapsActiveAndPrevious
+479/764 Test #479: AdapterBook.HistoryIsOneStepDeepAndRollbackSwapsActiveAndPrevious .................................   Passed    0.09 sec
+        Start 480: AdapterBook.RollbackFromTheFirstAdapterReturnsToTheBaseModel
+480/764 Test #480: AdapterBook.RollbackFromTheFirstAdapterReturnsToTheBaseModel ......................................   Passed    0.09 sec
+        Start 481: AdapterBook.BaseModelsAreIndependentAndHashCaseIsIgnored
+481/764 Test #481: AdapterBook.BaseModelsAreIndependentAndHashCaseIsIgnored ..........................................   Passed    0.08 sec
+        Start 482: AdapterBook.CorruptPointerFileFailsClosedEverywhere
+482/764 Test #482: AdapterBook.CorruptPointerFileFailsClosedEverywhere ...............................................   Passed    0.15 sec
+        Start 483: AdapterBook.OversizedPointerFileIsRefusedNotRead
+483/764 Test #483: AdapterBook.OversizedPointerFileIsRefusedNotRead ..................................................   Passed    0.08 sec
+        Start 484: AdapterBook.APointerNamingAnUnsafeOrMissingAdapterIsAnErrorNotAPathEscape
+484/764 Test #484: AdapterBook.APointerNamingAnUnsafeOrMissingAdapterIsAnErrorNotAPathEscape .........................   Passed    0.09 sec
+        Start 485: AdapterBook.OverwriteReplacesTheManifestButNotTheActivationPointer
+485/764 Test #485: AdapterBook.OverwriteReplacesTheManifestButNotTheActivationPointer ................................   Passed    0.09 sec
+        Start 486: TrainPipeline.KeepInstallsAndActivates
+486/764 Test #486: TrainPipeline.KeepInstallsAndActivates ............................................................   Passed    0.07 sec
+        Start 487: TrainPipeline.RollbackIsRecordedButNotActivated
+487/764 Test #487: TrainPipeline.RollbackIsRecordedButNotActivated ...................................................   Passed    0.07 sec
+        Start 488: TrainPipeline.InvalidGateIsRecordedNotActivated
+488/764 Test #488: TrainPipeline.InvalidGateIsRecordedNotActivated ...................................................   Passed    0.08 sec
+        Start 489: TrainPipeline.IncomparableReportsAreRejectedBeforeInstall
+489/764 Test #489: TrainPipeline.IncomparableReportsAreRejectedBeforeInstall .........................................   Passed    0.09 sec
+        Start 490: TrainPipeline.RejectsBadHashesAndIds
+490/764 Test #490: TrainPipeline.RejectsBadHashesAndIds ..............................................................   Passed    0.08 sec
+        Start 491: TrainPipeline.DuplicateAdapterIdIsRejected
+491/764 Test #491: TrainPipeline.DuplicateAdapterIdIsRejected ........................................................   Passed    0.07 sec
+        Start 492: ChatTemplate.MatchesJinjaGoldenWithToolsAndParallelCalls
+492/764 Test #492: ChatTemplate.MatchesJinjaGoldenWithToolsAndParallelCalls ..........................................   Passed    0.06 sec
+        Start 493: ChatTemplate.MatchesJinjaGoldenForPlainMultiTurnUtf8
+493/764 Test #493: ChatTemplate.MatchesJinjaGoldenForPlainMultiTurnUtf8 ..............................................   Passed    0.06 sec
+        Start 494: ChatTemplate.GenerationPromptEndsWithEmptyThinkBlock
+494/764 Test #494: ChatTemplate.GenerationPromptEndsWithEmptyThinkBlock ..............................................   Passed    0.08 sec
+        Start 495: ChatTemplate.ToolSchemaKeyOrderIsPreserved
+495/764 Test #495: ChatTemplate.ToolSchemaKeyOrderIsPreserved ........................................................   Passed    0.09 sec
+        Start 496: ChatTemplate.RejectsUnsupportedInputInsteadOfRenderingItDifferently
+496/764 Test #496: ChatTemplate.RejectsUnsupportedInputInsteadOfRenderingItDifferently ...............................   Passed    0.07 sec
+        Start 497: ChatTemplate.WronglyTypedFieldsNeverThrow
+497/764 Test #497: ChatTemplate.WronglyTypedFieldsNeverThrow .........................................................   Passed    0.06 sec
+        Start 498: ChatTemplate.WronglyTypedIdIsTreatedAsEmpty
+498/764 Test #498: ChatTemplate.WronglyTypedIdIsTreatedAsEmpty .......................................................   Passed    0.06 sec
+        Start 499: ChatTemplate.ExcessiveJsonNestingIsRejectedWithoutStackOverflow
+499/764 Test #499: ChatTemplate.ExcessiveJsonNestingIsRejectedWithoutStackOverflow ...................................   Passed    0.39 sec
+        Start 500: ChatTemplate.ToolCallsWithoutArgumentsRenderEmptyParameterBlock
+500/764 Test #500: ChatTemplate.ToolCallsWithoutArgumentsRenderEmptyParameterBlock ...................................   Passed    0.06 sec
+        Start 501: SftExamples.SplitsPerAssistantTurnAtTheGenerationPrompt
+501/764 Test #501: SftExamples.SplitsPerAssistantTurnAtTheGenerationPrompt ...........................................   Passed    0.07 sec
+        Start 502: SftExamples.RecordWithoutAssistantTurnIsAnError
+502/764 Test #502: SftExamples.RecordWithoutAssistantTurnIsAnError ...................................................   Passed    0.07 sec
+        Start 503: TemplateJson.UsesPythonSeparatorsAndKeepsUnicode
+503/764 Test #503: TemplateJson.UsesPythonSeparatorsAndKeepsUnicode ..................................................   Passed    0.08 sec
+        Start 504: Prepare.ProducesRenderedExamplesManifestAndHashes
+504/764 Test #504: Prepare.ProducesRenderedExamplesManifestAndHashes .................................................   Passed    0.08 sec
+        Start 505: Prepare.RejectedRecordsNeverReachTheOutput
+505/764 Test #505: Prepare.RejectedRecordsNeverReachTheOutput ........................................................   Passed    0.08 sec
+        Start 506: Prepare.ExtraLicenceMustBeAllowedExplicitly
+506/764 Test #506: Prepare.ExtraLicenceMustBeAllowedExplicitly .......................................................   Passed    0.10 sec
+        Start 507: Prepare.DropsRecordsThatOverlapTheHeldOutEval
+507/764 Test #507: Prepare.DropsRecordsThatOverlapTheHeldOutEval .....................................................   Passed    0.10 sec
+        Start 508: Prepare.CapsRecordsPerInputAndSplitsDevDeterministically
+508/764 Test #508: Prepare.CapsRecordsPerInputAndSplitsDevDeterministically ..........................................   Passed    0.14 sec
+        Start 509: Prepare.RefusesToOverwriteAndRejectsBadArguments
+509/764 Test #509: Prepare.RefusesToOverwriteAndRejectsBadArguments ..................................................   Passed    0.09 sec
+        Start 510: Prepare.AnInputWithNoUsableExampleIsAnError
+510/764 Test #510: Prepare.AnInputWithNoUsableExampleIsAnError .......................................................   Passed    0.09 sec
+        Start 511: Prepare.EvalPromptLoaderNormalisesAndRejectsGarbage
+511/764 Test #511: Prepare.EvalPromptLoaderNormalisesAndRejectsGarbage ...............................................   Passed    0.09 sec
+        Start 512: Prepare.EvalFileWithWronglyTypedRoleDoesNotThrow
+512/764 Test #512: Prepare.EvalFileWithWronglyTypedRoleDoesNotThrow ..................................................   Passed    0.08 sec
+        Start 513: Prepare.RecordsContainingTurnControlTokensAreNotRendered
+513/764 Test #513: Prepare.RecordsContainingTurnControlTokensAreNotRendered ..........................................   Passed    0.09 sec
+        Start 514: Prepare.RefusesToOverwriteExistingOutputFilesEvenWithoutManifest
+514/764 Test #514: Prepare.RefusesToOverwriteExistingOutputFilesEvenWithoutManifest ..................................   Passed    0.07 sec
+        Start 515: Prepare.EmptyAndOversizedInputsAreErrorsNotCrashes
+515/764 Test #515: Prepare.EmptyAndOversizedInputsAreErrorsNotCrashes ................................................   Passed    0.06 sec
+        Start 516: Prepare.DuplicateExamplesAcrossInputsAreWrittenOnce
+516/764 Test #516: Prepare.DuplicateExamplesAcrossInputsAreWrittenOnce ...............................................   Passed    0.07 sec
+        Start 517: Prepare.HostileDeepNestingInAnInputDoesNotCrashThePipeline
+517/764 Test #517: Prepare.HostileDeepNestingInAnInputDoesNotCrashThePipeline ........................................   Passed    0.11 sec
+        Start 518: EvalFailures.ReadsOnlyFailedEntriesAndTolerantOfAMissingResultsArray
+518/764 Test #518: EvalFailures.ReadsOnlyFailedEntriesAndTolerantOfAMissingResultsArray ..............................   Passed    0.07 sec
+        Start 519: EvalFailures.RejectsMalformedInputAndCleansHostileStrings
+519/764 Test #519: EvalFailures.RejectsMalformedInputAndCleansHostileStrings .........................................   Passed    0.08 sec
+        Start 520: Reflect.ProposesBoundedDataLargestFailingCategoryFirstTiesByName
+520/764 Test #520: Reflect.ProposesBoundedDataLargestFailingCategoryFirstTiesByName ..................................   Passed    0.07 sec
+        Start 521: Reflect.NothingFailingYieldsAStopProposalAndUncategorisedIsNamed
+521/764 Test #521: Reflect.NothingFailingYieldsAStopProposalAndUncategorisedIsNamed ..................................   Passed    0.10 sec
+        Start 522: Reflect.SizingCannotOverflow
+522/764 Test #522: Reflect.SizingCannotOverflow ......................................................................   Passed    0.06 sec
+        Start 523: RsiLoop.KeepsAnImprovingAdapterInstallsItAndActivatesIt
+523/764 Test #523: RsiLoop.KeepsAnImprovingAdapterInstallsItAndActivatesIt ...........................................   Passed    0.08 sec
+        Start 524: RsiLoop.ANonImprovingAdapterIsRecordedButNeverActivatedAndPatienceStopsTheLoop
+524/764 Test #524: RsiLoop.ANonImprovingAdapterIsRecordedButNeverActivatedAndPatienceStopsTheLoop ....................   Passed    0.09 sec
+        Start 525: RsiLoop.ImprovementThenStallStopsAtPatienceWithTheGoodAdapterActive
+525/764 Test #525: RsiLoop.ImprovementThenStallStopsAtPatienceWithTheGoodAdapterActive ...............................   Passed    0.11 sec
+        Start 526: RsiLoop.AGainThatRegressesASuiteIsNotKept
+526/764 Test #526: RsiLoop.AGainThatRegressesASuiteIsNotKept .........................................................   Passed    0.09 sec
+        Start 527: RsiLoop.StartsFromTheCurrentlyActiveAdapterAndCanBeRolledBackAfterwards
+527/764 Test #527: RsiLoop.StartsFromTheCurrentlyActiveAdapterAndCanBeRolledBackAfterwards ...........................   Passed    0.10 sec
+        Start 528: RsiLoop.NothingFailingStopsImmediatelyAndTrainsNothing
+528/764 Test #528: RsiLoop.NothingFailingStopsImmediatelyAndTrainsNothing ............................................   Passed    0.06 sec
+        Start 529: RsiLoop.IncomparableCandidateIsInvalidNotInstalledAndNotActivated
+529/764 Test #529: RsiLoop.IncomparableCandidateIsInvalidNotInstalledAndNotActivated .................................   Passed    0.06 sec
+        Start 530: RsiLoop.TooFewHeldOutSamplesIsNeverEnoughEvidence
+530/764 Test #530: RsiLoop.TooFewHeldOutSamplesIsNeverEnoughEvidence .................................................   Passed    0.07 sec
+        Start 531: RsiLoop.MaxCyclesIsClampedToTheHardCeiling
+531/764 Test #531: RsiLoop.MaxCyclesIsClampedToTheHardCeiling ........................................................   Passed    0.19 sec
+        Start 532: RsiLoop.PatienceBelowOneIsTreatedAsOne
+532/764 Test #532: RsiLoop.PatienceBelowOneIsTreatedAsOne ............................................................   Passed    0.14 sec
+        Start 533: RsiLoop.CancelFlagStopsBeforeAnyWork
+533/764 Test #533: RsiLoop.CancelFlagStopsBeforeAnyWork ..............................................................   Passed    0.07 sec
+        Start 534: RsiLoop.CancelDuringTrainingOrEvaluationInstallsNothing
+534/764 Test #534: RsiLoop.CancelDuringTrainingOrEvaluationInstallsNothing ...........................................   Passed    0.08 sec
+        Start 535: RsiLoop.WallClockBudgetStopsTheLoop
+535/764 Test #535: RsiLoop.WallClockBudgetStopsTheLoop ...............................................................   Passed    0.18 sec
+        Start 536: RsiLoop.TrainingFailureEndsTheLoopWithoutPromotion
+536/764 Test #536: RsiLoop.TrainingFailureEndsTheLoopWithoutPromotion ................................................   Passed    0.08 sec
+        Start 537: RsiLoop.EvaluationFailuresEndTheLoopWithoutPromotion
+537/764 Test #537: RsiLoop.EvaluationFailuresEndTheLoopWithoutPromotion ..............................................   Passed    0.07 sec
+        Start 538: RsiLoop.AThrowingHookEndsTheLoopCleanly
+538/764 Test #538: RsiLoop.AThrowingHookEndsTheLoopCleanly ...........................................................   Passed    0.07 sec
+        Start 539: RsiLoop.ABadCandidateIsRefusedByThePipelineAndNothingIsInstalled
+539/764 Test #539: RsiLoop.ABadCandidateIsRefusedByThePipelineAndNothingIsInstalled ..................................   Passed    0.07 sec
+        Start 540: RsiLoop.AHookThatReusesAnAdapterIdCannotOverwriteTheAuditTrail
+540/764 Test #540: RsiLoop.AHookThatReusesAnAdapterIdCannotOverwriteTheAuditTrail ....................................   Passed    0.07 sec
+        Start 541: RsiLoop.UnusableArgumentsAndACorruptBookAreErrors
+541/764 Test #541: RsiLoop.UnusableArgumentsAndACorruptBookAreErrors .................................................   Passed    0.06 sec
+        Start 542: RsiLoop.RecordsSerialiseToJson
+542/764 Test #542: RsiLoop.RecordsSerialiseToJson ....................................................................   Passed    0.08 sec
+        Start 543: ApiAuth.MissingTokenIs401WithChallenge
+543/764 Test #543: ApiAuth.MissingTokenIs401WithChallenge ............................................................   Passed    0.10 sec
+        Start 544: ApiAuth.WrongTokenIs401
+544/764 Test #544: ApiAuth.WrongTokenIs401 ...........................................................................   Passed    0.10 sec
+        Start 545: ApiAuth.EveryRouteExceptHealthNeedsAuth
+545/764 Test #545: ApiAuth.EveryRouteExceptHealthNeedsAuth ...........................................................   Passed    0.10 sec
+        Start 546: ApiAuth.EmptyConfiguredTokenNeverAuthenticates
+546/764 Test #546: ApiAuth.EmptyConfiguredTokenNeverAuthenticates ....................................................   Passed    0.10 sec
+        Start 547: ApiHostOrigin.DnsRebindingHostRejectedEvenWithValidToken
+547/764 Test #547: ApiHostOrigin.DnsRebindingHostRejectedEvenWithValidToken ..........................................   Passed    0.09 sec
+        Start 548: ApiHostOrigin.LoopbackHostsAccepted
+548/764 Test #548: ApiHostOrigin.LoopbackHostsAccepted ...............................................................   Passed    0.18 sec
+        Start 549: ApiHostOrigin.LanModeAllowsIpLiteralsButNotNames
+549/764 Test #549: ApiHostOrigin.LanModeAllowsIpLiteralsButNotNames ..................................................   Passed    0.11 sec
+        Start 550: ApiHostOrigin.ForeignOriginsRejected
+550/764 Test #550: ApiHostOrigin.ForeignOriginsRejected ..............................................................   Passed    0.10 sec
+        Start 551: ApiHostOrigin.SameOriginAndAllowListAccepted
+551/764 Test #551: ApiHostOrigin.SameOriginAndAllowListAccepted ......................................................   Passed    1.27 sec
+        Start 552: ApiHostOrigin.NoCorsHeadersAreEverEmitted
+552/764 Test #552: ApiHostOrigin.NoCorsHeadersAreEverEmitted .........................................................   Passed    0.08 sec
+        Start 553: ApiValidation.OversizeBodyIs413
+553/764 Test #553: ApiValidation.OversizeBodyIs413 ...................................................................   Passed    0.08 sec
+        Start 554: ApiValidation.MalformedJsonIs400
+554/764 Test #554: ApiValidation.MalformedJsonIs400 ..................................................................   Passed    0.08 sec
+        Start 555: ApiValidation.PathologicalNestingIs400
+555/764 Test #555: ApiValidation.PathologicalNestingIs400 ............................................................   Passed    0.08 sec
+        Start 556: ApiValidation.SchemaViolationsAre400
+556/764 Test #556: ApiValidation.SchemaViolationsAre400 ..............................................................   Passed    0.08 sec
+        Start 557: ApiValidation.WrongContentTypeIs415
+557/764 Test #557: ApiValidation.WrongContentTypeIs415 ...............................................................   Passed    0.09 sec
+        Start 558: ApiValidation.UnsupportedFeaturesAre501NotSilentlyIgnored
+558/764 Test #558: ApiValidation.UnsupportedFeaturesAre501NotSilentlyIgnored .........................................   Passed    0.12 sec
+        Start 559: ApiRouting.UnknownRoutesAndMethods
+559/764 Test #559: ApiRouting.UnknownRoutesAndMethods ................................................................   Passed    0.10 sec
+        Start 560: ApiRouting.RequestIdOnEverythingAndUnique
+560/764 Test #560: ApiRouting.RequestIdOnEverythingAndUnique .........................................................   Passed    0.10 sec
+        Start 561: ApiNative.HealthRuntimeDevicesMemoryModels
+561/764 Test #561: ApiNative.HealthRuntimeDevicesMemoryModels ........................................................   Passed    0.13 sec
+        Start 562: ApiNative.ImageRoutesReturn501WithReason
+562/764 Test #562: ApiNative.ImageRoutesReturn501WithReason ..........................................................   Passed    0.08 sec
+        Start 563: ApiNative.ModelLoadIsAJobAndUnloadWorks
+563/764 Test #563: ApiNative.ModelLoadIsAJobAndUnloadWorks ...........................................................   Passed    0.09 sec
+        Start 564: ApiNative.LoadPathTraversalInModelIdIsRejected
+564/764 Test #564: ApiNative.LoadPathTraversalInModelIdIsRejected ....................................................   Passed    0.09 sec
+        Start 565: ApiNative.RegistryPathOutsideApprovedRootNeverReachesEngine
+565/764 Test #565: ApiNative.RegistryPathOutsideApprovedRootNeverReachesEngine .......................................   Passed    0.09 sec
+        Start 566: ApiNative.MalformedJobIds
+566/764 Test #566: ApiNative.MalformedJobIds .........................................................................   Passed    0.21 sec
+        Start 567: ApiChat.NonStreamingCompletionAutoLoadsModel
+567/764 Test #567: ApiChat.NonStreamingCompletionAutoLoadsModel ......................................................   Passed    0.11 sec
+        Start 568: ApiChat.NoModelLoadedAndNoModelGivenIs409
+568/764 Test #568: ApiChat.NoModelLoadedAndNoModelGivenIs409 .........................................................   Passed    0.11 sec
+        Start 569: ApiChat.UnknownModelIs404
+569/764 Test #569: ApiChat.UnknownModelIs404 .........................................................................   Passed    0.10 sec
+        Start 570: ApiChat.TemplateRouting
+570/764 Test #570: ApiChat.TemplateRouting ...........................................................................   Passed    0.10 sec
+        Start 571: ApiChat.SseStreaming
+571/764 Test #571: ApiChat.SseStreaming ..............................................................................   Passed    2.13 sec
+        Start 572: ApiChat.SseClientDisconnectCancelsTheRealWork
+572/764 Test #572: ApiChat.SseClientDisconnectCancelsTheRealWork .....................................................   Passed    0.15 sec
+        Start 573: ApiChat.CancelEndpointStopsRunningGeneration
+573/764 Test #573: ApiChat.CancelEndpointStopsRunningGeneration ......................................................   Passed    0.20 sec
+        Start 574: ApiChat.RequestTimeoutCancelsAndReturns504
+574/764 Test #574: ApiChat.RequestTimeoutCancelsAndReturns504 ........................................................   Passed    0.24 sec
+        Start 575: ApiChat.ConcurrencyBoundReturns429
+575/764 Test #575: ApiChat.ConcurrencyBoundReturns429 ................................................................   Passed    0.13 sec
+        Start 576: ApiChat.NoEngineReportsUnsupportedHonestly
+576/764 Test #576: ApiChat.NoEngineReportsUnsupportedHonestly ........................................................   Passed    0.08 sec
+        Start 577: ApiChat.LoadFailureSurfacesAsErrorAndModelIsRecoverable
+577/764 Test #577: ApiChat.LoadFailureSurfacesAsErrorAndModelIsRecoverable ...........................................   Passed    0.08 sec
+        Start 578: ApiPrivacy.PromptsAreNeverLogged
+578/764 Test #578: ApiPrivacy.PromptsAreNeverLogged ..................................................................   Passed    0.10 sec
+        Start 579: ApiPrivacy.FailurePathsNeverLogPromptsBodiesOrCredentials
+579/764 Test #579: ApiPrivacy.FailurePathsNeverLogPromptsBodiesOrCredentials .........................................   Passed    0.12 sec
+        Start 580: ApiPrivacy.ImageBytesAreNeverLogged
+580/764 Test #580: ApiPrivacy.ImageBytesAreNeverLogged ...............................................................   Passed    0.10 sec
+        Start 581: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakNonStreamingResponses
+581/764 Test #581: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakNonStreamingResponses ..................................   Passed    0.09 sec
+        Start 582: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakStreaming
+582/764 Test #582: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakStreaming ..............................................   Passed    0.09 sec
+        Start 583: ApiAudit.NonStreamingChatCancelsTheJobWhenThePeerDisconnects
+583/764 Test #583: ApiAudit.NonStreamingChatCancelsTheJobWhenThePeerDisconnects ......................................   Passed    0.14 sec
+        Start 584: ApiAudit.StreamingChatCancelsWhenThePeerDisconnectsBeforeAnyOutput
+584/764 Test #584: ApiAudit.StreamingChatCancelsWhenThePeerDisconnectsBeforeAnyOutput ................................   Passed    0.14 sec
+        Start 585: ApiAudit.ModelLargerThanTheMeasuredBudgetIsRefusedBeforeAnythingIsEvicted
+585/764 Test #585: ApiAudit.ModelLargerThanTheMeasuredBudgetIsRefusedBeforeAnythingIsEvicted .........................   Passed    0.11 sec
+        Start 586: ApiAudit.KvCacheOfAHugeContextCountsAgainstTheBudget
+586/764 Test #586: ApiAudit.KvCacheOfAHugeContextCountsAgainstTheBudget ..............................................   Passed    0.11 sec
+        Start 587: ApiAudit.BudgetIsRemeasuredOnEveryLoad
+587/764 Test #587: ApiAudit.BudgetIsRemeasuredOnEveryLoad ............................................................   Passed    0.10 sec
+        Start 588: ApiAudit.WithoutAnyMeasurementLoadsStayPermissiveAndMemoryEndpointSaysSo
+588/764 Test #588: ApiAudit.WithoutAnyMeasurementLoadsStayPermissiveAndMemoryEndpointSaysSo ..........................   Passed    0.10 sec
+        Start 589: ApiAudit.RuntimeBuildsItsBudgetFromInjectedMeasurements
+589/764 Test #589: ApiAudit.RuntimeBuildsItsBudgetFromInjectedMeasurements ...........................................   Passed    0.10 sec
+        Start 590: ApiAudit.RuntimeDefaultsToTheLiveHardwareMeasurement
+590/764 Test #590: ApiAudit.RuntimeDefaultsToTheLiveHardwareMeasurement ..............................................   Passed    0.10 sec
+        Start 591: ApiAudit.RedactPathsScrubsDirectoriesButKeepsFileNames
+591/764 Test #591: ApiAudit.RedactPathsScrubsDirectoriesButKeepsFileNames ............................................   Passed    0.09 sec
+        Start 592: ApiAudit.JobErrorsOverHttpDoNotLeakLocalPaths
+592/764 Test #592: ApiAudit.JobErrorsOverHttpDoNotLeakLocalPaths .....................................................   Passed    0.12 sec
+        Start 593: ApiAudit.ControlTokensInUserTextAreNeutralised
+593/764 Test #593: ApiAudit.ControlTokensInUserTextAreNeutralised ....................................................   Passed    0.10 sec
+        Start 594: ApiBenchmarks.QuickSuiteRunsAsAJobAndTheResultIsRetrievableFromTheJob
+594/764 Test #594: ApiBenchmarks.QuickSuiteRunsAsAJobAndTheResultIsRetrievableFromTheJob .............................   Passed    0.11 sec
+        Start 595: ApiBenchmarks.FullSuiteReturnsPrefillAndDecodeSweeps
+595/764 Test #595: ApiBenchmarks.FullSuiteReturnsPrefillAndDecodeSweeps ..............................................   Passed    0.10 sec
+        Start 596: ApiBenchmarks.DefaultsToQuickAndModelIsRequired
+596/764 Test #596: ApiBenchmarks.DefaultsToQuickAndModelIsRequired ...................................................   Passed    0.13 sec
+        Start 597: ApiBenchmarks.MalformedAndOutOfSchemaBodiesAre400
+597/764 Test #597: ApiBenchmarks.MalformedAndOutOfSchemaBodiesAre400 .................................................   Passed    0.11 sec
+        Start 598: ApiBenchmarks.WrongContentTypeMethodAndRoute
+598/764 Test #598: ApiBenchmarks.WrongContentTypeMethodAndRoute ......................................................   Passed    0.09 sec
+        Start 599: ApiBenchmarks.OversizedBodyIs413BeforeParsing
+599/764 Test #599: ApiBenchmarks.OversizedBodyIs413BeforeParsing .....................................................   Passed    0.08 sec
+        Start 600: ApiBenchmarks.UnknownOrInvalidModelIsRejectedBeforeAnyJobStarts
+600/764 Test #600: ApiBenchmarks.UnknownOrInvalidModelIsRejectedBeforeAnyJobStarts ...................................   Passed    0.08 sec
+        Start 601: ApiBenchmarks.RequiresBearerToken
+601/764 Test #601: ApiBenchmarks.RequiresBearerToken .................................................................   Passed    0.09 sec
+        Start 602: ApiBenchmarks.WithoutATextEngineTheRouteSaysUnsupportedInsteadOfPretending
+602/764 Test #602: ApiBenchmarks.WithoutATextEngineTheRouteSaysUnsupportedInsteadOfPretending ........................   Passed    0.10 sec
+        Start 603: ApiBenchmarks.LoadFailureEndsTheJobFailedWithAnError
+603/764 Test #603: ApiBenchmarks.LoadFailureEndsTheJobFailedWithAnError ..............................................   Passed    0.12 sec
+        Start 604: ApiBenchmarks.CancelEndpointStopsTheRunningBenchmark
+604/764 Test #604: ApiBenchmarks.CancelEndpointStopsTheRunningBenchmark ..............................................   Passed    0.11 sec
+        Start 605: ApiBenchmarks.CancellingAQueuedBenchmarkNeverTouchesTheEngine
+605/764 Test #605: ApiBenchmarks.CancellingAQueuedBenchmarkNeverTouchesTheEngine .....................................   Passed    0.09 sec
+        Start 606: RuntimeLifecycle.DestroyWithRunningChatJobDoesNotCrash
+606/764 Test #606: RuntimeLifecycle.DestroyWithRunningChatJobDoesNotCrash ............................................   Passed    0.24 sec
+        Start 607: RuntimeLifecycle.DestroyWithRunningLoadJobDoesNotCrash
+607/764 Test #607: RuntimeLifecycle.DestroyWithRunningLoadJobDoesNotCrash ............................................   Passed    0.09 sec
+        Start 608: RuntimeLifecycle.DestroyIdleRuntimeIsClean
+608/764 Test #608: RuntimeLifecycle.DestroyIdleRuntimeIsClean ........................................................   Passed    0.09 sec
+        Start 609: RuntimeLifecycle.ExplicitShutdownThenDestroyStillWorks
+609/764 Test #609: RuntimeLifecycle.ExplicitShutdownThenDestroyStillWorks ............................................   Passed    0.13 sec
+        Start 610: BudgetFaultSeam.InjectedRefusalIsAnOutOfMemoryAndLeavesTheLedgerUntouched
+610/764 Test #610: BudgetFaultSeam.InjectedRefusalIsAnOutOfMemoryAndLeavesTheLedgerUntouched .........................   Passed    0.08 sec
+        Start 611: OomInjection.RefusedWeightsReservationRollsBackAndTheModelIsRetryable
+611/764 Test #611: OomInjection.RefusedWeightsReservationRollsBackAndTheModelIsRetryable .............................   Passed    0.11 sec
+        Start 612: OomInjection.RefusedKvReservationReleasesTheAlreadyReservedWeights
+612/764 Test #612: OomInjection.RefusedKvReservationReleasesTheAlreadyReservedWeights ................................   Passed    0.10 sec
+        Start 613: OomInjection.EngineReturnedOutOfMemoryRollsBackAndKeepsTheCode
+613/764 Test #613: OomInjection.EngineReturnedOutOfMemoryRollsBackAndKeepsTheCode ....................................   Passed    0.09 sec
+        Start 614: OomInjection.BadAllocEscapingTheEngineLoadIsAStructuredOutOfMemory
+614/764 Test #614: OomInjection.BadAllocEscapingTheEngineLoadIsAStructuredOutOfMemory ................................   Passed    0.09 sec
+        Start 615: OomInjection.BadAllocDuringGenerationFailsTheJobAndTheModelStaysLoaded
+615/764 Test #615: OomInjection.BadAllocDuringGenerationFailsTheJobAndTheModelStaysLoaded ............................   Passed    0.08 sec
+        Start 616: OomInjection.RefusedSwitchLeavesNoStaleReservationAndTheNextLoadWorks
+616/764 Test #616: OomInjection.RefusedSwitchLeavesNoStaleReservationAndTheNextLoadWorks .............................   Passed    0.08 sec
+        Start 617: OomInjection.ManyRefusalsInARowNeverLeakBudget
+617/764 Test #617: OomInjection.ManyRefusalsInARowNeverLeakBudget ....................................................   Passed    0.08 sec
+        Start 618: ApiChatTools.NonStreamReturnsToolCalls
+618/764 Test #618: ApiChatTools.NonStreamReturnsToolCalls ............................................................   Passed    0.08 sec
+        Start 619: ApiChatTools.PlainAnswerWithToolsStaysAnAnswer
+619/764 Test #619: ApiChatTools.PlainAnswerWithToolsStaysAnAnswer ....................................................   Passed    0.08 sec
+        Start 620: ApiChatTools.ToolsAreRenderedIntoTheChatMLSystemTurn
+620/764 Test #620: ApiChatTools.ToolsAreRenderedIntoTheChatMLSystemTurn ..............................................   Passed    0.08 sec
+        Start 621: ApiChatTools.ToolsWithoutSystemMessageGetOne
+621/764 Test #621: ApiChatTools.ToolsWithoutSystemMessageGetOne ......................................................   Passed    0.08 sec
+        Start 622: ApiChatTools.AssistantToolCallAndToolResultRoundTrip
+622/764 Test #622: ApiChatTools.AssistantToolCallAndToolResultRoundTrip ..............................................   Passed    0.08 sec
+        Start 623: ApiChatTools.ToolChoiceNoneHidesTheToolsFromTheModel
+623/764 Test #623: ApiChatTools.ToolChoiceNoneHidesTheToolsFromTheModel ..............................................   Passed    0.07 sec
+        Start 624: ApiChatTools.ForcedChoiceAndLegacyFunctionsAre501
+624/764 Test #624: ApiChatTools.ForcedChoiceAndLegacyFunctionsAre501 .................................................   Passed    0.07 sec
+        Start 625: ApiChatTools.BadToolShapesAre400
+625/764 Test #625: ApiChatTools.BadToolShapesAre400 ..................................................................   Passed    0.08 sec
+        Start 626: ApiChatTools.ControlTokensInToolOutputCannotForgeATurn
+626/764 Test #626: ApiChatTools.ControlTokensInToolOutputCannotForgeATurn ............................................   Passed    0.08 sec
+        Start 627: ApiChatTools.StreamingEmitsToolCallsDeltaAndFinishReason
+627/764 Test #627: ApiChatTools.StreamingEmitsToolCallsDeltaAndFinishReason ..........................................   Passed    0.08 sec
+        Start 628: ApiChatTools.StreamingPlainAnswerIsLossless
+628/764 Test #628: ApiChatTools.StreamingPlainAnswerIsLossless .......................................................   Passed    0.08 sec
+        Start 629: ApiChatTools.Lfm3PromptHasBosAndEmptyThinkBlocks
+629/764 Test #629: ApiChatTools.Lfm3PromptHasBosAndEmptyThinkBlocks ..................................................   Passed    0.06 sec
+        Start 630: ApiSocket.HealthIsReachableWithoutToken
+630/764 Test #630: ApiSocket.HealthIsReachableWithoutToken ...........................................................   Passed    0.10 sec
+        Start 631: ApiSocket.AuthIsEnforcedOverTheWire
+631/764 Test #631: ApiSocket.AuthIsEnforcedOverTheWire ...............................................................   Passed    0.10 sec
+        Start 632: ApiSocket.ForeignOriginRejectedOverTheWire
+632/764 Test #632: ApiSocket.ForeignOriginRejectedOverTheWire ........................................................   Passed    0.09 sec
+        Start 633: ApiSocket.OversizeBodyRejectedByTransportBeforeReadingIt
+633/764 Test #633: ApiSocket.OversizeBodyRejectedByTransportBeforeReadingIt ..........................................   Passed    0.12 sec
+        Start 634: ApiSocket.ChatCompletionOverTheWire
+634/764 Test #634: ApiSocket.ChatCompletionOverTheWire ...............................................................   Passed    0.13 sec
+        Start 635: ApiSocket.SseStreamsIncrementallyOverTheWire
+635/764 Test #635: ApiSocket.SseStreamsIncrementallyOverTheWire ......................................................   Passed    0.36 sec
+        Start 636: ApiSocket.ClientAbortMidStreamCancelsGeneration
+636/764 Test #636: ApiSocket.ClientAbortMidStreamCancelsGeneration ...................................................   Passed    0.23 sec
+        Start 637: ApiSocket.BindsLoopbackOnlyByDefault
+637/764 Test #637: ApiSocket.BindsLoopbackOnlyByDefault ..............................................................   Passed    0.10 sec
+        Start 638: ApiSocket.ServerStopsCleanly
+638/764 Test #638: ApiSocket.ServerStopsCleanly ......................................................................   Passed    0.40 sec
+        Start 639: ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob
+639/764 Test #639: ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob ..........................................   Passed    0.29 sec
+        Start 640: ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded
+640/764 Test #640: ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded .................................   Passed    2.14 sec
+        Start 641: ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout
+641/764 Test #641: ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout ..............................   Passed    1.11 sec
+        Start 642: ApiSocketAudit.HealthAnswersFirstTryWhileIdleAndHalfOpenConnectionsAreHeld
+642/764 Test #642: ApiSocketAudit.HealthAnswersFirstTryWhileIdleAndHalfOpenConnectionsAreHeld ........................   Passed    1.11 sec
+        Start 643: ApiSocketAudit.ServeBudgetKeepsHealthAnsweringUnder64HeldConnections
+643/764 Test #643: ApiSocketAudit.ServeBudgetKeepsHealthAnsweringUnder64HeldConnections ..............................   Passed    2.15 sec
+        Start 644: ApiSocketAudit.GracefulShutdownCancelsRunningGenerationPromptly
+644/764 Test #644: ApiSocketAudit.GracefulShutdownCancelsRunningGenerationPromptly ...................................   Passed    0.13 sec
+        Start 645: TransportNegative.OversizedHeaderIsRejectedAndServerSurvives
+645/764 Test #645: TransportNegative.OversizedHeaderIsRejectedAndServerSurvives ......................................   Passed    1.13 sec
+        Start 646: TransportNegative.MalformedRequestLinesAreNeverServedAsSuccess
+646/764 Test #646: TransportNegative.MalformedRequestLinesAreNeverServedAsSuccess ....................................   Passed    9.24 sec
+        Start 647: TransportNegative.BadContentLengthIsRejectedOrIgnoredSafely
+647/764 Test #647: TransportNegative.BadContentLengthIsRejectedOrIgnoredSafely .......................................   Passed   10.19 sec
+        Start 648: TransportNegative.PipelinedRequestsAreAnsweredInOrderOrDroppedNeverReordered
+648/764 Test #648: TransportNegative.PipelinedRequestsAreAnsweredInOrderOrDroppedNeverReordered ......................   Passed    1.13 sec
+        Start 649: TransportNegative.RequestBodyIsNotReinterpretedAsAPipelinedRequest
+649/764 Test #649: TransportNegative.RequestBodyIsNotReinterpretedAsAPipelinedRequest ................................   Passed    0.13 sec
+        Start 650: TransportNegative.SlowlorisHeaderDripIsCutOffInBoundedTime
+650/764 Test #650: TransportNegative.SlowlorisHeaderDripIsCutOffInBoundedTime ........................................   Passed    4.42 sec
+        Start 651: TransportNegative.LongRunningHandlerAndStreamAreNotKilledByTheRequestDeadline
+651/764 Test #651: TransportNegative.LongRunningHandlerAndStreamAreNotKilledByTheRequestDeadline .....................   Passed    4.24 sec
+        Start 652: TransportNegative.ConcurrencyLimitOverTheWireReturns429ButHealthAndCancelStayUp
+652/764 Test #652: TransportNegative.ConcurrencyLimitOverTheWireReturns429ButHealthAndCancelStayUp ...................   Passed    0.14 sec
+        Start 653: ShutdownIdle.NoModelNoJobsStopsPromptlyAndIsIdempotent
+653/764 Test #653: ShutdownIdle.NoModelNoJobsStopsPromptlyAndIsIdempotent ............................................   Passed    0.42 sec
+        Start 654: ShutdownIdle.LoadedModelAndAKeepAliveClientDoNotBlockShutdown
+654/764 Test #654: ShutdownIdle.LoadedModelAndAKeepAliveClientDoNotBlockShutdown .....................................   Passed    0.13 sec
+        Start 655: ShutdownLoading.ShutdownDuringAnUninterruptibleLoadWaitsForItAndNeverCrashes
+655/764 Test #655: ShutdownLoading.ShutdownDuringAnUninterruptibleLoadWaitsForItAndNeverCrashes ......................   Passed    1.35 sec
+        Start 656: ShutdownLoading.QueuedLoadThatNeverStartsIsCancelledNotRunAfterShutdown
+656/764 Test #656: ShutdownLoading.QueuedLoadThatNeverStartsIsCancelledNotRunAfterShutdown ...........................   Passed    0.92 sec
+        Start 657: ShutdownLoading.UnloadRequestedWhileALoadRunsSerialisesAfterItAndEndsUnloaded
+657/764 Test #657: ShutdownLoading.UnloadRequestedWhileALoadRunsSerialisesAfterItAndEndsUnloaded .....................   Passed    1.30 sec
+        Start 658: ShutdownGenerating.StreamingClientIsEndedAndShutdownIsPrompt
+658/764 Test #658: ShutdownGenerating.StreamingClientIsEndedAndShutdownIsPrompt ......................................   Passed    0.15 sec
+        Start 659: ShutdownGenerating.ControlPlaneUnloadCancelsTheRunningJobThenTheNextChatWorks
+659/764 Test #659: ShutdownGenerating.ControlPlaneUnloadCancelsTheRunningJobThenTheNextChatWorks .....................   Passed    0.15 sec
+        Start 660: ApiImages.GenerationReturnsBase64PngAndRecordsTheJob
+660/764 Test #660: ApiImages.GenerationReturnsBase64PngAndRecordsTheJob ..............................................   Passed    0.11 sec
+        Start 661: ApiImages.DefaultsApplyWhenOnlyAPromptIsGiven
+661/764 Test #661: ApiImages.DefaultsApplyWhenOnlyAPromptIsGiven .....................................................   Passed    0.12 sec
+        Start 662: ApiImages.WrongMethodAndMissingEngine
+662/764 Test #662: ApiImages.WrongMethodAndMissingEngine .............................................................   Passed    0.10 sec
+        Start 663: ApiImages.RejectsInvalidRequestsBeforeTheEngineIsTouched
+663/764 Test #663: ApiImages.RejectsInvalidRequestsBeforeTheEngineIsTouched ..........................................   Passed    0.08 sec
+        Start 664: ApiImages.MalformedOversizedAndWrongContentType
+664/764 Test #664: ApiImages.MalformedOversizedAndWrongContentType ...................................................   Passed    0.09 sec
+        Start 665: ApiImages.NoImageModelLoadedIsAConflictNotACrash
+665/764 Test #665: ApiImages.NoImageModelLoadedIsAConflictNotACrash ..................................................   Passed    0.12 sec
+        Start 666: ApiImages.SwitchingBetweenTextAndImageModelsUnloadsThePreviousOne
+666/764 Test #666: ApiImages.SwitchingBetweenTextAndImageModelsUnloadsThePreviousOne .................................   Passed    0.10 sec
+        Start 667: ApiImages.ClientDisconnectCancelsTheRender
+667/764 Test #667: ApiImages.ClientDisconnectCancelsTheRender ........................................................   Passed    0.26 sec
+        Start 668: ApiImages.RequestTimeoutCancelsTheRenderAndReturns504
+668/764 Test #668: ApiImages.RequestTimeoutCancelsTheRenderAndReturns504 .............................................   Passed    0.41 sec
+        Start 669: ApiImages.JobCancelEndpointStopsAnImageJob
+669/764 Test #669: ApiImages.JobCancelEndpointStopsAnImageJob ........................................................   Passed    0.13 sec
+        Start 670: ApiImages.EngineFailureBecomesAStructuredError
+670/764 Test #670: ApiImages.EngineFailureBecomesAStructuredError ....................................................   Passed    0.08 sec
+        Start 671: ApiImages.RuntimeReportsTheImageEngine
+671/764 Test #671: ApiImages.RuntimeReportsTheImageEngine ............................................................   Passed    0.08 sec
+        Start 672: ApiImageEdits.AcceptsADataUriAndKeepsTheInputSizeByDefault
+672/764 Test #672: ApiImageEdits.AcceptsADataUriAndKeepsTheInputSizeByDefault ........................................   Passed    0.09 sec
+        Start 673: ApiImageEdits.BareBase64IsAccepted
+673/764 Test #673: ApiImageEdits.BareBase64IsAccepted ................................................................   Passed    0.09 sec
+        Start 674: ApiImageEdits.RejectsBadInputImagesAndMultipart
+674/764 Test #674: ApiImageEdits.RejectsBadInputImagesAndMultipart ...................................................   Passed    0.11 sec
+        Start 675: ApiUi.RootAndAssetsAreServedWithoutATokenButBehindHostAndOriginChecks
+675/764 Test #675: ApiUi.RootAndAssetsAreServedWithoutATokenButBehindHostAndOriginChecks .............................   Passed    0.11 sec
+        Start 676: ApiUi.OnlyGetAndHeadAndTheApiStaysAuthenticated
+676/764 Test #676: ApiUi.OnlyGetAndHeadAndTheApiStaysAuthenticated ...................................................   Passed    0.11 sec
+        Start 677: VisionPairing.NameMatchPairsMmprojIgnoringQuantisation
+677/764 Test #677: VisionPairing.NameMatchPairsMmprojIgnoringQuantisation ............................................   Passed    0.12 sec
+        Start 678: VisionPairing.AmbiguousFolderIsNotGuessed
+678/764 Test #678: VisionPairing.AmbiguousFolderIsNotGuessed .........................................................   Passed    0.11 sec
+        Start 679: VisionControlPlane.LoadsProjectorAndStreamsTheAnswer
+679/764 Test #679: VisionControlPlane.LoadsProjectorAndStreamsTheAnswer ..............................................   Passed    0.12 sec
+        Start 680: VisionControlPlane.ModelWithoutProjectorIsACleanUnsupportedError
+680/764 Test #680: VisionControlPlane.ModelWithoutProjectorIsACleanUnsupportedError ..................................   Passed    0.11 sec
+        Start 681: VisionControlPlane.PlainTextChatStillUsesTheTextPath
+681/764 Test #681: VisionControlPlane.PlainTextChatStillUsesTheTextPath ..............................................   Passed    0.10 sec
+        Start 682: VisionControlPlane.ValidationRejectsBadShapesAndImages
+682/764 Test #682: VisionControlPlane.ValidationRejectsBadShapesAndImages ............................................   Passed    0.10 sec
+        Start 683: VisionHttp.DataUriImageReturnsTheModelAnswer
+683/764 Test #683: VisionHttp.DataUriImageReturnsTheModelAnswer ......................................................   Passed    0.09 sec
+        Start 684: VisionHttp.StreamingWorksWithImages
+684/764 Test #684: VisionHttp.StreamingWorksWithImages ...............................................................   Passed    0.09 sec
+        Start 685: VisionHttp.RemoteUrlsPathsAndBadDataUrisAreRejected
+685/764 Test #685: VisionHttp.RemoteUrlsPathsAndBadDataUrisAreRejected ...............................................   Passed    0.10 sec
+        Start 686: VisionHttp.NonImageBytesAndOversizedDimensionsAre400
+686/764 Test #686: VisionHttp.NonImageBytesAndOversizedDimensionsAre400 ..............................................   Passed    0.11 sec
+        Start 687: VisionHttp.ModelWithoutProjectorIs501NotAFakeAnswer
+687/764 Test #687: VisionHttp.ModelWithoutProjectorIs501NotAFakeAnswer ...............................................   Passed    0.11 sec
+        Start 688: VisionHttp.ImageInSystemMessageIsRejected
+688/764 Test #688: VisionHttp.ImageInSystemMessageIsRejected .........................................................   Passed    0.10 sec
+        Start 689: VisionMcp.AnalyzeReadsApprovedPathAndReturnsText
+689/764 Test #689: VisionMcp.AnalyzeReadsApprovedPathAndReturnsText ..................................................   Passed    0.09 sec
+        Start 690: VisionMcp.PathEscapesNonImagesAndMissingProjectorAreCleanErrors
+690/764 Test #690: VisionMcp.PathEscapesNonImagesAndMissingProjectorAreCleanErrors ...................................   Passed    0.09 sec
+        Start 691: Cli.HelpWorksAtEveryLevel
+691/764 Test #691: Cli.HelpWorksAtEveryLevel .........................................................................   Passed    0.08 sec
+        Start 692: Cli.VersionAndNoArgs
+692/764 Test #692: Cli.VersionAndNoArgs ..............................................................................   Passed    0.08 sec
+        Start 693: Cli.UnknownCommandIsInvalidArgument
+693/764 Test #693: Cli.UnknownCommandIsInvalidArgument ...............................................................   Passed    0.08 sec
+        Start 694: Cli.PlannedCommandsReturnUnsupported
+694/764 Test #694: Cli.PlannedCommandsReturnUnsupported ..............................................................   Passed    0.09 sec
+        Start 695: Cli.BenchmarkHelpAndArgumentValidationBeforeLoadingAnything
+695/764 Test #695: Cli.BenchmarkHelpAndArgumentValidationBeforeLoadingAnything .......................................   Passed    0.09 sec
+        Start 696: Cli.ImplementedTransportsHaveHelpAndValidateArguments
+696/764 Test #696: Cli.ImplementedTransportsHaveHelpAndValidateArguments .............................................   Passed    0.09 sec
+        Start 697: Cli.ChatValidatesArgumentsBeforeLoadingAnything
+697/764 Test #697: Cli.ChatValidatesArgumentsBeforeLoadingAnything ...................................................   Passed    0.08 sec
+        Start 698: Cli.VisionHelpAndArgumentValidationBeforeLoadingAnything
+698/764 Test #698: Cli.VisionHelpAndArgumentValidationBeforeLoadingAnything ..........................................   Passed    0.08 sec
+        Start 699: Cli.DoctorJsonIsValidAndNeverGuesses
+699/764 Test #699: Cli.DoctorJsonIsValidAndNeverGuesses ..............................................................   Passed    0.27 sec
+        Start 700: Cli.DoctorTextWorks
+700/764 Test #700: Cli.DoctorTextWorks ...............................................................................   Passed    0.25 sec
+        Start 701: Cli.ModelsScanListInspectRoundTrip
+701/764 Test #701: Cli.ModelsScanListInspectRoundTrip ................................................................   Passed    0.10 sec
+        Start 702: Cli.ScanErrors
+702/764 Test #702: Cli.ScanErrors ....................................................................................   Passed    0.08 sec
+        Start 703: Cli.CorruptRegistryIsReportedNotCrashed
+703/764 Test #703: Cli.CorruptRegistryIsReportedNotCrashed ...........................................................   Passed    0.09 sec
+        Start 704: Cli.TrainHelpAndArgumentValidation
+704/764 Test #704: Cli.TrainHelpAndArgumentValidation ................................................................   Passed    0.11 sec
+        Start 705: Cli.TrainValidateReportsAcceptedAndRejected
+705/764 Test #705: Cli.TrainValidateReportsAcceptedAndRejected .......................................................   Passed    0.11 sec
+        Start 706: Cli.TrainGateKeepsRollsBackAndRejectsIncomparableSets
+706/764 Test #706: Cli.TrainGateKeepsRollsBackAndRejectsIncomparableSets .............................................   Passed    0.11 sec
+        Start 707: Cli.TrainPipelinePromotesOnKeepAndRollsBack
+707/764 Test #707: Cli.TrainPipelinePromotesOnKeepAndRollsBack .......................................................   Passed    0.12 sec
+        Start 708: Cli.TrainPipelineRejectsIncomparableInputWithoutWriting
+708/764 Test #708: Cli.TrainPipelineRejectsIncomparableInputWithoutWriting ...........................................   Passed    0.09 sec
+        Start 709: CliCache.HelpListsSubcommandsAndIsNotPlanned
+709/764 Test #709: CliCache.HelpListsSubcommandsAndIsNotPlanned ......................................................   Passed    0.08 sec
+        Start 710: CliCache.StatsOnMissingOrEmptyStateReportsZeroHonestly
+710/764 Test #710: CliCache.StatsOnMissingOrEmptyStateReportsZeroHonestly ............................................   Passed    0.08 sec
+        Start 711: CliCache.StatsCountsOnlyHcsOwnedCacheEntries
+711/764 Test #711: CliCache.StatsCountsOnlyHcsOwnedCacheEntries ......................................................   Passed    0.12 sec
+        Start 712: CliCache.ClearRequiresYesAndRemovesNothingWithout
+712/764 Test #712: CliCache.ClearRequiresYesAndRemovesNothingWithout .................................................   Passed    0.13 sec
+        Start 713: CliCache.ClearRemovesCachesAndTempFilesButNeverStateOrModels
+713/764 Test #713: CliCache.ClearRemovesCachesAndTempFilesButNeverStateOrModels ......................................   Passed    0.15 sec
+        Start 714: CliCache.ClearOnMissingStateDirectoryIsANoOp
+714/764 Test #714: CliCache.ClearOnMissingStateDirectoryIsANoOp ......................................................   Passed    0.09 sec
+        Start 715: CliCache.ClearNeverFollowsLinksOutOfTheStateDirectory
+715/764 Test #715: CliCache.ClearNeverFollowsLinksOutOfTheStateDirectory .............................................   Passed    0.18 sec
+        Start 716: McpProtocol.ServerDiscoverAdvertisesVersionsAndTools
+716/764 Test #716: McpProtocol.ServerDiscoverAdvertisesVersionsAndTools ..............................................   Passed    0.10 sec
+        Start 717: McpProtocol.DiscoverRejectsUnknownRequestedVersionWithSupportedList
+717/764 Test #717: McpProtocol.DiscoverRejectsUnknownRequestedVersionWithSupportedList ...............................   Passed    0.09 sec
+        Start 718: McpProtocol.RequestsMustCarryMetaVersionAndCapabilities
+718/764 Test #718: McpProtocol.RequestsMustCarryMetaVersionAndCapabilities ...........................................   Passed    0.08 sec
+        Start 719: McpProtocol.ModernResultsCarryResultTypeAndServerInfo
+719/764 Test #719: McpProtocol.ModernResultsCarryResultTypeAndServerInfo .............................................   Passed    0.09 sec
+        Start 720: McpProtocol.PingIsRemovedInModernEra
+720/764 Test #720: McpProtocol.PingIsRemovedInModernEra ..............................................................   Passed    0.08 sec
+        Start 721: McpProtocol.LegacyHandshakeStillWorks
+721/764 Test #721: McpProtocol.LegacyHandshakeStillWorks .............................................................   Passed    0.09 sec
+        Start 722: McpProtocol.MalformedMessages
+722/764 Test #722: McpProtocol.MalformedMessages .....................................................................   Passed    0.10 sec
+        Start 723: McpTools.ListHasNarrowSchemasForEveryRequiredTool
+723/764 Test #723: McpTools.ListHasNarrowSchemasForEveryRequiredTool .................................................   Passed    0.09 sec
+        Start 724: McpTools.ModelsListAndInspect
+724/764 Test #724: McpTools.ModelsListAndInspect .....................................................................   Passed    0.09 sec
+        Start 725: McpTools.InvalidArgumentsAreToolErrorsUnknownToolIsProtocolError
+725/764 Test #725: McpTools.InvalidArgumentsAreToolErrorsUnknownToolIsProtocolError ..................................   Passed    0.08 sec
+        Start 726: McpTools.LoadChatUnloadRoundTrip
+726/764 Test #726: McpTools.LoadChatUnloadRoundTrip ..................................................................   Passed    0.09 sec
+        Start 727: McpTools.ChatNeedsExactlyOneOfPromptOrMessages
+727/764 Test #727: McpTools.ChatNeedsExactlyOneOfPromptOrMessages ....................................................   Passed    0.09 sec
+        Start 728: McpTools.ModelIdPathTraversalIsRejected
+728/764 Test #728: McpTools.ModelIdPathTraversalIsRejected ...........................................................   Passed    0.08 sec
+        Start 729: McpTools.ImagePathsAreGuardedEvenForUnsupportedTools
+729/764 Test #729: McpTools.ImagePathsAreGuardedEvenForUnsupportedTools ..............................................   Passed    0.09 sec
+        Start 730: McpTools.JobIdsAreValidated
+730/764 Test #730: McpTools.JobIdsAreValidated .......................................................................   Passed    0.08 sec
+        Start 731: McpTools.NoEngineIsReportedAsUnsupported
+731/764 Test #731: McpTools.NoEngineIsReportedAsUnsupported ..........................................................   Passed    0.08 sec
+        Start 732: McpTools.BenchmarkQuickSuiteReturnsTheAgentsDocument
+732/764 Test #732: McpTools.BenchmarkQuickSuiteReturnsTheAgentsDocument ..............................................   Passed    0.08 sec
+        Start 733: McpTools.BenchmarkFullSuiteReturnsSweepsAndSweepSizesRequireFull
+733/764 Test #733: McpTools.BenchmarkFullSuiteReturnsSweepsAndSweepSizesRequireFull ..................................   Passed    0.09 sec
+        Start 734: McpTools.BenchmarkValidationAndNoEngineAreHonestErrors
+734/764 Test #734: McpTools.BenchmarkValidationAndNoEngineAreHonestErrors ............................................   Passed    0.11 sec
+        Start 735: McpTools.BenchmarkCallTimeoutCancelsTheUnderlyingJob
+735/764 Test #735: McpTools.BenchmarkCallTimeoutCancelsTheUnderlyingJob ..............................................   Passed    0.34 sec
+        Start 736: McpStdio.StdoutCarriesOnlyJsonRpcAndLogsStayElsewhere
+736/764 Test #736: McpStdio.StdoutCarriesOnlyJsonRpcAndLogsStayElsewhere .............................................   Passed    0.17 sec
+        Start 737: McpStdio.OversizeLineIsRejectedNotBuffered
+737/764 Test #737: McpStdio.OversizeLineIsRejectedNotBuffered ........................................................   Passed    1.58 sec
+        Start 738: McpStdio.BatchesAreRejected
+738/764 Test #738: McpStdio.BatchesAreRejected .......................................................................   Passed    0.08 sec
+        Start 739: McpStdio.CancelNotificationStopsWorkAndSuppressesTheResponse
+739/764 Test #739: McpStdio.CancelNotificationStopsWorkAndSuppressesTheResponse ......................................   Passed    0.14 sec
+        Start 740: McpStdio.ConcurrentCallLimit
+740/764 Test #740: McpStdio.ConcurrentCallLimit ......................................................................   Passed    0.16 sec
+        Start 741: McpStdio.EofCancelsStragglersAfterGraceAndExits
+741/764 Test #741: McpStdio.EofCancelsStragglersAfterGraceAndExits ...................................................   Passed    0.11 sec
+        Start 742: McpAudit.DeeplyNestedParamsAreRejectedNotACrash
+742/764 Test #742: McpAudit.DeeplyNestedParamsAreRejectedNotACrash ...................................................   Passed    0.08 sec
+        Start 743: McpAudit.DeeplyNestedLinesOverStdioAreRejectedAndServerKeepsServing
+743/764 Test #743: McpAudit.DeeplyNestedLinesOverStdioAreRejectedAndServerKeepsServing ...............................   Passed    0.11 sec
+        Start 744: McpAudit.DuplicateInFlightRequestIdIsRejected
+744/764 Test #744: McpAudit.DuplicateInFlightRequestIdIsRejected .....................................................   Passed    0.16 sec
+        Start 745: McpAudit.CancelDuringModelLoadReleasesTheCallSlotPromptly
+745/764 Test #745: McpAudit.CancelDuringModelLoadReleasesTheCallSlotPromptly .........................................   Passed    1.58 sec
+        Start 746: McpAudit.ErrorsDoNotLeakAbsoluteLocalPaths
+746/764 Test #746: McpAudit.ErrorsDoNotLeakAbsoluteLocalPaths ........................................................   Passed    0.07 sec
+        Start 747: McpFraming.CrLfTerminatorsAndBlankLinesAreTolerated
+747/764 Test #747: McpFraming.CrLfTerminatorsAndBlankLinesAreTolerated ...............................................   Passed    0.10 sec
+        Start 748: McpFraming.FinalLineWithoutNewlineIsStillServed
+748/764 Test #748: McpFraming.FinalLineWithoutNewlineIsStillServed ...................................................   Passed    0.09 sec
+        Start 749: McpFraming.InvalidUtf8AndEmbeddedNulAreParseErrorsAndTheStreamContinues
+749/764 Test #749: McpFraming.InvalidUtf8AndEmbeddedNulAreParseErrorsAndTheStreamContinues ...........................   Passed    0.09 sec
+        Start 750: McpFraming.LineAtTheLimitIsServedOneByteOverIsRejected
+750/764 Test #750: McpFraming.LineAtTheLimitIsServedOneByteOverIsRejected ............................................   Passed    0.09 sec
+        Start 751: McpFraming.ErrorStormKeepsStdoutOneJsonObjectPerLine
+751/764 Test #751: McpFraming.ErrorStormKeepsStdoutOneJsonObjectPerLine ..............................................   Passed    0.08 sec
+        Start 752: McpFraming.ToolCallArgumentTypeConfusionIsAnErrorNeverACrash
+752/764 Test #752: McpFraming.ToolCallArgumentTypeConfusionIsAnErrorNeverACrash ......................................   Passed    0.07 sec
+        Start 753: McpFraming.UnusualRequestIdsDoNotBreakCorrelation
+753/764 Test #753: McpFraming.UnusualRequestIdsDoNotBreakCorrelation .................................................   Passed    0.08 sec
+        Start 754: McpImage.ToolsAreListedWithRealSchemas
+754/764 Test #754: McpImage.ToolsAreListedWithRealSchemas ............................................................   Passed    0.08 sec
+        Start 755: McpImage.GenerateReturnsAnImageContentBlock
+755/764 Test #755: McpImage.GenerateReturnsAnImageContentBlock .......................................................   Passed    0.10 sec
+        Start 756: McpImage.GenerateValidatesEverythingBeforeTheEngine
+756/764 Test #756: McpImage.GenerateValidatesEverythingBeforeTheEngine ...............................................   Passed    0.10 sec
+        Start 757: McpImage.NoImageEngineIsUnsupportedNotFake
+757/764 Test #757: McpImage.NoImageEngineIsUnsupportedNotFake ........................................................   Passed    0.08 sec
+        Start 758: McpImage.EditReadsOnlyFromApprovedRootsAndKeepsTheInputSize
+758/764 Test #758: McpImage.EditReadsOnlyFromApprovedRootsAndKeepsTheInputSize .......................................   Passed    0.09 sec
+        Start 759: McpImage.CancellationNotificationStopsTheRender
+759/764 Test #759: McpImage.CancellationNotificationStopsTheRender ...................................................   Passed    0.11 sec
+        Start 760: McpImage.ToolTimeoutCancelsTheRender
+760/764 Test #760: McpImage.ToolTimeoutCancelsTheRender ..............................................................   Passed    0.41 sec
+        Start 761: MutationFuzz.HcsModelParserNeverCrashesOrViolatesInvariants
+761/764 Test #761: MutationFuzz.HcsModelParserNeverCrashesOrViolatesInvariants .......................................   Passed    0.16 sec
+        Start 762: MutationFuzz.GgufParserNeverCrashesOrViolatesInvariants
+762/764 Test #762: MutationFuzz.GgufParserNeverCrashesOrViolatesInvariants ...........................................   Passed    2.80 sec
+        Start 763: MutationFuzz.PureRandomGarbageIsRejected
+763/764 Test #763: MutationFuzz.PureRandomGarbageIsRejected ..........................................................   Passed    0.77 sec
+        Start 814: eval_agentic_scorer_selftest
+764/764 Test #814: eval_agentic_scorer_selftest ......................................................................   Passed    5.43 sec
+
+100% tests passed out of 764
+
+Label Time Summary:
+contract      =  70.05 sec*proc (218 tests)
+kernel-cpu    =   0.38 sec*proc (6 tests)
+parser        =   3.73 sec*proc (3 tests)
+unit          = 150.13 sec*proc (537 tests)
+
+Total Test time (real) = 233.10 sec
+phaseA exit 0 elapsed 00:03:55.4322546
