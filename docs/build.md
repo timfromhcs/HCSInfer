@@ -128,3 +128,27 @@ reported as skipped = NOT RUN), `clang-format check`, `clang-tidy (static analys
 -FailOnFindings`), `SBOM generation + schema sanity`, and `web` (`npm test` plus the headless Chrome boot check).
 Green on `main`: run 44167798984 (2026-11-17, commit `d8a5e37`). `hardware.yml` = self-hosted Radeon 680M runner for
 nightly / manual / `v*` tag runs only, never for pull requests; it has never been executed (NOT RUN).
+
+## Nothing on C: (storage guard)
+
+The system drive has little free space, so builds, tests and tools must not write caches there.
+
+- **`scripts/env-d-e.ps1`** (dot-source it: `. .\scripts\env-d-e.ps1`) creates `D:\HCSScratch` (override the root with
+  `HCS_SCRATCH_ROOT`) and, for the current process only, points `TEMP`, `TMP`, `TMPDIR`, `PIP_CACHE_DIR`,
+  `npm_config_cache`, `CARGO_HOME`, `RUSTUP_HOME`, `HF_HOME`, `TORCH_HOME`, `XDG_CACHE_HOME`,
+  `PYTHONPYCACHEPREFIX`, `NUGET_PACKAGES` and `HCS_DATA_DIR` into it. It refuses to run if the scratch root or an
+  already-set `HCS_DATA_DIR` is on drive C:, prints a summary without secrets (it never reads `HF_TOKEN`), changes no
+  system/user environment variable and deletes nothing. `scripts/build.ps1`, `test.ps1` and `doctor.ps1` dot-source it.
+  CMake caches stay in the per-preset build directories (keep the repository itself off C:). CI runners without a
+  D: drive can set `HCS_SKIP_SCRATCH_ENV=1` to skip the redirection; do not set it locally.
+- **`HCS_DATA_DIR`** (new): directory for ALL HCS-owned state (`settings.json`, `registry.json`, logs, cache stats,
+  sessions, train adapters). Resolution order: `--state-dir`, `HCS_DATA_DIR`, `HCS_STATE_DIR` (older name),
+  `%LOCALAPPDATA%\HCSInfer`, `~/.hcsinfer`. When `HCS_DATA_DIR` is set, the per-user profile is never consulted, not
+  even as a fallback. One implementation (`hcs::resolve_state_dir`, `include/hcs/state_dir.hpp`) serves every
+  command; unit tests: `StateDir.*` (`hcs_test_core`).
+- **`scripts/check-no-c-writes.ps1 -Exe <exe> -ArgString '<args>'`** records the free space of C: and the size of the
+  known cache directories (`%LOCALAPPDATA%\Temp`, `pip`, `HCSInfer`, `%APPDATA%\npm-cache`, `~\.cargo`,
+  `~\.cache\huggingface`, `~\.cache\torch`) before and after the command and prints JSON. It fails (exit 1) when the
+  summed directory growth exceeds 50 MB (`-MaxGrowthMB`). The free-space delta is reported but informational, because
+  it is system-wide (other processes, page file); pass `-StrictFree` to enforce it as well. Read-only; exit 77 = NOT RUN.
+  CTest: `ctest --preset windows-msvc-debug -L guard` runs it around `HCSInfer doctor --json`.
