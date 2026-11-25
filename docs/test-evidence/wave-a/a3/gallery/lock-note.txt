@@ -1,0 +1,1 @@
+stale a2 lock (20:11, >3h, no real-model process) removed by a3 at Wed Nov 25 23:32:26     2026

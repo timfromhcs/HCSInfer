@@ -1,0 +1,16 @@
+{
+  "backend": "cpu",
+  "bytes": 381041,
+  "device": "AMD Ryzen 7 7735HS with Radeon Graphics         (CPU)",
+  "generation_ms": 564613.9265,
+  "height": 512,
+  "load_ms": 7001.8271,
+  "mode": "generate",
+  "model": "D:/HCSModels/diffusion/sd15-q8_0.gguf",
+  "output": "D:/HCSInfer/.claude/worktrees/wf_5e9ee287-140-3/docs/test-evidence/wave-a/a3/gallery/sd15-apple.png",
+  "preset": "",
+  "schema_version": 1,
+  "steps": 20,
+  "total_ms": 564618.1827,
+  "width": 512
+}

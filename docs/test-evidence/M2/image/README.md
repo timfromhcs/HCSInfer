@@ -1,5 +1,7 @@
 # M2 evidence — diffusion (image) engine adapter and `HCSInfer image`
 
+> **Smoke tests only.** The small PNGs in this directory (256x256 / 2 steps, 512x512 / 4 steps) prove that the pipeline runs end to end (load, sample, PNG encode). They are **not** examples of image quality: SD1.5 needs >= 512 px and ~20 steps. For real renders see [docs/gallery](../../gallery/README.md).
+
 Status: **PASS** for text-to-image and img2img through the HCS-owned adapter on both CPU and
 Vulkan. Vision/VLM remains BLOCKED (no licensed VLM model available) — see `../STATUS.md`.
 

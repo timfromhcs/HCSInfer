@@ -1,0 +1,16 @@
+{
+  "backend": "cpu",
+  "bytes": 597812,
+  "device": "AMD Ryzen 7 7735HS with Radeon Graphics         (CPU)",
+  "generation_ms": 422023.199,
+  "height": 512,
+  "load_ms": 474.5275,
+  "mode": "generate",
+  "model": "D:/HCSModels/diffusion/flux3/flux-3-image-klein-UD-Q4_K_XL.gguf",
+  "output": "D:/HCSInfer/.claude/worktrees/wf_5e9ee287-140-3/docs/test-evidence/wave-a/a3/gallery/flux-fox.png",
+  "preset": "fast",
+  "schema_version": 1,
+  "steps": 6,
+  "total_ms": 422027.6789,
+  "width": 512
+}

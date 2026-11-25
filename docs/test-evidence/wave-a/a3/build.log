@@ -1,0 +1,49 @@
+[0/2] Re-checking globbed directories...
+[1/45] Linking CXX static library lib\gmock_main.lib
+[2/45] Building CXX object tests\integration\storage\CMakeFiles\hcs_test_storage_real_model.dir\test_real_gguf.cpp.obj
+[3/45] Performing build step for 'vulkan-shaders-gen'
+ninja: no work to do.
+[4/45] Performing install step for 'vulkan-shaders-gen'
+-- Up-to-date: D:/HCSInfer/build/a3/Release/vulkan-shaders-gen.exe
+[5/45] Building CXX object tests\parser-fuzz\storage\CMakeFiles\hcs_test_storage_mutation_fuzz.dir\test_mutation_fuzz.cpp.obj
+[6/45] Completed 'vulkan-shaders-gen'
+[7/45] Linking CXX executable bin\hcs_test_agent.exe
+[8/45] Building CXX object tests\contract\api_image\CMakeFiles\hcs_test_api_image.dir\test_image_routes.cpp.obj
+[9/45] Building CXX object tests\contract\cli\CMakeFiles\hcs_test_cli.dir\test_cli.cpp.obj
+[10/45] Linking CXX executable bin\hcs_storage_bench.exe
+[11/45] Linking CXX executable bin\hcs_test_core.exe
+[12/45] Building CXX object tests\contract\cli\CMakeFiles\hcs_test_cli.dir\test_cli_cache.cpp.obj
+[13/45] Building CXX object tests\integration\diffusion_engine\CMakeFiles\hcs_test_diffusion_engine.dir\test_diffusion_engine.cpp.obj
+[14/45] Building CXX object tests\integration\llama_engine\CMakeFiles\hcs_test_llama_engine.dir\test_llama_engine.cpp.obj
+[15/45] Building CXX object tests\contract\mcp_image\CMakeFiles\hcs_test_mcp_image.dir\test_mcp_image.cpp.obj
+[16/45] Building CXX object tests\integration\llama_vision\CMakeFiles\hcs_test_llama_vision.dir\test_llama_vision.cpp.obj
+[17/45] Building CXX object tests\contract\mcp\CMakeFiles\hcs_test_mcp.dir\test_mcp.cpp.obj
+[18/45] Linking CXX executable bin\hcs_test_api_chat_tools.exe
+[19/45] Linking CXX executable bin\hcs_test_api_schema.exe
+[20/45] Building CXX object tests\soak\soak_core\CMakeFiles\hcs_test_soak_core.dir\test_soak_core.cpp.obj
+[21/45] Building CXX object tests\integration\shutdown_real\CMakeFiles\hcs_test_shutdown_real.dir\test_shutdown_real.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[22/45] Linking CXX executable bin\hcs_test_api_vision.exe
+[23/45] Linking CXX executable bin\hcs_test_gui_assets.exe
+[24/45] Linking CXX executable bin\hcs_test_kernels.exe
+[25/45] Linking CXX executable bin\hcs_test_hardware.exe
+[26/45] Linking CXX executable bin\hcs_test_process.exe
+[27/45] Linking CXX executable bin\hcs_test_storage.exe
+[28/45] Linking CXX executable bin\hcs_test_train.exe
+[29/45] Linking CXX executable bin\hcs_test_api_chat_tools_contract.exe
+[30/45] Linking CXX executable bin\hcs_test_api_image.exe
+[31/45] Linking CXX executable bin\hcs_test_api_vision_contract.exe
+[32/45] Linking CXX executable bin\HCSInfer.exe
+[33/45] Linking CXX executable bin\hcs_test_api_http.exe
+[34/45] Linking CXX executable bin\hcs_test_api.exe
+[35/45] Linking CXX executable bin\hcs_test_cli.exe
+[36/45] Linking CXX executable bin\hcs_test_mcp_image.exe
+[37/45] Linking CXX executable bin\hcs_test_storage_mutation_fuzz.exe
+[38/45] Linking CXX executable bin\hcs_test_mcp.exe
+[39/45] Linking CXX executable bin\hcs_test_llama_engine.exe
+[40/45] Linking CXX executable bin\hcs_test_diffusion_engine.exe
+[41/45] Linking CXX executable bin\hcs_test_llama_vision.exe
+[42/45] Linking CXX executable bin\hcs_test_storage_real_model.exe
+[43/45] Linking CXX executable bin\hcs_test_shutdown_real.exe
+[44/45] Linking CXX executable bin\hcs_test_soak_core.exe
