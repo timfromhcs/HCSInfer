@@ -157,25 +157,27 @@
         <fieldset class="presets">
           <legend>Steps preset</legend>
           <div class="seg" role="radiogroup" aria-label="Steps preset">
-            <label><input type="radio" name="image-preset" value="4"><span title="4 steps: quick preview">Draft 4</span></label>
-            <label><input type="radio" name="image-preset" value="8"><span title="8 steps: fast">Fast 8</span></label>
-            <label><input type="radio" name="image-preset" value="16"><span title="16 steps: balanced">Standard 16</span></label>
-            <label><input type="radio" name="image-preset" value="28"><span title="28 steps: quality">Fine 28</span></label>
+            <label data-advanced hidden><input type="radio" name="image-preset" value="4"><span title="4 steps: low quality, only for step-distilled checkpoints (needs Allow low quality for SD 1.5)">Draft 4 (low quality)</span></label>
+            <label><input type="radio" name="image-preset" value="8"><span title="8 steps: fast, step-distilled checkpoints">Fast 8</span></label>
+            <label><input type="radio" name="image-preset" value="16"><span title="16 steps: FLUX.3 Klein reference">Standard 16</span></label>
+            <label><input type="radio" name="image-preset" value="20"><span title="20 steps: recommended for SD 1.5">SD 1.5 20</span></label>
+            <label><input type="radio" name="image-preset" value="30"><span title="30 steps: quality">Fine 30</span></label>
           </div>
-          <p class="note">A preset only sets the step count. Few steps look good only with a step-distilled checkpoint; other models need more.</p>
+          <p class="note">A preset only sets the step count. SD 1.5 needs about 20 steps at 512x512; fewer than 8 steps or under 384 px are rejected unless Allow low quality is on (Advanced).</p>
         </fieldset>
 
         <div class="fields">
           <label>Size
-            <select id="image-size"><option value="" id="image-size-match" hidden>Match input image</option><option>256x256</option><option>384x384</option><option selected>512x512</option><option>640x640</option><option>768x768</option><option>512x768</option><option>768x512</option></select>
+            <select id="image-size"><option value="" id="image-size-match" hidden>Match input image</option><option selected>512x512</option><option>640x640</option><option>768x768</option><option>512x768</option><option>768x512</option><optgroup label="Low quality (advanced, smoke tests only)" data-advanced hidden><option>256x256</option><option>384x384</option></optgroup></select>
           </label>
-          <label>Steps <input id="image-steps" type="number" min="1" max="100" value="16"></label>
+          <label>Steps <input id="image-steps" type="number" min="1" max="100" value="20"></label>
           <label class="wide">Seed
             <span class="inline-pair"><input id="image-seed" type="number" min="0" max="2147483647" placeholder="random"><button type="button" id="image-dice" class="ghost" aria-label="Pick a random seed">Random</button></span>
           </label>
         </div>
         <div class="adv" data-advanced hidden>
           <label>Negative prompt <textarea id="image-negative" rows="2" maxlength="4000"></textarea></label>
+          <label class="check"><input type="checkbox" id="image-lowq"> Allow low quality (under 384 px or under 8 steps; the result is a pipeline smoke test, not a usable image)</label>
           <label>Guidance scale <input id="image-cfg" type="number" min="0" max="30" step="0.5" placeholder="model default"></label>
           <button type="button" class="ghost" data-reset="image">Reset to defaults</button>
         </div>

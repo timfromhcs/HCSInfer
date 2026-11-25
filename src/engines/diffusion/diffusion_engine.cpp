@@ -24,6 +24,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include "hcs/image_profiles.hpp"
 #include "stable-diffusion.h"
 
 #if defined(_MSC_VER)
@@ -397,6 +398,10 @@ std::string family_from_log(const std::string& log) {
     const std::string low = lower(log);
     if (low.find("flux.3") != std::string::npos || low.find("flux3") != std::string::npos)
         return "flux3";
+    if (low.find("sd1.5") != std::string::npos || low.find("sd 1.5") != std::string::npos ||
+        low.find("sd1.x") != std::string::npos || low.find("sd 1.x") != std::string::npos ||
+        low.find("model type: sd1") != std::string::npos || low.find("version: sd1") != std::string::npos)
+        return "sd15";
     return {};
 }
 
@@ -667,6 +672,8 @@ Result<void> DiffusionImageEngine::load(const LoadRequest& req) {
     s->device_description = chosen->description;
     s->gpu = use_gpu;
     s->family = family_from_log(log);
+    if (s->family.empty())
+        s->family = guess_image_family(req.model_path);  // file-name hint when sd.cpp's log is not conclusive
 
     EngineMetrics m;
     m.backend = use_gpu ? "vulkan" : "cpu";
@@ -888,6 +895,21 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std:
     }
     if (req.steps == 0 || req.steps > kMaxSteps)
         return Error(ErrorCode::InvalidArgument, "steps must be in 1..150");
+    // Quality envelope (hcs/image_profiles.hpp): a request below the family's minimum is a pipeline smoke
+    // test, not an image. Rejected unless the caller opted in.
+    if (!req.allow_low_quality) {
+        const std::string why =
+            image_envelope_violation(family, req.width, req.height, req.steps, !request.preset.empty());
+        if (!why.empty())
+            return Error(ErrorCode::InvalidArgument, "low_quality_request: " + why);
+    }
+    // Family defaults that the engine-wide fallback would get wrong or leave implicit.
+    std::string sampler;
+    if (const ImageProfile* prof = image_profile(family)) {
+        if (req.cfg_scale == 0.0f)
+            req.cfg_scale = prof->default_cfg;
+        sampler = std::string(prof->sampler);
+    }
     sd_img_gen_opt_t* opt = sd_img_gen_opt_create();
     if (!opt)
         return Error(ErrorCode::OutOfMemory, "could not allocate image options");
@@ -930,6 +952,8 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std:
         cfg = set_int("seed", req.seed ? static_cast<std::int64_t>(*req.seed) : -1);
     if (cfg && req.cfg_scale > 0.0f)
         cfg = set_float("sample.guidance.txt_cfg", req.cfg_scale);
+    if (cfg && !sampler.empty())
+        cfg = set_string("sample.method", sampler);
 
     sd_tensor_t* init_tensor = nullptr;
     if (req.init_image) {

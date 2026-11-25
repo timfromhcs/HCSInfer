@@ -238,7 +238,7 @@ def http_phase(exe, model_dir, model_stem, state, evidence, size, steps):
             return ev
 
         # --- text-to-image ---------------------------------------------------------------------------
-        body = {"model": mid, "prompt": "a simple red apple on a plain table", "size": f"{size}x{size}", "steps": steps, "seed": 7}
+        body = {"model": mid, "prompt": "a simple red apple on a plain table", "size": f"{size}x{size}", "steps": steps, "seed": 7, "allow_low_quality": True}
         t = time.time()
         code, j = c.jreq("POST", "/v1/images/generations", body)
         ev["generate_wall_s"] = round(time.time() - t, 2)
@@ -269,7 +269,7 @@ def http_phase(exe, model_dir, model_stem, state, evidence, size, steps):
             uri = "data:image/png;base64," + base64.b64encode(gen_png).decode()
             t = time.time()
             code, j = c.jreq("POST", "/v1/images/edits", {"model": mid, "prompt": "a simple green apple on a plain table", "image": uri,
-                                                          "steps": steps, "strength": 0.6, "seed": 7})
+                                                          "steps": steps, "strength": 0.6, "seed": 7, "allow_low_quality": True})
             ev["edit_wall_s"] = round(time.time() - t, 2)
             check("POST /v1/images/edits -> 200", code == 200 and j and j.get("data"), (code, str(j)[:200]))
             if code == 200 and j and j.get("data"):
@@ -339,7 +339,7 @@ def mcp_phase(exe, model_dir, model_stem, state, evidence, size, steps):
         check("MCP generate with a bad size -> invalid_argument", r["result"]["isError"] and r["result"]["structuredContent"]["error"]["code"] == "invalid_argument", r)
         t = time.time()
         r = m.tool("hcs.image.generate", {"model": mid, "prompt": "a simple red apple on a plain table", "width": size, "height": size,
-                                          "steps": steps, "seed": 7})
+                                          "steps": steps, "seed": 7, "allow_low_quality": True})
         ev["generate_wall_s"] = round(time.time() - t, 2)
         ok = r and r["result"]["isError"] is False
         check("MCP hcs.image.generate (real) succeeds", ok, str(r)[:300])
@@ -364,7 +364,7 @@ def mcp_phase(exe, model_dir, model_stem, state, evidence, size, steps):
                 f.write(png)
             t = time.time()
             r = m.tool("hcs.image.edit", {"model": mid, "prompt": "a simple green apple on a plain table", "input_path": inp,
-                                          "steps": steps, "strength": 0.6, "seed": 7})
+                                          "steps": steps, "strength": 0.6, "seed": 7, "allow_low_quality": True})
             ev["edit_wall_s"] = round(time.time() - t, 2)
             ok = r and r["result"]["isError"] is False
             check("MCP hcs.image.edit (real) succeeds", ok, str(r)[:300])
@@ -397,7 +397,7 @@ def mcp_phase(exe, model_dir, model_stem, state, evidence, size, steps):
         time.sleep(4.0)
         m.send({"jsonrpc": "2.0", "method": "notifications/cancelled", "params": {"requestId": rid, "reason": "e2e"}})
         t = time.time()
-        r = m.tool("hcs.image.generate", {"model": mid, "prompt": "x", "width": size, "height": size, "steps": steps, "seed": 7}, timeout=600)
+        r = m.tool("hcs.image.generate", {"model": mid, "prompt": "x", "width": size, "height": size, "steps": steps, "seed": 7, "allow_low_quality": True}, timeout=600)
         ev["after_cancel_wall_s"] = round(time.time() - t, 2)
         check("MCP: next render completes promptly after cancelling the long one",
               r and r["result"]["isError"] is False and ev["after_cancel_wall_s"] < 120, (ev["after_cancel_wall_s"], str(r)[:200]))

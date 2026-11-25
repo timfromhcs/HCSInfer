@@ -52,6 +52,10 @@ const char* image_help() {
            "a\n"
            "                         capacity fallback and can be slower\n"
            "  --cfg <f>              Text CFG scale; 0 = engine/model default\n"
+           "  --allow-low-quality    Render sizes/steps below the model family's quality envelope (SD1.5: "
+           "short\n"
+           "                         side < 384 px or < 8 steps is rejected otherwise; output is a smoke "
+           "test)\n"
            "  --seed <n>             Sampling seed (default: random)\n"
            "  --backend <b>          auto (default) | cpu | vulkan; explicit failure never falls back "
            "silently\n"
@@ -232,6 +236,7 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
     take_value(args, "--threads", v_threads, bad);
     const bool as_json = take_flag(args, "--json");
     const bool force = take_flag(args, "--force");
+    const bool allow_low_quality = take_flag(args, "--allow-low-quality");
     if (bad)
         return fail(err, ErrorCode::InvalidArgument, "an option is missing its value");
     if (!args.empty())
@@ -279,6 +284,7 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
     if (preset != "" && preset != "fast" && preset != "quality")
         return fail(err, ErrorCode::InvalidArgument, "--preset must be fast or quality");
     req.preset = preset;
+    req.allow_low_quality = allow_low_quality;
     for (const std::string* comp : {&llm, &vae}) {
         if (comp->empty())
             continue;

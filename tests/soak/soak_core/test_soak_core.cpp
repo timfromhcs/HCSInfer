@@ -440,6 +440,7 @@ TEST(Soak, DiffusionRepeat) {
         p.model = rig.image_id;
         p.prompt = "a simple red apple on a plain table";
         p.width = p.height = 256;
+        p.allow_low_quality = true;  // 256 px soak/cancel workload, not a quality claim
         p.steps = 2;
         p.seed = 100 + static_cast<std::uint64_t>(i);
         auto s = rig.cp().submit_image(p, false);
@@ -623,6 +624,7 @@ TEST(Soak, ShutdownWhileRenderingImage) {
         p.model = rig->image_id;
         p.prompt = "a lighthouse in a storm";
         p.width = p.height = 256;
+        p.allow_low_quality = true;  // 256 px soak/cancel workload, not a quality claim
         p.steps = 30;
         p.seed = 3;
         auto s = rig->cp().submit_image(p, false);

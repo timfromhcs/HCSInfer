@@ -194,3 +194,27 @@ TEST(McpImage, ToolTimeoutCancelsTheRender) {
     EXPECT_EQ(code_of(r), "timeout");
     EXPECT_TRUE(wait_for([&] { return !m.fx.image.rendering.load(); }));
 }
+
+TEST(McpImage, SchemaAdvertisesAllowLowQualityAndFlagIsForwarded) {
+    for (const auto& t : tool_list(256))
+        if (t["name"] == "hcs.image.generate" || t["name"] == "hcs.image.edit")
+            EXPECT_TRUE(t["inputSchema"]["properties"].contains("allow_low_quality"));
+    Mcp m;
+    const auto path = m.fx.root / "sd15-mcp.gguf";
+    test::write_file(path, test::fake_gguf());
+    ModelManifest mm;
+    mm.id = "sd15-mcp";
+    mm.display_name = "sd15-mcp";
+    mm.path = path.string();
+    mm.format = ModelFormat::Gguf;
+    mm.kind = ModelKind::Image;
+    mm.size_bytes = 64;
+    ASSERT_TRUE(m.fx.registry.add(mm).ok());
+    json small = {{"model", "sd15-mcp"}, {"prompt", "x"}, {"width", 256}, {"height", 256}, {"steps", 2}};
+    EXPECT_EQ(code_of(m.tool(1, "hcs.image.generate", small)), "invalid_argument");
+    EXPECT_EQ(m.fx.image.generations.load(), 0);
+    small["allow_low_quality"] = true;
+    auto r = m.tool(2, "hcs.image.generate", small);
+    ASSERT_FALSE(r["result"]["isError"].get<bool>()) << r.dump();
+    EXPECT_TRUE(m.fx.image.last.allow_low_quality);
+}
