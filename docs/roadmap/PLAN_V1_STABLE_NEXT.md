@@ -80,10 +80,10 @@ Jede Wave endet mit: Format/Tidy grün, Voll-CTest (CPU, ggf. Vulkan) grün, neu
 ### Wave B: Echte Bildgenerierung (SD1.5 + FLUX.3 Klein + weitere Modelle)
 | Agent | Auftrag | Exit |
 |---|---|---|
-| B1 SD1.5 voll | Sampler/Scheduler-Auswahl, CFG, Negative Prompt, Seed, Batch=1, VAE-Tiling, Hires-Option; Prompt-Suite 10 Prompts, Qualität angesehen + Metrik; Q8_0 vs Q4_K/F16 | CLI/API/UI-Parameter wirksam (Tests), Galerie, Zeit/Speicher je Preset |
+| B1 SD1.5 voll + Studio/API | Sampler/Scheduler-Auswahl, i2i/Inpaint-Maske (wenn sd.cpp trägt), Progress-Events pro Step, Abbruch, UI-Wiring im echten Browser, CFG, Negative Prompt, Seed, Batch=1, VAE-Tiling, Hires-Option; Prompt-Suite 10 Prompts, Qualität angesehen + Metrik; Q8_0 vs Q4_K/F16 | CLI/API/UI-Parameter wirksam (Tests), Galerie, Zeit/Speicher je Preset |
 | B2 FLUX.3 Klein | Steps 4/6/8/12/16 mit N>=3, Vulkan-vs-CPU-Ursache (566 vs 508 s), offizieller Encoder falls freigegeben, i2i CPU+Vulkan, Multi-Reference-Edit prüfen, LPIPS gegen 16-Step | Messreihe mit Median/p90; Presets neu gesetzt; Root-Cause oder BLOCKED |
-| B3 Weitere Modelle + LoRA | Kandidaten (4.2) hinter Adapter: SD-Turbo/SDXL-Turbo (1-4 Steps), LCM-LoRA auf SD1.5, SDXL-Base GGUF, LoRA-Loading in der Bildengine (Pfad im Approved-Root), Modellkatalog in Registry/UI mit Capability-Flags | je Modell: Render angesehen, Hash, Lizenz, Zeit, Peak-RAM; nicht tragende Modelle als Unsupported mit klarem Fehler |
-| B4 Image-Studio + API | i2i/Inpaint-Maske (`mask` wenn sd.cpp trägt), Progress-Events pro Step, Abbruch, Batch-Queue-Anzeige, UI-Wiring-Tests im echten Browser | E2E mit echtem Modell (Chrome headless), Cancel beendet Arbeit, keine inerten Controls |
+| B3 Weitere Modelle + vorab geladene LoRAs | Kandidaten (4.2) hinter Adapter: SD-Turbo/SDXL-Turbo (1-4 Steps), LCM-LoRA auf SD1.5, SDXL-Base GGUF. **LoRA-Bibliothek:** vorab (nach Freigabe) heruntergeladene Bild-LoRAs unter `D:\HCSModels\lora\image\` mit Manifest (Name, Basis-Familie, Quelle, Lizenz, SHA-256, Trigger-Wörter, empfohlene Stärke); Registry scannt sie und prüft Basis-Kompatibilität (SD1.5-LoRA nie auf FLUX); Engine lädt 0..n LoRAs mit Gewicht pro Request (`lora: [{id, weight}]` in API/CLI/UI/MCP), Pfad nur aus Approved-Root, Stärke begrenzt. Modellkatalog mit Capability-Flags in Registry/UI | je Modell/LoRA: Render angesehen (mit/ohne LoRA im Vergleich), Hash, Lizenz, Zeit, Peak-RAM; inkompatible Kombination = klarer Fehler, kein stiller Müll |
+| B4 4K-Upscaler (ONNX, separates Modell) | Eigenes Modul `src/engines/upscale` (`IUpscaleEngine`), ONNX Runtime als **optionale**, dynamisch geladene Komponente (Execution Provider DirectML auf der 680M falls verfügbar, sonst CPU; Wahl per Messung, nie still). Upscaler-Modell separat in `D:\HCSModels\upscale\` (Kandidaten Real-ESRGAN `realesr-general-x4v3` / `RealESRGAN_x4plus`, Lizenz je Datei prüfen). Pipeline: nach jeder Generierung optional `upscale: "4k"` = 4x-Modell **gekachelt** (Tile+Overlap, begrenzter RAM, Budget-Check), dann schneller Lanczos auf exakt 3840 lange Kante. Schalter pro Request/Preset, Standard AUS bis "schnell und gut" gemessen ist. Messung: Zeit 512->2048->4K, Peak-RAM, Qualität (PSNR/SSIM/LPIPS, angesehen), EP-Vergleich | echtes 3840px-PNG angesehen; Zeit/RAM-Tabelle; Abbruch mitten im Upscale; Tile-Naht-Test; fehlendes ORT/Modell = klarer `Unsupported`-Fehler; EXE bleibt ohne ORT lauffähig |
 
 ### Wave C: HCSUDA umgebaut für HCSInfer (Vulkan-Compute-Schicht)
 Vorab-ADR-014 (Owner-Entscheidung Lizenz: HCSUDA ist GPL-3.0, HCSInfer MIT; gleicher Eigentümer, daher Relizenzierung der
@@ -142,7 +142,7 @@ Push, Tag, Vercel-Deploy, Signierung, Clean-Machine-Test, Self-hosted-Runner ble
 - Voll-CTest grün (CPU + Vulkan), Doku = Realität.
 
 ### 4.2 Modellkandidaten (nur nach Owner-Freigabe laden; Lizenz je Modell prüfen)
-SD-Turbo / SDXL-Turbo (GGUF/safetensors, 1-4 Steps), LCM-LoRA für SD1.5, SDXL-Base-1.0 (GGUF), FLUX.3 Klein offizieller Encoder/VAE
+SD-Turbo / SDXL-Turbo (GGUF/safetensors, 1-4 Steps), LCM-LoRA für SD1.5, Stil-/Detail-LoRAs für SD1.5/SDXL/FLUX (nur frei nutzbar, Lizenz je Datei), Upscaler-ONNX (Real-ESRGAN-Klasse), SDXL-Base-1.0 (GGUF), FLUX.3 Klein offizieller Encoder/VAE
 (gated, Owner-Token), kleines Trainingsbasismodell (Qwen3-0.6B oder LFM-Klasse, Safetensors), Embedding-/Eval-Datensätze (permissiv).
 
 ### 4.3 Risiken
