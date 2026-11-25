@@ -1,0 +1,167 @@
+{
+  "reference": "cpu:cpu",
+  "repeat": {
+    "vulkan0:cpu": {
+      "runs": 5,
+      "distinct_hashes": 2,
+      "wall_s": [
+        46,
+        50,
+        50,
+        54,
+        55
+      ],
+      "worst_pair": {
+        "psnr_db": 41.52683516855808,
+        "ssim_luma": 0.990665052230011,
+        "max_abs_diff": 91,
+        "frac_pixels_differing": 0.8982315063476562
+      }
+    },
+    "vulkan0:disk": {
+      "runs": 3,
+      "distinct_hashes": 1,
+      "wall_s": [
+        51,
+        49,
+        52
+      ],
+      "worst_pair": {
+        "psnr_db": Infinity,
+        "ssim_luma": 1.0,
+        "max_abs_diff": 0,
+        "frac_pixels_differing": 0.0
+      }
+    },
+    "cpu:cpu": {
+      "runs": 3,
+      "distinct_hashes": 1,
+      "wall_s": [
+        321,
+        1105,
+        258
+      ],
+      "worst_pair": {
+        "psnr_db": Infinity,
+        "ssim_luma": 1.0,
+        "max_abs_diff": 0,
+        "frac_pixels_differing": 0.0
+      }
+    },
+    "cpu:disk": {
+      "runs": 3,
+      "distinct_hashes": 1,
+      "wall_s": [
+        893,
+        560,
+        222
+      ],
+      "worst_pair": {
+        "psnr_db": Infinity,
+        "ssim_luma": 1.0,
+        "max_abs_diff": 0,
+        "frac_pixels_differing": 0.0
+      }
+    }
+  },
+  "pairs": [
+    {
+      "a": "cpu:cpu",
+      "b": "cpu:disk",
+      "a_run": "cpu_cpu_r1",
+      "b_run": "cpu_disk_r1",
+      "pixel_identical": true,
+      "max_abs_diff": 0,
+      "mean_abs_diff": 0.0,
+      "frac_pixels_differing": 0.0,
+      "frac_pixels_diff_gt8": 0.0,
+      "psnr_db": Infinity,
+      "ssim_luma": 1.0,
+      "byte_identical": true,
+      "sha256_a": "65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec",
+      "sha256_b": "65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec"
+    },
+    {
+      "a": "cpu:cpu",
+      "b": "vulkan0:cpu",
+      "a_run": "cpu_cpu_r1",
+      "b_run": "vulkan0_cpu_r1",
+      "pixel_identical": false,
+      "max_abs_diff": 81,
+      "mean_abs_diff": 1.3525670369466145,
+      "frac_pixels_differing": 0.9055442810058594,
+      "frac_pixels_diff_gt8": 0.02289581298828125,
+      "psnr_db": 40.79710122754446,
+      "ssim_luma": 0.9905015277584404,
+      "byte_identical": false,
+      "sha256_a": "65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec",
+      "sha256_b": "18a80ff86b0d25f51a02356f79209de096c64cf07294db9eb276b8363e14714b"
+    },
+    {
+      "a": "cpu:cpu",
+      "b": "vulkan0:disk",
+      "a_run": "cpu_cpu_r1",
+      "b_run": "vulkan0_disk_r1",
+      "pixel_identical": false,
+      "max_abs_diff": 66,
+      "mean_abs_diff": 1.5009409586588542,
+      "frac_pixels_differing": 0.9112091064453125,
+      "frac_pixels_diff_gt8": 0.037322998046875,
+      "psnr_db": 39.33325382388483,
+      "ssim_luma": 0.9890182877081358,
+      "byte_identical": false,
+      "sha256_a": "65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec",
+      "sha256_b": "9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"
+    },
+    {
+      "a": "cpu:disk",
+      "b": "vulkan0:cpu",
+      "a_run": "cpu_disk_r1",
+      "b_run": "vulkan0_cpu_r1",
+      "pixel_identical": false,
+      "max_abs_diff": 81,
+      "mean_abs_diff": 1.3525670369466145,
+      "frac_pixels_differing": 0.9055442810058594,
+      "frac_pixels_diff_gt8": 0.02289581298828125,
+      "psnr_db": 40.79710122754446,
+      "ssim_luma": 0.9905015277584404,
+      "byte_identical": false,
+      "sha256_a": "65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec",
+      "sha256_b": "18a80ff86b0d25f51a02356f79209de096c64cf07294db9eb276b8363e14714b"
+    },
+    {
+      "a": "cpu:disk",
+      "b": "vulkan0:disk",
+      "a_run": "cpu_disk_r1",
+      "b_run": "vulkan0_disk_r1",
+      "pixel_identical": false,
+      "max_abs_diff": 66,
+      "mean_abs_diff": 1.5009409586588542,
+      "frac_pixels_differing": 0.9112091064453125,
+      "frac_pixels_diff_gt8": 0.037322998046875,
+      "psnr_db": 39.33325382388483,
+      "ssim_luma": 0.9890182877081358,
+      "byte_identical": false,
+      "sha256_a": "65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec",
+      "sha256_b": "9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"
+    },
+    {
+      "a": "vulkan0:cpu",
+      "b": "vulkan0:disk",
+      "a_run": "vulkan0_cpu_r1",
+      "b_run": "vulkan0_disk_r1",
+      "pixel_identical": false,
+      "max_abs_diff": 91,
+      "mean_abs_diff": 1.2081883748372395,
+      "frac_pixels_differing": 0.8982315063476562,
+      "frac_pixels_diff_gt8": 0.01387786865234375,
+      "psnr_db": 41.52683516855808,
+      "ssim_luma": 0.990665052230011,
+      "byte_identical": false,
+      "sha256_a": "18a80ff86b0d25f51a02356f79209de096c64cf07294db9eb276b8363e14714b",
+      "sha256_b": "9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"
+    }
+  ],
+  "failed_runs": [],
+  "lpips": "NOT RUN (needs torch + weights; not installed)"
+}

@@ -1,0 +1,29 @@
+[W] Using upstream GGML: INT8 tensorwise/convrot is disabled and FP8 weights are converted to F16 at load time. Some operators may be unsupported and performance may be lower than with patched GGML. --- diffusion_engine.cpp:902
+[I] loading model from 'D:\HCSModels\diffusion\sd15-q8_0.gguf' --- diffusion_engine.cpp:690
+[I] load D:\HCSModels\diffusion\sd15-q8_0.gguf using gguf format --- model_loader.cpp:220
+[I] Version: SD 1.x  --- diffusion_engine.cpp:982
+[I] Weight type stat:                      f16: 176  |    q8_0: 955   --- diffusion_engine.cpp:1560
+[I] Conditioner weight type stat:         q8_0: 196   --- diffusion_engine.cpp:1561
+[I] Diffusion model weight type stat:      f16: 99   |    q8_0: 587   --- diffusion_engine.cpp:1562
+[I] VAE weight type stat:                  f16: 76   |    q8_0: 172   --- diffusion_engine.cpp:1563
+  |##################################################| 1/1 -   0.11MB/s[K
+[I] loading tensors completed, taking 0.02s (read: 0.00s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
+[I] using VAE for encoding / decoding --- model_builders.cpp:226
+[I] vae decoder: ch = 128 --- auto_encoder_kl.hpp:529
+[I] flash attention auto: Vulkan0 -> off (probe: normal 6.611 ms, flash 9.274 ms) --- flash_attn.cpp:99
+[W] conv2d direct auto: Vulkan0 -> off (probe output check failed) --- conv_direct.cpp:79
+[W] conv3d direct auto: Vulkan0 -> off (probe output check failed) --- conv_direct.cpp:79
+[I] total params memory size = 1683.69MB (VRAM 0.00MB, RAM 1683.69MB): text_encoders 125.20MB(RAM), diffusion_model 1398.81MB(RAM), vae 159.68MB(RAM), controlnet 0.00MB(N/A), extensions 0.00MB(N/A) --- diffusion_engine.cpp:1445
+[I] running in eps-prediction mode --- diffusion_engine.cpp:1474
+[I] generate_image 512x512 --- image.cpp:954
+[I] get_sigmas with discrete scheduler --- denoiser.hpp:1132
+[I] sampling using Euler A method --- request.cpp:478
+[I] clip build cached graph cut plan done (taking 2 ms) --- ggml_graph_cut.cpp:1034
+  |##################################################| 196/196 - 588.18MB/s[K
+[I] loading tensors completed, taking 0.21s (read: 0.12s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
+[I] get_learned_condition completed, taking 0.45s --- image.cpp:664
+[I] generating image: 1/1 - seed 42 --- image.cpp:1005
+[I] unet build cached graph cut plan done (taking 13 ms) --- ggml_graph_cut.cpp:1034
+  |##############                                    | 188/686 - 323.12MB/s[K  |####################                              | 264/686 - 707.84MB/s[K  |########################                          | 322/686 - 792.42MB/s[K  |###############################                   | 424/686 - 779.21MB/s[K  |##################################                | 466/686 - 820.44MB/s[K  |######################################            | 512/686 - 789.48MB/s[K  |###############################################   | 636/686 - 843.97MB/s[K  |##################################################| 686/686 - 850.62MB/s[K
+[I] loading tensors completed, taking 1.64s (read: 1.48s, memcpy: 0.00s, convert: 0.00s, copy_to_backend: 0.00s) --- model_loader.cpp:1442
+  |==>                                               |  1/20 -   4.78s/it - ETA 01:30[K  |=====>                                            |  2/20 -   2.22s/it - ETA 01:03[K

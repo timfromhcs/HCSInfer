@@ -1,0 +1,14 @@
+{"name":"vulkan0_cpu_r1","backend":"vulkan0","params":"cpu","rep":1,"rc":0,"wall_s":46,"free_kb_before":0,"sha256":"18a80ff86b0d25f51a02356f79209de096c64cf07294db9eb276b8363e14714b"}
+{"name":"vulkan0_disk_r1","backend":"vulkan0","params":"disk","rep":1,"rc":0,"wall_s":51,"free_kb_before":0,"sha256":"9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"}
+{"name":"vulkan0_cpu_r2","backend":"vulkan0","params":"cpu","rep":2,"rc":0,"wall_s":50,"free_kb_before":0,"sha256":"9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"}
+{"name":"vulkan0_disk_r2","backend":"vulkan0","params":"disk","rep":2,"rc":0,"wall_s":49,"free_kb_before":0,"sha256":"9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"}
+{"name":"vulkan0_cpu_r3","backend":"vulkan0","params":"cpu","rep":3,"rc":0,"wall_s":50,"free_kb_before":0,"sha256":"9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"}
+{"name":"vulkan0_disk_r3","backend":"vulkan0","params":"disk","rep":3,"rc":0,"wall_s":52,"free_kb_before":0,"sha256":"9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"}
+{"name":"vulkan0_cpu_r4","backend":"vulkan0","params":"cpu","rep":4,"rc":0,"wall_s":54,"free_kb_before":0,"sha256":"9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"}
+{"name":"vulkan0_cpu_r5","backend":"vulkan0","params":"cpu","rep":5,"rc":0,"wall_s":55,"free_kb_before":0,"sha256":"9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"}
+{"name":"cpu_cpu_r1","backend":"cpu","params":"cpu","rep":1,"rc":0,"wall_s":321,"free_kb_before":0,"sha256":"65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec"}
+{"name":"cpu_disk_r1","backend":"cpu","params":"disk","rep":1,"rc":0,"wall_s":893,"free_kb_before":0,"sha256":"65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec"}
+{"name":"cpu_cpu_r2","backend":"cpu","params":"cpu","rep":2,"rc":0,"wall_s":1105,"free_kb_before":0,"sha256":"65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec"}
+{"name":"cpu_disk_r2","backend":"cpu","params":"disk","rep":2,"rc":0,"wall_s":560,"free_kb_before":0,"sha256":"65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec"}
+{"name":"cpu_cpu_r3","backend":"cpu","params":"cpu","rep":3,"rc":0,"wall_s":258,"free_kb_before":0,"sha256":"65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec"}
+{"name":"cpu_disk_r3","backend":"cpu","params":"disk","rep":3,"rc":0,"wall_s":222,"free_kb_before":0,"sha256":"65260edeeea819ef904df7b11a9c9b8ecb621cdfb0e90a7b1f4898f8741258ec"}

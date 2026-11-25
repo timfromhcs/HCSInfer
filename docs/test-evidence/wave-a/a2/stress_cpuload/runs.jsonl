@@ -1,0 +1,2 @@
+{"name":"vulkan0_cpu_cpuload_r1","backend":"vulkan0","params":"cpu_cpuload","rep":1,"rc":0,"wall_s":123,"sha256":"0eab2c455d250a2a0c4ff49effa28477c9d915165de3dba587bbf4c0824d882d"}
+{"name":"vulkan0_cpu_cpuload_r2","backend":"vulkan0","params":"cpu_cpuload","rep":2,"rc":0,"wall_s":57,"sha256":"9b09aa7cf83d3b693cefa23b8ab36d053d37d64b4832f0fc032109fa613b214d"}
