@@ -14,6 +14,8 @@ param(
     [string]$ArgString = '',
     [int]$MaxGrowthMB = 50,
     [switch]$StrictFree,
+    [string[]]$ExcludeDirName = @('claude'),   # directory NAMES skipped at any depth: the agent harness's own scratch
+    [string[]]$ExtraWatchDir = @(),   # additional directories to watch (any drive; used by the self-test)
     [string]$OutFile = ''
 )
 $ErrorActionPreference = 'Stop'
@@ -21,10 +23,14 @@ Set-StrictMode -Version Latest
 
 function Get-DirBytes([string]$Path) {
     if (-not $Path -or -not (Test-Path -LiteralPath $Path)) { return [int64]0 }
-    $sum = [int64]0
-    Get-ChildItem -LiteralPath $Path -Recurse -Force -File -ErrorAction SilentlyContinue |
-        ForEach-Object { $sum += $_.Length }
-    return $sum
+    # robocopy /L only counts (copies nothing); it is far faster than Get-ChildItem on a 100k-file Temp directory.
+    $rcArgs = @($Path, 'NUL', '/L', '/S', '/XJ', '/NJH', '/NFL', '/NDL', '/NP', '/BYTES', '/R:0', '/W:0')
+    if ($ExcludeDirName.Count -gt 0) { $rcArgs += '/XD'; $rcArgs += $ExcludeDirName }
+    $out = & robocopy @rcArgs 2>$null
+    foreach ($line in $out) {
+        if ($line -match '^\s*Bytes\s*:\s*(\d+)') { return [int64]$Matches[1] }
+    }
+    return [int64]0
 }
 
 function Get-Watched {
@@ -67,6 +73,7 @@ if (-not (Test-Path -LiteralPath $Exe)) {
 }
 
 $watched = Get-Watched
+foreach ($extra in $ExtraWatchDir) { $watched['extra_' + $watched.Count] = $extra }
 $before = Get-Snapshot $watched
 $cmdArgs = if ($ArgString.Trim()) { $ArgString.Trim() -split '\s+' } else { @() }
 $null = & $Exe @cmdArgs 2>&1

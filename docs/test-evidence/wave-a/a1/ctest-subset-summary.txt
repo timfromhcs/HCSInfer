@@ -1,0 +1,26 @@
+        Start  92: SessionLaunch.LaunchFailureEndsTheSessionAsFailed
+ 99/761 Test  #92: SessionLaunch.LaunchFailureEndsTheSessionAsFailed .................................................   Passed    1.08 sec
+        Start 182: Lifecycle.TransitionToFailedRequiresFail
+189/761 Test #182: Lifecycle.TransitionToFailedRequiresFail ..........................................................   Passed    0.23 sec
+        Start 234: Settings.FailedSaveKeepsPreviousFile
+241/761 Test #234: Settings.FailedSaveKeepsPreviousFile ..............................................................   Passed    0.40 sec
+        Start 250: ModelRegistry.FailMarksFailed
+257/761 Test #250: ModelRegistry.FailMarksFailed .....................................................................   Passed    0.27 sec
+        Start 301: FsUtil.FailedRenameLeavesPreviousStateAndNoTempFile
+308/761 Test #301: FsUtil.FailedRenameLeavesPreviousStateAndNoTempFile ...............................................   Passed    1.08 sec
+        Start 431: Unplug.FailedStreamReleasesTheFileHandleSoTheFileCanBeDeleted
+428/761 Test #431: Unplug.FailedStreamReleasesTheFileHandleSoTheFileCanBeDeleted .....................................   Passed    0.77 sec
+        Start 523: EvalFailures.ReadsOnlyFailedEntriesAndTolerantOfAMissingResultsArray
+519/761 Test #523: EvalFailures.ReadsOnlyFailedEntriesAndTolerantOfAMissingResultsArray ..............................   Passed    0.17 sec
+        Start 608: ApiBenchmarks.LoadFailureEndsTheJobFailedWithAnError
+604/761 Test #608: ApiBenchmarks.LoadFailureEndsTheJobFailedWithAnError ..............................................   Passed    3.26 sec
+696/761 Test #700: Cli.BenchmarkHelpAndArgumentValidationBeforeLoadingAnything .......................................***Failed    0.19 sec
+697/761 Test #701: Cli.ImplementedTransportsHaveHelpAndValidateArguments .............................................***Failed    0.08 sec
+698/761 Test #702: Cli.ChatValidatesArgumentsBeforeLoadingAnything ...................................................***Failed    0.09 sec
+        Start 771: guard_no_c_writes_doctor
+761/761 Test #771: guard_no_c_writes_doctor ..........................................................................   Passed  243.98 sec
+99% tests passed, 3 tests failed out of 761
+Total Test time (real) = 710.56 sec
+	700 - Cli.BenchmarkHelpAndArgumentValidationBeforeLoadingAnything (Failed) contract
+	701 - Cli.ImplementedTransportsHaveHelpAndValidateArguments (Failed) contract
+	702 - Cli.ChatValidatesArgumentsBeforeLoadingAnything (Failed) contract

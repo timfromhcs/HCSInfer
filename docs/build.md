@@ -152,3 +152,6 @@ The system drive has little free space, so builds, tests and tools must not writ
   summed directory growth exceeds 50 MB (`-MaxGrowthMB`). The free-space delta is reported but informational, because
   it is system-wide (other processes, page file); pass `-StrictFree` to enforce it as well. Read-only; exit 77 = NOT RUN.
   CTest: `ctest --preset windows-msvc-debug -L guard` runs it around `HCSInfer doctor --json`.
+
+`check-no-c-writes.ps1` skips directories named `claude` (the agent harness scratch, `-ExcludeDirName`) and takes
+`-ExtraWatchDir` for self-tests; it counts bytes with `robocopy /L`, so a very large `%LOCALAPPDATA%\Temp` takes ~40 s per scan.

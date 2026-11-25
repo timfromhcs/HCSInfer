@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "result": "PASS",
+  "command": "D:/HCSInfer/.claude/worktrees/wf_5e9ee287-140-1/build/windows-msvc-debug/bin/HCSInfer.exe doctor --json",
+  "command_exit": 0,
+  "limit_mb": 50,
+  "watched_dirs": {
+    "localappdata_temp": "C:\\Users\\hcsme\\AppData\\Local\\Temp",
+    "pip": "C:\\Users\\hcsme\\AppData\\Local\\pip",
+    "hcsinfer_state": "C:\\Users\\hcsme\\AppData\\Local\\HCSInfer",
+    "npm_cache": "C:\\Users\\hcsme\\AppData\\Roaming\\npm-cache",
+    "cargo": "C:\\Users\\hcsme\\.cargo",
+    "hf_cache": "C:\\Users\\hcsme\\.cache\\huggingface",
+    "torch_cache": "C:\\Users\\hcsme\\.cache\\torch"
+  },
+  "before": {
+    "c_free_bytes": 59845660672,
+    "dir_bytes": {
+      "localappdata_temp": 18124612448,
+      "pip": 766155213,
+      "hcsinfer_state": 1098,
+      "npm_cache": 1028539,
+      "cargo": 1621081531,
+      "hf_cache": 3987777,
+      "torch_cache": 0
+    }
+  },
+  "after": {
+    "c_free_bytes": 59879079936,
+    "dir_bytes": {
+      "localappdata_temp": 18124612448,
+      "pip": 766155213,
+      "hcsinfer_state": 1098,
+      "npm_cache": 1028539,
+      "cargo": 1621081531,
+      "hf_cache": 3987777,
+      "torch_cache": 0
+    }
+  },
+  "dir_growth_bytes": {
+    "localappdata_temp": 0,
+    "pip": 0,
+    "hcsinfer_state": 0,
+    "npm_cache": 0,
+    "cargo": 0,
+    "hf_cache": 0,
+    "torch_cache": 0
+  },
+  "dir_growth_total_positive_bytes": 0,
+  "c_free_drop_bytes": -33419264,
+  "c_free_informational_only": true
+}
