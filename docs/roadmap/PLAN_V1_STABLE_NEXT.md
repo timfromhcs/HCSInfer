@@ -86,8 +86,9 @@ Jede Wave endet mit: Format/Tidy grün, Voll-CTest (CPU, ggf. Vulkan) grün, neu
 | B4 4K-Upscaler (ONNX, separates Modell) | Eigenes Modul `src/engines/upscale` (`IUpscaleEngine`), ONNX Runtime als **optionale**, dynamisch geladene Komponente (Execution Provider DirectML auf der 680M falls verfügbar, sonst CPU; Wahl per Messung, nie still). Upscaler-Modell separat in `D:\HCSModels\upscale\` (Kandidaten Real-ESRGAN `realesr-general-x4v3` / `RealESRGAN_x4plus`, Lizenz je Datei prüfen). Pipeline: nach jeder Generierung optional `upscale: "4k"` = 4x-Modell **gekachelt** (Tile+Overlap, begrenzter RAM, Budget-Check), dann schneller Lanczos auf exakt 3840 lange Kante. Schalter pro Request/Preset, Standard AUS bis "schnell und gut" gemessen ist. Messung: Zeit 512->2048->4K, Peak-RAM, Qualität (PSNR/SSIM/LPIPS, angesehen), EP-Vergleich | echtes 3840px-PNG angesehen; Zeit/RAM-Tabelle; Abbruch mitten im Upscale; Tile-Naht-Test; fehlendes ORT/Modell = klarer `Unsupported`-Fehler; EXE bleibt ohne ORT lauffähig |
 
 ### Wave C: HCSUDA umgebaut für HCSInfer (Vulkan-Compute-Schicht)
-Vorab-ADR-014 (Owner-Entscheidung Lizenz: HCSUDA ist GPL-3.0, HCSInfer MIT; gleicher Eigentümer, daher Relizenzierung der
-übernommenen Teile als MIT oder Beibehaltung als getrenntes Modul; bis zur Entscheidung nur lesen und Interfaces nachbauen).
+ADR-014 (Entscheidung des Owners 2026-11-25: beide Projekte gehören ihm, die Lizenzen bleiben unverändert; HCSUDA-Code darf
+voll übernommen/umgebaut werden, die übernommenen Dateien tragen den Herkunftsvermerk und werden in THIRD_PARTY_NOTICES/Lizenz-Audit
+als eigener Code des Owners mit der jeweils geltenden Lizenz geführt).
 | Agent | Auftrag | Exit |
 |---|---|---|
 | C1 Caps + Planner (C++) | `src/hardware`/`src/kernels/hcscuda`: Capability-Probe (Subgroup, Coopmat, int8-dot, Heaps, Timestamp) und konservativer Planner "unbekannt = CPU", Promotionsregel (Korrektheit, 3 identische Läufe, >=1.05x) als Code, JSON-Export, in `doctor` eingebunden | Unit-Tests aus HCSUDA-Fällen portiert; `doctor --json` zeigt Planner-Tabelle |
@@ -124,7 +125,7 @@ Vorab-ADR-014 (Owner-Entscheidung Lizenz: HCSUDA ist GPL-3.0, HCSInfer MIT; glei
 |---|---|---|
 | G1 Regression/Fix-Runde | Alle roten/flaky Tests aus A-F beheben (Root-Cause, kein Schwächen von Assertions) | Voll-CTest CPU + Vulkan grün, 0 flaky über 3 Läufe |
 | G2 UI/Studio Endabnahme | Alle Tabs gegen echte Backends im Browser (Playwright falls auf D: installierbar), Bildergalerie, Train/Merge-Tab, Overload-Anzeige, Screenshots nur echte | UI-E2E-Suite grün, README-Screenshots aktuell |
-| G3 Packaging/Docs | README/STATUS/Support-Matrix/CHANGELOG/Release-Notes, SBOM, Checksums, EXE-Build static CPU + Vulkan, Wheel, Web-Dist, Lizenz-Audit (inkl. HCSUDA-Entscheidung) | Release-Gate-Tabelle ehrlich, Version `1.1.0-rc.1` |
+| G3 Packaging/Docs | README/STATUS/Support-Matrix/CHANGELOG/Release-Notes, SBOM, Checksums, EXE-Build static CPU + Vulkan, Wheel, Web-Dist, Lizenz-Audit (inkl. HCSUDA-Herkunftsvermerke) | Release-Gate-Tabelle ehrlich, Version `1.1.0-rc.1` |
 | G4 Unabhängiges Review | Adversarieller Review des Diffs (Korrektheit, Security, Claims vs Evidenz, C:-Guard) | Findings behoben oder begründet abgelehnt |
 
 Push, Tag, Vercel-Deploy, Signierung, Clean-Machine-Test, Self-hosted-Runner bleiben **Owner-abhängig** und werden nicht ohne Freigabe ausgeführt.
@@ -150,4 +151,4 @@ SD-Turbo / SDXL-Turbo (GGUF/safetensors, 1-4 Steps), LCM-LoRA für SD1.5, Stil-/
 - Vulkan-FLUX auf 680M nicht schneller als CPU: kann UMA-Bandbreite sein; Messung statt Annahme.
 - Echtes Training auf CPU ist winzig; kein Qualitätsclaim ohne Eval.
 - Ein GGML für llama + sd.cpp: neue Upstream-Pins nur als separate Kompatibilitätsänderung.
-- Lizenz HCSUDA (GPL) vs HCSInfer (MIT) blockiert den Code-Import bis zur Owner-Entscheidung.
+- Lizenz HCSUDA (GPL) vs HCSInfer (MIT): kein Blocker mehr (Owner-Entscheid); nur im Lizenz-Audit sauber dokumentieren.
