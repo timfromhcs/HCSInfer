@@ -62,3 +62,21 @@ In the shared checkout `D:\HCSInfer` (not in this worktree):
 * `D:\HCSInfer\build\` holds ~60 build directories from earlier waves (large; ignored). `D:\HCSInfer\artifacts\` is ignored.
 
 On drive C: free space at the start of this task was 27 GB (see `c_free_gb_before.txt`); nothing from this task was written there.
+
+## Baseline counts (see STATUS.md "Wave A baseline")
+
+* CPU build: 816 registered; 764/764 passed in the non-real-model phase; real-model phase 52 tests: 46 passed, 5 skipped, 1 failed (`e2e_llama_agentic_real`, defect 11, fixed; passes alone after the fix: `ctest-agentic-fix.txt`). Totals 810 passed / 1 failed / 5 skipped; the fixed test was not part of a second full run.
+* Vulkan build: 815 registered; 764/764 + real-model phase 51 tests: 50 passed, 1 skipped (`e2e_gui_xss`), 0 failed. Totals 814 passed / 0 failed / 1 skipped.
+
+## Top 10 problems for waves B-G
+
+1. **Image defaults and quality** (wave A2/A3/B1): 256 px / 2 steps junk was documented as the example; SD 1.5 needs 512 px and 20+ steps; per-family defaults and guards are not enforced everywhere (CLI allows 64..4096, API 64..2048).
+2. **Image route has no progress or streaming** although the adapter has a per-step sink (B1); no sampler/scheduler choice, no inpainting mask, no LoRA support yet (B3/B4 plan items).
+3. **FLUX.3 Klein is minutes per image** (508 s CPU, 566 s Vulkan, n=1 each; wave F saw 364-471 s) with a substitute text encoder and VAE; Vulkan is not faster and the cause is unexplained (B2).
+4. **Resource pressure and no overload protection**: 21 GB shared RAM, only ~7-10 GB free before the test phases; earlier runs produced `out_of_memory` budget refusals under parallelism; `src/scheduler` and `src/telemetry` do not exist (F1/F2).
+5. **Model Vault is not in the engine load path** (M5 Stage B BLOCKED); `models load|unload` and `tune` are CLI exit-10 stubs (E1/E3).
+6. **Test environment gaps hide gates**: `e2e_gui_xss` is NOT RUN in every ctest run because the CMake-selected Python lacks `websockets`; the agentic e2e depended on a pre-existing directory; no flaky-test accounting (G1/G2).
+7. **Agentic quality**: held-out eval 37/40, parallel tool calls 0/3; tool_choice required/named returns 501; training, merging and the RSI loop are logic-only (real runs NOT RUN) (D1-D4).
+8. **HCS Vulkan kernel is 18x slower than upstream** and OFF; HCSUDA port, caps/planner and autotuner are not started (C1-C4).
+9. **Release and CI**: `hardware.yml` has never completed (cancelled/pending), so Radeon/real-model gates run only manually; the release is an unpublished draft; clean-machine run, signing, WebGPU inference and Vercel deploy are NOT RUN (G3, owner).
+10. **Documentation drift**: STATUS.md (320 lines) mixes history and current state and was wrong about CI/tag/release; README/STATUS/supported-models quote different LFM3 numbers without provenance; there is no automated claim-vs-binary check (G3).

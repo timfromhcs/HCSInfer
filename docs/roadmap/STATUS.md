@@ -1,8 +1,30 @@
 # HCSInfer status
 
-Last updated: 2026-11-20 (wave R final verification of 1.0.0-rc.1 on top of waves F, G, K; wave G hardening gaps on top of wave F; earlier: 2026-11-18 V1-stable waves W1-W4 plus the MCP benchmark tool and the D-S5/D-S6 fixes; CI status: see the Wave A baseline section; the older note was "unknown"
-`f9d03a5`). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
+Last updated: 2026-11-26 (wave A a4 baseline; earlier: 2026-11-20 wave R final verification of 1.0.0-rc.1 on top of waves F, G, K; wave G hardening gaps on top of wave F; earlier: 2026-11-18 V1-stable waves W1-W4 plus the MCP benchmark tool and the D-S5/D-S6 fixes; CI status: see the Wave A baseline section; the older "unknown" note is superseded). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
 inspected source file; items with no evidence are NOT RUN or BLOCKED.
+
+## Wave A baseline (a4, 2026-11-25/26): fresh build and full CTest of `main` `52ea9e7`
+
+Fresh configure + build into `D:\HCSInferuild4-cpu` (`windows-msvc-release`) and `a4-vk` (`windows-msvc-release-vulkan`), `-j4`,
+MSVC 19.44.35228, `/W4 /WX` clean on HCS targets. Full CTest run serially (`-j1`) with the real models (`HCS_TEST_GGUF`/`LFM3` = LFM3-Omni-2B Q8_0,
+`HCS_TEST_GGUF2` = qwen3-0.6b Q4_K_M, `HCS_TEST_VLM`/`MMPROJ` = SmolVLM2-500M Q8_0, `HCS_TEST_DIFFUSION_MODEL` = SD1.5 Q8_0,
+`HCS_TEST_FLUX3_MODEL` = FLUX.3 Klein UD-Q4_K_XL); real-model tests under `D:\HCSScratch
+ealmodel.lock`. Evidence: `docs/test-evidence/wave-a/a4/`.
+
+| Build | Registered | Passed | Failed | Skipped | Notes |
+|---|---|---|---|---|---|
+| CPU (`windows-msvc-release`) | 816 | 810 | 1 -> fixed | 5 | the failure was a test-harness defect (below); after the fix the test passed alone (`ctest-agentic-fix.txt`) = 811/816 passed effective, NOT a full re-run. Skipped: 4 Vulkan-only real tests (NOT RUN on a CPU build) and `e2e_gui_xss` |
+| Vulkan (`windows-msvc-release-vulkan`) | 815 | 814 | 0 | 1 | skipped: `e2e_gui_xss`; the 4 Vulkan real tests PASS on the Radeon 680M; `e2e_llama_agentic_real` PASS with the fix |
+
+* **Defect fixed (red -> green):** `e2e_llama_agentic_real` failed on a fresh checkout with `FileNotFoundError` because `tests/eval/agentic/e2e_lfm3.py` wrote its
+  eval JSON into `artifacts/e2e-lfm3` before creating that directory (it only passed earlier because the directory already existed). Fix: create the evidence
+  directory at start. Verified with the directory deleted beforehand on both builds. The eval itself reproduced the baseline 37/40 (tool use 0.906, coding 1.0, parallel 0/3).
+* **Environment (NOT RUN):** `e2e_gui_xss` skips because the interpreter CMake selects (Python 3.14) has no `websockets` package; with another Python that has it the
+  same script passes 8/8 (`xss-direct.txt`). No `out_of_memory` budget refusals occurred in these serial runs (7-10 GB free RAM before each phase).
+* **Hosted CI (read-only `gh run list`, `github-ci-state.txt`):** `pr-quick-gate` success on `0853143`; `release` success on `40bf581` (draft pre-release, 8 assets);
+  `hardware.yml` never completed (cancelled / pending). Tag `v1.0.0-rc.1` is pushed and an ancestor of `main`.
+* Documentation audit: `docs/test-evidence/wave-a/a4/DOC_AUDIT.md` (stale CI / "never pushed" statements corrected in this file, README, packaging, release notes, CHANGELOG).
+  Older statements further down that still say "never pushed" or "NOT RUN" for the hosted release workflow are superseded by this section.
 
 ## Audit fixes (2026-11-21, after wave R)
 

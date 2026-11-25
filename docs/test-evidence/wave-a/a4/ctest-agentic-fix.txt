@@ -1,0 +1,12 @@
+﻿free RAM GB: 10.5345230102539
+Test project D:/HCSInfer/build/a4-cpu
+    Start 815: e2e_llama_agentic_real
+1/1 Test #815: e2e_llama_agentic_real ...........   Passed  134.75 sec
+
+100% tests passed out of 1
+
+Label Time Summary:
+e2e    = 134.75 sec*proc (1 test)
+
+Total Test time (real) = 158.33 sec
+exit 0

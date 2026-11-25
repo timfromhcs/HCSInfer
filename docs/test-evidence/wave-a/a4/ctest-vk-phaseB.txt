@@ -1,0 +1,117 @@
+free RAM GB before phase B: 10.65
+Test project D:/HCSInfer/build/a4-vk
+      Start 764: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng
+ 1/51 Test #764: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng .......................   Passed  150.44 sec
+      Start 765: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize
+ 2/51 Test #765: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize ......................   Passed   22.83 sec
+      Start 766: DiffusionBlocking.ProgressSinkStillReceivesProgress
+ 3/51 Test #766: DiffusionBlocking.ProgressSinkStillReceivesProgress ..............................   Passed    9.52 sec
+      Start 767: DiffusionBlocking.CancellationStopsTheRender
+ 4/51 Test #767: DiffusionBlocking.CancellationStopsTheRender .....................................   Passed    9.20 sec
+      Start 768: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering
+ 5/51 Test #768: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering ......................   Passed    0.32 sec
+      Start 769: DiffusionBlocking.NotLoadedIsAnErrorNotACrash
+ 6/51 Test #769: DiffusionBlocking.NotLoadedIsAnErrorNotACrash ....................................   Passed    0.04 sec
+      Start 770: DiffusionComponents.SidecarWithParentTraversalIsRejected
+ 7/51 Test #770: DiffusionComponents.SidecarWithParentTraversalIsRejected .........................   Passed    0.12 sec
+      Start 771: DiffusionComponents.SidecarWithAbsolutePathIsRejected
+ 8/51 Test #771: DiffusionComponents.SidecarWithAbsolutePathIsRejected ............................   Passed    0.04 sec
+      Start 772: DiffusionComponents.SidecarWithMissingFileIsNotFound
+ 9/51 Test #772: DiffusionComponents.SidecarWithMissingFileIsNotFound .............................   Passed    0.04 sec
+      Start 773: DiffusionComponents.MalformedSidecarIsInvalidArgument
+10/51 Test #773: DiffusionComponents.MalformedSidecarIsInvalidArgument ............................   Passed    0.04 sec
+      Start 774: DiffusionComponents.UnknownParamsBackendIsInvalidArgument
+11/51 Test #774: DiffusionComponents.UnknownParamsBackendIsInvalidArgument ........................   Passed    0.04 sec
+      Start 775: DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel
+12/51 Test #775: DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel .....................   Passed    0.04 sec
+      Start 776: DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15
+13/51 Test #776: DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15 .........................   Passed    0.30 sec
+      Start 777: DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem
+14/51 Test #777: DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem ............................   Passed  556.84 sec
+      Start 778: LlamaEngineErrors.GenerateBeforeLoadIsInvalidState
+15/51 Test #778: LlamaEngineErrors.GenerateBeforeLoadIsInvalidState ...............................   Passed    0.51 sec
+      Start 779: LlamaEngineErrors.MissingFileIsNotFound
+16/51 Test #779: LlamaEngineErrors.MissingFileIsNotFound ..........................................   Passed    0.39 sec
+      Start 780: LlamaEngineErrors.NonGgufIsModelError
+17/51 Test #780: LlamaEngineErrors.NonGgufIsModelError ............................................   Passed    0.16 sec
+      Start 781: LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable
+18/51 Test #781: LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable ..................   Passed    0.35 sec
+      Start 782: LlamaEngineErrors.BadArguments
+19/51 Test #782: LlamaEngineErrors.BadArguments ...................................................   Passed    0.14 sec
+      Start 783: LlamaEngineErrors.VisionRequestValidation
+20/51 Test #783: LlamaEngineErrors.VisionRequestValidation ........................................   Passed    0.04 sec
+      Start 784: LlamaEngineReal.CpuGeneration
+21/51 Test #784: LlamaEngineReal.CpuGeneration ....................................................   Passed   22.89 sec
+      Start 785: LlamaEngineReal.VulkanGeneration
+22/51 Test #785: LlamaEngineReal.VulkanGeneration .................................................   Passed    5.27 sec
+      Start 786: LlamaEngineReal.GreedyIsDeterministicOnCpu
+23/51 Test #786: LlamaEngineReal.GreedyIsDeterministicOnCpu .......................................   Passed    1.90 sec
+      Start 787: LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly
+24/51 Test #787: LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly .........................   Passed    1.08 sec
+      Start 788: LlamaEngineReal.CancellationMidGenerationCpu
+25/51 Test #788: LlamaEngineReal.CancellationMidGenerationCpu .....................................   Passed    1.86 sec
+      Start 789: LlamaEngineReal.CancellationMidGenerationVulkan
+26/51 Test #789: LlamaEngineReal.CancellationMidGenerationVulkan ..................................   Passed    1.54 sec
+      Start 790: LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth
+27/51 Test #790: LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth ................................   Passed    9.44 sec
+      Start 791: LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth
+28/51 Test #791: LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth .............................   Passed   10.60 sec
+      Start 792: LlamaEngineReal.ModelSwitchBetweenBackendsAndModels
+29/51 Test #792: LlamaEngineReal.ModelSwitchBetweenBackendsAndModels ..............................   Passed   12.24 sec
+      Start 793: LlamaEngineReal.LoadModesAreAccepted
+30/51 Test #793: LlamaEngineReal.LoadModesAreAccepted .............................................   Passed    2.36 sec
+      Start 794: LlamaVisionReal.DescribesAGeneratedImageOnCpu
+31/51 Test #794: LlamaVisionReal.DescribesAGeneratedImageOnCpu ....................................   Passed   11.04 sec
+      Start 795: LlamaVisionReal.DescribesAGeneratedImageOnVulkan
+32/51 Test #795: LlamaVisionReal.DescribesAGeneratedImageOnVulkan .................................   Passed    4.77 sec
+      Start 796: LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs
+33/51 Test #796: LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs ...   Passed    7.65 sec
+      Start 797: LlamaVisionReal.UnloadAndReloadReleasesTheProjector
+34/51 Test #797: LlamaVisionReal.UnloadAndReloadReleasesTheProjector ..............................   Passed    0.66 sec
+      Start 798: LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine
+35/51 Test #798: LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine ......................   Passed    2.83 sec
+      Start 799: LlamaVisionReal.CancellationStopsAVisionJob
+36/51 Test #799: LlamaVisionReal.CancellationStopsAVisionJob ......................................   Passed    5.08 sec
+      Start 800: LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly
+37/51 Test #800: LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly .......................   Passed    0.25 sec
+      Start 801: LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors
+38/51 Test #801: LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors ..................   Passed    0.53 sec
+      Start 802: LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected
+39/51 Test #802: LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected ..................   Passed    0.77 sec
+      Start 803: LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError
+40/51 Test #803: LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError ..............   Passed    0.16 sec
+      Start 804: ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine
+41/51 Test #804: ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine ......................   Passed   13.69 sec
+      Start 805: ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly
+42/51 Test #805: ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly .............   Passed    5.02 sec
+      Start 806: ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe
+43/51 Test #806: ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe ..................   Passed    1.87 sec
+      Start 807: RealGguf.HeaderParsesAndTensorsLieInsideTheFile
+44/51 Test #807: RealGguf.HeaderParsesAndTensorsLieInsideTheFile ..................................   Passed    0.08 sec
+      Start 808: RealGguf.StreamingDeliversEveryByteInOrder
+45/51 Test #808: RealGguf.StreamingDeliversEveryByteInOrder .......................................   Passed    0.45 sec
+      Start 809: e2e_api_mcp_real
+46/51 Test #809: e2e_api_mcp_real .................................................................   Passed   17.21 sec
+      Start 810: e2e_gui_real
+47/51 Test #810: e2e_gui_real .....................................................................   Passed    4.18 sec
+      Start 811: e2e_gui_xss
+48/51 Test #811: e2e_gui_xss ......................................................................***Skipped   0.21 sec
+      Start 812: e2e_image_real
+49/51 Test #812: e2e_image_real ...................................................................   Passed  156.67 sec
+      Start 814: e2e_llama_agentic_real
+50/51 Test #814: e2e_llama_agentic_real ...........................................................   Passed   54.13 sec
+      Start 815: e2e_vision_real
+51/51 Test #815: e2e_vision_real ..................................................................   Passed    7.34 sec
+
+100% tests passed out of 51
+
+Label Time Summary:
+e2e            = 239.74 sec*proc (6 tests)
+integration    = 875.37 sec*proc (45 tests)
+
+Total Test time (real) = 1122.29 sec
+
+The following tests did not run:
+	811 - e2e_gui_xss (Skipped)
+phaseB exit 0 elapsed 00:18:44.3903500
+free RAM GB after phase B: 10.48
