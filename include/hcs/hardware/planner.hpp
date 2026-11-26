@@ -40,11 +40,11 @@ struct Shape {
 std::string shape_bucket(const Shape& s);
 
 struct KernelDesc {
-    const char* id;       // stable id, also the shader symbol stem
+    const char* id;  // stable id, also the shader symbol stem
     Op op;
     DType dtype;
     PathKind path;
-    const char* shader;   // shaders/llm/<shader>.comp
+    const char* shader;  // shaders/llm/<shader>.comp
     const char* summary;
 };
 const std::vector<KernelDesc>& kernel_catalog();

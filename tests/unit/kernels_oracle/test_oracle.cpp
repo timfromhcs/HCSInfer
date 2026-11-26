@@ -19,16 +19,14 @@ std::vector<float> rand_f32(std::size_t n, std::uint32_t seed, float lo = -1.0f,
     std::mt19937 g(seed);
     std::uniform_real_distribution<float> d(lo, hi);
     std::vector<float> v(n);
-    for (auto& x : v)
-        x = d(g);
+    for (auto& x : v) x = d(g);
     return v;
 }
 std::vector<std::int8_t> rand_i8(std::size_t n, std::uint32_t seed) {
     std::mt19937 g(seed);
     std::uniform_int_distribution<int> d(-128, 127);
     std::vector<std::int8_t> v(n);
-    for (auto& x : v)
-        x = static_cast<std::int8_t>(d(g));
+    for (auto& x : v) x = static_cast<std::int8_t>(d(g));
     return v;
 }
 
@@ -54,8 +52,7 @@ TEST(OracleGemm, NonSquareAndDegenerateShapes) {
     // k == 0 leaves zeros
     float z[4] = {9, 9, 9, 9};
     gemm_f32(nullptr, nullptr, z, 2, 2, 0);
-    for (float v : z)
-        EXPECT_EQ(v, 0.0f);
+    for (float v : z) EXPECT_EQ(v, 0.0f);
 }
 
 TEST(OracleGemm, I8IsExactAndHandlesExtremes) {
@@ -101,11 +98,9 @@ TEST(OracleNorm, LayerNormHasZeroMeanUnitVariance) {
     float y[4];
     layernorm_rows(x, g, b, y, 1, 4, 1e-5f);
     double mean = 0, var = 0;
-    for (float v : y)
-        mean += v;
+    for (float v : y) mean += v;
     mean /= 4;
-    for (float v : y)
-        var += (v - mean) * (v - mean);
+    for (float v : y) var += (v - mean) * (v - mean);
     var /= 4;
     EXPECT_NEAR(mean, 0.0, 1e-6);
     EXPECT_NEAR(var, 1.0, 1e-3);
@@ -124,8 +119,7 @@ TEST(OracleRope, PositionZeroIsIdentityAndRotationPreservesNorm) {
     const float x[] = {1, 2, 3, 4};  // dim 4, one row at position 0
     float y[4];
     rope_rows(x, y, 1, 4, 0, 10000.0f);
-    for (int i = 0; i < 4; ++i)
-        EXPECT_EQ(y[i], x[i]);
+    for (int i = 0; i < 4; ++i) EXPECT_EQ(y[i], x[i]);
     // Position 5: pair (x0,x2) rotates by theta = 5 * base^0 = 5 rad
     rope_rows(x, y, 1, 4, 5, 10000.0f);
     EXPECT_NEAR(y[0], 1.0f * std::cos(5.0f) - 3.0f * std::sin(5.0f), 1e-6f);

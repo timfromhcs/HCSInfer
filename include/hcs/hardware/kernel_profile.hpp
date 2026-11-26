@@ -74,8 +74,8 @@ struct PromotionDecision {
     bool determinism_ok = false;
     bool noise_ok = false;
     bool speed_ok = false;
-    bool promoted = false;        // all four
-    bool default_enabled = false;  // promoted + measured upstream baseline >= min_speedup
+    bool promoted = false;             // all four
+    bool default_enabled = false;      // promoted + measured upstream baseline >= min_speedup
     std::vector<std::string> reasons;  // why not (empty when default_enabled)
 };
 
@@ -86,12 +86,16 @@ public:
     // Inserts or replaces the entry with the same key. Entries that did not pass correctness are rejected
     // (returns InvalidArgument) so a failing kernel can never be persisted.
     Result<void> upsert(ProfileEntry e);
+    // Removes the entry with exactly this key (a kernel that now fails correctness invalidates its old
+    // evidence).
+    bool remove(const std::string& device_key, const std::string& kernel_id, const std::string& kernel_hash,
+                const std::string& bucket);
     // Exact-key lookup (device_key, kernel_id, kernel_hash, shape_bucket).
     const ProfileEntry* find(const std::string& device_key, const std::string& kernel_id,
                              const std::string& kernel_hash, const std::string& bucket) const;
     // True when an entry exists for the (device, kernel, bucket) but under a different driver/hash: stale.
-    bool has_stale(const std::string& device_key, const std::string& kernel_id, const std::string& kernel_hash,
-                   const std::string& bucket) const;
+    bool has_stale(const std::string& device_key, const std::string& kernel_id,
+                   const std::string& kernel_hash, const std::string& bucket) const;
     // Drops every entry of `device_key` (all kernels), or only `kernel_id` when non-empty. Returns the count.
     std::size_t reset(const std::string& device_key_prefix, const std::string& kernel_id = {});
     // Drops entries whose (device_key, kernel hash) do not match the given live pair. Returns the count.

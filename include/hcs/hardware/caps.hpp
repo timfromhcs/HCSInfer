@@ -56,9 +56,9 @@ struct DeviceCaps {
     std::string name;
     std::uint32_t vendor_id = 0;
     std::uint32_t device_id = 0;
-    std::string device_type;  // integrated_gpu | discrete_gpu | ...
-    std::string api_version;  // "1.4.315"
-    std::string driver_version_raw;  // "0x..." as the probe printed it
+    std::string device_type;               // integrated_gpu | discrete_gpu | ...
+    std::string api_version;               // "1.4.315"
+    std::string driver_version_raw;        // "0x..." as the probe printed it
     std::string driver_name, driver_info;  // empty = unknown (Vulkan < 1.2)
 
     // Subgroup / limits. nullopt = unknown.

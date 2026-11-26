@@ -66,7 +66,8 @@ DeviceCaps caps_from_probe(const json& d) {
     }
     if (d.contains("subgroup") && d["subgroup"].is_object()) {
         c.subgroup_size = u32_of(d["subgroup"], "size");
-        if (d["subgroup"].contains("supported_operations") && d["subgroup"]["supported_operations"].is_array())
+        if (d["subgroup"].contains("supported_operations") &&
+            d["subgroup"]["supported_operations"].is_array())
             for (const auto& e : d["subgroup"]["supported_operations"])
                 if (e.is_string())
                     c.subgroup_ops.push_back(e.get<std::string>());
@@ -124,11 +125,13 @@ DeviceCaps caps_from_probe(const json& d) {
         for (const auto& h : d["memory"]["heaps"]) {
             HeapCaps hc;
             hc.index = u32_of(h, "index").value_or(0);
-            if (h.contains("size_bytes") && h["size_bytes"].is_number_integer() && h["size_bytes"].get<std::int64_t>() >= 0)
+            if (h.contains("size_bytes") && h["size_bytes"].is_number_integer() &&
+                h["size_bytes"].get<std::int64_t>() >= 0)
                 hc.size_bytes = h["size_bytes"].get<std::uint64_t>();
-            hc.device_local = h.contains("device_local") && h["device_local"].is_boolean() &&
-                              h["device_local"].get<bool>();
-            if (h.contains("budget_bytes") && h["budget_bytes"].is_number_integer() && h["budget_bytes"].get<std::int64_t>() >= 0)
+            hc.device_local =
+                h.contains("device_local") && h["device_local"].is_boolean() && h["device_local"].get<bool>();
+            if (h.contains("budget_bytes") && h["budget_bytes"].is_number_integer() &&
+                h["budget_bytes"].get<std::int64_t>() >= 0)
                 hc.budget_bytes = h["budget_bytes"].get<std::uint64_t>();
             c.heaps.push_back(hc);
         }
@@ -158,8 +161,7 @@ std::vector<DeviceCaps> caps_from_report(const json& report) {
     std::vector<DeviceCaps> out;
     if (!report.is_object() || !report.contains("devices") || !report["devices"].is_array())
         return out;
-    for (const auto& d : report["devices"])
-        out.push_back(caps_from_probe(d));
+    for (const auto& d : report["devices"]) out.push_back(caps_from_probe(d));
     return out;
 }
 
@@ -191,7 +193,8 @@ json caps_to_json(const DeviceCaps& c) {
     j["coopmat_f16_f32_16x16x16_subgroup"] = c.has_coopmat_f16_f32_16x16x16_subgroup();
     json dt = json::object();
     for (DType d : {DType::F32, DType::F16, DType::I8})
-        dt[to_string(d)] = {{"storage", to_string(c.dtype_storage(d))}, {"compute", to_string(c.dtype_compute(d))}};
+        dt[to_string(d)] = {{"storage", to_string(c.dtype_storage(d))},
+                            {"compute", to_string(c.dtype_compute(d))}};
     j["dtypes"] = dt;
     const auto cq = c.compute_queue_family();
     j["compute_queue_family"] = cq ? json(*cq) : unknown();

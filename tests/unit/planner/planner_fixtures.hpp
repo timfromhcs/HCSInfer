@@ -22,15 +22,19 @@ inline json radeon_680m_probe() {
     d["device_id"] = "0x1681";
     d["api_version"] = "1.4.315";
     d["driver_version_raw"] = "0x8008A000";
-    d["driver"] = {{"id_name", "amd_proprietary"}, {"name", "AMD proprietary driver"},
+    d["driver"] = {{"id_name", "amd_proprietary"},
+                   {"name", "AMD proprietary driver"},
                    {"info", "26.6.1 (AMD proprietary shader compiler)"}};
     d["subgroup"] = {{"size", 64}, {"supported_operations", {"basic", "vote", "arithmetic", "ballot"}}};
     d["integer_dot_product"] = {{"int8_signed_accelerated", true},
                                 {"int4x8_packed_signed_accelerated", true},
                                 {"int16_signed_accelerated", true}};
-    d["limits"] = {{"max_compute_shared_memory_size", 32768},  {"max_compute_work_group_invocations", 1024},
-                   {"max_storage_buffer_range", 4294967295ull}, {"max_push_constants_size", 256},
-                   {"timestamp_period_ns", 10.0},               {"timestamp_compute_and_graphics", true}};
+    d["limits"] = {{"max_compute_shared_memory_size", 32768},
+                   {"max_compute_work_group_invocations", 1024},
+                   {"max_storage_buffer_range", 4294967295ull},
+                   {"max_push_constants_size", 256},
+                   {"timestamp_period_ns", 10.0},
+                   {"timestamp_compute_and_graphics", true}};
     d["features"] = {{"shader_float16", true},
                      {"storage_buffer_16bit_access", true},
                      {"shader_int8", true},
@@ -42,15 +46,35 @@ inline json radeon_680m_probe() {
                                 {"VK_KHR_shader_bfloat16", false},
                                 {"VK_EXT_memory_budget", true}};
     json shapes = json::array();
-    shapes.push_back({{"m", 16}, {"n", 16}, {"k", 16}, {"a", "f16"}, {"b", "f16"}, {"c", "f32"},
-                      {"result", "f32"}, {"scope", 3}});
-    shapes.push_back({{"m", 16}, {"n", 16}, {"k", 16}, {"a", "s8"}, {"b", "s8"}, {"c", "s32"},
-                      {"result", "s32"}, {"scope", 3}});
+    shapes.push_back({{"m", 16},
+                      {"n", 16},
+                      {"k", 16},
+                      {"a", "f16"},
+                      {"b", "f16"},
+                      {"c", "f32"},
+                      {"result", "f32"},
+                      {"scope", 3}});
+    shapes.push_back({{"m", 16},
+                      {"n", 16},
+                      {"k", 16},
+                      {"a", "s8"},
+                      {"b", "s8"},
+                      {"c", "s32"},
+                      {"result", "s32"},
+                      {"scope", 3}});
     d["cooperative_matrix_properties"] = shapes;
     d["memory"] = {{"heaps",
-                    {{{"index", 0}, {"size_bytes", 9766305792ull}, {"device_local", true}, {"budget_bytes", 8000000000ull}},
-                     {{"index", 1}, {"size_bytes", 4883152896ull}, {"device_local", false}, {"budget_bytes", "unknown"}}}}};
-    d["queue_families"] = {{{"index", 0}, {"queue_count", 1}, {"flags", {"graphics", "compute", "transfer"}},
+                    {{{"index", 0},
+                      {"size_bytes", 9766305792ull},
+                      {"device_local", true},
+                      {"budget_bytes", 8000000000ull}},
+                     {{"index", 1},
+                      {"size_bytes", 4883152896ull},
+                      {"device_local", false},
+                      {"budget_bytes", "unknown"}}}}};
+    d["queue_families"] = {{{"index", 0},
+                            {"queue_count", 1},
+                            {"flags", {"graphics", "compute", "transfer"}},
                             {"timestamp_valid_bits", 64}}};
     return d;
 }
@@ -72,8 +96,8 @@ inline json old_vulkan_device_probe() {
     d["relevant_extensions"] = {{"VK_KHR_cooperative_matrix", false}};
     d["cooperative_matrix_properties"] = json::array();
     d["memory"] = "unknown";
-    d["queue_families"] = {{{"index", 0}, {"queue_count", 1}, {"flags", {"graphics", "compute"}},
-                            {"timestamp_valid_bits", 0}}};
+    d["queue_families"] = {
+        {{"index", 0}, {"queue_count", 1}, {"flags", {"graphics", "compute"}}, {"timestamp_valid_bits", 0}}};
     return d;
 }
 

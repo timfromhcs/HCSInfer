@@ -1,4 +1,5 @@
-// Conservative planner (ported from hcsuda @94a3485 crates/hcsuda-core/src/planner.rs; see docs/hcsuda-port.md).
+// Conservative planner (ported from hcsuda @94a3485 crates/hcsuda-core/src/planner.rs; see
+// docs/hcsuda-port.md).
 #include "hcs/hardware/planner.hpp"
 
 #include <algorithm>
@@ -50,8 +51,7 @@ std::uint64_t ceil_pow2(std::uint64_t v) {
     if (v == 0)
         return 0;
     std::uint64_t p = 1;
-    while (p < v && p < (1ull << 62))
-        p <<= 1;
+    while (p < v && p < (1ull << 62)) p <<= 1;
     return p;
 }
 }  // namespace
@@ -109,12 +109,13 @@ Gate gate_kernel(const KernelDesc& k, const DeviceCaps& c, const Shape* shape) {
         return no(std::string(to_string(k.dtype)) + " has no compute path on this device (" +
                   to_string(c.dtype_compute(k.dtype)) + ")");
 
-        const bool coop = k.path == PathKind::VulkanCoopMat;
+    const bool coop = k.path == PathKind::VulkanCoopMat;
     const std::uint32_t need_invocations = coop ? 64u : 256u;
     if (!c.max_workgroup_invocations)
         return no("max workgroup invocations unknown");
     if (*c.max_workgroup_invocations < need_invocations)
-        return no("device allows fewer than " + std::to_string(need_invocations) + " invocations per workgroup");
+        return no("device allows fewer than " + std::to_string(need_invocations) +
+                  " invocations per workgroup");
     if (!c.max_push_constants)
         return no("max push constant size unknown");
     if (*c.max_push_constants < kNeedPush)
@@ -215,14 +216,16 @@ Plan plan(Op op, DType dtype, const Shape& shape, const DeviceCaps& caps, const 
         }
         const auto h = hashes.find(k.id);
         if (h == hashes.end() || h->second.empty()) {
-            note(k.id, "unknown_binary", std::string(k.id) + ": kernel binary hash unknown (HCS Vulkan kernels not built in)");
+            note(k.id, "unknown_binary",
+                 std::string(k.id) + ": kernel binary hash unknown (HCS Vulkan kernels not built in)");
             continue;
         }
         const std::string bucket = shape_bucket(shape);
         const ProfileEntry* e = profile.find(caps.device_key(), k.id, h->second, bucket);
         if (e == nullptr) {
             if (profile.has_stale(caps.device_key(), k.id, h->second, bucket))
-                note(k.id, "stale", std::string(k.id) + ": profile entry is for another driver/shader (stale)");
+                note(k.id, "stale",
+                     std::string(k.id) + ": profile entry is for another driver/shader (stale)");
             else
                 note(k.id, "unverified", std::string(k.id) + ": no profile evidence for bucket " + bucket);
             continue;
@@ -234,27 +237,28 @@ Plan plan(Op op, DType dtype, const Shape& shape, const DeviceCaps& caps, const 
             p.candidate_kernel_id = k.id;
             p.candidate_status = "promoted";
             char b[200];
-            std::snprintf(b, sizeof(b), "%s verified on this device: %.2fx vs %s (bucket %s)", k.id, e->speedup(),
-                          e->baseline_name.c_str(), bucket.c_str());
+            std::snprintf(b, sizeof(b), "%s verified on this device: %.2fx vs %s (bucket %s)", k.id,
+                          e->speedup(), e->baseline_name.c_str(), bucket.c_str());
             p.reason = b;
             return p;
         }
         if (d.promoted) {
             note(k.id, "promoted", std::string(k.id) + ": promoted but " + d.reasons.back());
         } else {
-            note(k.id, "rejected", std::string(k.id) + ": " + (d.reasons.empty() ? "not promoted" : d.reasons.front()));
+            note(k.id, "rejected",
+                 std::string(k.id) + ": " + (d.reasons.empty() ? "not promoted" : d.reasons.front()));
         }
     }
 
     p.kind = PathKind::Reference;
-    // Only a kernel that has measured evidence (rejected or promoted) is a candidate; stale/unverified/ineligible are
-    // explained in `reason` but are not candidates.
+    // Only a kernel that has measured evidence (rejected or promoted) is a candidate;
+    // stale/unverified/ineligible are explained in `reason` but are not candidates.
     p.candidate_status = best_rank >= 4 ? best_status : "";
     if (!any)
         p.reason = "no HCS Vulkan kernel exists for " + op_name + " " + dt_name + "; CPU reference used";
     else
-        p.reason = "no verified " + op_name + " path for " + dt_name + " on this device yet; CPU reference used (" +
-                   best_reason + ")";
+        p.reason = "no verified " + op_name + " path for " + dt_name +
+                   " on this device yet; CPU reference used (" + best_reason + ")";
     return p;
 }
 

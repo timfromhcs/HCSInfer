@@ -90,10 +90,8 @@ void gemm_f32(const float* a, const float* b, float* c, std::size_t m, std::size
 void gemm_f16(const std::uint16_t* a, const std::uint16_t* b, float* c, std::size_t m, std::size_t n,
               std::size_t k) {
     std::vector<float> af(m * k), bf(k * n);
-    for (std::size_t i = 0; i < af.size(); ++i)
-        af[i] = fp16_to_fp32(a[i]);
-    for (std::size_t i = 0; i < bf.size(); ++i)
-        bf[i] = fp16_to_fp32(b[i]);
+    for (std::size_t i = 0; i < af.size(); ++i) af[i] = fp16_to_fp32(a[i]);
+    for (std::size_t i = 0; i < bf.size(); ++i) bf[i] = fp16_to_fp32(b[i]);
     gemm_f32(af.data(), bf.data(), c, m, n, k);
 }
 
@@ -116,14 +114,12 @@ void softmax_rows(const float* x, float* y, std::size_t rows, std::size_t cols) 
         const float* xr = x + r * cols;
         float* yr = y + r * cols;
         float mx = -INFINITY;
-        for (std::size_t i = 0; i < cols; ++i)
-            mx = std::max(mx, xr[i]);
+        for (std::size_t i = 0; i < cols; ++i) mx = std::max(mx, xr[i]);
         double sum = 0.0;
         for (std::size_t i = 0; i < cols; ++i)
             sum += std::exp(static_cast<double>(xr[i]) - static_cast<double>(mx));
         if (sum == 0.0 || !std::isfinite(sum)) {
-            for (std::size_t i = 0; i < cols; ++i)
-                yr[i] = 1.0f / static_cast<float>(cols);
+            for (std::size_t i = 0; i < cols; ++i) yr[i] = 1.0f / static_cast<float>(cols);
             continue;
         }
         for (std::size_t i = 0; i < cols; ++i)
@@ -138,8 +134,7 @@ void layernorm_rows(const float* x, const float* gamma, const float* beta, float
     for (std::size_t r = 0; r < rows; ++r) {
         const float* xr = x + r * cols;
         double mean = 0.0;
-        for (std::size_t i = 0; i < cols; ++i)
-            mean += xr[i];
+        for (std::size_t i = 0; i < cols; ++i) mean += xr[i];
         mean /= static_cast<double>(cols);
         double var = 0.0;
         for (std::size_t i = 0; i < cols; ++i) {
@@ -160,12 +155,10 @@ void rmsnorm_rows(const float* x, const float* gamma, float* y, std::size_t rows
     for (std::size_t r = 0; r < rows; ++r) {
         const float* xr = x + r * cols;
         double ms = 0.0;
-        for (std::size_t i = 0; i < cols; ++i)
-            ms += static_cast<double>(xr[i]) * xr[i];
+        for (std::size_t i = 0; i < cols; ++i) ms += static_cast<double>(xr[i]) * xr[i];
         ms /= static_cast<double>(cols);
         const double inv = 1.0 / std::sqrt(ms + static_cast<double>(eps));
-        for (std::size_t i = 0; i < cols; ++i)
-            y[r * cols + i] = static_cast<float>(xr[i] * inv * gamma[i]);
+        for (std::size_t i = 0; i < cols; ++i) y[r * cols + i] = static_cast<float>(xr[i] * inv * gamma[i]);
     }
 }
 
@@ -176,8 +169,8 @@ void rope_rows(const float* x, float* y, std::size_t rows, std::size_t dim, std:
     for (std::size_t r = 0; r < rows; ++r) {
         const double pos = static_cast<double>(pos0) + static_cast<double>(r);
         for (std::size_t i = 0; i < half; ++i) {
-            const double theta =
-                pos * std::pow(static_cast<double>(base), -2.0 * static_cast<double>(i) / static_cast<double>(dim));
+            const double theta = pos * std::pow(static_cast<double>(base),
+                                                -2.0 * static_cast<double>(i) / static_cast<double>(dim));
             const double s = std::sin(theta), c = std::cos(theta);
             const double a = x[r * dim + i], b = x[r * dim + i + half];
             y[r * dim + i] = static_cast<float>(a * c - b * s);

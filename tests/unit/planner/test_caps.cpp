@@ -46,11 +46,11 @@ TEST(Caps, OldDeviceKeepsEverythingUnknownAndDoesNotInventSupport) {
 
 TEST(Caps, NoComputeQueueMeansNothingComputes) {
     json p = radeon_680m_probe();
-    p["queue_families"] = {{{"index", 0}, {"queue_count", 1}, {"flags", {"transfer"}}, {"timestamp_valid_bits", 0}}};
+    p["queue_families"] = {
+        {{"index", 0}, {"queue_count", 1}, {"flags", {"transfer"}}, {"timestamp_valid_bits", 0}}};
     const DeviceCaps c = caps_from_probe(p);
     EXPECT_FALSE(c.compute_queue_family().has_value());
-    for (DType d : {DType::F32, DType::F16, DType::I8})
-        EXPECT_FALSE(can_compute(c.dtype_compute(d)));
+    for (DType d : {DType::F32, DType::F16, DType::I8}) EXPECT_FALSE(can_compute(c.dtype_compute(d)));
 }
 
 TEST(Caps, CoopMatFeatureNeedsTheExtension) {

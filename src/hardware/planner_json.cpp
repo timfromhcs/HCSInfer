@@ -61,9 +61,10 @@ json planner_report(const std::vector<DeviceCaps>& devices, const KernelHashes* 
                     const std::filesystem::path& state_dir) {
     json r;
     const PlanPolicy policy;  // release defaults
-    r["rule"] = "unknown = CPU; a kernel is promoted only after correctness vs the CPU oracle AND 3 identical "
-                "runs AND >= 1.05x vs the baseline; default-enabled additionally needs a MEASURED upstream "
-                "GGML Vulkan baseline >= 1.05x";
+    r["rule"] =
+        "unknown = CPU; a kernel is promoted only after correctness vs the CPU oracle AND 3 identical "
+        "runs AND >= 1.05x vs the baseline; default-enabled additionally needs a MEASURED upstream "
+        "GGML Vulkan baseline >= 1.05x";
     r["policy"] = {{"min_identical_runs", policy.promotion.min_identical_runs},
                    {"min_speedup", policy.promotion.min_speedup},
                    {"max_spread", policy.promotion.max_spread},
@@ -91,9 +92,9 @@ json planner_report(const std::vector<DeviceCaps>& devices, const KernelHashes* 
     r["profile"] = prof;
 
     static const std::vector<Rep> reps = {
-        {Op::Gemm, DType::F32, {256, 1024, 256}},    {Op::Gemm, DType::F16, {256, 1024, 256}},
-        {Op::Gemm, DType::I8, {256, 1024, 256}},     {Op::Softmax, DType::F32, {32, 4096, 0}},
-        {Op::LayerNorm, DType::F32, {32, 4096, 0}},  {Op::RmsNorm, DType::F32, {32, 4096, 0}},
+        {Op::Gemm, DType::F32, {256, 1024, 256}},   {Op::Gemm, DType::F16, {256, 1024, 256}},
+        {Op::Gemm, DType::I8, {256, 1024, 256}},    {Op::Softmax, DType::F32, {32, 4096, 0}},
+        {Op::LayerNorm, DType::F32, {32, 4096, 0}}, {Op::RmsNorm, DType::F32, {32, 4096, 0}},
         {Op::Rope, DType::F32, {512, 128, 0}},
     };
     const KernelHashes none;
@@ -133,7 +134,8 @@ json planner_report(const std::vector<DeviceCaps>& devices, const KernelHashes* 
         d["kernels"] = ks;
         json plans = json::array();
         for (const auto& rep : reps)
-            plans.push_back(plan_json(plan(rep.op, rep.dtype, rep.shape, caps, profile, hashes ? *hashes : none, policy)));
+            plans.push_back(plan_json(
+                plan(rep.op, rep.dtype, rep.shape, caps, profile, hashes ? *hashes : none, policy)));
         d["plans"] = plans;
         devs.push_back(std::move(d));
     }

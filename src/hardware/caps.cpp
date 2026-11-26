@@ -111,8 +111,7 @@ Support DeviceCaps::dtype_compute(DType d) const {
 
 namespace {
 std::string lower(std::string s) {
-    for (auto& c : s)
-        c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    for (auto& c : s) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
     return s;
 }
 std::string squash(const std::string& s) {  // lowercase, drop '-', ' ', '_'
@@ -135,7 +134,8 @@ bool parse_u32(const std::string& s, std::uint32_t& out) {
 }
 }  // namespace
 
-std::optional<std::size_t> select_device(const std::vector<DeviceCaps>& devices, const std::string& selector) {
+std::optional<std::size_t> select_device(const std::vector<DeviceCaps>& devices,
+                                         const std::string& selector) {
     if (devices.empty())
         return std::nullopt;
     if (selector.empty())
@@ -143,8 +143,9 @@ std::optional<std::size_t> select_device(const std::vector<DeviceCaps>& devices,
     // Plain index.
     {
         std::uint32_t idx = 0;
-        const bool all_digits = std::all_of(selector.begin(), selector.end(),
-                                            [](char c) { return std::isdigit(static_cast<unsigned char>(c)) != 0; });
+        const bool all_digits = std::all_of(selector.begin(), selector.end(), [](char c) {
+            return std::isdigit(static_cast<unsigned char>(c)) != 0;
+        });
         if (all_digits && parse_u32(selector, idx))
             return idx < devices.size() ? std::optional<std::size_t>(idx) : std::nullopt;
     }
@@ -157,7 +158,8 @@ std::optional<std::size_t> select_device(const std::vector<DeviceCaps>& devices,
         device = 0x1681;
         have_ids = true;
     } else if (const auto colon = selector.find(':'); colon != std::string::npos) {
-        have_ids = parse_u32(selector.substr(0, colon), vendor) && parse_u32(selector.substr(colon + 1), device);
+        have_ids =
+            parse_u32(selector.substr(0, colon), vendor) && parse_u32(selector.substr(colon + 1), device);
     }
     if (have_ids) {
         for (std::size_t i = 0; i < devices.size(); ++i)

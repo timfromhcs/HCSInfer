@@ -72,7 +72,8 @@ TEST(KernelProfile, CorruptWrongSchemaAndFailingEntriesAreErrors) {
     EXPECT_FALSE(KernelProfile::from_json_text("[]").ok());
     EXPECT_FALSE(KernelProfile::from_json_text(R"({"schema_version":99,"entries":[]})").ok());
     EXPECT_FALSE(KernelProfile::from_json_text(R"({"schema_version":1})").ok());
-    EXPECT_FALSE(KernelProfile::from_json_text(R"({"schema_version":1,"entries":[{"device_key":"x"}]})").ok());
+    EXPECT_FALSE(
+        KernelProfile::from_json_text(R"({"schema_version":1,"entries":[{"device_key":"x"}]})").ok());
     EXPECT_TRUE(KernelProfile::from_json_text(R"({"schema_version":1,"entries":[]})").ok());
 }
 
@@ -122,7 +123,7 @@ TEST(KernelProfile, ResetAndPruneStale) {
 }
 
 TEST(KernelProfile, Fnv1aIsStableAndSensitive) {
-    EXPECT_EQ(fnv1a64_hex("", 0), "cbf29ce484222325");  // FNV-1a/64 of the empty input (offset basis)
+    EXPECT_EQ(fnv1a64_hex("", 0), "cbf29ce484222325");   // FNV-1a/64 of the empty input (offset basis)
     EXPECT_EQ(fnv1a64_hex("a", 1), "af63dc4c8601ec8c");  // published FNV-1a/64 test vector
     EXPECT_NE(fnv1a64_hex("ab", 2), fnv1a64_hex("ba", 2));
 }

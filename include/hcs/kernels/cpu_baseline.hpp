@@ -16,9 +16,10 @@ void baseline_gemm_f32(const float* a, const float* b, float* c, std::size_t m, 
                        unsigned threads = 0);
 void baseline_gemm_i8(const std::int8_t* a, const std::int8_t* b, std::int32_t* c, std::size_t m,
                       std::size_t n, std::size_t k, unsigned threads = 0);
-void baseline_softmax_rows(const float* x, float* y, std::size_t rows, std::size_t cols, unsigned threads = 0);
-void baseline_layernorm_rows(const float* x, const float* gamma, const float* beta, float* y, std::size_t rows,
-                             std::size_t cols, float eps, unsigned threads = 0);
+void baseline_softmax_rows(const float* x, float* y, std::size_t rows, std::size_t cols,
+                           unsigned threads = 0);
+void baseline_layernorm_rows(const float* x, const float* gamma, const float* beta, float* y,
+                             std::size_t rows, std::size_t cols, float eps, unsigned threads = 0);
 void baseline_rmsnorm_rows(const float* x, const float* gamma, float* y, std::size_t rows, std::size_t cols,
                            float eps, unsigned threads = 0);
 void baseline_rope_rows(const float* x, float* y, std::size_t rows, std::size_t dim, std::uint32_t pos0,

@@ -33,8 +33,7 @@ void parallel_for(std::size_t items, std::size_t min_items, unsigned threads,
             pool.emplace_back([&fn, b, e] { fn(b, e); });
     }
     fn(0, std::min(items, chunk));
-    for (auto& th : pool)
-        th.join();
+    for (auto& th : pool) th.join();
 }
 
 }  // namespace
@@ -51,8 +50,7 @@ void baseline_gemm_f32(const float* a, const float* b, float* c, std::size_t m, 
                          for (std::size_t i = 0; i < k; ++i) {
                              const float av = a[r * k + i];
                              const float* br = b + i * n;
-                             for (std::size_t j = 0; j < n; ++j)
-                                 cr[j] += av * br[j];
+                             for (std::size_t j = 0; j < n; ++j) cr[j] += av * br[j];
                          }
                      }
                  });
@@ -84,8 +82,7 @@ void baseline_softmax_rows(const float* x, float* y, std::size_t rows, std::size
             const float* xr = x + r * cols;
             float* yr = y + r * cols;
             float mx = -INFINITY;
-            for (std::size_t i = 0; i < cols; ++i)
-                mx = std::max(mx, xr[i]);
+            for (std::size_t i = 0; i < cols; ++i) mx = std::max(mx, xr[i]);
             float sum = 0.0f;
             for (std::size_t i = 0; i < cols; ++i) {
                 yr[i] = std::exp(xr[i] - mx);
@@ -96,22 +93,20 @@ void baseline_softmax_rows(const float* x, float* y, std::size_t rows, std::size
                 continue;
             }
             const float inv = 1.0f / sum;
-            for (std::size_t i = 0; i < cols; ++i)
-                yr[i] *= inv;
+            for (std::size_t i = 0; i < cols; ++i) yr[i] *= inv;
         }
     });
 }
 
-void baseline_layernorm_rows(const float* x, const float* gamma, const float* beta, float* y, std::size_t rows,
-                             std::size_t cols, float eps, unsigned threads) {
+void baseline_layernorm_rows(const float* x, const float* gamma, const float* beta, float* y,
+                             std::size_t rows, std::size_t cols, float eps, unsigned threads) {
     if (cols == 0)
         return;
     parallel_for(rows, std::max<std::size_t>(1, 200000 / cols), threads, [=](std::size_t r0, std::size_t r1) {
         for (std::size_t r = r0; r < r1; ++r) {
             const float* xr = x + r * cols;
             float mean = 0.0f;
-            for (std::size_t i = 0; i < cols; ++i)
-                mean += xr[i];
+            for (std::size_t i = 0; i < cols; ++i) mean += xr[i];
             mean /= static_cast<float>(cols);
             float var = 0.0f;
             for (std::size_t i = 0; i < cols; ++i) {
@@ -134,12 +129,10 @@ void baseline_rmsnorm_rows(const float* x, const float* gamma, float* y, std::si
         for (std::size_t r = r0; r < r1; ++r) {
             const float* xr = x + r * cols;
             float ms = 0.0f;
-            for (std::size_t i = 0; i < cols; ++i)
-                ms += xr[i] * xr[i];
+            for (std::size_t i = 0; i < cols; ++i) ms += xr[i] * xr[i];
             ms /= static_cast<float>(cols);
             const float inv = 1.0f / std::sqrt(ms + eps);
-            for (std::size_t i = 0; i < cols; ++i)
-                y[r * cols + i] = xr[i] * inv * gamma[i];
+            for (std::size_t i = 0; i < cols; ++i) y[r * cols + i] = xr[i] * inv * gamma[i];
         }
     });
 }

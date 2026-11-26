@@ -17,8 +17,8 @@ std::vector<DeviceCaps> caps_from_report(const json& vulkan_report);
 // Typed view for the report: tri-state strings ("yes"/"no"/"unknown"), numbers or "unknown".
 json caps_to_json(const DeviceCaps& caps);
 
-// Planner section of `doctor --json` (planner_json.cpp). `hashes` == nullptr means the kernel binaries are not
-// part of this build (every kernel hash is then unknown and every plan is the CPU reference).
+// Planner section of `doctor --json` (planner_json.cpp). `hashes` == nullptr means the kernel binaries are
+// not part of this build (every kernel hash is then unknown and every plan is the CPU reference).
 json planner_report(const std::vector<DeviceCaps>& devices, const KernelHashes* hashes,
                     const std::filesystem::path& state_dir);
 

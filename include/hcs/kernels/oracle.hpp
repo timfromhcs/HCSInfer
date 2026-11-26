@@ -16,8 +16,8 @@
 namespace hcs::kernels::cpu {
 
 // --- tolerance -----------------------------------------------------------------------------------------
-// accepts(want, got) <=> |want - got| <= abs + rel * |want|. `abs` grows with sqrt(reduction length) because a
-// longer f32 sum accumulates more rounding (hcsuda DType::tolerance + Tolerance::for_len).
+// accepts(want, got) <=> |want - got| <= abs + rel * |want|. `abs` grows with sqrt(reduction length) because
+// a longer f32 sum accumulates more rounding (hcsuda DType::tolerance + Tolerance::for_len).
 struct Tolerance {
     double rel = 0.0;
     double abs = 0.0;
@@ -26,9 +26,9 @@ struct Tolerance {
     bool accepts(float want, float got) const;
 };
 
-Tolerance tolerance_f32();  // rel 1e-5, abs 1e-6 (per sqrt(len))
-Tolerance tolerance_f16();  // rel 1e-2, abs 1e-3 (documented for narrow formats; the f16 GEMM stores halves
-                            // but widens to f32 before the math, so it is checked with tolerance_f32())
+Tolerance tolerance_f32();    // rel 1e-5, abs 1e-6 (per sqrt(len))
+Tolerance tolerance_f16();    // rel 1e-2, abs 1e-3 (documented for narrow formats; the f16 GEMM stores halves
+                              // but widens to f32 before the math, so it is checked with tolerance_f32())
 Tolerance tolerance_exact();  // integer kernels must be bit-equal
 
 struct Comparison {
@@ -61,7 +61,8 @@ void softmax_rows(const float* x, float* y, std::size_t rows, std::size_t cols);
 void layernorm_rows(const float* x, const float* gamma, const float* beta, float* y, std::size_t rows,
                     std::size_t cols, float eps);
 
-void rmsnorm_rows(const float* x, const float* gamma, float* y, std::size_t rows, std::size_t cols, float eps);
+void rmsnorm_rows(const float* x, const float* gamma, float* y, std::size_t rows, std::size_t cols,
+                  float eps);
 
 // Rotary position embedding, split-half layout: element i pairs with i + dim/2. Row r is token position
 // pos0 + r; pair i rotates by pos * base^(-2i/dim). `dim` must be even.

@@ -147,8 +147,8 @@ PromotionDecision evaluate_promotion(const ProfileEntry& e, const PromotionPolic
     }
 
     d.promoted = d.correct_ok && d.determinism_ok && d.noise_ok && d.speed_ok;
-    const bool upstream_ok = e.upstream_status == "measured" && e.upstream_ratio &&
-                             *e.upstream_ratio + 1e-12 >= p.min_speedup;
+    const bool upstream_ok =
+        e.upstream_status == "measured" && e.upstream_ratio && *e.upstream_ratio + 1e-12 >= p.min_speedup;
     d.default_enabled = d.promoted && upstream_ok;
     if (d.promoted && !upstream_ok) {
         if (e.upstream_status != "measured")
@@ -161,8 +161,9 @@ PromotionDecision evaluate_promotion(const ProfileEntry& e, const PromotionPolic
 
 Result<void> KernelProfile::upsert(ProfileEntry e) {
     if (!e.correct)
-        return make_error(ErrorCode::InvalidArgument,
-                          "refusing to persist a profile entry that failed correctness (" + e.kernel_id + ")");
+        return make_error(
+            ErrorCode::InvalidArgument,
+            "refusing to persist a profile entry that failed correctness (" + e.kernel_id + ")");
     if (e.device_key.empty() || e.kernel_id.empty() || e.kernel_hash.empty() || e.shape_bucket.empty())
         return make_error(ErrorCode::InvalidArgument, "profile entry has an incomplete key");
     for (auto& x : entries_) {
@@ -175,8 +176,17 @@ Result<void> KernelProfile::upsert(ProfileEntry e) {
     return {};
 }
 
-const ProfileEntry* KernelProfile::find(const std::string& dev, const std::string& kid, const std::string& hash,
-                                        const std::string& bucket) const {
+bool KernelProfile::remove(const std::string& dev, const std::string& kid, const std::string& hash,
+                           const std::string& bucket) {
+    const auto before = entries_.size();
+    entries_.erase(std::remove_if(entries_.begin(), entries_.end(),
+                                  [&](const ProfileEntry& e) { return same_key(e, dev, kid, hash, bucket); }),
+                   entries_.end());
+    return entries_.size() != before;
+}
+
+const ProfileEntry* KernelProfile::find(const std::string& dev, const std::string& kid,
+                                        const std::string& hash, const std::string& bucket) const {
     for (const auto& e : entries_)
         if (same_key(e, dev, kid, hash, bucket))
             return &e;
@@ -223,8 +233,7 @@ std::string KernelProfile::to_json_text() const {
     json j;
     j["schema_version"] = kProfileSchemaVersion;
     json arr = json::array();
-    for (const auto& e : entries_)
-        arr.push_back(entry_to_json(e));
+    for (const auto& e : entries_) arr.push_back(entry_to_json(e));
     j["entries"] = std::move(arr);
     return j.dump(2) + "\n";
 }

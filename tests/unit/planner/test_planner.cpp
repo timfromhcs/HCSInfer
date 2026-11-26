@@ -1,6 +1,6 @@
 // Conservative planner + promotion rule. Cases ported from hcsuda crates/hcsuda-core/src/planner.rs tests
-// ("fresh device falls back", "unverified path is not used", "coopmat only for aligned shapes", ...), extended
-// for HCSInfer's evidence model (profile entries keyed by device/driver/shader hash/bucket).
+// ("fresh device falls back", "unverified path is not used", "coopmat only for aligned shapes", ...),
+// extended for HCSInfer's evidence model (profile entries keyed by device/driver/shader hash/bucket).
 #include <gtest/gtest.h>
 
 #include "planner_fixtures.hpp"
@@ -12,8 +12,7 @@ const Shape kGemm{256, 1024, 256};
 
 KernelHashes hashes_for_all() {
     KernelHashes h;
-    for (const auto& k : kernel_catalog())
-        h[k.id] = std::string("hash_") + k.id;
+    for (const auto& k : kernel_catalog()) h[k.id] = std::string("hash_") + k.id;
     return h;
 }
 
@@ -54,7 +53,8 @@ TEST(Planner, PromotedKernelWithoutMeasuredUpstreamBaselineIsOnlyACandidate) {
     KernelProfile prof;
     ASSERT_TRUE(prof.upsert(good_entry(c, "gemm_f32_tiled", "hash_gemm_f32_tiled", kGemm)).ok());
     const Plan p = plan(Op::Gemm, DType::F32, kGemm, c, prof, hashes_for_all());
-    EXPECT_EQ(p.kind, PathKind::Reference) << "release default must not enable a kernel without an upstream baseline";
+    EXPECT_EQ(p.kind, PathKind::Reference)
+        << "release default must not enable a kernel without an upstream baseline";
     EXPECT_EQ(p.candidate_kernel_id, "gemm_f32_tiled");
     EXPECT_EQ(p.candidate_status, "promoted");
     EXPECT_NE(p.reason.find("NOT RUN"), std::string::npos);
@@ -82,7 +82,8 @@ TEST(Planner, OptInSeamUsesPromotedKernelsButStillRequiresPromotion) {
     const DeviceCaps c = caps_680m();
     KernelProfile prof;
     ASSERT_TRUE(prof.upsert(good_entry(c, "gemm_f32_tiled", "hash_gemm_f32_tiled", kGemm)).ok());
-    EXPECT_EQ(plan(Op::Gemm, DType::F32, kGemm, c, prof, hashes_for_all(), opt_in()).kind, PathKind::VulkanTiled);
+    EXPECT_EQ(plan(Op::Gemm, DType::F32, kGemm, c, prof, hashes_for_all(), opt_in()).kind,
+              PathKind::VulkanTiled);
 
     ProfileEntry slow = good_entry(c, "gemm_f32_tiled", "hash_gemm_f32_tiled", kGemm);
     slow.baseline_ms = 1.04;  // 1.04x
@@ -110,11 +111,13 @@ TEST(Planner, EvidenceForAnotherDriverShaderOrBucketIsIgnored) {
     EXPECT_EQ(plan(Op::Gemm, DType::F32, kGemm, c, prof, edited, opt_in()).kind, PathKind::Reference);
 
     const Shape other_bucket{4096, 4096, 4096};
-    EXPECT_EQ(plan(Op::Gemm, DType::F32, other_bucket, c, prof, hashes_for_all(), opt_in()).kind, PathKind::Reference);
+    EXPECT_EQ(plan(Op::Gemm, DType::F32, other_bucket, c, prof, hashes_for_all(), opt_in()).kind,
+              PathKind::Reference);
     // same bucket, different exact shape: evidence applies (pow2 buckets)
     const Shape same_bucket{200, 900, 130};
     EXPECT_EQ(shape_bucket(same_bucket), shape_bucket(kGemm));
-    EXPECT_EQ(plan(Op::Gemm, DType::F32, same_bucket, c, prof, hashes_for_all(), opt_in()).kind, PathKind::VulkanTiled);
+    EXPECT_EQ(plan(Op::Gemm, DType::F32, same_bucket, c, prof, hashes_for_all(), opt_in()).kind,
+              PathKind::VulkanTiled);
 }
 
 TEST(Planner, CoopMatIsPreferredForAlignedF16AndTiledForRaggedShapes) {
@@ -135,7 +138,8 @@ TEST(Planner, CoopMatIsPreferredForAlignedF16AndTiledForRaggedShapes) {
 TEST(Planner, Int8UsesDotKernelOnlyWhenVerifiedAndSupported) {
     const DeviceCaps c = caps_680m();
     const Shape s{64, 64, 64};
-    EXPECT_EQ(plan(Op::Gemm, DType::I8, s, c, KernelProfile{}, hashes_for_all(), opt_in()).kind, PathKind::Reference);
+    EXPECT_EQ(plan(Op::Gemm, DType::I8, s, c, KernelProfile{}, hashes_for_all(), opt_in()).kind,
+              PathKind::Reference);
     KernelProfile prof;
     ASSERT_TRUE(prof.upsert(good_entry(c, "gemm_i8dot_tiled", "hash_gemm_i8dot_tiled", s)).ok());
     EXPECT_EQ(plan(Op::Gemm, DType::I8, s, c, prof, hashes_for_all(), opt_in()).kind, PathKind::VulkanIntDot);
@@ -264,8 +268,7 @@ TEST(PlannerReport, DoctorSectionShowsUnknownWhenKernelsAreNotBuiltIn) {
     const json r = planner_report(devs, nullptr, {});
     EXPECT_NE(r["kernel_hashes"].get<std::string>().find("unknown"), std::string::npos);
     ASSERT_EQ(r["devices"].size(), 1u);
-    for (const auto& p : r["devices"][0]["plans"])
-        EXPECT_EQ(p["path"], "reference");
+    for (const auto& p : r["devices"][0]["plans"]) EXPECT_EQ(p["path"], "reference");
     EXPECT_EQ(r["profile"]["path"], "unknown");
     EXPECT_FALSE(r["policy"]["allow_unbaselined"].get<bool>());
     // every catalog kernel is listed with a gate verdict
