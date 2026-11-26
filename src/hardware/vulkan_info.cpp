@@ -257,14 +257,23 @@ json device_report(const Api& api, VkPhysicalDevice pd, std::uint32_t index) {
                 d["subgroup"]["max_compute_workgroup_subgroups"] = p13.maxComputeWorkgroupSubgroups;
                 d["subgroup"]["required_size_stages"] = stage_names(p13.requiredSubgroupSizeStages);
                 d["max_buffer_size_bytes"] = static_cast<std::uint64_t>(p13.maxBufferSize);
+                d["integer_dot_product"] = {
+                    {"int8_signed_accelerated", p13.integerDotProduct8BitSignedAccelerated == VK_TRUE},
+                    {"int8_unsigned_accelerated", p13.integerDotProduct8BitUnsignedAccelerated == VK_TRUE},
+                    {"int4x8_packed_signed_accelerated", p13.integerDotProduct4x8BitPackedSignedAccelerated == VK_TRUE},
+                    {"int16_signed_accelerated", p13.integerDotProduct16BitSignedAccelerated == VK_TRUE},
+                    {"accumulating_int8_signed_accelerated",
+                     p13.integerDotProductAccumulatingSaturating8BitSignedAccelerated == VK_TRUE}};
             } else {
                 d["subgroup"]["min_size"] = unknown();
                 d["subgroup"]["max_size"] = unknown();
+                d["integer_dot_product"] = unknown();
             }
             d["max_memory_allocation_size_bytes"] = static_cast<std::uint64_t>(p11.maxMemoryAllocationSize);
         } else {
             d["driver"] = unknown();
             d["subgroup"] = unknown();
+            d["integer_dot_product"] = unknown();
             d["max_memory_allocation_size_bytes"] = unknown();
         }
         d["limits"] = {
