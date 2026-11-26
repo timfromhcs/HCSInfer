@@ -153,7 +153,8 @@ TEST(ModelRegistryScan, NonModelFilesAreIgnoredWithoutNoiseAndModelsInDeepTreesA
     auto rep = r.scan(t / "root", g);
     ASSERT_TRUE(rep) << rep.error().message;
     EXPECT_EQ(rep.value().added, 1u);
-    EXPECT_EQ(rep.value().skipped, 1u);  // only the broken .safetensors; the 301 non-model files make no noise
+    EXPECT_EQ(rep.value().skipped,
+              1u);  // only the broken .safetensors; the 301 non-model files make no noise
     EXPECT_EQ(rep.value().messages.size(), 1u);
     EXPECT_TRUE(r.get("deep").ok());
 }

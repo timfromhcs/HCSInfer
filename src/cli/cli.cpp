@@ -509,10 +509,14 @@ int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostrea
         return hcs::kernels::vulkan::run_tune(std::move(args), state_dir(state_override), out, err);
 #else
         if (wants_help(args)) {
-            out << "Usage: HCSInfer tune [--device <sel>] [--suite quick|full] [--show|--reset] [--out <file>]\n\n"
-                   "Benchmarks the HCS Vulkan kernels on this machine. NOT available in this build: it was configured\n"
-                   "without -DHCS_ENABLE_VULKAN_KERNELS=ON (the Vulkan SDK is needed at build time only). Use the\n"
-                   "windows-msvc-release-vulkan or windows-msvc-release-kernels preset. `doctor --json` still shows\n"
+            out << "Usage: HCSInfer tune [--device <sel>] [--suite quick|full] [--show|--reset] [--out "
+                   "<file>]\n\n"
+                   "Benchmarks the HCS Vulkan kernels on this machine. NOT available in this build: it was "
+                   "configured\n"
+                   "without -DHCS_ENABLE_VULKAN_KERNELS=ON (the Vulkan SDK is needed at build time only). "
+                   "Use the\n"
+                   "windows-msvc-release-vulkan or windows-msvc-release-kernels preset. `doctor --json` "
+                   "still shows\n"
                    "the capability gates and the planner table (everything unknown = CPU).\n";
             return 0;
         }

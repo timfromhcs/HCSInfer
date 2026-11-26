@@ -15,8 +15,8 @@ hcs::Result<ClientReply> http_call(const ClientTarget& t, std::string_view metho
     if (t.host.empty() || t.port < 1 || t.port > 65535)
         return Error(ErrorCode::InvalidArgument, "invalid server address");
     httplib::Client c(t.host, t.port);
-    // Windows retries a refused loopback connect for ~2 s before it reports failure; a loopback server that is
-    // up accepts at once (backlog), so one second is enough to tell "nobody is listening" quickly.
+    // Windows retries a refused loopback connect for ~2 s before it reports failure; a loopback server that
+    // is up accepts at once (backlog), so one second is enough to tell "nobody is listening" quickly.
     const bool loopback = t.host == "127.0.0.1" || t.host == "localhost" || t.host == "::1";
     c.set_connection_timeout(loopback ? std::min(t.connect_timeout_s, 1) : t.connect_timeout_s, 0);
     c.set_read_timeout(t.read_timeout_s, 0);

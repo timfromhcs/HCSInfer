@@ -260,7 +260,8 @@ json device_report(const Api& api, VkPhysicalDevice pd, std::uint32_t index) {
                 d["integer_dot_product"] = {
                     {"int8_signed_accelerated", p13.integerDotProduct8BitSignedAccelerated == VK_TRUE},
                     {"int8_unsigned_accelerated", p13.integerDotProduct8BitUnsignedAccelerated == VK_TRUE},
-                    {"int4x8_packed_signed_accelerated", p13.integerDotProduct4x8BitPackedSignedAccelerated == VK_TRUE},
+                    {"int4x8_packed_signed_accelerated",
+                     p13.integerDotProduct4x8BitPackedSignedAccelerated == VK_TRUE},
                     {"int16_signed_accelerated", p13.integerDotProduct16BitSignedAccelerated == VK_TRUE},
                     {"accumulating_int8_signed_accelerated",
                      p13.integerDotProductAccumulatingSaturating8BitSignedAccelerated == VK_TRUE}};

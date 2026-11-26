@@ -16,9 +16,9 @@ struct DoctorOptions {
     std::uint64_t read_max_bytes = 256ull << 20;  // upper bound of bytes read per sample
     std::uint32_t read_buffer_bytes = 4u << 20;   // bounded read buffer (64 KiB .. 64 MiB)
     std::uint32_t read_repeats = 1;               // 1 .. 5 samples
-    // Planner section ("doctor --json" "planner"): where the kernel profile cache lives (empty = unknown) and the
-    // hashes of the HCS Vulkan kernels linked into this binary. kernel_hashes_known=false means the kernels are
-    // not built in: every kernel is then reported as unknown and planned on the CPU.
+    // Planner section ("doctor --json" "planner"): where the kernel profile cache lives (empty = unknown) and
+    // the hashes of the HCS Vulkan kernels linked into this binary. kernel_hashes_known=false means the
+    // kernels are not built in: every kernel is then reported as unknown and planned on the CPU.
     std::string state_dir;
     bool kernel_hashes_known = false;
     std::map<std::string, std::string> kernel_hashes;
