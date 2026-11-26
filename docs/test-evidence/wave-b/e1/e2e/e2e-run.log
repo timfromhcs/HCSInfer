@@ -1,0 +1,72 @@
+free RAM MB at start: 9680
+scan complete: 2 added, 0 updated, 0 skipped
+== HTTP phase (serve + curl.exe) ==
+PASS  serve prints port and random token on stderr
+PASS  health without token
+PASS  auth: missing token -> 401
+PASS  auth: wrong token -> 401
+PASS  DNS-rebinding Host -> 403
+PASS  foreign Origin -> 403
+PASS  malformed JSON -> 400
+PASS  oversize body -> 413
+PASS  path traversal in model id rejected (400/404)
+PASS  images endpoint is real, not a stub (501 without engine / 409 without image model)
+PASS  GET /v1/models
+PASS  model is registered
+PASS  GET /hcs/v1/runtime
+PASS  GET /hcs/v1/devices
+PASS  GET /hcs/v1/memory
+PASS  GET /hcs/v1/models
+PASS  model load returns 202 + job id
+PASS  model load job succeeded
+PASS  model state loaded
+PASS  real chat completion (non-stream) returns text
+PASS  usage reports completion tokens
+PASS  SSE: multiple chunks and [DONE]
+PASS  SSE: streamed text non-empty
+PASS  SSE: delivered incrementally
+PASS  long generation started streaming
+PASS  cancel endpoint accepted
+PASS  cancelled job ends in state cancelled
+PASS  stream terminated after cancel (curl exited)
+PASS  chat works after a cancel
+PASS  client disconnect mid-stream stops the real generation (job cancelled)
+PASS  disconnect freed the job within 30 s
+PASS  no job left pending after the disconnect
+PASS  chat works after a client disconnect
+PASS  CLI models status sees the loaded model
+PASS  CLI models unload (no id) unloads the loaded model
+PASS  CLI models unload with nothing loaded -> exit 11
+PASS  CLI models load <id> waits for the real load
+PASS  chat works after a CLI-driven load
+PASS  CLI models load unknown id -> exit 7
+PASS  unload
+== Vault phase (serve --vault-prefetch) ==
+PASS  vault: model is registered
+PASS  vault: models hash records the digest
+PASS  vault: load through the vault stage succeeded
+PASS  vault: runtime reports the stage
+PASS  vault: digest verified against the manifest
+PASS  vault: buffer RAM bounded (<= 3 slots x 8 MiB x 2)
+PASS  vault: real chat after a vault load
+PASS  vault: nothing was created next to the model
+== MCP phase (mcp stdio, scripted client) ==
+PASS  MCP server/discover
+PASS  MCP tools/list has required tools
+PASS  MCP models.list finds the model
+PASS  MCP models.load (real)
+PASS  MCP chat.generate (real) returns text
+PASS  MCP runtime.status
+PASS  MCP path traversal id rejected
+PASS  MCP image path outside approved roots -> security_violation
+PASS  MCP: server responsive after cancellation
+PASS  MCP: no response sent for the cancelled request
+PASS  MCP: chat works after cancel
+PASS  MCP: clean exit on stdin EOF
+PASS  MCP: stdout carries only JSON-RPC (10 lines)
+PASS  MCP: logs went to stderr
+PASS  MCP legacy initialize
+PASS  MCP legacy tools/list
+
+SUMMARY: 64 checks, 0 failed
+free RAM MB at end: 9638

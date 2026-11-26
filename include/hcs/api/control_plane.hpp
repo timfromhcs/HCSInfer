@@ -10,6 +10,7 @@
 #include <chrono>
 #include <condition_variable>
 #include <deque>
+#include <filesystem>
 #include <functional>
 #include <future>
 #include <map>
@@ -134,6 +135,15 @@ struct ControlPlaneOptions {
     // switch and the watchdog. Null = no admission control (the pre-F1 behaviour). The control plane
     // registers its shed handler on it and removes the handler again in its destructor.
     std::shared_ptr<scheduler::AdmissionController> admission;
+    // Optional opt-in Model Vault stage (M5 Stage B): called with the resolved model file, the manifest
+    // digest (empty when the model was never hashed) and the load's cancellation token, AFTER the budget
+    // check and the Loading transition and BEFORE the engine opens the file. It reads the file once through
+    // the bounded asynchronous reader and returns a JSON report (bytes, sha256, verified, wall_seconds,
+    // mib_per_second, buffer_bytes). An error (digest mismatch, I/O, cancel) aborts the load before the
+    // engine sees the file. Empty => the engine loads the path directly (the default).
+    std::function<Result<nlohmann::json>(const std::filesystem::path&, const std::string&,
+                                         const CancellationToken&)>
+        model_prefetch;
 };
 
 class ControlPlane {
@@ -254,8 +264,9 @@ private:
     mutable std::mutex state_mutex_;
     std::optional<std::string> loaded_;
     std::optional<std::uint64_t> loaded_bytes_;
-    bool loaded_is_image_ = false;       // guarded by state_mutex_
-    bool loaded_has_projector_ = false;  // guarded by state_mutex_
+    bool loaded_is_image_ = false;              // guarded by state_mutex_
+    bool loaded_has_projector_ = false;         // guarded by state_mutex_
+    std::optional<nlohmann::json> last_vault_;  // report of the last vault-prefetched load; state_mutex_
     std::atomic<std::uint64_t> active_job_{0};
     std::chrono::steady_clock::time_point started_ = std::chrono::steady_clock::now();
 

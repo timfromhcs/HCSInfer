@@ -17,6 +17,9 @@
 #include "hcs/hardware/doctor.hpp"
 #include "hcs/hardware/memory_probe.hpp"
 #endif
+#ifdef HCS_HAVE_STORAGE
+#include "hcs/storage/vault_prefetch.hpp"
+#endif
 
 namespace hcs::api {
 
@@ -122,6 +125,36 @@ Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger&
             ac, options.admission_probe ? options.admission_probe : telemetry::make_system_probe());
         co.admission = rt->admission;
     }
+    if (options.vault_prefetch && !co.model_prefetch) {
+#ifdef HCS_HAVE_STORAGE
+        if (options.vault_buffers < 1 || options.vault_buffers > 16 || options.vault_chunk_mib < 1 ||
+            options.vault_chunk_mib > 128)
+            return make_error(ErrorCode::InvalidArgument, "vault prefetch: buffers 1..16, chunk 1..128 MiB");
+        const std::size_t buffers = options.vault_buffers;
+        const std::uint32_t chunk = options.vault_chunk_mib << 20;
+        co.model_prefetch = [buffers, chunk](const std::filesystem::path& file, const std::string& expected,
+                                             const CancellationToken& token) -> Result<nlohmann::json> {
+            storage::PrefetchOptions po;
+            po.buffers = buffers;
+            po.chunk_bytes = chunk;
+            po.expected_sha256 = expected;
+            po.cancel = token;
+            auto r = storage::prefetch_and_verify(file, po);
+            if (!r)
+                return r.error();
+            const auto& v = r.value();
+            return nlohmann::json{{"bytes", v.bytes},
+                                  {"sha256", v.sha256},
+                                  {"verified_against_manifest", v.verified},
+                                  {"wall_seconds", v.wall_seconds},
+                                  {"mib_per_second", v.mib_per_second},
+                                  {"buffer_bytes", v.buffer_bytes}};
+        };
+#else
+        return make_error(ErrorCode::Unsupported,
+                          "vault prefetch needs the storage module, which is not built");
+#endif
+    }
     rt->control = std::make_unique<ControlPlane>(rt->registry, rt->guard, rt->budget, *rt->queue,
                                                  rt->engine.get(), logger, co, rt->image_engine.get());
     rt->admission->start_watchdog();
@@ -160,6 +193,14 @@ const char* kServeHelp =
     "  --max-active-jobs <n>    Jobs in flight (running + queued) before 503 Retry-After (default 4)\n"
     "  --watchdog-ms <n>        Watchdog sampling interval (default 1000)\n"
     "  --no-overload-protection Disable admission control and the watchdog (not recommended)\n"
+    "  --vault-prefetch         Opt-in Model Vault load stage: before the engine opens a model file it is "
+    "read\n"
+    "                           once, sequentially, through the bounded async reader and its SHA-256 is\n"
+    "                           checked against the manifest digest when one exists. Nothing is written to "
+    "disk.\n"
+    "                           Default off: it is only worth it where measured (docs/model-vault.md)\n"
+    "  --vault-buffers <n>      Read-ahead slots for --vault-prefetch, 1..16 (default 4)\n"
+    "  --vault-chunk-mib <n>    Read size per slot for --vault-prefetch, 1..128 (default 16)\n"
     "  --chat-template <t>      auto (default: model template for single-turn, ChatML otherwise) | chatml | "
     "plain\n"
     "  --help                   This text\n";
@@ -215,6 +256,8 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     unsigned long long min_free_mb = adm.min_free_ram_bytes >> 20, hard_floor_mb = adm.hard_floor_bytes >> 20,
                        commit_pct = 90, max_jobs = adm.max_in_flight, watchdog_ms = 1000;
     bool overload_off = false;
+    bool lan = false, vault = false;
+    unsigned long long vault_buffers = 4, vault_chunk = 16;
     std::string token, tmpl = "auto";
     std::vector<std::string> roots, hosts, origins;
     for (std::size_t i = 0; i < args.size(); ++i) {
@@ -232,7 +275,15 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
         }
         if (a == "--lan")
             lan = true;
-        else if (a == "--host") {
+        else if (a == "--vault-prefetch")
+            vault = true;
+        else if (a == "--vault-buffers") {
+            if (!need(v) || !parse_uint(v, 16, vault_buffers) || vault_buffers == 0)
+                return bad("--vault-buffers must be 1..16");
+        } else if (a == "--vault-chunk-mib") {
+            if (!need(v) || !parse_uint(v, 128, vault_chunk) || vault_chunk == 0)
+                return bad("--vault-chunk-mib must be 1..128");
+        } else if (a == "--host") {
             if (!need(host))
                 return bad("--host needs a value");
         } else if (a == "--token") {
@@ -325,6 +376,9 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     if (auto v = scheduler::validate(adm); !v)
         return bad(v.error().message);
     ro.admission = adm;
+    ro.vault_prefetch = vault;
+    ro.vault_buffers = static_cast<std::size_t>(vault_buffers);
+    ro.vault_chunk_mib = static_cast<std::uint32_t>(vault_chunk);
     auto rt = Runtime::create(std::move(ro), log);
     if (!rt) {
         err << "error: " << rt.error().message << " [" << to_string(rt.error().code) << "]\n";

@@ -140,6 +140,56 @@ TEST(ModelRegistryScan, FindsValidatesAndIsIdempotent) {
     EXPECT_EQ(r.size(), 2u);
 }
 
+TEST(ModelRegistryScan, NonModelFilesAreIgnoredWithoutNoiseAndModelsInDeepTreesAreStillFound) {
+    TempDir t;
+    for (int i = 0; i < 300; ++i)
+        write_file(t / "root" / "venv" / "lib" / ("junk" + std::to_string(i) + ".py"), "x");
+    write_file(t / "root" / "venv" / "lib" / "notes.GGUF.txt", "not a model");
+    write_file(t / "root" / "a" / "b" / "c" / "deep.gguf", hcs::test::fake_gguf());
+    write_file(t / "root" / "w" / "m.safetensors", "garbage that is no safetensors header");
+    PathGuard g;
+    ASSERT_TRUE(g.add_root(t / "root"));
+    ModelRegistry r;
+    auto rep = r.scan(t / "root", g);
+    ASSERT_TRUE(rep) << rep.error().message;
+    EXPECT_EQ(rep.value().added, 1u);
+    EXPECT_EQ(rep.value().skipped, 1u);  // only the broken .safetensors; the 301 non-model files make no noise
+    EXPECT_EQ(rep.value().messages.size(), 1u);
+    EXPECT_TRUE(r.get("deep").ok());
+}
+
+TEST(ModelRegistryDigest, SetSha256ValidatesNormalisesAndSurvivesJsonRoundTrip) {
+    TempDir t;
+    write_file(t / "root" / "good.gguf", hcs::test::fake_gguf());
+    PathGuard g;
+    ASSERT_TRUE(g.add_root(t / "root"));
+    ModelRegistry r;
+    ASSERT_TRUE(r.scan(t / "root", g));
+    EXPECT_EQ(r.set_sha256("good", "short").error().code, ErrorCode::InvalidArgument);
+    EXPECT_EQ(r.set_sha256("good", std::string(63, 'a') + "g").error().code, ErrorCode::InvalidArgument);
+    EXPECT_EQ(r.set_sha256("ghost", std::string(64, 'a')).error().code, ErrorCode::NotFound);
+    ASSERT_TRUE(r.set_sha256("good", std::string(64, 'A')));
+    EXPECT_EQ(r.get("good").value().sha256, std::string(64, 'a'));
+    ModelRegistry b;
+    ASSERT_TRUE(b.load_json(r.to_json()));
+    EXPECT_EQ(b.get("good").value().sha256, std::string(64, 'a'));
+}
+
+TEST(ModelRegistryDigest, RescanKeepsTheDigestOfAnUnchangedFileAndDropsItWhenTheSizeChanged) {
+    TempDir t;
+    write_file(t / "root" / "good.gguf", hcs::test::fake_gguf());
+    PathGuard g;
+    ASSERT_TRUE(g.add_root(t / "root"));
+    ModelRegistry r;
+    ASSERT_TRUE(r.scan(t / "root", g));
+    ASSERT_TRUE(r.set_sha256("good", std::string(64, 'b')));
+    ASSERT_TRUE(r.scan(t / "root", g));  // same file: digest stays, and nothing was re-hashed
+    EXPECT_EQ(r.get("good").value().sha256, std::string(64, 'b'));
+    write_file(t / "root" / "good.gguf", hcs::test::fake_gguf() + "extra bytes");
+    ASSERT_TRUE(r.scan(t / "root", g));
+    EXPECT_TRUE(r.get("good").value().sha256.empty()) << "a changed file must not keep its old digest";
+}
+
 TEST(ModelRegistryScan, DuplicateStemsGetSuffixedIds) {
     TempDir t;
     write_file(t / "r" / "a" / "m.gguf", hcs::test::fake_gguf());

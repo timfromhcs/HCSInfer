@@ -338,3 +338,10 @@ Vulkan baseline was measured in **wave K** (the kernel is 18x slower than upstre
 inference, the Vercel deploy and a clean Windows machine.
 
 > Known provenance note: the already-built rc.1 portable ZIP embeds a manifest.json with the legacy flag `"single_exe": true`. This is superseded: `scripts/package.ps1` now emits `single_file_claim: false`. The release is NOT labelled single-file (clean-machine test NOT RUN). Regenerate the ZIP via `scripts/release-local.ps1` before publishing.
+
+
+## Wave B / e1 (branch `wave-b/e1`): vault in load path, CLI load/unload/status, streaming, fast start
+- `models load|unload|status` are HTTP clients of a running `serve` (PASS: 11 contract tests with real sockets + e2e with the real engine); `tune` still exit 10.
+- Vault stage in the load path: opt-in `serve --vault-prefetch`, default OFF. Real USB drive, N=3: cold load 56.2 s -> 33.6 s, warm 1.49 s -> 3.27 s (PASS as measured; see `docs/model-vault.md`). The engine still opens the path itself; streaming into engine buffers is NOT possible with the pinned loaders. Second drive E:, Vulkan, 50-client load test: NOT RUN.
+- SSE: client disconnect mid-stream stops the real generation in 0.03 s (e2e PASS). Fast start: `models scan` 3.6 s -> 0.43 s on a 37k-file tree.
+- Evidence: `docs/test-evidence/wave-b/e1/`.

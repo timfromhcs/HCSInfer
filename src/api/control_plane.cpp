@@ -345,6 +345,28 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
         }
         lr.projector_path = pp.value();
     }
+    std::optional<json> vault_report;
+    if (opt_.model_prefetch) {
+        // Opt-in Model Vault stage: bounded sequential read + digest check before the engine opens the file.
+        json rep = json::object();
+        auto pr = opt_.model_prefetch(resolved.value(), m.sha256, token);
+        if (pr)
+            rep["model"] = pr.value();
+        if (pr && !lr.projector_path.empty()) {
+            // The projector is a sibling file without a manifest digest: it is read and hashed, not compared.
+            pr = opt_.model_prefetch(std::filesystem::path(lr.projector_path), std::string(), token);
+            if (pr)
+                rep["projector"] = pr.value();
+        }
+        if (!pr) {
+            (void)registry_.fail(id, FailureKind::Recoverable, pr.error().message);
+            release_reservations();
+            log_.warn("control", "vault prefetch failed",
+                      {{"model", id}, {"code", to_string(pr.error().code)}});
+            return pr.error();
+        }
+        vault_report = std::move(rep);
+    }
     Result<void> er = make_error(ErrorCode::Internal, "engine threw");
     try {
         er = image_model ? image_engine_->load(lr) : engine_->load(lr);
@@ -375,6 +397,8 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
         loaded_bytes_ = need;  // weights + KV estimate: what unloading this model gives back
         loaded_is_image_ = image_model;
         loaded_has_projector_ = !lr.projector_path.empty();
+        if (vault_report)
+            last_vault_ = std::move(vault_report);
     }
     log_.info("control", "model loaded", {{"model", id}, {"kind", std::string(to_string(m.kind))}});
     return {};
@@ -670,6 +694,12 @@ json ControlPlane::runtime_json() const {
     }
     const auto lm = loaded_model();
     j["loaded_model"] = lm ? json(*lm) : json(nullptr);
+    j["vault_prefetch"] = static_cast<bool>(opt_.model_prefetch);
+    {
+        std::lock_guard lk(state_mutex_);
+        if (last_vault_)
+            j["vault"] = *last_vault_;
+    }
     j["jobs_pending"] = queue_.pending();
     j["overload"] = overload_json();
     j["uptime_s"] = std::chrono::duration<double>(std::chrono::steady_clock::now() - started_).count();

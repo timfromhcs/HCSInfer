@@ -165,10 +165,57 @@ Conclusions that the data supports: all six modes work; `direct_io` really bypas
 costs ~14x the load time on this drive (9.5 s vs 0.63 s, consistent with the 65 MiB/s raw device speed);
 mmap-backed weights commit ~250 MB less than read-into-RAM modes; while the 0.48 GB model fits in RAM there is no
 throughput difference to be found. The file cache was not controlled, so the load-time column is not a cold-cache
-comparison except for `direct_io`. Stage B of the vault - a bounded asynchronous pipeline feeding the engine - is
-**BLOCKED** on this machine: it needs a model that does not fit in RAM and/or an administrator-assisted cache flush to
-produce a meaningful measurement (see the evidence README). `--load-mode` is exposed by `chat`, `image`, `vision` and
-`benchmark`.
+comparison except for `direct_io`. `--load-mode` is exposed by `chat`, `image`, `vision` and `benchmark`.
+
+## Vault in the load path: `serve --vault-prefetch` (M5 Stage B, opt-in, default OFF)
+
+The pinned llama.cpp and stable-diffusion.cpp loaders take a **path** (there is no caller-supplied reader callback), so
+the vault cannot hand them decoded bytes. What it does instead, between the budget check and the engine call:
+
+1. reads the model file (and the sibling mmproj, if one is loaded with it) once, front to back, through the bounded
+   asynchronous reader (`storage::prefetch_and_verify`: overlapped I/O, `--vault-buffers` slots of `--vault-chunk-mib`,
+   back-pressure, cancellable);
+2. computes the SHA-256 on the way and compares it with the registry digest when one exists (`HCSInfer models hash <id>`
+   records it; a mismatch aborts the load with a model error before the engine sees the file; an unhashed model is
+   hashed but reported as `verified_against_manifest: false`);
+3. hands the same path to the engine, which maps/reads it as before. Nothing is written anywhere: the bytes are hashed and
+   dropped (no decompressed copy, no staging file). Pipeline RAM is fixed up front (4 x 16 MiB x 1 buffer set = 64 MiB
+   by default).
+
+The report is in `GET /hcs/v1/runtime` (`vault_prefetch`, `vault`). Unit/contract tests: `tests/unit/storage/test_vault_prefetch.cpp`,
+`tests/contract/api/test_vault_load.cpp` (order, rollback, real digest, mismatch refusal; fake engine = plumbing only).
+
+### Measured: real engine, real USB drive, cold and warm (N=3 per cell)
+
+`tools/benchmark-runner/vault_load_bench.py`: a real `HCSInfer serve` process per run, LFM3-Omni-2B Q8_0 (1.85 GB) + its
+mmproj (0.51 GB) from `D:\HCSModels` (D: is the external USB drive, "IB-1232CL-U3" enclosure), CPU backend, 3 repetitions
+per cell interleaved. Cold = the files were evicted from the Windows file cache right before the load without
+administrator rights (`tools/benchmark-runner/cache_evict.py`, unbuffered open; verified: warm read 2261 MiB/s, read after
+eviction 45.7 MiB/s). Raw data: `docs/test-evidence/wave-b/e1/vault-load-usb-d.json`.
+
+| mode | cache | load wall median (min..max) s | vault stage median s | peak working set | bytes written by the process |
+|---|---|---|---|---|---|
+| engine default (mmap) | cold | **56.2** (47.2..56.8) | - | 709 MiB | ~158 KiB (logs) |
+| `--vault-prefetch` | cold | **33.6** (31.3..34.9) | 25.3 (93 MiB/s sequential) | 709 MiB | ~91 KiB |
+| engine default (mmap) | warm | **1.49** (1.04..1.63) | - | 709 MiB | ~5 KiB |
+| `--vault-prefetch` | warm | **3.27** (2.85..3.96) | 1.36 | 709 MiB | ~10 KiB |
+
+What this supports, and what it does not:
+
+- On this drive, a cold first load is ~1.7x faster with the vault stage: the engine's page-fault driven mmap reads the
+  file at ~45 MiB/s, the sequential bounded reader at ~93 MiB/s, and the engine then maps warm pages. The ranges do not
+  overlap (3 runs per cell is a small sample).
+- A warm load is ~2x **slower** (the extra full read + SHA-256 pass, 1.4 s here). The vault cannot know whether the file
+  is cached, so it stays **off by default**; turn it on for first loads from a slow external drive.
+- The process wrote ~0.1-0.2 MiB in total in every mode (`GetProcessIoCounters`), i.e. no HCS-owned staging or decompressed
+  copy exists. Peak working set did not change (the 64 MiB pipeline buffers are transient).
+- Not measured: the second USB drive (E:), the Vulkan backend, a model larger than RAM (it would not change the
+  mechanism: the engine still maps the file itself), the HCSMODEL container in this path (NOT RUN: the engines only open
+  GGUF paths). Streaming straight into engine buffers needs an upstream loader hook and stays future work.
+- Start-up and scan (same binary, this machine): process start to "listening" ~20-130 ms (`startup_s` in the JSON);
+  `models scan` of the whole `D:\HCSModels` tree (37k files incl. a Python venv) fell from 3.6 s to 0.43 s warm after
+  non-model files stopped being canonicalised (first-ever scan with a cold directory cache was 18.9 s before the change;
+  not re-measurable cold afterwards). Scan never hashes. Evidence: `docs/test-evidence/wave-b/e1/README.md`.
 
 ## Fuzzing
 
@@ -179,8 +226,8 @@ produce a meaningful measurement (see the evidence README). `--load-mode` is exp
 
 ## Known limitations
 
-- Engines that memory-map the original GGUF (llama.cpp default) do not go through `stream_chunks`; wiring the
-  reader into an engine's loader is future adapter work.
+- Engines that memory-map the original GGUF (llama.cpp default) do not read through `stream_chunks`; the opt-in vault
+  stage only pre-reads and verifies the file, a reader inside the engine's loader needs an upstream hook.
 - Hash verification of Raw chunks costs one SHA-256 pass; disabling it is only allowed for plain files.
 - The USB-unplug path is implemented as an `IoError` but a physical unplug test has not been run.
 - Cold-cache measurements use `FILE_FLAG_NO_BUFFERING` probes for the device speed; end-to-end runs report the
