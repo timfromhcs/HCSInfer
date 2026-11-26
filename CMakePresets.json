@@ -28,7 +28,7 @@
       "name": "windows-msvc-release-vulkan",
       "displayName": "Windows MSVC x64 Release + Vulkan modules",
       "inherits": "base",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "HCS_ENABLE_VULKAN": "ON" }
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "HCS_ENABLE_VULKAN": "ON", "HCS_ENABLE_VULKAN_KERNELS": "ON" }
     },
     {
       "name": "windows-msvc-release-static",
@@ -50,7 +50,8 @@
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded",
         "GGML_OPENMP": "OFF",
-        "HCS_ENABLE_VULKAN": "ON"
+        "HCS_ENABLE_VULKAN": "ON",
+        "HCS_ENABLE_VULKAN_KERNELS": "ON"
       }
     },
     {
