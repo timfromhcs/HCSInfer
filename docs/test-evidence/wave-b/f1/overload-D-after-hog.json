@@ -1,0 +1,38 @@
+{
+  "counters": {
+    "admitted": 1,
+    "rejected_out_of_memory": 0,
+    "rejected_overloaded": 0,
+    "shed_count": 1
+  },
+  "enabled": true,
+  "in_flight": 0,
+  "last_shed": {
+    "duration_ms": 28,
+    "jobs_cancelled": 0,
+    "jobs_idle": true,
+    "model_unloaded": true,
+    "reason": "watchdog: free RAM 7510 MiB is below the hard floor of 7683 MiB",
+    "unload_pending": false
+  },
+  "level": "critical",
+  "limits": {
+    "hard_commit_fraction": 0.97,
+    "hard_floor_bytes": 8056209408,
+    "hysteresis_bytes": 536870912,
+    "max_commit_fraction": 0.9,
+    "max_in_flight": 4,
+    "min_free_ram_bytes": 8066695168,
+    "retry_after_s": 5
+  },
+  "sample": {
+    "commit_fraction": 0.5093388796206502,
+    "commit_limit_bytes": 39499563008,
+    "commit_used_bytes": 20118663168,
+    "free_physical_bytes": 8096468992,
+    "gpu_heap_headroom_bytes": 14085169152,
+    "process_working_set_bytes": 20320256,
+    "total_physical_bytes": 21245952000
+  },
+  "watchdog_running": true
+}

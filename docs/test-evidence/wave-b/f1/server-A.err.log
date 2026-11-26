@@ -1,0 +1,44 @@
+{"ts":"2026-11-26T11:01:53.481Z","level":"info","component":"api","msg":"listening","host":"127.0.0.1","port":"18765"}
+HCSInfer API listening on http://127.0.0.1:18765
+HCSInfer web UI: http://127.0.0.1:18765/  (enter the token on the page, or open it with #token=<token> appended; the fragment is never sent to the server)
+{"ts":"2026-11-26T11:01:54.062Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/health","status":"200","rid":"req-652a68e0698a7687"}
+{"ts":"2026-11-26T11:01:54.193Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-c5063427f7260b87"}
+{"ts":"2026-11-26T11:01:54.537Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/health","status":"200","rid":"req-183145e41a626e2a"}
+{"ts":"2026-11-26T11:01:54.541Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime","status":"200","rid":"req-e2f3b3a25a60dbaa"}
+{"ts":"2026-11-26T11:01:54.565Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-1567a9ef6104e465"}
+{"ts":"2026-11-26T11:01:54.569Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-6a90344551bba3c2"}
+{"ts":"2026-11-26T11:01:55.086Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-940fb3f1a3111011"}
+{"ts":"2026-11-26T11:01:55.145Z","level":"info","component":"control","msg":"model loaded","model":"smolvlm2-500m-video-instruct-q8_0","kind":"text"}
+{"ts":"2026-11-26T11:01:55.603Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-3b447ae6bd8c6de7"}
+{"ts":"2026-11-26T11:01:56.110Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-bab462b51a867877"}
+{"ts":"2026-11-26T11:01:56.549Z","level":"info","component":"api","msg":"request","method":"POST","path":"/v1/chat/completions","status":"200","rid":"req-a88258782567b3a8"}
+{"ts":"2026-11-26T11:01:56.554Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-61108861d456349e"}
+{"ts":"2026-11-26T11:01:56.557Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-bd796d9a4bf3da80"}
+{"ts":"2026-11-26T11:01:56.561Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-7bbf4cc3e49dff1c"}
+{"ts":"2026-11-26T11:01:57.071Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-fd6a532108b875f8"}
+{"ts":"2026-11-26T11:01:57.171Z","level":"info","component":"api","msg":"request","method":"POST","path":"/v1/chat/completions","status":"200","rid":"req-f59fade1070879b0"}
+{"ts":"2026-11-26T11:01:57.174Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-d05f170abf8ffdf7"}
+{"ts":"2026-11-26T11:01:57.177Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-d662105b24486cb7"}
+{"ts":"2026-11-26T11:01:57.180Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-48252b30564c87aa"}
+{"ts":"2026-11-26T11:01:57.685Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-11c53012ca82f100"}
+{"ts":"2026-11-26T11:01:58.205Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-f24fc91d6905a497"}
+{"ts":"2026-11-26T11:01:59.085Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-6871a09493ecd4ee"}
+{"ts":"2026-11-26T11:01:59.171Z","level":"info","component":"api","msg":"request","method":"POST","path":"/v1/chat/completions","status":"200","rid":"req-d1b4693d5b17115f"}
+{"ts":"2026-11-26T11:01:59.174Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-5e1e26b2335ce4b6"}
+{"ts":"2026-11-26T11:01:59.176Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-342703f65149bc2a"}
+{"ts":"2026-11-26T11:01:59.178Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-ed99c02ce8903806"}
+{"ts":"2026-11-26T11:01:59.684Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-9a0de1aedad9c47e"}
+{"ts":"2026-11-26T11:01:59.780Z","level":"info","component":"api","msg":"request","method":"POST","path":"/v1/chat/completions","status":"200","rid":"req-95128895b40da583"}
+{"ts":"2026-11-26T11:01:59.783Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-61f0f2e02ff2c599"}
+{"ts":"2026-11-26T11:01:59.786Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-52d90759512c4db2"}
+{"ts":"2026-11-26T11:01:59.789Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-4151526dadd136ca"}
+{"ts":"2026-11-26T11:02:00.295Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-71468fbcf718aeb4"}
+{"ts":"2026-11-26T11:02:00.439Z","level":"info","component":"api","msg":"request","method":"POST","path":"/v1/chat/completions","status":"200","rid":"req-cfa86ef1d93ebb67"}
+{"ts":"2026-11-26T11:02:00.814Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-89e8454beaddfade"}
+{"ts":"2026-11-26T11:02:01.329Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-a70292b1abaf057e"}
+{"ts":"2026-11-26T11:02:01.833Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-4684e905a5b4b744"}
+{"ts":"2026-11-26T11:02:02.338Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-ac3e2b99a260c281"}
+{"ts":"2026-11-26T11:02:02.842Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-1fc43b782ffd75a5"}
+{"ts":"2026-11-26T11:02:03.114Z","level":"info","component":"api","msg":"request","method":"POST","path":"/v1/chat/completions","status":"200","rid":"req-1a588b61960d9d3d"}
+{"ts":"2026-11-26T11:02:03.118Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-6c7a102a520eae82"}
+{"ts":"2026-11-26T11:02:03.361Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-7fa64cc5a7f1b842"}

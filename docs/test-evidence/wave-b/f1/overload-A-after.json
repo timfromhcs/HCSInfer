@@ -1,0 +1,31 @@
+{
+  "counters": {
+    "admitted": 6,
+    "rejected_out_of_memory": 0,
+    "rejected_overloaded": 0,
+    "shed_count": 0
+  },
+  "enabled": true,
+  "in_flight": 0,
+  "last_shed": null,
+  "level": "normal",
+  "limits": {
+    "hard_commit_fraction": 0.97,
+    "hard_floor_bytes": 1073741824,
+    "hysteresis_bytes": 536870912,
+    "max_commit_fraction": 0.9,
+    "max_in_flight": 4,
+    "min_free_ram_bytes": 2684354560,
+    "retry_after_s": 5
+  },
+  "sample": {
+    "commit_fraction": 0.5083051207410462,
+    "commit_limit_bytes": 39499563008,
+    "commit_used_bytes": 20077830144,
+    "free_physical_bytes": 8701620224,
+    "gpu_heap_headroom_bytes": 14085169152,
+    "process_working_set_bytes": 733298688,
+    "total_physical_bytes": 21245952000
+  },
+  "watchdog_running": true
+}

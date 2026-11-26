@@ -72,6 +72,7 @@ and `structuredContent`. Tool errors have `structuredContent.error = {code, mess
 | `hcs.image.edit` | `prompt`, `input_path`, `model?`, `negative_prompt?`, `width?`, `height?`, `steps?`, `strength?` (0..1), `seed?`, `cfg_scale?` | image-to-image of a png/jpeg file. `input_path` goes through `PathGuard` **first** (outside the approved roots or with `..` -> `security_violation`; nothing is read), is size-capped and header-probed (non-image -> `invalid_argument`). Output size defaults to the input's. Result as for `hcs.image.generate` |
 | `hcs.runtime.status` | `include_devices?` | engine, loaded model, memory budget, optional device report |
 | `hcs.runtime.benchmark` | `model`, `suite?` (`quick`\|`full`), `max_tokens?` (<=4096), `warmup?` (0..20), `iterations?` (1..50), `seed?`, `sweep_sizes?` (16..1048576, only with `full`) | runs the shared text benchmark (the same runner as `HCSInfer benchmark` and `POST /hcs/v1/benchmarks`) as a cancellable job; returns the AGENTS.md 21.1 JSON document. The model is loaded/unloaded through the normal lifecycle and left loaded. No text engine -> `unsupported`; an image-model id or bad `sweep_sizes` -> `invalid_argument` |
+| `hcs.runtime.shed` | none | kill switch (destructive): cancels all jobs and unloads the model, bounded by the shed deadline; returns the shed report (see [overload-protection.md](overload-protection.md)) |
 | `hcs.jobs.status` / `hcs.jobs.cancel` | `job_id` (`job-N`) | |
 
 Security: there is no shell, process, or arbitrary filesystem tool. File arguments (`image_path`, `input_path`) are

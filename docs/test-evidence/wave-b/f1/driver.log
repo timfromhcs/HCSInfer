@@ -1,0 +1,18 @@
+2026-11-26T12:01:53.3420887+01:00 lock acquired; free RAM (OS) MiB = 8878
+2026-11-26T12:01:53.4407952+01:00 model id: smolvlm2-500m-video-instruct-q8_0 size=436808704
+2026-11-26T12:01:54.2145246+01:00 A: free MiB at start = 9106
+2026-11-26T12:02:03.3544634+01:00 stress[A-clean-dry] rc=0 :: PASS: 5 steps, 8.77 s, report D:\HCSScratch\f1\evidence\stress-A-clean-dry.json
+2026-11-26T12:02:04.0244414+01:00 B: free MiB at start = 8916
+2026-11-26T12:02:05.0495656+01:00 stress[B1-floor-midrun] rc=3 :: ABORTED: 1 steps, 0.8 s, report D:\HCSScratch\f1\evidence\stress-B1-floor-midrun.json | ABORT free_ram_below_floor: free RAM 8436 MiB < floor 8666 MiB (at context=16)
+2026-11-26T12:02:05.0650970+01:00 B1: free MiB after = 8916; loaded model: 
+2026-11-26T12:02:05.6124174+01:00 stress[B2-floor-immediate] rc=3 :: ABORTED: 0 steps, 0.21 s, report D:\HCSScratch\f1\evidence\stress-B2-floor-immediate.json | ABORT free_ram_below_floor: free RAM 9205 MiB < floor 60000 MiB (at context=16)
+2026-11-26T12:02:06.7794954+01:00 stress[C-server-refuses] rc=0 :: LIMIT_REACHED: 1 steps, 0.23 s, report D:\HCSScratch\f1\evidence\stress-C-server-refuses.json
+2026-11-26T12:02:06.8049146+01:00 C: direct chat -> HTTP 503 Retry-After=5 body={"error":{"code":"overloaded","message":"runtime is under memory pressure (admits again once at least 60512 MiB of RAM is free); retry in 5 s","param":null,"request_id":"req-30d8e595107bf2f5","type":"server_error"}}
+2026-11-26T12:02:07.3852315+01:00 D: free MiB = 9083 -> hard floor 7683, soft floor 7693
+2026-11-26T12:02:08.6473329+01:00 D: loaded_model=[smolvlm2-500m-video-instruct-q8_0] free MiB=8712 level=normal
+2026-11-26T12:02:09.2573652+01:00 D: shed_count=1 level=critical free MiB=7717 loaded_model=[] last_shed={"duration_ms":28,"jobs_cancelled":0,"jobs_idle":true,"model_unloaded":true,"reason":"watchdog: free RAM 7510 MiB is below the hard floor of 7683 MiB","unload_pending":false}
+2026-11-26T12:02:09.2637297+01:00 D: chat while critical -> HTTP 503 Retry-After=5
+2026-11-26T12:02:12.4175701+01:00 D: after hog exit: level=normal free MiB=9262
+2026-11-26T12:02:21.9612975+01:00 stress[E-process-gone] rc=3 :: ABORTED: 2 steps, 8.34 s, report D:\HCSScratch\f1\evidence\stress-E-process-gone.json | ABORT process_gone: server process 9696 no longer exists (at context=1024)
+2026-11-26T12:02:21.9666371+01:00 all scenarios done
+2026-11-26T12:02:21.9711250+01:00 lock released

@@ -1,0 +1,18 @@
+{"ts":"2026-11-26T11:02:07.420Z","level":"info","component":"api","msg":"listening","host":"127.0.0.1","port":"18765"}
+HCSInfer API listening on http://127.0.0.1:18765
+HCSInfer web UI: http://127.0.0.1:18765/  (enter the token on the page, or open it with #token=<token> appended; the fragment is never sent to the server)
+{"ts":"2026-11-26T11:02:07.909Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/health","status":"200","rid":"req-f653eb484f8c11e3"}
+{"ts":"2026-11-26T11:02:07.917Z","level":"info","component":"api","msg":"request","method":"POST","path":"/hcs/v1/models/smolvlm2-500m-video-instruct-q8_0/load","status":"202","rid":"req-680471319a6f65a8"}
+{"ts":"2026-11-26T11:02:08.315Z","level":"info","component":"control","msg":"model loaded","model":"smolvlm2-500m-video-instruct-q8_0","kind":"text"}
+{"ts":"2026-11-26T11:02:08.588Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime","status":"200","rid":"req-0cffee89e400c21e"}
+{"ts":"2026-11-26T11:02:08.593Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime","status":"200","rid":"req-6469d266076c5ac4"}
+{"ts":"2026-11-26T11:02:08.598Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-7e9bb750f0ad22c4"}
+{"ts":"2026-11-26T11:02:08.601Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-4ecc8af78624cb47"}
+{"ts":"2026-11-26T11:02:08.988Z","level":"warn","component":"control","msg":"kill switch: shedding all load","reason":"watchdog: free RAM 7510 MiB is below the hard floor of 7683 MiB"}
+{"ts":"2026-11-26T11:02:09.242Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-0db143f257290ab8"}
+{"ts":"2026-11-26T11:02:09.250Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-b02ddb9459e41bff"}
+{"ts":"2026-11-26T11:02:09.253Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime","status":"200","rid":"req-d86769589213857f"}
+{"ts":"2026-11-26T11:02:09.261Z","level":"warn","component":"control","msg":"job refused by admission control","kind":"text","code":"overloaded"}
+{"ts":"2026-11-26T11:02:09.262Z","level":"info","component":"api","msg":"request","method":"POST","path":"/v1/chat/completions","status":"503","rid":"req-0a637bcf767678ec"}
+{"ts":"2026-11-26T11:02:12.281Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-61de4b573ea58787"}
+{"ts":"2026-11-26T11:02:12.336Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-05e74247da7d1301"}
