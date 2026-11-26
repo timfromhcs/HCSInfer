@@ -1,0 +1,33 @@
+HCSInfer - local-first AI runtime (text, vision, image generation)
+
+Usage: HCSInfer [--state-dir <dir>] <command> [options]
+
+Commands:
+  doctor [--json]               Hardware/runtime diagnostics (unknown values are reported as 'unknown')
+  models list [--json]          List registered models
+  models scan <dir> [--json]    Read-only scan of a model folder (GGUF/safetensors headers validated)
+  models inspect <id>           Show a model manifest as JSON
+  models load|unload            Not in the one-shot CLI (a model lives in a running process): use
+                                `serve` (POST /hcs/v1/models/<id>/load), MCP, or --model on chat/vision/image
+  chat --model <path-or-id> [--prompt ...] [--backend cpu|vulkan] [--json]
+                                Text generation via llama.cpp (see `chat --help`)
+  image generate|edit ...       Image generation/edit via stable-diffusion.cpp (see `image --help`)
+  serve [--host ...]            Local HTTP API (OpenAI-compatible + /hcs/v1)
+  mcp stdio                     MCP server over stdio
+  vision --model <path-or-id> --image <file> --prompt ... [--mmproj <file>] [--json]
+                                Image analysis via llama.cpp libmtmd (see `vision --help`)
+  benchmark --suite quick|full --model <path-or-id> [--export file]
+                                Real text-model benchmark, JSON per AGENTS.md 21.1 (see `benchmark --help`)
+  train <subcommand>            Dataset validation, eval gate, adapter keep/rollback (see `train --help`)
+  cache stats|clear [--json]    Count / delete HCS-owned state-directory caches; `clear` needs --yes
+                                (see `cache --help`; model files are never touched)
+  tune                          Planned - not implemented yet (exit code 10)
+
+Global options:
+  --state-dir <dir>   State directory (default: $HCS_STATE_DIR, %LOCALAPPDATA%\HCSInfer or ~/.hcsinfer)
+  --version           Print version
+  --help, -h          Show help (works at every level)
+
+Exit codes: 0 ok, 2 invalid argument, 3 model error, 4 backend error, 5 out of memory,
+6 cancelled, 7 not found, 8 I/O error, 9 security violation, 10 unsupported,
+11 invalid state, 12 already exists, 13 busy, 14 timeout, 70 internal error.

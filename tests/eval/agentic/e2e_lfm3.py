@@ -99,6 +99,8 @@ def main():
     ap.add_argument("--skip-eval", action="store_true")
     a = ap.parse_args()
     a.exe = os.path.abspath(a.exe)
+    if a.evidence:
+        os.makedirs(a.evidence, exist_ok=True)  # the eval writes its JSON here before the final evidence dump
     if not os.path.isfile(a.exe) or not a.model or not os.path.isfile(a.model):
         print("BLOCKED (NOT RUN): --exe / --model (or HCS_TEST_LFM3) missing")
         return 77

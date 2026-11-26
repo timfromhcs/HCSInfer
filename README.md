@@ -4,7 +4,7 @@
 
 **One local app for chat, image understanding and image generation on Windows. No cloud, no account, no telemetry.**
 
-[![CI: not yet run on this revision](https://img.shields.io/badge/CI-not%20yet%20run%20on%20this%20revision-lightgrey)](https://github.com/timfromhcs/HCSInfer/actions/workflows/pr.yml)
+[![CI: pr-quick-gate green on v1.0.0-rc.1](https://img.shields.io/badge/CI-pr--quick--gate%20green%20(v1.0.0--rc.1)-brightgreen)](https://github.com/timfromhcs/HCSInfer/actions/workflows/pr.yml)
 ![Version](https://img.shields.io/badge/version-1.0.0--rc.1-orange)
 ![Platform](https://img.shields.io/badge/platform-Windows%2011%20x64-blue)
 ![Backends](https://img.shields.io/badge/backends-CPU%20%7C%20Vulkan-informational)
@@ -38,7 +38,8 @@ clean-machine test has been run (NOT RUN).
 
 ## Install
 
-Nothing is published yet (no GitHub release, no PyPI upload; that is the owner's step). The release files are built
+The tag `v1.0.0-rc.1` is pushed and the hosted `release` workflow produced a **draft** pre-release with these files (not
+public; no PyPI upload; publishing is the owner's step). The files can also be built
 locally by [`scripts/release-local.ps1`](scripts/release-local.ps1); every file is listed with its SHA-256 in
 `SHA256SUMS.txt`. Details: [`docs/install.md`](docs/install.md), [`docs/packaging.md`](docs/packaging.md).
 
@@ -267,7 +268,8 @@ The authoritative list is [`docs/roadmap/STATUS.md`](docs/roadmap/STATUS.md). Th
 - Engines load model files themselves; the Model Vault is not in the load path, so there is no bounded HDD streaming yet.
 - `models load|unload` and `tune` are not CLI commands; Streamable HTTP MCP is not implemented.
 - NOT RUN: real WebGPU inference, a real `prime-agent` session, a real training run, a physical USB unplug, the full soak
-  profile, a page-cache-cold load, signing, a hosted run of the release workflow.
+  profile, a page-cache-cold load, signing, a clean-machine run of the hosted release artifacts (the hosted `release`
+  workflow itself ran green on `40bf581`).
 
 ## Build from source
 

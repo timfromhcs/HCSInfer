@@ -1,0 +1,232 @@
+free RAM GB before phase B: 9.72
+Test project D:/HCSInfer/build/a4-cpu
+      Start 764: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng
+ 1/52 Test #764: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng .......................   Passed   11.68 sec
+      Start 765: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize
+ 2/52 Test #765: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize ......................   Passed   31.34 sec
+      Start 766: DiffusionBlocking.ProgressSinkStillReceivesProgress
+ 3/52 Test #766: DiffusionBlocking.ProgressSinkStillReceivesProgress ..............................   Passed   11.80 sec
+      Start 767: DiffusionBlocking.CancellationStopsTheRender
+ 4/52 Test #767: DiffusionBlocking.CancellationStopsTheRender .....................................   Passed   11.27 sec
+      Start 768: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering
+ 5/52 Test #768: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering ......................   Passed    0.24 sec
+      Start 769: DiffusionBlocking.NotLoadedIsAnErrorNotACrash
+ 6/52 Test #769: DiffusionBlocking.NotLoadedIsAnErrorNotACrash ....................................   Passed    0.04 sec
+      Start 770: DiffusionComponents.SidecarWithParentTraversalIsRejected
+ 7/52 Test #770: DiffusionComponents.SidecarWithParentTraversalIsRejected .........................   Passed    0.04 sec
+      Start 771: DiffusionComponents.SidecarWithAbsolutePathIsRejected
+ 8/52 Test #771: DiffusionComponents.SidecarWithAbsolutePathIsRejected ............................   Passed    0.04 sec
+      Start 772: DiffusionComponents.SidecarWithMissingFileIsNotFound
+ 9/52 Test #772: DiffusionComponents.SidecarWithMissingFileIsNotFound .............................   Passed    0.04 sec
+      Start 773: DiffusionComponents.MalformedSidecarIsInvalidArgument
+10/52 Test #773: DiffusionComponents.MalformedSidecarIsInvalidArgument ............................   Passed    0.04 sec
+      Start 774: DiffusionComponents.UnknownParamsBackendIsInvalidArgument
+11/52 Test #774: DiffusionComponents.UnknownParamsBackendIsInvalidArgument ........................   Passed    0.05 sec
+      Start 775: DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel
+12/52 Test #775: DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel .....................   Passed    0.04 sec
+      Start 776: DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15
+13/52 Test #776: DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15 .........................   Passed    0.27 sec
+      Start 777: DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem
+14/52 Test #777: DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem ............................   Passed  686.10 sec
+      Start 778: LlamaEngineErrors.GenerateBeforeLoadIsInvalidState
+15/52 Test #778: LlamaEngineErrors.GenerateBeforeLoadIsInvalidState ...............................   Passed    0.29 sec
+      Start 779: LlamaEngineErrors.MissingFileIsNotFound
+16/52 Test #779: LlamaEngineErrors.MissingFileIsNotFound ..........................................   Passed    0.11 sec
+      Start 780: LlamaEngineErrors.NonGgufIsModelError
+17/52 Test #780: LlamaEngineErrors.NonGgufIsModelError ............................................   Passed    0.04 sec
+      Start 781: LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable
+18/52 Test #781: LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable ..................   Passed    0.08 sec
+      Start 782: LlamaEngineErrors.BadArguments
+19/52 Test #782: LlamaEngineErrors.BadArguments ...................................................   Passed    0.04 sec
+      Start 783: LlamaEngineErrors.VisionRequestValidation
+20/52 Test #783: LlamaEngineErrors.VisionRequestValidation ........................................   Passed    0.04 sec
+      Start 784: LlamaEngineErrors.VulkanOnCpuOnlyBuildIsUnsupported
+21/52 Test #784: LlamaEngineErrors.VulkanOnCpuOnlyBuildIsUnsupported ..............................   Passed    0.04 sec
+      Start 785: LlamaEngineReal.CpuGeneration
+22/52 Test #785: LlamaEngineReal.CpuGeneration ....................................................   Passed   22.85 sec
+      Start 786: LlamaEngineReal.VulkanGeneration
+23/52 Test #786: LlamaEngineReal.VulkanGeneration .................................................***Skipped   0.04 sec
+      Start 787: LlamaEngineReal.GreedyIsDeterministicOnCpu
+24/52 Test #787: LlamaEngineReal.GreedyIsDeterministicOnCpu .......................................   Passed    1.83 sec
+      Start 788: LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly
+25/52 Test #788: LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly .........................   Passed    1.07 sec
+      Start 789: LlamaEngineReal.CancellationMidGenerationCpu
+26/52 Test #789: LlamaEngineReal.CancellationMidGenerationCpu .....................................   Passed    1.77 sec
+      Start 790: LlamaEngineReal.CancellationMidGenerationVulkan
+27/52 Test #790: LlamaEngineReal.CancellationMidGenerationVulkan ..................................***Skipped   0.04 sec
+      Start 791: LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth
+28/52 Test #791: LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth ................................   Passed    9.58 sec
+      Start 792: LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth
+29/52 Test #792: LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth .............................***Skipped   0.04 sec
+      Start 793: LlamaEngineReal.ModelSwitchBetweenBackendsAndModels
+30/52 Test #793: LlamaEngineReal.ModelSwitchBetweenBackendsAndModels ..............................   Passed    1.98 sec
+      Start 794: LlamaEngineReal.LoadModesAreAccepted
+31/52 Test #794: LlamaEngineReal.LoadModesAreAccepted .............................................   Passed    2.40 sec
+      Start 795: LlamaVisionReal.DescribesAGeneratedImageOnCpu
+32/52 Test #795: LlamaVisionReal.DescribesAGeneratedImageOnCpu ....................................   Passed   12.02 sec
+      Start 796: LlamaVisionReal.DescribesAGeneratedImageOnVulkan
+33/52 Test #796: LlamaVisionReal.DescribesAGeneratedImageOnVulkan .................................***Skipped   0.04 sec
+      Start 797: LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs
+34/52 Test #797: LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs ...   Passed    8.04 sec
+      Start 798: LlamaVisionReal.UnloadAndReloadReleasesTheProjector
+35/52 Test #798: LlamaVisionReal.UnloadAndReloadReleasesTheProjector ..............................   Passed    0.58 sec
+      Start 799: LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine
+36/52 Test #799: LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine ......................   Passed    2.84 sec
+      Start 800: LlamaVisionReal.CancellationStopsAVisionJob
+37/52 Test #800: LlamaVisionReal.CancellationStopsAVisionJob ......................................   Passed    5.34 sec
+      Start 801: LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly
+38/52 Test #801: LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly .......................   Passed    0.16 sec
+      Start 802: LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors
+39/52 Test #802: LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors ..................   Passed    0.42 sec
+      Start 803: LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected
+40/52 Test #803: LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected ..................   Passed    0.63 sec
+      Start 804: LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError
+41/52 Test #804: LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError ..............   Passed    0.04 sec
+      Start 805: ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine
+42/52 Test #805: ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine ......................   Passed   11.38 sec
+      Start 806: ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly
+43/52 Test #806: ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly .............   Passed    1.88 sec
+      Start 807: ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe
+44/52 Test #807: ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe ..................   Passed    1.12 sec
+      Start 808: RealGguf.HeaderParsesAndTensorsLieInsideTheFile
+45/52 Test #808: RealGguf.HeaderParsesAndTensorsLieInsideTheFile ..................................   Passed    0.14 sec
+      Start 809: RealGguf.StreamingDeliversEveryByteInOrder
+46/52 Test #809: RealGguf.StreamingDeliversEveryByteInOrder .......................................   Passed    0.47 sec
+      Start 810: e2e_api_mcp_real
+47/52 Test #810: e2e_api_mcp_real .................................................................   Passed   11.65 sec
+      Start 811: e2e_gui_real
+48/52 Test #811: e2e_gui_real .....................................................................   Passed    4.61 sec
+      Start 812: e2e_gui_xss
+49/52 Test #812: e2e_gui_xss ......................................................................***Skipped   0.23 sec
+      Start 813: e2e_image_real
+50/52 Test #813: e2e_image_real ...................................................................   Passed  286.82 sec
+      Start 815: e2e_llama_agentic_real
+51/52 Test #815: e2e_llama_agentic_real ...........................................................***Failed  142.06 sec
+PASS  scan registers the model
+PASS  serve prints port and token
+PASS  load request accepted
+PASS  model load job succeeded
+PASS  runtime reports a backend
+PASS  greedy chat -> 200 and answer
+PASS  answer contains the requested phrase
+PASS  greedy decoding is deterministic
+PASS  SSE stream 200 with text
+PASS  stream contains the counting
+PASS  long stream started
+PASS  client disconnect cancels the work and the engine serves again
+PASS  tools: non-stream returns tool_calls
+PASS  tools: get_weather(city=Paris)
+PASS  tools: finish_reason is tool_calls
+PASS  tools: answer after tool result uses it
+PASS  tools: stream carries tool_calls and finish_reason
+PASS  tools: no tag text leaks into streamed content
+single-01    PASS 
+single-02    PASS 
+single-03    PASS 
+single-04    PASS 
+single-05    PASS 
+single-06    PASS 
+single-07    PASS 
+single-08    PASS 
+single-09    PASS 
+single-10    PASS 
+single-11    PASS 
+single-12    PASS 
+select-01    PASS 
+select-02    PASS 
+select-03    PASS 
+select-04    PASS 
+select-05    PASS 
+select-06    PASS 
+typed-01     PASS 
+typed-02     PASS 
+typed-03     PASS 
+typed-04     PASS 
+nocall-01    PASS 
+nocall-02    PASS 
+nocall-03    PASS 
+nocall-04    PASS 
+parallel-01  FAIL expected 2 call(s), got 1
+parallel-02  FAIL expected 2 call(s), got 1
+parallel-03  FAIL expected 2 call(s), got 1
+followup-01  PASS 
+followup-02  PASS 
+followup-03  PASS 
+coding-01    PASS 
+coding-02    PASS 
+coding-03    PASS 
+coding-04    PASS 
+coding-05    PASS 
+coding-06    PASS 
+coding-07    PASS 
+coding-08    PASS 
+{
+  "tasks": 40,
+  "passed": 37,
+  "score": 0.925,
+  "tool_use_score": 0.9062,
+  "coding_score": 1.0,
+  "by_category": {
+    "single": {
+      "passed": 12,
+      "total": 12
+    },
+    "select": {
+      "passed": 6,
+      "total": 6
+    },
+    "typed": {
+      "passed": 4,
+      "total": 4
+    },
+    "nocall": {
+      "passed": 4,
+      "total": 4
+    },
+    "parallel": {
+      "passed": 0,
+      "total": 3
+    },
+    "followup": {
+      "passed": 3,
+      "total": 3
+    },
+    "coding": {
+      "passed": 8,
+      "total": 8
+    }
+  },
+  "tasks_sha256": "55a209a7609fe7ccdef4f9140e616909136947bec666fa7fab4241db1a4b4a54"
+}
+
+FAIL  agentic eval ran  -- 287-140-4\tests\eval\agentic\score.py", line 315, in main
+    with open(a.out, "w", encoding="utf-8") as f:
+         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'D:/HCSInfer/.claude/worktrees/w
+
+SUMMARY: 19 checks, 1 failed
+  FAILED: agentic eval ran
+
+      Start 816: e2e_vision_real
+52/52 Test #816: e2e_vision_real ..................................................................   Passed   22.43 sec
+
+98% tests passed, 1 tests failed out of 52
+
+Label Time Summary:
+e2e            = 467.79 sec*proc (6 tests)
+integration    = 840.30 sec*proc (46 tests)
+
+Total Test time (real) = 1310.10 sec
+
+The following tests did not run:
+	786 - LlamaEngineReal.VulkanGeneration (Skipped)
+	790 - LlamaEngineReal.CancellationMidGenerationVulkan (Skipped)
+	792 - LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth (Skipped)
+	796 - LlamaVisionReal.DescribesAGeneratedImageOnVulkan (Skipped)
+	812 - e2e_gui_xss (Skipped)
+
+The following tests FAILED:
+	815 - e2e_llama_agentic_real (Failed)                   e2e
+Errors while running CTest
+phaseB exit 8 elapsed 00:21:50.8195758
+free RAM GB after phase B: 9.9

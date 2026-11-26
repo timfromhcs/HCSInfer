@@ -1,0 +1,12 @@
+Usage: HCSInfer doctor [--json] [--no-vulkan] [--storage-root <path>] [--read-file <file>]
+                       [--read-max-mib <n>] [--read-buffer-kib <n>] [--read-repeats <1-5>]
+
+Prints a read-only diagnostics report (CPU, RAM, OS, GPU/driver, Vulkan, storage).
+Never changes system settings. Undetectable values are reported as 'unknown'.
+  --json               Machine-readable report (schema_version 1)
+  --no-vulkan          CPU-only mode: vulkan-1.dll is not loaded at all
+  --storage-root <p>   Report volume / filesystem / bus type of an existing path
+  --read-file <f>      Read-only sequential read benchmark of an existing file (bounded buffer)
+  --read-max-mib <n>   Bytes read per sample, default 256 MiB
+  --read-buffer-kib <n> Read buffer, 64..65536 KiB, default 4096
+  --read-repeats <n>   Samples, 1..5, default 1 (cold/warm state stays 'unknown')

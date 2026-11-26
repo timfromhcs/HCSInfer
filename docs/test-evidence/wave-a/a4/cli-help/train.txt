@@ -1,0 +1,17 @@
+Usage: HCSInfer train <subcommand>
+
+Local model fine-tuning support (ADR-012). This command does NOT run a trainer; it validates data,
+applies the evaluation gate and keeps/rolls back adapter versions. Adapter state lives under
+<state-dir>/train.
+
+  validate --dataset <file.jsonl> [--json]
+                        Validate a JSONL training set (licences, provenance, schema, duplicates)
+  gate --baseline <r.json> --candidate <r.json> [--min-gain X] [--max-drop Y] [--min-samples N] [--json]
+                        Apply the keep/rollback gate to two evaluation reports
+  adapter list [--json] List installed adapters (and which is active)
+  adapter show <id>     Print one adapter manifest
+  adapter activate <id> Promote an adapter (refused unless the gate kept it)
+  adapter rollback --base <sha256>
+                        Move the active pointer back to the previous adapter
+  pipeline --input <file.json> [--json]
+                        Gate a training result, record a manifest, promote on Keep

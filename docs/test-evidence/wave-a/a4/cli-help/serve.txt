@@ -1,0 +1,20 @@
+Usage: HCSInfer serve [options]
+
+Starts the local HTTP API (see docs/api.md). Binds 127.0.0.1 only unless --lan is given.
+A random bearer token is generated per run and printed to stderr (or pass --token / set
+HCS_API_TOKEN). Every route except GET /hcs/v1/health requires it. The embedded web UI
+(GET / and /ui/*, no token needed for the static page) is served on the same address.
+
+Options:
+  --host <addr>            Bind address (default 127.0.0.1; non-loopback requires --lan)
+  --port <n>               Port (default 8765; 0 = pick a free port)
+  --lan                    Explicit opt-in for non-loopback binding (0.0.0.0 unless --host is given)
+  --token <secret>         Use this bearer token (min 16 chars) instead of a random one
+  --allow-host <name>      Extra accepted Host header name (repeatable)
+  --allow-origin <origin>  Extra accepted Origin, e.g. http://127.0.0.1:3000 (repeatable)
+  --model-root <dir>      Approved model directory (repeatable; adds to settings.json roots)
+  --max-body-bytes <n>     Request body cap (default 1048576)
+  --max-inflight <n>       Concurrent request cap (default 8)
+  --timeout-s <n>          Per-request generation timeout (default 300)
+  --chat-template <t>      auto (default: model template for single-turn, ChatML otherwise) | chatml | plain
+  --help                   This text

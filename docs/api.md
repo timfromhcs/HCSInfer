@@ -151,6 +151,7 @@ Authenticated, **Experimental**. Real stable-diffusion.cpp output (HTTP route te
 | `allow_low_quality` | boolean, default `false`. Without it a request below the model family's quality envelope is rejected with `400` and a message starting `low_quality_request:` (SD1.5: short side < 384 px or < 8 steps; FLUX.3 Klein: short side < 384 px or < 4 steps without a preset). A 256 px / 2-step SD1.5 render is a pipeline smoke test, not an image. The same field exists on the MCP image tools and as CLI `--allow-low-quality` |
 | `preset` | `fast` \| `quality`: measured steps/cfg point of the loaded family (FLUX.3 Klein only) |
 | `seed`, `negative_prompt`, `cfg_scale` (0..30, 0 = model default) | HCS extensions |
+| `preset` | `fast` or `quality`: replaces `steps` and `cfg_scale` with the measured point of the loaded model family. Only the FLUX.3 family has a table; any other family answers `400`/`InvalidArgument` (never silently ignored). HCS extension, see `docs/supported-models.md` |
 | `n` | only `1` |
 | `response_format` | only `b64_json` (the default here, unlike OpenAI); `url` -> `501` (nothing is hosted) |
 
@@ -158,7 +159,7 @@ Per-family defaults (`include/hcs/image_profiles.hpp`): SD1.5 = 512x512, 20 step
 512x512, 16 steps (or the measured `fast` = 6 / `quality` = 16 presets), cfg 1.0. The family is detected when the model is
 loaded (and, for an early synchronous rejection, guessed from the model id); a model whose family is unknown has no envelope.
 
-Response `200`: `{"created", "data":[{"b64_json":"<PNG>"}], "hcs":{"job_id","request_id","model","format","width","height","steps","generation_ms","seed?"}}`.
+Response `200`: `{"created", "data":[{"b64_json":"<PNG>"}], "hcs":{"job_id","request_id","model","format","width","height","steps","generation_ms","seed?","preset?"}}`.
 
 `POST /v1/images/edits` takes the same fields plus `image` (required): a `data:image/{png,jpeg};base64,...` URI or bare
 base64 of a PNG/JPEG, and `strength` (0..1, default 0.75). `size` defaults to the input image's size. `mask`
@@ -169,8 +170,8 @@ runs. The whole request body is bounded by `--max-body-bytes` (default 1 MiB: ra
 Behaviour shared by both routes:
 
 - The request runs as a job (`image.generate` / `image.edit`) on the single engine worker; the response is sent when the
-  render finishes. The engine cannot report intermediate images or percentages, so there is no streaming and no
-  progress. `GET /hcs/v1/jobs/{id}` (id from `hcs.job_id` in the response) shows the result summary.
+  render finishes. The diffusion engine adapter has a per-step progress sink, but this route does not expose it yet (no
+  streaming, no progress events, no intermediate images). `GET /hcs/v1/jobs/{id}` (id from `hcs.job_id` in the response) shows the result summary.
 - **Client disconnect cancels the render** (the handler probes the connection every 150 ms), the request timeout
   (`--timeout-s`) cancels it and answers `504`; `POST /hcs/v1/jobs/{id}/cancel` stops a job started elsewhere (e.g. MCP).
 - Errors: invalid sizes/steps/images `400`, unknown model `404`, text model named for an image request `400`, no image model

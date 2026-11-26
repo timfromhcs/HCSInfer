@@ -1,0 +1,3 @@
+Usage: HCSInfer mcp stdio [options]
+
+Run `HCSInfer mcp stdio --help` for details.

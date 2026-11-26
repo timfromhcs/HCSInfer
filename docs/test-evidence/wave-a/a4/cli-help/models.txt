@@ -1,0 +1,7 @@
+Usage: HCSInfer models <subcommand>
+
+  list [--json]          List registered models
+  scan <dir> [--json]    Scan <dir> (read-only). <dir> becomes the approved root for this scan.
+  inspect <id>           Print the manifest of one model as JSON
+  load <id>, unload      Not in the one-shot CLI (exit code 10): pass --model to chat/vision/image, or load
+                         in a running `serve` / MCP process (POST /hcs/v1/models/<id>/load)

@@ -1,0 +1,37 @@
+Usage: HCSInfer benchmark --suite quick|full --model <path-or-id> [options]
+
+Benchmarks a real GGUF text model through the llama.cpp adapter and prints one JSON document
+(AGENTS.md 21.1, schema_version 1). Two phases are reported separately:
+  cold  the first load and first generation of this process (no warm-up). Engine/driver start-up costs
+        are included. The OS file cache is NOT flushed (that needs administrator rights), so 'cold'
+        means process-cold; "file_cache" says so in the output.
+  warm  after --warmup discarded generations, --iterations measured generations (median/p90) and
+        --iterations unload/load cycles (load_ms median/p90, file cache warm).
+
+Options:
+  --suite quick|full     quick: the cold/warm record above (1 warm-up, 3 iterations, 64 new tokens).
+                         full: quick PLUS a prefill sweep (TTFT and prompt tokens/s at several prompt
+                         sizes, 1 new token) and a decode sweep (decode tokens/s at the same sizes);
+                         every point has its own median/p90 and raw samples. Points that do not fit
+                         --ctx are recorded as SKIPPED with the reason.
+  --sweep-sizes <a,b,..> Full suite only: approximate prompt sizes in tokens, 1..8 values of
+                         16..1048576 (default 128,512,1024,2048). The real token count of every
+                         point is measured and recorded.
+  --model <path-or-id>   GGUF file path or model id from `models scan` (required)
+  --backend <b>          auto (default) | cpu | vulkan (no silent fallback when explicit)
+  --load-mode <m>        auto (default) | none | mmap | mlock | mmap+mlock | direct_io
+                         Weight-loading mode of the engine (AGENTS.md 11.2 Stage A). 'none' reads the
+                         weights into RAM, 'mmap' maps the file, 'mlock'/'mmap+mlock' lock pages in RAM,
+                         'direct_io' bypasses the OS file cache. Recorded in the JSON as "load_mode".
+  --device <name>        GPU device substring
+  --ctx <n>              Context tokens (default 4096)
+  --max-tokens <n>       New tokens per generation (default 64, 1..4096)
+  --warmup <n>           Discarded warm-up generations (default 1, 0..20)
+  --iterations <n>       Measured iterations (default 3, 1..50)
+  --threads <n>          CPU threads (default: engine default)
+  --seed <n>             Sampling seed (default 42; temperature is 0, i.e. greedy)
+  --export <file>        Also write the JSON to this file (atomic, refuses to overwrite without --force)
+  --force                Allow --export to overwrite an existing file
+  --no-hash              Skip the model SHA-256 (it re-reads the whole file after the measurements)
+
+The prompt is a fixed text (never logged); the JSON records the real prompt token count.

@@ -1,6 +1,6 @@
 # HCSInfer 1.0.0-rc.1 (release candidate)
 
-Status: **release candidate, not tagged, not merged, not pushed.** This is a single-machine-verified
+Status: **release candidate; tag `v1.0.0-rc.1` pushed, GitHub release is a draft (publishing is the owner's step).** This is a single-machine-verified
 release candidate. Every statement below is backed by a file under `docs/test-evidence/` or an inspected source file; anything
 without evidence is listed as NOT RUN or BLOCKED. The authoritative per-gate table is `docs/roadmap/STATUS.md`; the
 tested hardware/model list is `docs/support-matrix.md`.

@@ -1,0 +1,24 @@
+Usage: HCSInfer vision --model <path-or-id> --image <file> --prompt "..." [options]
+
+Analyses one image with a multimodal GGUF model (llama.cpp + libmtmd). The model needs its vision
+projector (mmproj GGUF): pass --mmproj, or place exactly one mmproj*.gguf next to the model file.
+Supported image formats: png, jpeg, bmp, gif. Limits: 32 MiB encoded, 16 Mpixel decoded.
+
+Options:
+  --model <path-or-id>   Multimodal text-model GGUF path or model id (required)
+  --mmproj <path>        Projector GGUF (default: the single mmproj*.gguf beside the model)
+  --image <file>         Image file (required)
+  --prompt <text>        Question / instruction about the image (required)
+  --system <text>        System prompt
+  --backend <b>          auto (default) | cpu | vulkan (no silent fallback when explicit)
+  --device <name>        GPU device name/description substring
+  --load-mode <m>        auto|none|mmap|mlock|mmap+mlock|direct_io (engine weight-loading mode)
+  --gpu-layers <n>       Layers to offload (default: all when using a GPU)
+  --ctx <n>              Context tokens (default 4096)
+  --max-tokens <n>       Max generated tokens (default 256)
+  --temp <t>             Temperature; 0 = greedy (default 0.2)
+  --seed <n>             Sampling seed
+  --threads <n>          CPU threads (default: physical cores)
+  --json                 Machine-readable result (text + metrics) on stdout
+
+Ctrl-C cancels the running generation (exit code 6).
