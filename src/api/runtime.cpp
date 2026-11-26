@@ -282,7 +282,6 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     };
     std::string host;
     unsigned long long port = 8765, body_cap = 1024ull * 1024, inflight = 8, timeout_s = 300;
-    bool lan = false;
     scheduler::AdmissionConfig adm;
     unsigned long long min_free_mb = adm.min_free_ram_bytes >> 20, hard_floor_mb = adm.hard_floor_bytes >> 20,
                        commit_pct = 90, max_jobs = adm.max_in_flight, watchdog_ms = 1000;

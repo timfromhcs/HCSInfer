@@ -4,6 +4,15 @@ Derived from `git log`. No release has been tagged. The version is `1.0.0-rc.1` 
 `HCS_VERSION_SUFFIX "-rc.1"`; the wheel spells it `1.0.0rc1`, npm `1.0.0-rc.1`). Entries describe what the commits
 changed; PASS/NOT RUN state of each feature is in `docs/roadmap/STATUS.md`.
 
+## Unreleased (wave B / c1)
+
+- HCSUDA port (ADR-014): typed Vulkan capability model and conservative planner (`doctor --json` -> `planner`), CPU
+  oracle + multi-threaded CPU baseline, keyed kernel profile cache, a Vulkan runner with device-lost/timeout recovery,
+  and eight Vulkan kernels (tiled f32/f16 GEMM, int8-dot GEMM, cooperative-matrix GEMM, softmax, LayerNorm, RMSNorm,
+  RoPE). `HCSInfer tune` is now a real command (was an exit-10 stub) in builds with `HCS_ENABLE_VULKAN_KERNELS=ON`.
+  Measured on the Radeon 680M: all kernels correct and deterministic, none default-enabled (no upstream GGML baseline).
+- Fix: duplicate `bool lan` declaration in `src/api/runtime.cpp` after the wave-B merges.
+
 ## Unreleased (wave B / e1)
 
 - `HCSInfer models load|unload|status` are now real HTTP clients of a running `serve` (`--host/--port/--token` or

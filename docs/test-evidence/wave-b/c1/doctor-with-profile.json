@@ -1,0 +1,2025 @@
+{
+  "cpu": {
+    "family": 25,
+    "features": {
+      "aes": true,
+      "avx": true,
+      "avx2": true,
+      "avx512_vnni": false,
+      "avx512bw": false,
+      "avx512f": false,
+      "avx512vl": false,
+      "avx_vnni": false,
+      "bmi1": true,
+      "bmi2": true,
+      "f16c": true,
+      "fma3": true,
+      "os_ymm_state_enabled": true,
+      "os_zmm_state_enabled": false,
+      "popcnt": true,
+      "sha": true,
+      "sse4_2": true
+    },
+    "logical_processors": 16,
+    "model": 68,
+    "name": "AMD Ryzen 7 7735HS with Radeon Graphics",
+    "nominal_mhz": 3194,
+    "physical_cores": 8,
+    "stepping": 1,
+    "vendor": "AuthenticAMD"
+  },
+  "gpu": {
+    "adapters": [
+      {
+        "dedicated_system_memory_bytes": 0,
+        "dedicated_video_memory_bytes": 4267499520,
+        "device_id": "0x1681",
+        "index": 0,
+        "memory_local_segment": {
+          "available_for_reservation_bytes": 7176802304,
+          "budget_bytes": 14085169152,
+          "current_usage_bytes": 0
+        },
+        "memory_non_local_segment": {
+          "available_for_reservation_bytes": 0,
+          "budget_bytes": 0,
+          "current_usage_bytes": 0
+        },
+        "name": "AMD Radeon(TM) Graphics",
+        "revision": 6,
+        "shared_system_memory_bytes": 10622976000,
+        "software_adapter": false,
+        "subsystem_id": "0x1241002",
+        "umd_version": "32.0.21043.12001",
+        "vendor_id": "0x1002"
+      },
+      {
+        "dedicated_system_memory_bytes": 0,
+        "dedicated_video_memory_bytes": 4267499520,
+        "device_id": "0x1681",
+        "index": 1,
+        "memory_local_segment": {
+          "available_for_reservation_bytes": 7176802304,
+          "budget_bytes": 14085169152,
+          "current_usage_bytes": 0
+        },
+        "memory_non_local_segment": {
+          "available_for_reservation_bytes": 0,
+          "budget_bytes": 0,
+          "current_usage_bytes": 0
+        },
+        "name": "AMD Radeon(TM) Graphics",
+        "revision": 6,
+        "shared_system_memory_bytes": 10622976000,
+        "software_adapter": false,
+        "subsystem_id": "0x1241002",
+        "umd_version": "32.0.21043.12001",
+        "vendor_id": "0x1002"
+      },
+      {
+        "dedicated_system_memory_bytes": 0,
+        "dedicated_video_memory_bytes": 0,
+        "device_id": "0x008C",
+        "index": 2,
+        "memory_local_segment": {
+          "available_for_reservation_bytes": 5045913600,
+          "budget_bytes": 9823391744,
+          "current_usage_bytes": 0
+        },
+        "memory_non_local_segment": {
+          "available_for_reservation_bytes": 0,
+          "budget_bytes": 0,
+          "current_usage_bytes": 0
+        },
+        "name": "Microsoft Basic Render Driver",
+        "revision": 0,
+        "shared_system_memory_bytes": 10622976000,
+        "software_adapter": true,
+        "subsystem_id": "0x0000",
+        "umd_version": "10.0.26100.9818",
+        "vendor_id": "0x1414"
+      }
+    ],
+    "display_driver_registry": [
+      {
+        "description": "AMD Radeon(TM) Graphics",
+        "driver_date": "5-29-2026",
+        "driver_version": "32.0.21043.12001",
+        "matching_device_id": "PCI\\VEN_1002&DEV_1681&REV_06",
+        "provider": "Advanced Micro Devices, Inc."
+      },
+      {
+        "description": "Parsec Virtual Display Adapter",
+        "driver_date": "1-25-2024",
+        "driver_version": "0.45.0.0",
+        "matching_device_id": "Root\\Parsec\\VDA",
+        "provider": "Parsec Cloud, Inc."
+      }
+    ],
+    "dxgi_available": true
+  },
+  "hcsinfer_version": "1.0.0-rc.1",
+  "memory": {
+    "available_physical_bytes": 10414264320,
+    "bios_uma_reservation": "unknown",
+    "channel_configuration": "unknown",
+    "commit_available_bytes": 21672099840,
+    "commit_limit_bytes": 39499563008,
+    "installed_physical_bytes": 25769803776,
+    "memory_load_percent": 50,
+    "total_physical_bytes": 21245952000
+  },
+  "options": {
+    "no_vulkan": false
+  },
+  "os": {
+    "architecture": "x64",
+    "build": 26200,
+    "display_version": "25H2",
+    "name": "windows",
+    "product_name_registry": "Windows 10 Pro",
+    "ubr": 9974,
+    "version": "10.0"
+  },
+  "planner": {
+    "devices": [
+      {
+        "caps": {
+          "compute_queue_family": 0,
+          "coopmat_f16_f32_16x16x16_subgroup": true,
+          "device_id": 5761,
+          "device_key": "vk:1002:1681:drv=0x00800161:api=1.4.315",
+          "dtypes": {
+            "f16": {
+              "compute": "native",
+              "storage": "native"
+            },
+            "f32": {
+              "compute": "native",
+              "storage": "native"
+            },
+            "i8": {
+              "compute": "native",
+              "storage": "native"
+            }
+          },
+          "features": {
+            "bfloat16_ext": "no",
+            "cooperative_matrix": "yes",
+            "float8_ext": "unknown",
+            "int8_dot_accelerated": "yes",
+            "integer_dot_product": "yes",
+            "memory_budget_ext": "yes",
+            "shader_float16": "yes",
+            "shader_int8": "yes",
+            "storage_16bit": "yes",
+            "storage_8bit": "yes",
+            "timestamps": "yes"
+          },
+          "max_push_constants": 256,
+          "max_shared_memory": 32768,
+          "max_storage_range": 4294967295,
+          "max_workgroup_invocations": 1024,
+          "name": "AMD Radeon(TM) Graphics",
+          "subgroup_ops": [
+            "basic",
+            "vote",
+            "arithmetic",
+            "ballot",
+            "shuffle",
+            "shuffle_relative",
+            "clustered",
+            "quad",
+            "rotate",
+            "rotate_clustered"
+          ],
+          "subgroup_size": 64,
+          "timestamp_period_ns": 10.0,
+          "vendor_id": 4098
+        },
+        "device_key": "vk:1002:1681:drv=0x00800161:api=1.4.315",
+        "kernels": [
+          {
+            "dtype": "f16",
+            "evidence": [
+              {
+                "baseline": {
+                  "ms": 0.44435,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m128n128k128",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 635.5006060606061,
+                "gflops_wall": 67.32430176565009,
+                "gpu_ms_median": 0.0066,
+                "identical_runs": 3,
+                "max_abs_error": 1.9073486328125e-06,
+                "promoted": false,
+                "reasons": [
+                  "timing too noisy (spread 0.274 > 0.250): not a result"
+                ],
+                "shape": {
+                  "k": 128,
+                  "m": 128,
+                  "n": 128
+                },
+                "speedup_vs_baseline": 7.132423756019262,
+                "timestamp_utc": "2026-11-26T15:42:49Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.0623,
+                "wall_spread": 0.2744783306581059
+              },
+              {
+                "baseline": {
+                  "ms": 5.9887999999999995,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m256n1024k256",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 648.7709203402939,
+                "gflops_wall": 433.23992253066484,
+                "gpu_ms_median": 0.20688,
+                "identical_runs": 3,
+                "max_abs_error": 3.814697265625e-06,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 256,
+                  "m": 256,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 19.331181407359583,
+                "timestamp_utc": "2026-11-26T15:42:49Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.3098,
+                "wall_spread": 0.21174951581665585
+              },
+              {
+                "baseline": {
+                  "ms": 38.555,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m512n2048k512",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 636.4045898530109,
+                "gflops_wall": 517.6405650098828,
+                "gpu_ms_median": 1.6872,
+                "identical_runs": 3,
+                "max_abs_error": 9.5367431640625e-06,
+                "promoted": false,
+                "reasons": [
+                  "timing too noisy (spread 0.303 > 0.250): not a result"
+                ],
+                "shape": {
+                  "k": 512,
+                  "m": 512,
+                  "n": 2048
+                },
+                "speedup_vs_baseline": 18.586993202526152,
+                "timestamp_utc": "2026-11-26T15:42:53Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 2.0743,
+                "wall_spread": 0.3029937810345659
+              },
+              {
+                "baseline": {
+                  "ms": 78.5376,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m1024n1024k1024",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 635.2750112412732,
+                "gflops_wall": 577.730932178311,
+                "gpu_ms_median": 3.3804,
+                "identical_runs": 3,
+                "max_abs_error": 1.9073486328125e-05,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 1024,
+                  "m": 1024,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 21.12872938581152,
+                "timestamp_utc": "2026-11-26T15:42:59Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 3.7171,
+                "wall_spread": 0.055311936724866166
+              }
+            ],
+            "evidence_key": "vulkan_coopmat:gemm:f16",
+            "gate": {
+              "eligible": true,
+              "reason": "all required capabilities reported"
+            },
+            "id": "gemm_coopmat_f16",
+            "kernel_hash": "e1f06d363f41722c",
+            "op": "gemm",
+            "path": "vulkan_coopmat",
+            "status": "measured"
+          },
+          {
+            "dtype": "f16",
+            "evidence": [
+              {
+                "baseline": {
+                  "ms": 0.5037,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m128n128k128",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 377.1856115107914,
+                "gflops_wall": 46.916152125279645,
+                "gpu_ms_median": 0.01112,
+                "identical_runs": 3,
+                "max_abs_error": 6.67572021484375e-06,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 128,
+                  "m": 128,
+                  "n": 128
+                },
+                "speedup_vs_baseline": 5.634228187919464,
+                "timestamp_utc": "2026-11-26T15:43:00Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.0894,
+                "wall_spread": 0.2147651006711409
+              },
+              {
+                "baseline": {
+                  "ms": 5.1483,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m256n1024k256",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 565.2700808625335,
+                "gflops_wall": 365.2183074829932,
+                "gpu_ms_median": 0.23744,
+                "identical_runs": 3,
+                "max_abs_error": 1.71661376953125e-05,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 256,
+                  "m": 256,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 14.008979591836734,
+                "timestamp_utc": "2026-11-26T15:43:00Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.3675,
+                "wall_spread": 0.2236734693877551
+              },
+              {
+                "baseline": {
+                  "ms": 39.3227,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m512n2048k512",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 464.7186884337725,
+                "gflops_wall": 402.090257639305,
+                "gpu_ms_median": 2.31052,
+                "identical_runs": 3,
+                "max_abs_error": 3.24249267578125e-05,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 512,
+                  "m": 512,
+                  "n": 2048
+                },
+                "speedup_vs_baseline": 14.72539694427801,
+                "timestamp_utc": "2026-11-26T15:43:04Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 2.6704,
+                "wall_spread": 0.17997303774715395
+              },
+              {
+                "baseline": {
+                  "ms": 83.41675000000001,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m1024n1024k1024",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 483.11908284289905,
+                "gflops_wall": 451.2752743396305,
+                "gpu_ms_median": 4.44504,
+                "identical_runs": 3,
+                "max_abs_error": 7.2479248046875e-05,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 1024,
+                  "m": 1024,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 17.52931472881249,
+                "timestamp_utc": "2026-11-26T15:43:10Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 4.7587,
+                "wall_spread": 0.025427112446676704
+              }
+            ],
+            "evidence_key": "vulkan_tiled:gemm:f16",
+            "gate": {
+              "eligible": true,
+              "reason": "all required capabilities reported"
+            },
+            "id": "gemm_f16_tiled",
+            "kernel_hash": "14456bbfc4c7fa5e",
+            "op": "gemm",
+            "path": "vulkan_tiled",
+            "status": "measured"
+          },
+          {
+            "dtype": "i8",
+            "evidence": [
+              {
+                "baseline": {
+                  "ms": 0.583,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m128n128k128",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 524.288,
+                "gflops_wall": 48.941703617269546,
+                "gpu_ms_median": 0.008,
+                "identical_runs": 3,
+                "max_abs_error": 0.0,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 128,
+                  "m": 128,
+                  "n": 128
+                },
+                "speedup_vs_baseline": 6.802800466744457,
+                "timestamp_utc": "2026-11-26T15:43:11Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.0857,
+                "wall_spread": 0.15169194865810967
+              },
+              {
+                "baseline": {
+                  "ms": 6.3258,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m256n1024k256",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 717.4349369253795,
+                "gflops_wall": 470.9393964912281,
+                "gpu_ms_median": 0.18708,
+                "identical_runs": 3,
+                "max_abs_error": 0.0,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 256,
+                  "m": 256,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 22.19578947368421,
+                "timestamp_utc": "2026-11-26T15:43:11Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.285,
+                "wall_spread": 0.13438596491228072
+              },
+              {
+                "baseline": {
+                  "ms": 41.152950000000004,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m512n2048k512",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 731.7108869868613,
+                "gflops_wall": 669.7491417165669,
+                "gpu_ms_median": 1.46744,
+                "identical_runs": 3,
+                "max_abs_error": 0.0,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 512,
+                  "m": 512,
+                  "n": 2048
+                },
+                "speedup_vs_baseline": 25.66925523952096,
+                "timestamp_utc": "2026-11-26T15:43:13Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 1.6032,
+                "wall_spread": 0.028630239520958115
+              },
+              {
+                "baseline": {
+                  "ms": 82.54545,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m1024n1024k1024",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 728.8203195634171,
+                "gflops_wall": 672.0967851777666,
+                "gpu_ms_median": 2.94652,
+                "identical_runs": 3,
+                "max_abs_error": 0.0,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 1024,
+                  "m": 1024,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 25.834204431647475,
+                "timestamp_utc": "2026-11-26T15:43:16Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 3.1952,
+                "wall_spread": 0.01514772158237356
+              }
+            ],
+            "evidence_key": "vulkan_intdot:gemm:i8",
+            "gate": {
+              "eligible": true,
+              "reason": "all required capabilities reported"
+            },
+            "id": "gemm_i8dot_tiled",
+            "kernel_hash": "7ab13ba898e57c2a",
+            "op": "gemm",
+            "path": "vulkan_intdot",
+            "status": "measured"
+          },
+          {
+            "dtype": "f32",
+            "evidence": [
+              {
+                "baseline": {
+                  "ms": 0.42065,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m128n128k128",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 360.3353951890034,
+                "gflops_wall": 60.523867243867244,
+                "gpu_ms_median": 0.01164,
+                "identical_runs": 3,
+                "max_abs_error": 7.152557373046875e-06,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 128,
+                  "m": 128,
+                  "n": 128
+                },
+                "speedup_vs_baseline": 6.069985569985571,
+                "timestamp_utc": "2026-11-26T15:43:17Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.0693,
+                "wall_spread": 0.010101010101009989
+              },
+              {
+                "baseline": {
+                  "ms": 4.8802,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m256n1024k256",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 562.7105819218515,
+                "gflops_wall": 404.75792521109764,
+                "gpu_ms_median": 0.23852,
+                "identical_runs": 3,
+                "max_abs_error": 1.52587890625e-05,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 256,
+                  "m": 256,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 14.717129071170085,
+                "timestamp_utc": "2026-11-26T15:43:17Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.3316,
+                "wall_spread": 0.08896260554885412
+              },
+              {
+                "baseline": {
+                  "ms": 38.831149999999994,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m512n2048k512",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 394.607144327169,
+                "gflops_wall": 364.3755341387267,
+                "gpu_ms_median": 2.72104,
+                "identical_runs": 3,
+                "max_abs_error": 3.24249267578125e-05,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 512,
+                  "m": 512,
+                  "n": 2048
+                },
+                "speedup_vs_baseline": 13.177395819193698,
+                "timestamp_utc": "2026-11-26T15:43:20Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 2.9468,
+                "wall_spread": 0.09444142798968365
+              },
+              {
+                "baseline": {
+                  "ms": 76.9115,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m1024n1024k1024",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 387.5736617552573,
+                "gflops_wall": 371.4277198747773,
+                "gpu_ms_median": 5.54084,
+                "identical_runs": 3,
+                "max_abs_error": 7.2479248046875e-05,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 1024,
+                  "m": 1024,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 13.302575367106561,
+                "timestamp_utc": "2026-11-26T15:43:27Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 5.7817,
+                "wall_spread": 0.022847951294601838
+              }
+            ],
+            "evidence_key": "vulkan_tiled:gemm:f32",
+            "gate": {
+              "eligible": true,
+              "reason": "all required capabilities reported"
+            },
+            "id": "gemm_f32_tiled",
+            "kernel_hash": "b67287a21e06eee2",
+            "op": "gemm",
+            "path": "vulkan_tiled",
+            "status": "measured"
+          },
+          {
+            "dtype": "f32",
+            "evidence": [
+              {
+                "baseline": {
+                  "ms": 0.35929999999999995,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m32n4096k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 49.49848942598187,
+                "gflops_wall": 7.914975845410627,
+                "gpu_ms_median": 0.01324,
+                "identical_runs": 3,
+                "max_abs_error": 6.984919309616089e-10,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 32,
+                  "n": 4096
+                },
+                "speedup_vs_baseline": 4.339371980676328,
+                "timestamp_utc": "2026-11-26T15:43:28Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.0828,
+                "wall_spread": 0.23429951690821257
+              },
+              {
+                "baseline": {
+                  "ms": 0.80585,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m256n1024k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 45.51111111111111,
+                "gflops_wall": 13.133466933867735,
+                "gpu_ms_median": 0.0288,
+                "identical_runs": 3,
+                "max_abs_error": 3.725290298461914e-09,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 256,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 8.074649298597194,
+                "timestamp_utc": "2026-11-26T15:43:28Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.0998,
+                "wall_spread": 0.08617234468937872
+              },
+              {
+                "baseline": {
+                  "ms": 0.34485,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m4n32768k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 9.334889148191365,
+                "gflops_wall": 4.1450777202072535,
+                "gpu_ms_median": 0.06856,
+                "identical_runs": 3,
+                "max_abs_error": 5.820766091346741e-11,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 4,
+                  "n": 32000
+                },
+                "speedup_vs_baseline": 2.233484455958549,
+                "timestamp_utc": "2026-11-26T15:43:28Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.1544,
+                "wall_spread": 0.19494818652849732
+              }
+            ],
+            "evidence_key": "vulkan_tiled:softmax:f32",
+            "gate": {
+              "eligible": true,
+              "reason": "all required capabilities reported"
+            },
+            "id": "softmax_rows",
+            "kernel_hash": "6383371af7ef60cd",
+            "op": "softmax",
+            "path": "vulkan_tiled",
+            "status": "measured"
+          },
+          {
+            "dtype": "f32",
+            "evidence": [
+              {
+                "baseline": {
+                  "ms": 0.3046,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m32n4096k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 55.80924574209246,
+                "gflops_wall": 10.768826291079813,
+                "gpu_ms_median": 0.01644,
+                "identical_runs": 3,
+                "max_abs_error": 4.76837158203125e-07,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 32,
+                  "n": 4096
+                },
+                "speedup_vs_baseline": 3.5751173708920185,
+                "timestamp_utc": "2026-11-26T15:43:28Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.0852,
+                "wall_spread": 0.18427230046948365
+              },
+              {
+                "baseline": {
+                  "ms": 0.6197,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m256n1024k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 72.2444094488189,
+                "gflops_wall": 17.763872216844142,
+                "gpu_ms_median": 0.0254,
+                "identical_runs": 3,
+                "max_abs_error": 4.76837158203125e-07,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 256,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 5.999031945788964,
+                "timestamp_utc": "2026-11-26T15:43:28Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.1033,
+                "wall_spread": 0.09970958373668928
+              },
+              {
+                "baseline": {
+                  "ms": 0.326,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m4n32768k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 10.085547050877981,
+                "gflops_wall": 4.866920152091255,
+                "gpu_ms_median": 0.08884,
+                "identical_runs": 3,
+                "max_abs_error": 4.76837158203125e-07,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 4,
+                  "n": 32000
+                },
+                "speedup_vs_baseline": 1.7707767517653448,
+                "timestamp_utc": "2026-11-26T15:43:28Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.1841,
+                "wall_spread": 0.22650733297121137
+              }
+            ],
+            "evidence_key": "vulkan_tiled:layernorm:f32",
+            "gate": {
+              "eligible": true,
+              "reason": "all required capabilities reported"
+            },
+            "id": "layernorm_rows",
+            "kernel_hash": "c22ebf5bc22fffc3",
+            "op": "layernorm",
+            "path": "vulkan_tiled",
+            "status": "measured"
+          },
+          {
+            "dtype": "f32",
+            "evidence": [
+              {
+                "baseline": {
+                  "ms": 0.20235,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m32n4096k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 38.32514619883042,
+                "gflops_wall": 6.20459171597633,
+                "gpu_ms_median": 0.01368,
+                "identical_runs": 3,
+                "max_abs_error": 4.76837158203125e-07,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 32,
+                  "n": 4096
+                },
+                "speedup_vs_baseline": 2.3946745562130176,
+                "timestamp_utc": "2026-11-26T15:43:28Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.0845,
+                "wall_spread": 0.13254437869822486
+              },
+              {
+                "baseline": {
+                  "ms": 0.51755,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m256n1024k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 40.7055900621118,
+                "gflops_wall": 9.039448275862068,
+                "gpu_ms_median": 0.02576,
+                "identical_runs": 3,
+                "max_abs_error": 4.76837158203125e-07,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 256,
+                  "n": 1024
+                },
+                "speedup_vs_baseline": 4.461637931034482,
+                "timestamp_utc": "2026-11-26T15:43:29Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.116,
+                "wall_spread": 0.24568965517241376
+              },
+              {
+                "baseline": {
+                  "ms": 0.19855,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m4n32768k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 6.776071995764955,
+                "gflops_wall": 3.3182112767336363,
+                "gpu_ms_median": 0.07556,
+                "identical_runs": 3,
+                "max_abs_error": 2.384185791015625e-07,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 4,
+                  "n": 32000
+                },
+                "speedup_vs_baseline": 1.2867790019442644,
+                "timestamp_utc": "2026-11-26T15:43:29Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.1543,
+                "wall_spread": 0.1341542449773169
+              }
+            ],
+            "evidence_key": "vulkan_tiled:rmsnorm:f32",
+            "gate": {
+              "eligible": true,
+              "reason": "all required capabilities reported"
+            },
+            "id": "rmsnorm_rows",
+            "kernel_hash": "7ba698139cd72524",
+            "op": "rmsnorm",
+            "path": "vulkan_tiled",
+            "status": "measured"
+          },
+          {
+            "dtype": "f32",
+            "evidence": [
+              {
+                "baseline": {
+                  "ms": 0.29395000000000004,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m512n128k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 49.64848484848485,
+                "gflops_wall": 3.0529192546583848,
+                "gpu_ms_median": 0.00396,
+                "identical_runs": 3,
+                "max_abs_error": 4.044175148010254e-05,
+                "promoted": true,
+                "reasons": [
+                  "upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 512,
+                  "n": 128
+                },
+                "speedup_vs_baseline": 4.56444099378882,
+                "timestamp_utc": "2026-11-26T15:43:29Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.0644,
+                "wall_spread": 0.021739130434782584
+              },
+              {
+                "baseline": {
+                  "ms": 0.62725,
+                  "name": "cpu_mt_autovec (16 threads)"
+                },
+                "bucket": "m2048n128k0",
+                "correct": true,
+                "default_enabled": false,
+                "gflops_gpu": 41.5661733615222,
+                "gflops_wall": 8.124297520661157,
+                "gpu_ms_median": 0.01892,
+                "identical_runs": 3,
+                "max_abs_error": 0.00020348525140434504,
+                "promoted": false,
+                "reasons": [
+                  "timing too noisy (spread 0.269 > 0.250): not a result"
+                ],
+                "shape": {
+                  "k": 0,
+                  "m": 2048,
+                  "n": 128
+                },
+                "speedup_vs_baseline": 6.479855371900826,
+                "timestamp_utc": "2026-11-26T15:43:29Z",
+                "total_runs": 3,
+                "upstream_ggml_vulkan": {
+                  "ratio": "unknown",
+                  "status": "NOT RUN"
+                },
+                "wall_ms_median": 0.0968,
+                "wall_spread": 0.268595041322314
+              }
+            ],
+            "evidence_key": "vulkan_scalar:rope:f32",
+            "gate": {
+              "eligible": true,
+              "reason": "all required capabilities reported"
+            },
+            "id": "rope_rows",
+            "kernel_hash": "a56a07a1b946baf0",
+            "op": "rope",
+            "path": "vulkan_scalar",
+            "status": "measured"
+          }
+        ],
+        "name": "AMD Radeon(TM) Graphics",
+        "plans": [
+          {
+            "bucket": "m256n1024k256",
+            "candidate_kernel": "gemm_f32_tiled",
+            "candidate_status": "promoted",
+            "dtype": "f32",
+            "kernel": null,
+            "op": "gemm",
+            "path": "reference",
+            "reason": "no verified gemm path for f32 on this device yet; CPU reference used (gemm_f32_tiled: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)",
+            "shape": {
+              "k": 256,
+              "m": 256,
+              "n": 1024
+            }
+          },
+          {
+            "bucket": "m256n1024k256",
+            "candidate_kernel": "gemm_coopmat_f16",
+            "candidate_status": "promoted",
+            "dtype": "f16",
+            "kernel": null,
+            "op": "gemm",
+            "path": "reference",
+            "reason": "no verified gemm path for f16 on this device yet; CPU reference used (gemm_coopmat_f16: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)",
+            "shape": {
+              "k": 256,
+              "m": 256,
+              "n": 1024
+            }
+          },
+          {
+            "bucket": "m256n1024k256",
+            "candidate_kernel": "gemm_i8dot_tiled",
+            "candidate_status": "promoted",
+            "dtype": "i8",
+            "kernel": null,
+            "op": "gemm",
+            "path": "reference",
+            "reason": "no verified gemm path for i8 on this device yet; CPU reference used (gemm_i8dot_tiled: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)",
+            "shape": {
+              "k": 256,
+              "m": 256,
+              "n": 1024
+            }
+          },
+          {
+            "bucket": "m32n4096k0",
+            "candidate_kernel": "softmax_rows",
+            "candidate_status": "promoted",
+            "dtype": "f32",
+            "kernel": null,
+            "op": "softmax",
+            "path": "reference",
+            "reason": "no verified softmax path for f32 on this device yet; CPU reference used (softmax_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)",
+            "shape": {
+              "k": 0,
+              "m": 32,
+              "n": 4096
+            }
+          },
+          {
+            "bucket": "m32n4096k0",
+            "candidate_kernel": "layernorm_rows",
+            "candidate_status": "promoted",
+            "dtype": "f32",
+            "kernel": null,
+            "op": "layernorm",
+            "path": "reference",
+            "reason": "no verified layernorm path for f32 on this device yet; CPU reference used (layernorm_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)",
+            "shape": {
+              "k": 0,
+              "m": 32,
+              "n": 4096
+            }
+          },
+          {
+            "bucket": "m32n4096k0",
+            "candidate_kernel": "rmsnorm_rows",
+            "candidate_status": "promoted",
+            "dtype": "f32",
+            "kernel": null,
+            "op": "rmsnorm",
+            "path": "reference",
+            "reason": "no verified rmsnorm path for f32 on this device yet; CPU reference used (rmsnorm_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)",
+            "shape": {
+              "k": 0,
+              "m": 32,
+              "n": 4096
+            }
+          },
+          {
+            "bucket": "m512n128k0",
+            "candidate_kernel": "rope_rows",
+            "candidate_status": "promoted",
+            "dtype": "f32",
+            "kernel": null,
+            "op": "rope",
+            "path": "reference",
+            "reason": "no verified rope path for f32 on this device yet; CPU reference used (rope_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)",
+            "shape": {
+              "k": 0,
+              "m": 512,
+              "n": 128
+            }
+          }
+        ]
+      }
+    ],
+    "kernel_hashes": "known",
+    "policy": {
+      "allow_unbaselined": false,
+      "max_spread": 0.25,
+      "min_identical_runs": 3,
+      "min_speedup": 1.05
+    },
+    "profile": {
+      "entries": 27,
+      "path": "D:\\HCSScratch\\hcsdata\\c1-state\\kernel-profile.json",
+      "status": "ok"
+    },
+    "rule": "unknown = CPU; a kernel is promoted only after correctness vs the CPU oracle AND 3 identical runs AND >= 1.05x vs the baseline; default-enabled additionally needs a MEASURED upstream GGML Vulkan baseline >= 1.05x"
+  },
+  "schema_version": 1,
+  "storage": {
+    "requested_path": "unknown",
+    "requested_volume": "unknown",
+    "volumes": [
+      {
+        "bus_type": "nvme",
+        "device_product": "NVME SSD 1TB",
+        "device_vendor": "unknown",
+        "drive_type": "fixed",
+        "filesystem": "NTFS",
+        "free_bytes": 65854320640,
+        "removable_media": false,
+        "root": "C:\\",
+        "rotational": false,
+        "total_bytes": 998823161856
+      },
+      {
+        "bus_type": "usb",
+        "device_product": "IB-1232CL-U3",
+        "device_vendor": "unknown",
+        "drive_type": "fixed",
+        "filesystem": "NTFS",
+        "free_bytes": 242235736064,
+        "removable_media": false,
+        "root": "D:\\",
+        "rotational": "unknown",
+        "total_bytes": 500105736192
+      },
+      {
+        "bus_type": "usb",
+        "device_product": "IB-1232CL-U3",
+        "device_vendor": "unknown",
+        "drive_type": "fixed",
+        "filesystem": "NTFS",
+        "free_bytes": 95278137344,
+        "removable_media": false,
+        "root": "E:\\",
+        "rotational": "unknown",
+        "total_bytes": 500105736192
+      }
+    ]
+  },
+  "summary": {
+    "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+    "cpu_features": [
+      "aes",
+      "avx",
+      "avx2",
+      "bmi1",
+      "bmi2",
+      "f16c",
+      "fma3",
+      "popcnt",
+      "sha",
+      "sse4_2"
+    ],
+    "driver_version": "26.6.1 (AMD proprietary shader compiler)",
+    "gpu": "AMD Radeon(TM) Graphics",
+    "gpu_device_id": "0x1681",
+    "gpu_vendor_id": "0x1002",
+    "os_build": "10.0.26200.9974",
+    "ram_bytes": 21245952000,
+    "registry_driver_version": "32.0.21043.12001",
+    "uma_reservation_bytes": 4267499520,
+    "vulkan_api_version": "1.4.315",
+    "vulkan_status": "ok"
+  },
+  "timestamp_utc": "2026-11-26T15:43:38Z",
+  "vulkan": {
+    "device_count": 1,
+    "devices": [
+      {
+        "all_extensions": [
+          "VK_AMD_anti_lag",
+          "VK_AMD_buffer_marker",
+          "VK_AMD_device_coherent_memory",
+          "VK_AMD_display_native_hdr",
+          "VK_AMD_draw_indirect_count",
+          "VK_AMD_gcn_shader",
+          "VK_AMD_gpa_interface",
+          "VK_AMD_gpu_shader_half_float",
+          "VK_AMD_gpu_shader_int16",
+          "VK_AMD_memory_overallocation_behavior",
+          "VK_AMD_mixed_attachment_samples",
+          "VK_AMD_shader_ballot",
+          "VK_AMD_shader_core_properties",
+          "VK_AMD_shader_core_properties2",
+          "VK_AMD_shader_early_and_late_fragment_tests",
+          "VK_AMD_shader_explicit_vertex_parameter",
+          "VK_AMD_shader_fragment_mask",
+          "VK_AMD_shader_image_load_store_lod",
+          "VK_AMD_shader_info",
+          "VK_AMD_shader_trinary_minmax",
+          "VK_AMD_texture_gather_bias_lod",
+          "VK_EXT_4444_formats",
+          "VK_EXT_attachment_feedback_loop_layout",
+          "VK_EXT_border_color_swizzle",
+          "VK_EXT_calibrated_timestamps",
+          "VK_EXT_color_write_enable",
+          "VK_EXT_conditional_rendering",
+          "VK_EXT_conservative_rasterization",
+          "VK_EXT_custom_border_color",
+          "VK_EXT_depth_clamp_control",
+          "VK_EXT_depth_clamp_zero_one",
+          "VK_EXT_depth_clip_control",
+          "VK_EXT_depth_clip_enable",
+          "VK_EXT_depth_range_unrestricted",
+          "VK_EXT_descriptor_buffer",
+          "VK_EXT_descriptor_indexing",
+          "VK_EXT_device_address_binding_report",
+          "VK_EXT_device_fault",
+          "VK_EXT_device_generated_commands",
+          "VK_EXT_dynamic_rendering_unused_attachments",
+          "VK_EXT_extended_dynamic_state",
+          "VK_EXT_extended_dynamic_state2",
+          "VK_EXT_extended_dynamic_state3",
+          "VK_EXT_external_memory_host",
+          "VK_EXT_fragment_shader_interlock",
+          "VK_EXT_frame_boundary",
+          "VK_EXT_full_screen_exclusive",
+          "VK_EXT_global_priority",
+          "VK_EXT_global_priority_query",
+          "VK_EXT_graphics_pipeline_library",
+          "VK_EXT_hdr_metadata",
+          "VK_EXT_host_query_reset",
+          "VK_EXT_image_2d_view_of_3d",
+          "VK_EXT_image_robustness",
+          "VK_EXT_image_sliced_view_of_3d",
+          "VK_EXT_image_view_min_lod",
+          "VK_EXT_index_type_uint8",
+          "VK_EXT_inline_uniform_block",
+          "VK_EXT_line_rasterization",
+          "VK_EXT_load_store_op_none",
+          "VK_EXT_memory_budget",
+          "VK_EXT_memory_priority",
+          "VK_EXT_mutable_descriptor_type",
+          "VK_EXT_nested_command_buffer",
+          "VK_EXT_non_seamless_cube_map",
+          "VK_EXT_pageable_device_local_memory",
+          "VK_EXT_pipeline_creation_cache_control",
+          "VK_EXT_pipeline_creation_feedback",
+          "VK_EXT_pipeline_library_group_handles",
+          "VK_EXT_post_depth_coverage",
+          "VK_EXT_primitive_topology_list_restart",
+          "VK_EXT_private_data",
+          "VK_EXT_provoking_vertex",
+          "VK_EXT_queue_family_foreign",
+          "VK_EXT_robustness2",
+          "VK_EXT_sample_locations",
+          "VK_EXT_sampler_filter_minmax",
+          "VK_EXT_scalar_block_layout",
+          "VK_EXT_separate_stencil_usage",
+          "VK_EXT_shader_atomic_float",
+          "VK_EXT_shader_atomic_float2",
+          "VK_EXT_shader_demote_to_helper_invocation",
+          "VK_EXT_shader_image_atomic_int64",
+          "VK_EXT_shader_module_identifier",
+          "VK_EXT_shader_object",
+          "VK_EXT_shader_replicated_composites",
+          "VK_EXT_shader_stencil_export",
+          "VK_EXT_shader_subgroup_ballot",
+          "VK_EXT_shader_subgroup_vote",
+          "VK_EXT_shader_viewport_index_layer",
+          "VK_EXT_subgroup_size_control",
+          "VK_EXT_texel_buffer_alignment",
+          "VK_EXT_tooling_info",
+          "VK_EXT_transform_feedback",
+          "VK_EXT_vertex_attribute_divisor",
+          "VK_EXT_vertex_input_dynamic_state",
+          "VK_EXT_ycbcr_image_arrays",
+          "VK_GOOGLE_decorate_string",
+          "VK_GOOGLE_hlsl_functionality1",
+          "VK_GOOGLE_user_type",
+          "VK_KHR_16bit_storage",
+          "VK_KHR_8bit_storage",
+          "VK_KHR_acceleration_structure",
+          "VK_KHR_bind_memory2",
+          "VK_KHR_buffer_device_address",
+          "VK_KHR_calibrated_timestamps",
+          "VK_KHR_compute_shader_derivatives",
+          "VK_KHR_cooperative_matrix",
+          "VK_KHR_copy_commands2",
+          "VK_KHR_create_renderpass2",
+          "VK_KHR_dedicated_allocation",
+          "VK_KHR_deferred_host_operations",
+          "VK_KHR_depth_clamp_zero_one",
+          "VK_KHR_depth_stencil_resolve",
+          "VK_KHR_descriptor_update_template",
+          "VK_KHR_device_group",
+          "VK_KHR_draw_indirect_count",
+          "VK_KHR_driver_properties",
+          "VK_KHR_dynamic_rendering",
+          "VK_KHR_dynamic_rendering_local_read",
+          "VK_KHR_external_fence",
+          "VK_KHR_external_fence_win32",
+          "VK_KHR_external_memory",
+          "VK_KHR_external_memory_win32",
+          "VK_KHR_external_semaphore",
+          "VK_KHR_external_semaphore_win32",
+          "VK_KHR_format_feature_flags2",
+          "VK_KHR_fragment_shader_barycentric",
+          "VK_KHR_fragment_shading_rate",
+          "VK_KHR_get_memory_requirements2",
+          "VK_KHR_global_priority",
+          "VK_KHR_image_format_list",
+          "VK_KHR_imageless_framebuffer",
+          "VK_KHR_index_type_uint8",
+          "VK_KHR_line_rasterization",
+          "VK_KHR_load_store_op_none",
+          "VK_KHR_maintenance1",
+          "VK_KHR_maintenance2",
+          "VK_KHR_maintenance3",
+          "VK_KHR_maintenance4",
+          "VK_KHR_maintenance5",
+          "VK_KHR_maintenance6",
+          "VK_KHR_maintenance7",
+          "VK_KHR_maintenance8",
+          "VK_KHR_map_memory2",
+          "VK_KHR_multiview",
+          "VK_KHR_pipeline_binary",
+          "VK_KHR_pipeline_executable_properties",
+          "VK_KHR_pipeline_library",
+          "VK_KHR_push_descriptor",
+          "VK_KHR_ray_query",
+          "VK_KHR_ray_tracing_maintenance1",
+          "VK_KHR_ray_tracing_pipeline",
+          "VK_KHR_ray_tracing_position_fetch",
+          "VK_KHR_relaxed_block_layout",
+          "VK_KHR_robustness2",
+          "VK_KHR_sampler_mirror_clamp_to_edge",
+          "VK_KHR_sampler_ycbcr_conversion",
+          "VK_KHR_separate_depth_stencil_layouts",
+          "VK_KHR_shader_atomic_int64",
+          "VK_KHR_shader_clock",
+          "VK_KHR_shader_draw_parameters",
+          "VK_KHR_shader_expect_assume",
+          "VK_KHR_shader_float16_int8",
+          "VK_KHR_shader_float_controls",
+          "VK_KHR_shader_float_controls2",
+          "VK_KHR_shader_integer_dot_product",
+          "VK_KHR_shader_maximal_reconvergence",
+          "VK_KHR_shader_non_semantic_info",
+          "VK_KHR_shader_quad_control",
+          "VK_KHR_shader_subgroup_extended_types",
+          "VK_KHR_shader_subgroup_rotate",
+          "VK_KHR_shader_subgroup_uniform_control_flow",
+          "VK_KHR_shader_terminate_invocation",
+          "VK_KHR_spirv_1_4",
+          "VK_KHR_storage_buffer_storage_class",
+          "VK_KHR_swapchain",
+          "VK_KHR_swapchain_mutable_format",
+          "VK_KHR_synchronization2",
+          "VK_KHR_timeline_semaphore",
+          "VK_KHR_uniform_buffer_standard_layout",
+          "VK_KHR_variable_pointers",
+          "VK_KHR_vertex_attribute_divisor",
+          "VK_KHR_video_decode_av1",
+          "VK_KHR_video_decode_h264",
+          "VK_KHR_video_decode_h265",
+          "VK_KHR_video_decode_queue",
+          "VK_KHR_video_encode_h264",
+          "VK_KHR_video_encode_h265",
+          "VK_KHR_video_encode_queue",
+          "VK_KHR_video_maintenance1",
+          "VK_KHR_video_queue",
+          "VK_KHR_vulkan_memory_model",
+          "VK_KHR_win32_keyed_mutex",
+          "VK_KHR_workgroup_memory_explicit_layout",
+          "VK_KHR_zero_initialize_workgroup_memory",
+          "VK_VALVE_mutable_descriptor_type"
+        ],
+        "api_version": "1.4.315",
+        "cooperative_matrix_properties": [
+          {
+            "a": "f16",
+            "b": "f16",
+            "c": "f32",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "f32",
+            "scope": 3
+          },
+          {
+            "a": "f16",
+            "b": "f16",
+            "c": "f16",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "f16",
+            "scope": 3
+          },
+          {
+            "a": "f16",
+            "b": "f16",
+            "c": "f16",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "f16",
+            "scope": 3
+          },
+          {
+            "a": "u8",
+            "b": "u8",
+            "c": "s32",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "s32",
+            "scope": 3
+          },
+          {
+            "a": "u8",
+            "b": "u8",
+            "c": "s32",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "s32",
+            "scope": 3
+          },
+          {
+            "a": "u8",
+            "b": "s8",
+            "c": "s32",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "s32",
+            "scope": 3
+          },
+          {
+            "a": "u8",
+            "b": "s8",
+            "c": "s32",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "s32",
+            "scope": 3
+          },
+          {
+            "a": "s8",
+            "b": "u8",
+            "c": "s32",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "s32",
+            "scope": 3
+          },
+          {
+            "a": "s8",
+            "b": "u8",
+            "c": "s32",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "s32",
+            "scope": 3
+          },
+          {
+            "a": "s8",
+            "b": "s8",
+            "c": "s32",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "s32",
+            "scope": 3
+          },
+          {
+            "a": "s8",
+            "b": "s8",
+            "c": "s32",
+            "k": 16,
+            "m": 16,
+            "n": 16,
+            "result": "s32",
+            "scope": 3
+          }
+        ],
+        "device_id": "0x1681",
+        "device_type": "integrated_gpu",
+        "driver": {
+          "conformance_version": "1.4.0.0",
+          "id": 1,
+          "id_name": "amd_proprietary",
+          "info": "26.6.1 (AMD proprietary shader compiler)",
+          "name": "AMD proprietary driver"
+        },
+        "driver_version_raw": "0x00800161",
+        "extension_count": 197,
+        "features": {
+          "buffer_device_address": true,
+          "compute_full_subgroups": true,
+          "cooperative_matrix_khr": true,
+          "maintenance4": true,
+          "scalar_block_layout": true,
+          "shader_float16": true,
+          "shader_float64": true,
+          "shader_int16": true,
+          "shader_int64": true,
+          "shader_int8": true,
+          "shader_integer_dot_product": true,
+          "shader_subgroup_extended_types": true,
+          "storage_buffer_16bit_access": true,
+          "storage_buffer_8bit_access": true,
+          "subgroup_size_control": true,
+          "synchronization2": true,
+          "timeline_semaphore": true,
+          "uniform_and_storage_buffer_16bit_access": true,
+          "uniform_and_storage_buffer_8bit_access": true,
+          "vulkan_memory_model": true
+        },
+        "index": 0,
+        "integer_dot_product": {
+          "accumulating_int8_signed_accelerated": true,
+          "int16_signed_accelerated": true,
+          "int4x8_packed_signed_accelerated": true,
+          "int8_signed_accelerated": true,
+          "int8_unsigned_accelerated": true
+        },
+        "limits": {
+          "max_bound_descriptor_sets": 32,
+          "max_compute_shared_memory_size": 32768,
+          "max_compute_work_group_count": [
+            4294967295,
+            65535,
+            65535
+          ],
+          "max_compute_work_group_invocations": 1024,
+          "max_compute_work_group_size": [
+            1024,
+            1024,
+            1024
+          ],
+          "max_memory_allocation_count": 4294967295,
+          "max_per_stage_descriptor_storage_buffers": 4294967295,
+          "max_push_constants_size": 256,
+          "max_storage_buffer_range": 4294967295,
+          "max_uniform_buffer_range": 4294967295,
+          "min_storage_buffer_offset_alignment": 4,
+          "non_coherent_atom_size": 128,
+          "timestamp_compute_and_graphics": true,
+          "timestamp_period_ns": 10.0
+        },
+        "max_buffer_size_bytes": 2147483648,
+        "max_memory_allocation_size_bytes": 2147483648,
+        "memory": {
+          "heaps": [
+            {
+              "budget_bytes": 9277989888,
+              "device_local": true,
+              "index": 0,
+              "size_bytes": 9766305792,
+              "usage_bytes": 0
+            },
+            {
+              "budget_bytes": 4638994944,
+              "device_local": false,
+              "index": 1,
+              "size_bytes": 4883152896,
+              "usage_bytes": 0
+            },
+            {
+              "budget_bytes": 255013680,
+              "device_local": true,
+              "index": 2,
+              "size_bytes": 268435456,
+              "usage_bytes": 0
+            }
+          ],
+          "memory_budget_extension": true,
+          "types": [
+            {
+              "heap_index": 0,
+              "index": 0,
+              "properties": [
+                "device_local"
+              ]
+            },
+            {
+              "heap_index": 1,
+              "index": 1,
+              "properties": [
+                "host_visible",
+                "host_coherent"
+              ]
+            },
+            {
+              "heap_index": 2,
+              "index": 2,
+              "properties": [
+                "device_local",
+                "host_visible",
+                "host_coherent"
+              ]
+            },
+            {
+              "heap_index": 1,
+              "index": 3,
+              "properties": [
+                "host_visible",
+                "host_coherent",
+                "host_cached"
+              ]
+            },
+            {
+              "heap_index": 0,
+              "index": 4,
+              "properties": [
+                "device_local"
+              ]
+            },
+            {
+              "heap_index": 1,
+              "index": 5,
+              "properties": [
+                "host_visible",
+                "host_coherent"
+              ]
+            },
+            {
+              "heap_index": 2,
+              "index": 6,
+              "properties": [
+                "device_local",
+                "host_visible",
+                "host_coherent"
+              ]
+            },
+            {
+              "heap_index": 1,
+              "index": 7,
+              "properties": [
+                "host_visible",
+                "host_coherent",
+                "host_cached"
+              ]
+            },
+            {
+              "heap_index": 0,
+              "index": 8,
+              "properties": [
+                "device_local"
+              ]
+            },
+            {
+              "heap_index": 1,
+              "index": 9,
+              "properties": [
+                "host_visible",
+                "host_coherent"
+              ]
+            },
+            {
+              "heap_index": 2,
+              "index": 10,
+              "properties": [
+                "device_local",
+                "host_visible",
+                "host_coherent"
+              ]
+            },
+            {
+              "heap_index": 1,
+              "index": 11,
+              "properties": [
+                "host_visible",
+                "host_coherent",
+                "host_cached"
+              ]
+            },
+            {
+              "heap_index": 0,
+              "index": 12,
+              "properties": [
+                "device_local"
+              ]
+            },
+            {
+              "heap_index": 1,
+              "index": 13,
+              "properties": [
+                "host_visible",
+                "host_coherent"
+              ]
+            },
+            {
+              "heap_index": 2,
+              "index": 14,
+              "properties": [
+                "device_local",
+                "host_visible",
+                "host_coherent"
+              ]
+            },
+            {
+              "heap_index": 1,
+              "index": 15,
+              "properties": [
+                "host_visible",
+                "host_coherent",
+                "host_cached"
+              ]
+            }
+          ]
+        },
+        "name": "AMD Radeon(TM) Graphics",
+        "queue_families": [
+          {
+            "flags": [
+              "graphics",
+              "compute",
+              "transfer",
+              "sparse_binding"
+            ],
+            "index": 0,
+            "queue_count": 8,
+            "timestamp_valid_bits": 64
+          },
+          {
+            "flags": [
+              "compute",
+              "transfer",
+              "sparse_binding"
+            ],
+            "index": 1,
+            "queue_count": 4,
+            "timestamp_valid_bits": 64
+          },
+          {
+            "flags": [
+              "transfer",
+              "sparse_binding"
+            ],
+            "index": 2,
+            "queue_count": 1,
+            "timestamp_valid_bits": 64
+          },
+          {
+            "flags": [],
+            "index": 3,
+            "queue_count": 1,
+            "timestamp_valid_bits": 0
+          },
+          {
+            "flags": [],
+            "index": 4,
+            "queue_count": 1,
+            "timestamp_valid_bits": 0
+          }
+        ],
+        "relevant_extensions": {
+          "VK_EXT_external_memory_host": true,
+          "VK_EXT_memory_budget": true,
+          "VK_EXT_pipeline_robustness": false,
+          "VK_EXT_shader_64bit_indexing": false,
+          "VK_EXT_subgroup_size_control": true,
+          "VK_KHR_16bit_storage": true,
+          "VK_KHR_8bit_storage": true,
+          "VK_KHR_buffer_device_address": true,
+          "VK_KHR_cooperative_matrix": true,
+          "VK_KHR_driver_properties": true,
+          "VK_KHR_maintenance4": true,
+          "VK_KHR_maintenance5": true,
+          "VK_KHR_push_descriptor": true,
+          "VK_KHR_shader_bfloat16": false,
+          "VK_KHR_shader_float16_int8": true,
+          "VK_KHR_shader_integer_dot_product": true,
+          "VK_KHR_shader_subgroup_extended_types": true,
+          "VK_KHR_shader_subgroup_rotate": true,
+          "VK_KHR_timeline_semaphore": true,
+          "VK_NV_cooperative_matrix": false
+        },
+        "subgroup": {
+          "max_compute_workgroup_subgroups": 4294967295,
+          "max_size": 64,
+          "min_size": 32,
+          "quad_operations_in_all_stages": true,
+          "required_size_stages": [
+            "compute"
+          ],
+          "size": 64,
+          "supported_operations": [
+            "basic",
+            "vote",
+            "arithmetic",
+            "ballot",
+            "shuffle",
+            "shuffle_relative",
+            "clustered",
+            "quad",
+            "rotate",
+            "rotate_clustered"
+          ],
+          "supported_stages": [
+            "vertex",
+            "fragment",
+            "compute",
+            "geometry"
+          ]
+        },
+        "vendor_id": "0x1002"
+      }
+    ],
+    "instance_version": "1.4.357",
+    "loader_path": "C:\\WINDOWS\\SYSTEM32\\vulkan-1.dll",
+    "status": "ok"
+  }
+}

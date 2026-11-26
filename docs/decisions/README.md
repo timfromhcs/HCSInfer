@@ -18,6 +18,7 @@ lines of the file; read the file for the open items.
 | [011](ADR-011-coding-agent-integration.md) | Coding agent integration (prime-agent sidecar) | Accepted for the policy layer, provider document, launch plan and process supervisor; a real agent session is NOT RUN |
 | [012](ADR-012-train-rsi-loop.md) | HCS Train and the RSI loop (LoRA, datasets, eval gate) | Accepted for dataset validation, report ingestion, eval gate, adapter book and pipeline; no training run exists |
 | [013](ADR-013-web-demo-webgpu-wasm.md) | HCS Studio Web (browser-only WebGPU/WASM demo) | Accepted, implemented in `web/` |
+| [014](ADR-014-hcsuda-port.md) | HCSUDA port: caps, conservative planner, oracle, kernels, `tune` | Accepted, implemented and measured on the 680M (nothing default-enabled, not wired into the engines) |
 
 AGENTS.md section 4.2 lists ADR-001 to ADR-010 as the minimum set; ADR-011 to ADR-013 were added with the V1.1 scope
 (AGENTS.md section 26).

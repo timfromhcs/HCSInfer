@@ -36,6 +36,11 @@
 #include "hcs/mcp/mcp_server.hpp"
 #endif
 
+#ifdef HCS_HAVE_VULKAN_KERNELS
+#include "hcs/kernels/vk_ops.hpp"
+#include "hcs/kernels/vk_tune.hpp"
+#endif
+
 #ifdef HCS_HAVE_HARDWARE
 // Contract for the hardware module (src/hardware): writes the doctor report to `out`
 // (JSON when `json`), returns an hcs exit code.
@@ -48,8 +53,6 @@ namespace fs = std::filesystem;
 using nlohmann::json;
 
 namespace {
-
-constexpr const char* kPlanned[] = {"tune"};
 
 const char* kRootHelp =
     "HCSInfer - local-first AI runtime (text, vision, image generation)\n"
@@ -82,7 +85,8 @@ const char* kRootHelp =
     "--help`)\n"
     "  cache stats|clear [--json]    Count / delete HCS-owned state-directory caches; `clear` needs --yes\n"
     "                                (see `cache --help`; model files are never touched)\n"
-    "  tune                          Planned - not implemented yet (exit code 10)\n"
+    "  tune [--device <sel>] [--suite quick|full] [--show|--reset] [--out <file>]\n"
+    "                                Benchmark the HCS Vulkan kernels on this machine (see `tune --help`)\n"
     "\n"
     "Global options:\n"
     "  --state-dir <dir>   State directory (default: $HCS_DATA_DIR, $HCS_STATE_DIR, %LOCALAPPDATA%\\HCSInfer "
@@ -189,7 +193,8 @@ Result<void> load_registry(ModelRegistry& reg, const fs::path& file) {
     return reg.load_json(text.value());
 }
 
-int cmd_doctor(std::vector<std::string> args, std::ostream& out, std::ostream& err) {
+int cmd_doctor(std::vector<std::string> args, const std::string& state_override, std::ostream& out,
+               std::ostream& err) {
     if (wants_help(args)) {
         out << kDoctorHelp;
         return 0;
@@ -199,6 +204,11 @@ int cmd_doctor(std::vector<std::string> args, std::ostream& out, std::ostream& e
     hcs::hardware::DoctorOptions opt;
     opt.json = as_json;
     opt.no_vulkan = has_flag(args, "--no-vulkan");
+    opt.state_dir = state_dir(state_override).string();  // planner section: where `tune` stores its profile
+#ifdef HCS_HAVE_VULKAN_KERNELS
+    opt.kernel_hashes = hcs::kernels::vulkan::kernel_hashes();
+    opt.kernel_hashes_known = true;
+#endif
     for (const char* name :
          {"--storage-root", "--read-file", "--read-max-mib", "--read-buffer-kib", "--read-repeats"}) {
         std::string value;
@@ -455,7 +465,7 @@ int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostrea
     args.erase(args.begin());
 
     if (cmd == "doctor")
-        return cmd_doctor(std::move(args), out, err);
+        return cmd_doctor(std::move(args), state_override, out, err);
     if (cmd == "chat")
         return run_chat(std::move(args), state_override, out, err);
     if (cmd == "benchmark")
@@ -494,13 +504,26 @@ int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostrea
         return hcs::mcp::run_stdio(args, state_dir(state_override), std::cin, out, err);
     }
 #endif
-    if (std::find(std::begin(kPlanned), std::end(kPlanned), cmd) != std::end(kPlanned)) {
+    if (cmd == "tune") {
+#ifdef HCS_HAVE_VULKAN_KERNELS
+        return hcs::kernels::vulkan::run_tune(std::move(args), state_dir(state_override), out, err);
+#else
         if (wants_help(args)) {
-            out << "Usage: HCSInfer " << cmd
-                << " ...\n\nPlanned: this command is not implemented yet (exit code 10).\n";
+            out << "Usage: HCSInfer tune [--device <sel>] [--suite quick|full] [--show|--reset] [--out "
+                   "<file>]\n\n"
+                   "Benchmarks the HCS Vulkan kernels on this machine. NOT available in this build: it was "
+                   "configured\n"
+                   "without -DHCS_ENABLE_VULKAN_KERNELS=ON (the Vulkan SDK is needed at build time only). "
+                   "Use the\n"
+                   "windows-msvc-release-vulkan or windows-msvc-release-kernels preset. `doctor --json` "
+                   "still shows\n"
+                   "the capability gates and the planner table (everything unknown = CPU).\n";
             return 0;
         }
-        return fail(err, ErrorCode::Unsupported, "'" + cmd + "' is planned and not implemented yet");
+        return fail(err, ErrorCode::Unsupported,
+                    "'tune' is not available in this build (no HCS Vulkan kernels; configure with "
+                    "-DHCS_ENABLE_VULKAN_KERNELS=ON)");
+#endif
     }
     err << "error: unknown command '" << cmd << "'\n\n" << kRootHelp;
     return exit_code(ErrorCode::InvalidArgument);

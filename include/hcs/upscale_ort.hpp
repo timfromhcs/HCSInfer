@@ -5,9 +5,9 @@
 // binary without ORT still runs (the engine just reports Unsupported). The ORT C API is a table of function
 // pointers returned by OrtGetApiBase()->GetApi(version); this module reads the entries it needs by their
 // fixed slot numbers (the table order is append-only across ORT releases) and verifies the table at load time
-// with a status round-trip. The slots it uses are exercised end to end against a real onnxruntime.dll (1.31.1,
-// CPU EP, 2026-11-26) with a synthetic ONNX model (tests/unit/upscale, HCS_TEST_ORT_DIR / HCS_TEST_ONNX_DIR;
-// skipped when unset).
+// with a status round-trip. The slots it uses are exercised end to end against a real onnxruntime.dll
+// (1.31.1, CPU EP, 2026-11-26) with a synthetic ONNX model (tests/unit/upscale, HCS_TEST_ORT_DIR /
+// HCS_TEST_ONNX_DIR; skipped when unset).
 //
 // Where onnxruntime.dll may come from: only the directories the caller passes (the control plane passes the
 // approved model roots' `upscale/` folders and the folder of the executable). Nothing is searched on PATH.

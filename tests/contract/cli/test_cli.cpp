@@ -70,17 +70,31 @@ TEST(Cli, UnknownCommandIsInvalidArgument) {
     EXPECT_EQ(run({"--state-dir"}).code, 2);
 }
 
-TEST(Cli, PlannedCommandsReturnUnsupported) {
-    // `tune` is deliberately not implemented and must never be faked: exit 10, help says Planned.
-    auto r = run({"tune"});
-    EXPECT_EQ(r.code, 10);
-    EXPECT_TRUE(contains(r.err, "planned"));
-    EXPECT_EQ(run({"tune", "--device", "radeon-680m"}).code, 10);
+TEST(Cli, TuneIsARealCommandWhenTheKernelsAreBuiltAndHonestlyUnsupportedOtherwise) {
+    // `tune` (HCSUDA port) benchmarks the HCS Vulkan kernels. It is only compiled with
+    // -DHCS_ENABLE_VULKAN_KERNELS=ON; a build without them says so (exit 10) and never fakes a result.
+    // No test here starts a benchmark: argument errors are rejected before any Vulkan device is touched.
     auto h = run({"tune", "--help"});
     EXPECT_EQ(h.code, 0);
-    EXPECT_TRUE(contains(h.out, "Planned"));
+    EXPECT_FALSE(contains(h.out, "Planned"));
+    EXPECT_TRUE(contains(h.out, "Benchmark"));
     EXPECT_TRUE(contains(root_help_text(), "tune"));
-    EXPECT_TRUE(contains(root_help_text(), "Planned"));
+    EXPECT_FALSE(contains(root_help_text(), "tune                          Planned"));
+    const bool kernels_built = contains(h.out, "Exit codes: 0 ok, 2 invalid argument");
+    auto bad = run({"tune", "--samples", "1"});
+    if (kernels_built) {
+        EXPECT_EQ(bad.code, 2);
+        EXPECT_TRUE(contains(bad.err, "--samples"));
+        EXPECT_EQ(run({"tune", "--suite", "huge"}).code, 2);
+        EXPECT_EQ(run({"tune", "--kernel", "nope"}).code, 2);
+        EXPECT_EQ(run({"tune", "--bogus"}).code, 2);
+    } else {
+        EXPECT_EQ(bad.code, 10);
+        EXPECT_TRUE(contains(bad.err, "not available in this build"));
+    }
+}
+
+TEST(Cli, ModelsCommandsAreRealClientsNotStubs) {
     // models load/unload/status are real HTTP clients now (test_cli_remote.cpp); they must not be stubs.
     EXPECT_FALSE(contains(root_help_text(), "Not in the one-shot CLI"));
     EXPECT_FALSE(contains(root_help_text(), "scaffold"));

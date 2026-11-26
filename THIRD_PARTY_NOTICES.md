@@ -5,7 +5,7 @@ Dependencies linked into or fetched by the current build. Exact pins and CMake o
 
 | Component | Version / pin | Licence | Use |
 |---|---|---|---|
-| llama.cpp / GGML (Copyright (c) 2023-2026 The ggml authors; `external/llama.cpp/LICENSE`) | commit `d3c3e242c16b8cbf51400fad410cd69b22d64f35` (submodule `external/llama.cpp`) | MIT | text engine adapter (`hcs_engine_llama`): GGUF inference, tokenizer, chat templates, CPU and Vulkan GGML backends |
+| HCSUDA (owner| llama.cpp / GGML (Copyright (c) 2023-2026 The ggml authors; `external/llama.cpp/LICENSE`) | commit `d3c3e242c16b8cbf51400fad410cd69b22d64f35` (submodule `external/llama.cpp`) | MIT | text engine adapter (`hcs_engine_llama`): GGUF inference, tokenizer, chat templates, CPU and Vulkan GGML backends |
 | stable-diffusion.cpp (Copyright (c) 2023 leejet; `external/stable-diffusion.cpp/LICENSE`) | commit `532d2c15c430a785a712b2d94281f04e733008a4` (submodule `external/stable-diffusion.cpp`), built with `SD_USE_UPSTREAM_GGML=ON` against llama.cpp's GGML | MIT | image engine adapter (`hcs_engine_diffusion`): text-to-image and img2img |
 | stb_image / stb_image_write | vendored in `external/stable-diffusion.cpp/thirdparty` | MIT or public domain (dual) | PNG encode, PNG/JPEG decode in `src/engines/diffusion` only |
 | libmtmd (`external/llama.cpp/tools/mtmd`, part of llama.cpp, MIT) | same llama.cpp commit; built via `LLAMA_BUILD_MTMD=ON`, `MTMD_VIDEO=OFF` | MIT | image understanding (`LlamaTextEngine::analyze_image`): image decode, vision encoder + mmproj projector |

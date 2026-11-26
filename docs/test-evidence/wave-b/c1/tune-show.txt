@@ -1,0 +1,45 @@
+Device: AMD Radeon(TM) Graphics  (vk:1002:1681:drv=0x00800161:api=1.4.315)
+Profile: D:\HCSScratch\hcsdata\c1-state\kernel-profile.json  (27 entries)
+  gemm_coopmat_f16 m128n128k128  speedup 7.13x vs cpu_mt_autovec (16 threads)  not promoted
+  gemm_coopmat_f16 m256n1024k256  speedup 19.33x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_coopmat_f16 m512n2048k512  speedup 18.59x vs cpu_mt_autovec (16 threads)  not promoted
+  gemm_coopmat_f16 m1024n1024k1024  speedup 21.13x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_f16_tiled m128n128k128  speedup 5.63x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_f16_tiled m256n1024k256  speedup 14.01x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_f16_tiled m512n2048k512  speedup 14.73x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_f16_tiled m1024n1024k1024  speedup 17.53x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_i8dot_tiled m128n128k128  speedup 6.80x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_i8dot_tiled m256n1024k256  speedup 22.20x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_i8dot_tiled m512n2048k512  speedup 25.67x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_i8dot_tiled m1024n1024k1024  speedup 25.83x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_f32_tiled m128n128k128  speedup 6.07x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_f32_tiled m256n1024k256  speedup 14.72x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_f32_tiled m512n2048k512  speedup 13.18x vs cpu_mt_autovec (16 threads)  promoted
+  gemm_f32_tiled m1024n1024k1024  speedup 13.30x vs cpu_mt_autovec (16 threads)  promoted
+  softmax_rows m32n4096k0  speedup 4.34x vs cpu_mt_autovec (16 threads)  promoted
+  softmax_rows m256n1024k0  speedup 8.07x vs cpu_mt_autovec (16 threads)  promoted
+  softmax_rows m4n32768k0  speedup 2.23x vs cpu_mt_autovec (16 threads)  promoted
+  layernorm_rows m32n4096k0  speedup 3.58x vs cpu_mt_autovec (16 threads)  promoted
+  layernorm_rows m256n1024k0  speedup 6.00x vs cpu_mt_autovec (16 threads)  promoted
+  layernorm_rows m4n32768k0  speedup 1.77x vs cpu_mt_autovec (16 threads)  promoted
+  rmsnorm_rows m32n4096k0  speedup 2.39x vs cpu_mt_autovec (16 threads)  promoted
+  rmsnorm_rows m256n1024k0  speedup 4.46x vs cpu_mt_autovec (16 threads)  promoted
+  rmsnorm_rows m4n32768k0  speedup 1.29x vs cpu_mt_autovec (16 threads)  promoted
+  rope_rows m512n128k0  speedup 4.56x vs cpu_mt_autovec (16 threads)  promoted
+  rope_rows m2048n128k0  speedup 6.48x vs cpu_mt_autovec (16 threads)  not promoted
+
+Planner (release policy: unknown = CPU; needs promotion + measured upstream baseline):
+  gemm      f32  m256n1024k256       reference  [candidate gemm_f32_tiled: promoted]
+      no verified gemm path for f32 on this device yet; CPU reference used (gemm_f32_tiled: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  gemm      f16  m256n1024k256       reference  [candidate gemm_coopmat_f16: promoted]
+      no verified gemm path for f16 on this device yet; CPU reference used (gemm_coopmat_f16: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  gemm      i8   m256n1024k256       reference  [candidate gemm_i8dot_tiled: promoted]
+      no verified gemm path for i8 on this device yet; CPU reference used (gemm_i8dot_tiled: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  softmax   f32  m32n4096k0          reference  [candidate softmax_rows: promoted]
+      no verified softmax path for f32 on this device yet; CPU reference used (softmax_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  layernorm f32  m32n4096k0          reference  [candidate layernorm_rows: promoted]
+      no verified layernorm path for f32 on this device yet; CPU reference used (layernorm_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  rmsnorm   f32  m32n4096k0          reference  [candidate rmsnorm_rows: promoted]
+      no verified rmsnorm path for f32 on this device yet; CPU reference used (rmsnorm_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  rope      f32  m512n128k0          reference  [candidate rope_rows: promoted]
+      no verified rope path for f32 on this device yet; CPU reference used (rope_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)

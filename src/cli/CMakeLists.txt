@@ -17,6 +17,12 @@ if(TARGET hcs_hardware)
   target_compile_definitions(hcs_cli PRIVATE HCS_HAVE_HARDWARE=1)
 endif()
 
+# HCSUDA port: `tune` + kernel hashes for the doctor planner section (only when the kernels are built).
+if(TARGET hcs_kernels_vulkan)
+  target_link_libraries(hcs_cli PRIVATE hcs_kernels_vulkan)
+  target_compile_definitions(hcs_cli PRIVATE HCS_HAVE_VULKAN_KERNELS=1)
+endif()
+
 if(TARGET hcs_storage)
   target_link_libraries(hcs_cli PRIVATE hcs_storage)
   target_compile_definitions(hcs_cli PRIVATE HCS_HAVE_STORAGE=1)

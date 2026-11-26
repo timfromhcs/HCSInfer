@@ -5,6 +5,7 @@
 
 #include "hcs/result.hpp"
 #include "hcs/version.hpp"
+#include "caps_json.hpp"
 #include "hw.hpp"
 
 namespace hcs::hardware {
@@ -123,6 +124,10 @@ json build_report(const DoctorOptions& o) {
     r["cpu"] = cpu_report();
     r["gpu"] = gpu_report();
     r["vulkan"] = vulkan_report(o.no_vulkan);
+    {
+        const KernelHashes* hashes = o.kernel_hashes_known ? &o.kernel_hashes : nullptr;
+        r["planner"] = planner_report(caps_from_report(r["vulkan"]), hashes, o.state_dir);
+    }
     std::string root = o.storage_root.empty() ? o.read_file : o.storage_root;
     r["storage"] = storage_report(root, true);
     if (!o.read_file.empty()) {

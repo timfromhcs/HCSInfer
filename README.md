@@ -110,7 +110,7 @@ purpose.
 | HCS Train, HCS Agent (policy + process supervisor) | Implemented (logic) | a real training run and a real `prime-agent` session are NOT RUN |
 | HCS Vulkan kernel (Q8_0 GEMV) | Experimental, OFF by default | correct on the 680M but 18x slower than upstream GGML Vulkan |
 | `models load\|unload\|status` CLI commands | Implemented | HTTP clients of a running `serve` (`--port/--token`); no server => exit 8 |
-| `tune` CLI command | Planned | exit code 10 |
+| `tune` CLI command and 8 HCSUDA-ported Vulkan kernels (tiled f32/f16/int8-dot/coopmat GEMM, softmax, LayerNorm, RMSNorm, RoPE) | Experimental | opt-in build (`HCS_ENABLE_VULKAN_KERNELS`); correct on the 680M and 1.3-26x a CPU baseline, but **none is default-enabled** (no upstream GGML baseline measured), not in the engines; [`docs/vulkan-kernels.md`](docs/vulkan-kernels.md) |
 | Scheduler, telemetry module, further custom kernels | Planned | only with measured benefit |
 | Linux, other GPUs, ROCm | Unsupported | not built or tested |
 
@@ -247,7 +247,7 @@ choice (one shared GGML, loopback-only API, static CRT, ...).
 | FLUX.3 asks for `--llm` / `--vae` | it is a multi-file model, see [`docs/supported-models.md`](docs/supported-models.md) |
 | very slow first load from a USB drive | the tested drive reads ~40-65 MiB/s; a second run is warm. Never compare cold with warm |
 | SmartScreen warns about the EXE | the binaries are unsigned (no certificate); verify `SHA256SUMS.txt` |
-| CLI says "planned" (exit code 10) | only `tune` is not implemented |
+| CLI says "not available in this build" (exit code 10) | `tune` needs a build with `-DHCS_ENABLE_VULKAN_KERNELS=ON` |
 | `models load` says no server reachable (exit 8) | start `HCSInfer serve` first and pass `--port`/`--token` (or `HCS_API_TOKEN`) |
 
 ## Security and privacy
@@ -271,7 +271,7 @@ The authoritative list is [`docs/roadmap/STATUS.md`](docs/roadmap/STATUS.md). Th
   (FLUX.3 Klein: minutes per image) and the official gated BFL text encoder/VAE files were not available, so FLUX.3
   renders with a substitute encoder and VAE.
 - Engines open model files themselves; the opt-in vault stage only pre-reads and verifies them (no streaming into engine buffers).
-- `tune` is not a CLI command; Streamable HTTP MCP is not implemented.
+- `tune` exists only in builds with the HCS Vulkan kernels; Streamable HTTP MCP is not implemented.
 - NOT RUN: real WebGPU inference, a real `prime-agent` session, a real training run, a physical USB unplug, the full soak
   profile, a page-cache-cold load, signing, a clean-machine run of the hosted release artifacts (the hosted `release`
   workflow itself ran green on `40bf581`).

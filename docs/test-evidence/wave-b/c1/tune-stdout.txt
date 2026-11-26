@@ -1,0 +1,54 @@
+HCSInfer tune - AMD Radeon(TM) Graphics (vk:1002:1681:drv=0x00800161:api=1.4.315)
+driver: 26.6.1 (AMD proprietary shader compiler)   buffers: device_local (staged uploads)   suite: full (21 samples)
+validation layer: not requested
+
+kernel            bucket         max err    det  wall ms   gpu ms    GFLOP/s   cpu ms    speedup  status
+gemm_coopmat_f16  m128n128k128   1.91e-06   3/3  0.062     0.007     635.5     0.444     7.13x    PASS (correct, not promoted)
+      timing too noisy (spread 0.274 > 0.250): not a result
+gemm_coopmat_f16  m256n1024k256  3.81e-06   3/3  0.310     0.207     648.8     5.989     19.33x   PASS (promoted, not default-enabled)
+gemm_coopmat_f16  m512n2048k512  9.54e-06   3/3  2.074     1.687     636.4     38.555    18.59x   PASS (correct, not promoted)
+      timing too noisy (spread 0.303 > 0.250): not a result
+gemm_coopmat_f16  m1024n1024k10241.91e-05   3/3  3.717     3.380     635.3     78.538    21.13x   PASS (promoted, not default-enabled)
+gemm_f16_tiled    m128n128k128   6.68e-06   3/3  0.089     0.011     377.2     0.504     5.63x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m256n1024k256  1.72e-05   3/3  0.367     0.237     565.3     5.148     14.01x   PASS (promoted, not default-enabled)
+gemm_f16_tiled    m512n2048k512  3.24e-05   3/3  2.670     2.311     464.7     39.323    14.73x   PASS (promoted, not default-enabled)
+gemm_f16_tiled    m1024n1024k10247.25e-05   3/3  4.759     4.445     483.1     83.417    17.53x   PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m128n128k128   0.00e+00   3/3  0.086     0.008     524.3     0.583     6.80x    PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m256n1024k256  0.00e+00   3/3  0.285     0.187     717.4     6.326     22.20x   PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m512n2048k512  0.00e+00   3/3  1.603     1.467     731.7     41.153    25.67x   PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m1024n1024k10240.00e+00   3/3  3.195     2.947     728.8     82.545    25.83x   PASS (promoted, not default-enabled)
+gemm_f32_tiled    m128n128k128   7.15e-06   3/3  0.069     0.012     360.3     0.421     6.07x    PASS (promoted, not default-enabled)
+gemm_f32_tiled    m256n1024k256  1.53e-05   3/3  0.332     0.239     562.7     4.880     14.72x   PASS (promoted, not default-enabled)
+gemm_f32_tiled    m512n2048k512  3.24e-05   3/3  2.947     2.721     394.6     38.831    13.18x   PASS (promoted, not default-enabled)
+gemm_f32_tiled    m1024n1024k10247.25e-05   3/3  5.782     5.541     387.6     76.912    13.30x   PASS (promoted, not default-enabled)
+softmax_rows      m32n4096k0     6.98e-10   3/3  0.083     0.013     49.5      0.359     4.34x    PASS (promoted, not default-enabled)
+softmax_rows      m256n1024k0    3.73e-09   3/3  0.100     0.029     45.5      0.806     8.07x    PASS (promoted, not default-enabled)
+softmax_rows      m4n32768k0     5.82e-11   3/3  0.154     0.069     9.3       0.345     2.23x    PASS (promoted, not default-enabled)
+layernorm_rows    m32n4096k0     4.77e-07   3/3  0.085     0.016     55.8      0.305     3.58x    PASS (promoted, not default-enabled)
+layernorm_rows    m256n1024k0    4.77e-07   3/3  0.103     0.025     72.2      0.620     6.00x    PASS (promoted, not default-enabled)
+layernorm_rows    m4n32768k0     4.77e-07   3/3  0.184     0.089     10.1      0.326     1.77x    PASS (promoted, not default-enabled)
+rmsnorm_rows      m32n4096k0     4.77e-07   3/3  0.085     0.014     38.3      0.202     2.39x    PASS (promoted, not default-enabled)
+rmsnorm_rows      m256n1024k0    4.77e-07   3/3  0.116     0.026     40.7      0.518     4.46x    PASS (promoted, not default-enabled)
+rmsnorm_rows      m4n32768k0     2.38e-07   3/3  0.154     0.076     6.8       0.199     1.29x    PASS (promoted, not default-enabled)
+rope_rows         m512n128k0     4.04e-05   3/3  0.064     0.004     49.6      0.294     4.56x    PASS (promoted, not default-enabled)
+rope_rows         m2048n128k0    2.03e-04   3/3  0.097     0.019     41.6      0.627     6.48x    PASS (correct, not promoted)
+      timing too noisy (spread 0.269 > 0.250): not a result
+
+upstream GGML Vulkan op baseline: NOT RUN (no kernel is default-enabled by tune)
+profile written: D:\HCSScratch\hcsdata\c1-state\kernel-profile.json
+
+Planner (release policy: unknown = CPU; needs promotion + measured upstream baseline):
+  gemm      f32  m256n1024k256       reference  [candidate gemm_f32_tiled: promoted]
+      no verified gemm path for f32 on this device yet; CPU reference used (gemm_f32_tiled: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  gemm      f16  m256n1024k256       reference  [candidate gemm_coopmat_f16: promoted]
+      no verified gemm path for f16 on this device yet; CPU reference used (gemm_coopmat_f16: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  gemm      i8   m256n1024k256       reference  [candidate gemm_i8dot_tiled: promoted]
+      no verified gemm path for i8 on this device yet; CPU reference used (gemm_i8dot_tiled: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  softmax   f32  m32n4096k0          reference  [candidate softmax_rows: promoted]
+      no verified softmax path for f32 on this device yet; CPU reference used (softmax_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  layernorm f32  m32n4096k0          reference  [candidate layernorm_rows: promoted]
+      no verified layernorm path for f32 on this device yet; CPU reference used (layernorm_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  rmsnorm   f32  m32n4096k0          reference  [candidate rmsnorm_rows: promoted]
+      no verified rmsnorm path for f32 on this device yet; CPU reference used (rmsnorm_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
+  rope      f32  m512n128k0          reference  [candidate rope_rows: promoted]
+      no verified rope path for f32 on this device yet; CPU reference used (rope_rows: promoted but upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled)
