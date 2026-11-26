@@ -4,13 +4,16 @@
 // Folder layout (nothing is ever downloaded by HCSInfer; the user drops files in):
 //   <approved root>/lora/image/manifest.json     {"schema_version":1,"loras":[ {entry}, ... ]}
 //   <approved root>/lora/image/<file>.safetensors
-// Entry: {"id","file","name","base_family","trigger_words":[...],"recommended_weight","licence","source","sha256"}.
-// `file` is a bare file name inside the folder (no separators). A .safetensors file without an entry is listed
-// as "unmanifested" and cannot be used: a LoRA without a declared base family would be a silent-garbage risk.
+// Entry:
+// {"id","file","name","base_family","trigger_words":[...],"recommended_weight","licence","source","sha256"}.
+// `file` is a bare file name inside the folder (no separators). A .safetensors file without an entry is
+// listed as "unmanifested" and cannot be used: a LoRA without a declared base family would be a
+// silent-garbage risk.
 //
 // Compatibility (AGENTS.md "no silent garbage"): a LoRA is only applied to the base-model family it was
 // trained for. The manifest declares the family; the safetensors tensor names are an independent plausibility
-// check (kohya/diffusers naming tells SD1.x, SDXL, FLUX and SD3 apart). Disagreement => the LoRA is "invalid".
+// check (kohya/diffusers naming tells SD1.x, SDXL, FLUX and SD3 apart). Disagreement => the LoRA is
+// "invalid".
 #include <cstdint>
 #include <filesystem>
 #include <string>
@@ -45,20 +48,20 @@ Result<void> validate_lora_weight(float weight);
 struct LoraEntry {
     std::string id;
     std::string name;
-    std::string file;                  // bare file name inside the library folder
-    std::filesystem::path path;        // canonical path (inside an approved root); empty if unresolved
-    std::string base_family;           // declared (manifest)
-    std::string sniffed_group;         // from the tensor names ("" = inconclusive)
+    std::string file;            // bare file name inside the library folder
+    std::filesystem::path path;  // canonical path (inside an approved root); empty if unresolved
+    std::string base_family;     // declared (manifest)
+    std::string sniffed_group;   // from the tensor names ("" = inconclusive)
     std::vector<std::string> trigger_words;
     float recommended_weight = 1.0f;
     std::string licence;
     std::string source;
-    std::string sha256;                // declared (lower-case hex) ("" = not declared)
+    std::string sha256;                        // declared (lower-case hex) ("" = not declared)
     std::string sha256_status = "unverified";  // unverified | ok | mismatch
     std::uint64_t size_bytes = 0;
     std::uint64_t tensor_count = 0;
-    std::string status = "ready";      // ready | invalid | unmanifested | missing
-    std::vector<std::string> problems; // why it is not ready
+    std::string status = "ready";       // ready | invalid | unmanifested | missing
+    std::vector<std::string> problems;  // why it is not ready
     bool usable() const noexcept { return status == "ready"; }
 };
 

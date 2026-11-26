@@ -17,7 +17,8 @@ namespace {
 
 std::string lower(std::string_view s) {
     std::string o(s);
-    std::transform(o.begin(), o.end(), o.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(o.begin(), o.end(), o.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     return o;
 }
 
@@ -54,7 +55,7 @@ struct Family {
     std::string_view name;
     std::string_view group;
 };
-constexpr Family kFamilies[] = {{"sd15", "sd1"}, {"sd2", "sd1"}, {"sdxl", "sdxl"},
+constexpr Family kFamilies[] = {{"sd15", "sd1"}, {"sd2", "sd1"},    {"sdxl", "sdxl"},
                                 {"sd3", "sd3"},  {"flux1", "flux"}, {"flux3", "flux"}};
 
 }  // namespace
@@ -180,7 +181,8 @@ Result<ParsedLoraManifest> parse_lora_manifest(std::string_view text) {
             else
                 for (const auto& w : e["trigger_words"]) {
                     if (!w.is_string() || w.get<std::string>().size() > 64)
-                        le.problems.push_back("trigger_words entries must be strings of at most 64 characters");
+                        le.problems.push_back(
+                            "trigger_words entries must be strings of at most 64 characters");
                     else
                         le.trigger_words.push_back(w.get<std::string>());
                 }
@@ -192,7 +194,8 @@ Result<ParsedLoraManifest> parse_lora_manifest(std::string_view text) {
     return out;
 }
 
-Result<void> LoraLibrary::scan(const PathGuard& guard, const std::filesystem::path& dir, LoraScanOptions opt) {
+Result<void> LoraLibrary::scan(const PathGuard& guard, const std::filesystem::path& dir,
+                               LoraScanOptions opt) {
     entries_.clear();
     note_.clear();
     dir_.clear();
@@ -313,7 +316,8 @@ const LoraEntry* LoraLibrary::find(std::string_view id) const noexcept {
     return nullptr;
 }
 
-Result<std::vector<LoraSpec>> LoraLibrary::resolve(const std::vector<Ref>& refs, std::string_view model_family,
+Result<std::vector<LoraSpec>> LoraLibrary::resolve(const std::vector<Ref>& refs,
+                                                   std::string_view model_family,
                                                    bool allow_unknown_family) const {
     if (refs.size() > kMaxLorasPerRequest)
         return make_error(ErrorCode::InvalidArgument,
@@ -340,14 +344,16 @@ Result<std::vector<LoraSpec>> LoraLibrary::resolve(const std::vector<Ref>& refs,
             case LoraCompat::Compatible:
                 break;
             case LoraCompat::Incompatible:
-                return make_error(ErrorCode::InvalidArgument,
-                                  "lora_incompatible: LoRA '" + r.id + "' was trained for '" + e->base_family +
-                                      "' but the model family is '" + std::string(model_family) + "'");
+                return make_error(ErrorCode::InvalidArgument, "lora_incompatible: LoRA '" + r.id +
+                                                                  "' was trained for '" + e->base_family +
+                                                                  "' but the model family is '" +
+                                                                  std::string(model_family) + "'");
             case LoraCompat::Unknown:
                 if (!allow_unknown_family)
-                    return make_error(ErrorCode::InvalidArgument,
-                                      "lora_incompatible: the loaded model's family is not recognised, so LoRA '" +
-                                          r.id + "' (" + e->base_family + ") cannot be verified");
+                    return make_error(
+                        ErrorCode::InvalidArgument,
+                        "lora_incompatible: the loaded model's family is not recognised, so LoRA '" + r.id +
+                            "' (" + e->base_family + ") cannot be verified");
                 break;
         }
         out.push_back(LoraSpec{e->id, e->path.string(), e->base_family, w});

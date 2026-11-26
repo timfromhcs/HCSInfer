@@ -25,9 +25,11 @@
 #include "hcs/benchmark.hpp"
 #include "hcs/job_queue.hpp"
 #include "hcs/logger.hpp"
+#include "hcs/lora.hpp"
 #include "hcs/memory_budget.hpp"
 #include "hcs/model_registry.hpp"
 #include "hcs/path_guard.hpp"
+#include "hcs/upscale.hpp"
 
 namespace hcs::api {
 
@@ -65,6 +67,11 @@ struct ImageParams {
     std::string preset;              // "" | "fast" | "quality" (replaces steps/cfg, model-family specific)
     bool allow_low_quality = false;  // opt in to sizes/steps below the family quality envelope
     std::optional<ImageInput> init_image;  // edit / img2img
+    // 0..kMaxLorasPerRequest LoRAs from the library (hcs/lora.hpp); ids only - paths never come from a
+    // caller.
+    std::vector<LoraLibrary::Ref> loras;
+    // "" | "off" | "4k": after rendering, upscale to a 3840 px long edge (4x model pass + Lanczos, tiled).
+    std::string upscale;
 };
 
 // Benchmark job request. Bounds are the shared bench::validate_plan() bounds.
@@ -173,6 +180,19 @@ public:
     Result<Submitted> submit_image(const ImageParams& p, bool require_init);
     Result<ImageResult> image_result(JobId id) const;  // NotFound until the job produced one
 
+    // --- image LoRA library and upscaler (both optional; absent => the matching request field is
+    // Unsupported) --- Scans `dir` (inside an approved root) into the library served to image requests.
+    // Replaces the previous library; a failed scan keeps the old one.
+    Result<void> scan_loras(const std::filesystem::path& dir, bool verify_hashes = false);
+    // {"directory", "note",
+    // "loras":[{id,name,base_family,trigger_words,recommended_weight,licence,source,sha256,
+    //  sha256_status,size_bytes,status,problems}]}. Never exposes absolute file paths.
+    nlohmann::json loras_json() const;
+    bool has_lora_library() const;
+    // The 4x ONNX upscaler behind `upscale: "4k"`. The control plane owns a shared reference.
+    void set_upscaler(std::shared_ptr<upscale::IUpscaleEngine> engine);
+    bool has_upscaler() const noexcept { return upscaler_ != nullptr; }
+
     // --- benchmark (POST /hcs/v1/benchmarks) ---------------------------------------------------
     // Runs the shared benchmark runner (hcs/benchmark.hpp) against a registered text model as a cancellable
     // job "benchmark.run". The job holds the engine for its whole duration (the measurement needs an idle
@@ -211,6 +231,9 @@ private:
     static std::uint64_t kv_cache_estimate(std::uint64_t model_bytes, std::uint32_t context_tokens) noexcept;
     Result<void> unload_locked();
     Result<Submitted> submit_with_channel(const std::string& name, JobFn fn);
+    // Resolves request LoRA references against the library for `model` (id; "" = the loaded model).
+    Result<std::vector<LoraSpec>> resolve_loras(const ImageParams& p) const;
+    Result<void> check_upscale_request(const ImageParams& p) const;
     void note_result(JobId id, const TextResult& r);
     void note_image_result(JobId id, const ImageResult& r);
     void note_benchmark_result(JobId id, nlohmann::json doc);
@@ -241,6 +264,9 @@ private:
     std::map<std::uint64_t, TextResult> results_;
     std::map<std::uint64_t, ImageResult> image_results_;
     std::map<std::uint64_t, nlohmann::json> benchmark_results_;
+    mutable std::mutex lora_mutex_;
+    std::shared_ptr<LoraLibrary> loras_;  // guarded by lora_mutex_ (replaced wholesale by scan_loras)
+    std::shared_ptr<upscale::IUpscaleEngine> upscaler_;
     mutable std::mutex devices_mutex_;
     mutable std::optional<nlohmann::json> devices_cache_;
 };

@@ -24,8 +24,8 @@ std::string with_header(const std::string& json, std::size_t data_bytes) {
 }  // namespace
 
 TEST(Safetensors, ParsesTensorsAndMetadata) {
-    const std::string f = build_safetensors({f32_tensor("b", {2}, {1, 2}), f32_tensor("a", {2, 3}, {1, 2, 3, 4, 5, 6})},
-                                            {{"format", "pt"}});
+    const std::string f = build_safetensors(
+        {f32_tensor("b", {2}, {1, 2}), f32_tensor("a", {2, 3}, {1, 2, 3, 4, 5, 6})}, {{"format", "pt"}});
     auto r = parse(f);
     ASSERT_TRUE(r.ok()) << r.error().message;
     ASSERT_EQ(r.value().tensors.size(), 2u);
@@ -63,12 +63,15 @@ TEST(Safetensors, RejectsOutOfRangeOverflowAndOverlap) {
     // end < begin
     EXPECT_FALSE(parse(with_header(R"({"x":{"dtype":"F32","shape":[1],"data_offsets":[4,0]}})", 8)).ok());
     // Element-count overflow in the shape.
-    EXPECT_FALSE(parse(with_header(
-                           R"({"x":{"dtype":"F32","shape":[4294967296,4294967296,4294967296],"data_offsets":[0,4]}})", 4))
-                     .ok());
+    EXPECT_FALSE(
+        parse(with_header(
+                  R"({"x":{"dtype":"F32","shape":[4294967296,4294967296,4294967296],"data_offsets":[0,4]}})",
+                  4))
+            .ok());
     // Overlapping tensors.
     EXPECT_FALSE(parse(with_header(R"({"a":{"dtype":"F32","shape":[2],"data_offsets":[0,8]},)"
-                                   R"("b":{"dtype":"F32","shape":[2],"data_offsets":[4,12]}})", 12))
+                                   R"("b":{"dtype":"F32","shape":[2],"data_offsets":[4,12]}})",
+                                   12))
                      .ok());
 }
 

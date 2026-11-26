@@ -28,7 +28,8 @@ Rgb8 pattern(std::uint32_t w, std::uint32_t h) {
     im.width = w;
     im.height = h;
     im.pixels.resize(static_cast<std::size_t>(w) * h * 3);
-    for (std::size_t i = 0; i < im.pixels.size(); ++i) im.pixels[i] = static_cast<std::uint8_t>((i * 37 + i / 7) % 256);
+    for (std::size_t i = 0; i < im.pixels.size(); ++i)
+        im.pixels[i] = static_cast<std::uint8_t>((i * 37 + i / 7) % 256);
     return im;
 }
 }  // namespace

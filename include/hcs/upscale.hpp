@@ -6,8 +6,8 @@
 //     in this header depends on ONNX Runtime, stable-diffusion.cpp or ggml.
 //  2. The tiled pipeline: tile size and overlap come from the memory budget, tiles are blended with a linear
 //     feather so seams vanish, the model pass runs at the model's native scale (4x) and a Lanczos-3 resample
-//     brings the result to EXACTLY `target_long_edge` (default 3840). An image whose long edge is already at or
-//     above the target is never upscaled (skipped, reported as such).
+//     brings the result to EXACTLY `target_long_edge` (default 3840). An image whose long edge is already at
+//     or above the target is never upscaled (skipped, reported as such).
 //  3. PNG glue (decode -> pipeline -> encode) used by the control plane.
 //
 // Pixel formats: Rgb8 is interleaved 8-bit RGB; engine tiles are interleaved float32 RGB in [0,1].
@@ -28,8 +28,8 @@ inline constexpr std::uint64_t kUnknownBudgetBytes = 1ull << 30;
 inline constexpr std::uint64_t kMaxSourcePixels = 16ull << 20;  // refuse absurd inputs before allocating
 
 struct ModelInfo {
-    int scale = 4;                  // native up-scaling factor of the model (1..8)
-    std::uint32_t fixed_tile = 0;   // >0: the model only accepts fixed_tile x fixed_tile inputs
+    int scale = 4;                 // native up-scaling factor of the model (1..8)
+    std::uint32_t fixed_tile = 0;  // >0: the model only accepts fixed_tile x fixed_tile inputs
     // Peak engine working memory per INPUT pixel (activations + arena). Conservative default; an engine may
     // report a measured figure.
     std::uint64_t working_bytes_per_input_pixel = 4096;
@@ -57,8 +57,8 @@ struct Rgb8 {
 
 struct Options {
     std::uint32_t target_long_edge = kDefaultTargetLongEdge;
-    std::uint32_t tile = 0;     // 0 => chosen from the budget
-    std::uint32_t overlap = 0;  // 0 => 16 (clamped to tile/4)
+    std::uint32_t tile = 0;                 // 0 => chosen from the budget
+    std::uint32_t overlap = 0;              // 0 => 16 (clamped to tile/4)
     std::uint64_t memory_budget_bytes = 0;  // 0 => kUnknownBudgetBytes
 };
 
@@ -92,8 +92,8 @@ struct Stats {
     std::string model;
 };
 
-// Tile rectangles covering w x h with the given stride (= tile - overlap); the last tile in each row/column is
-// aligned to the image edge. A dimension not larger than `tile` yields a single tile of that dimension.
+// Tile rectangles covering w x h with the given stride (= tile - overlap); the last tile in each row/column
+// is aligned to the image edge. A dimension not larger than `tile` yields a single tile of that dimension.
 std::vector<TileRect> plan_tiles(std::uint32_t w, std::uint32_t h, std::uint32_t tile, std::uint32_t overlap);
 
 // Final size for a source: long edge == target, aspect preserved (the short edge is rounded, min 1).
@@ -104,14 +104,16 @@ void target_size(std::uint32_t w, std::uint32_t h, std::uint32_t target_long_edg
 std::uint64_t estimate_peak_bytes(std::uint32_t src_w, std::uint32_t src_h, std::uint32_t tile,
                                   const ModelInfo& model, std::uint32_t out_w, std::uint32_t out_h);
 
-Result<Plan> plan_upscale(std::uint32_t src_w, std::uint32_t src_h, const ModelInfo& model, const Options& opt);
+Result<Plan> plan_upscale(std::uint32_t src_w, std::uint32_t src_h, const ModelInfo& model,
+                          const Options& opt);
 
 // Feather weight of position `i` (0-based) in a tile edge ramp of length `ramp`: strictly positive, rises
 // linearly to 1 at i >= ramp. Exposed for tests.
 float feather_weight(std::uint32_t i, std::uint32_t ramp) noexcept;
 
-// Lanczos-3 resample of an interleaved float image (any size) to out_w x out_h, rounded to 8 bit. Filter support
-// scales with the downsampling ratio (no aliasing). Weights are normalised, so flat regions stay flat.
+// Lanczos-3 resample of an interleaved float image (any size) to out_w x out_h, rounded to 8 bit. Filter
+// support scales with the downsampling ratio (no aliasing). Weights are normalised, so flat regions stay
+// flat.
 Rgb8 resample_lanczos(const float* rgb, std::uint32_t w, std::uint32_t h, std::uint32_t out_w,
                       std::uint32_t out_h);
 

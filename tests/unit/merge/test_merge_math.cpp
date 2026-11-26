@@ -104,7 +104,8 @@ TEST(MergeMath, DareMatchesNumpyAndIsChunkIndependent) {
     for (std::size_t i = 0; i < kUniform.size(); ++i)
         EXPECT_DOUBLE_EQ(dare_uniform(99, key, 1, i), kUniform[i]) << i;
     std::vector<float> out(kGoldenN);
-    dare_chunk(kBase.data(), {kM1.data(), kM2.data()}, {1.0, 0.5}, 0.25, 99, key, 0, 1.0, kGoldenN, out.data());
+    dare_chunk(kBase.data(), {kM1.data(), kM2.data()}, {1.0, 0.5}, 0.25, 99, key, 0, 1.0, kGoldenN,
+               out.data());
     expect_close(out, kDare, "dare");  // the numpy golden uses lambda = 1
     // Evaluating the second half as its own chunk (first index 16) gives the same values as the whole run.
     std::vector<float> tail(kGoldenN - 16);

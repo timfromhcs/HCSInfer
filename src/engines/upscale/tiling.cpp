@@ -17,7 +17,8 @@ constexpr std::uint32_t kTileCandidates[] = {512, 384, 256, 192, 128, 96, 64};
 constexpr std::uint32_t kDefaultOverlap = 16;
 }  // namespace
 
-std::vector<TileRect> plan_tiles(std::uint32_t w, std::uint32_t h, std::uint32_t tile, std::uint32_t overlap) {
+std::vector<TileRect> plan_tiles(std::uint32_t w, std::uint32_t h, std::uint32_t tile,
+                                 std::uint32_t overlap) {
     std::vector<TileRect> out;
     if (w == 0 || h == 0 || tile == 0)
         return out;
@@ -57,12 +58,12 @@ void target_size(std::uint32_t w, std::uint32_t h, std::uint32_t target, std::ui
     }
     if (w >= h) {
         out_w = target;
-        out_h = std::max<std::uint32_t>(
-            1, static_cast<std::uint32_t>(std::llround(static_cast<double>(h) * target / static_cast<double>(w))));
+        out_h = std::max<std::uint32_t>(1, static_cast<std::uint32_t>(std::llround(
+                                               static_cast<double>(h) * target / static_cast<double>(w))));
     } else {
         out_h = target;
-        out_w = std::max<std::uint32_t>(
-            1, static_cast<std::uint32_t>(std::llround(static_cast<double>(w) * target / static_cast<double>(h))));
+        out_w = std::max<std::uint32_t>(1, static_cast<std::uint32_t>(std::llround(
+                                               static_cast<double>(w) * target / static_cast<double>(h))));
     }
 }
 
@@ -87,7 +88,8 @@ Result<Plan> plan_upscale(std::uint32_t w, std::uint32_t h, const ModelInfo& mod
         return make_error(ErrorCode::InvalidArgument, "source image exceeds the upscaler input limit of " +
                                                           std::to_string(kMaxSourcePixels) + " pixels");
     if (model.scale < 1 || model.scale > 8)
-        return make_error(ErrorCode::Unsupported, "model scale " + std::to_string(model.scale) + " is not supported");
+        return make_error(ErrorCode::Unsupported,
+                          "model scale " + std::to_string(model.scale) + " is not supported");
     if (opt.target_long_edge < 64 || opt.target_long_edge > 16384)
         return make_error(ErrorCode::InvalidArgument, "target long edge must be 64..16384");
     Plan p;
@@ -114,9 +116,9 @@ Result<Plan> plan_upscale(std::uint32_t w, std::uint32_t h, const ModelInfo& mod
                               "this model only accepts " + std::to_string(tile) + " px tiles");
         const auto need = estimate_peak_bytes(w, h, tile, model, p.out_w, p.out_h);
         if (need > budget)
-            return make_error(ErrorCode::OutOfMemory,
-                              "upscaling needs about " + std::to_string(need >> 20) + " MiB but the budget is " +
-                                  std::to_string(budget >> 20) + " MiB");
+            return make_error(ErrorCode::OutOfMemory, "upscaling needs about " + std::to_string(need >> 20) +
+                                                          " MiB but the budget is " +
+                                                          std::to_string(budget >> 20) + " MiB");
         p.peak_bytes = need;
     } else if (opt.tile != 0) {
         if (opt.tile < 32 || opt.tile > 2048)
@@ -168,7 +170,8 @@ Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& src, const Option
     st.src_h = src.height;
     if (src.width == 0 || src.height == 0 ||
         src.pixels.size() != static_cast<std::size_t>(src.width) * src.height * 3)
-        return make_error(ErrorCode::InvalidArgument, "source image is empty or its buffer size is inconsistent");
+        return make_error(ErrorCode::InvalidArgument,
+                          "source image is empty or its buffer size is inconsistent");
     if (auto r = engine.ready(); !r)
         return r.error();
     const ModelInfo mi = engine.info();
@@ -209,7 +212,8 @@ Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& src, const Option
             const std::uint32_t sy = std::min(r.y + y, src.height - 1);  // clamp: pads fixed-size tiles
             for (std::uint32_t x = 0; x < iw; ++x) {
                 const std::uint32_t sx = std::min(r.x + x, src.width - 1);
-                const std::uint8_t* p = src.pixels.data() + (static_cast<std::size_t>(sy) * src.width + sx) * 3;
+                const std::uint8_t* p =
+                    src.pixels.data() + (static_cast<std::size_t>(sy) * src.width + sx) * 3;
                 float* d = in_buf.data() + (static_cast<std::size_t>(y) * iw + x) * 3;
                 d[0] = p[0] / 255.0f;
                 d[1] = p[1] / 255.0f;
@@ -222,7 +226,8 @@ Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& src, const Option
         if (token.cancelled())
             return make_error(ErrorCode::Cancelled, "upscaling was cancelled");
         const std::size_t ostride = static_cast<std::size_t>(iw) * s;
-        const bool left = r.x > 0, top = r.y > 0, right = r.x + r.w < src.width, bottom = r.y + r.h < src.height;
+        const bool left = r.x > 0, top = r.y > 0, right = r.x + r.w < src.width,
+                   bottom = r.y + r.h < src.height;
         const std::uint32_t vw = r.w * s, vh = r.h * s;
         for (std::uint32_t y = 0; y < vh; ++y) {
             float wy = 1.0f;
@@ -240,9 +245,10 @@ Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& src, const Option
                 const float wt = wx * wy;
                 const float* o = out_buf.data() + (static_cast<std::size_t>(y) * ostride + x) * 3;
                 if (!std::isfinite(o[0]) || !std::isfinite(o[1]) || !std::isfinite(o[2]))
-                    return make_error(ErrorCode::BackendError,
-                                      "the upscale model produced non-finite values (NaN/Inf); an fp16 overflow on "
-                                      "the selected execution provider is the usual cause");
+                    return make_error(
+                        ErrorCode::BackendError,
+                        "the upscale model produced non-finite values (NaN/Inf); an fp16 overflow on "
+                        "the selected execution provider is the usual cause");
                 const std::size_t gx = static_cast<std::size_t>(r.x) * s + x;
                 const std::size_t gi = gy * mw + gx;
                 acc[gi * 3 + 0] += wt * o[0];

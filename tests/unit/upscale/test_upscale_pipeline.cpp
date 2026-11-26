@@ -1,5 +1,5 @@
-// Upscale pipeline math: tiling, feathering, memory planning, resampling. The nearest-neighbour "model" below is a
-// UNIT TEST DOUBLE only; the production backend is the ONNX Runtime engine (see test_ort_backend.cpp).
+// Upscale pipeline math: tiling, feathering, memory planning, resampling. The nearest-neighbour "model" below
+// is a UNIT TEST DOUBLE only; the production backend is the ONNX Runtime engine (see test_ort_backend.cpp).
 #include <gtest/gtest.h>
 
 #include <cmath>
@@ -13,8 +13,8 @@ using namespace hcs::upscale;
 
 namespace {
 
-// Test double: nearest-neighbour s-times upscale; optionally adds a constant per-tile bias (to prove blending)
-// and can pretend to be a fixed-tile model or poison its output.
+// Test double: nearest-neighbour s-times upscale; optionally adds a constant per-tile bias (to prove
+// blending) and can pretend to be a fixed-tile model or poison its output.
 class NnEngine final : public IUpscaleEngine {
 public:
     int scale = 4;
@@ -74,7 +74,8 @@ Rgb8 gradient(std::uint32_t w, std::uint32_t h) {
 
 }  // namespace
 
-// --- planning -----------------------------------------------------------------------------------------------
+// --- planning
+// -----------------------------------------------------------------------------------------------
 
 TEST(UpscaleTiles, SingleTileWhenImageFits) {
     auto t = plan_tiles(100, 80, 128, 16);
@@ -196,11 +197,13 @@ TEST(UpscaleFeather, MonotonicPositiveAndSumsToOneAcrossAnOverlap) {
     }
 }
 
-// --- pipeline ------------------------------------------------------------------------------------------------
+// --- pipeline
+// ------------------------------------------------------------------------------------------------
 
 TEST(UpscalePipeline, TiledResultEqualsSingleTileResultForAPositionIndependentModel) {
     // With a nearest-neighbour model every tile agrees on every pixel, so blending must reproduce the untiled
-    // result exactly: any wrong tile offset, stride, clamp or weight normalisation would show up as a difference.
+    // result exactly: any wrong tile offset, stride, clamp or weight normalisation would show up as a
+    // difference.
     const Rgb8 src = gradient(150, 90);
     Options tiled;
     tiled.tile = 64;
@@ -217,8 +220,8 @@ TEST(UpscalePipeline, TiledResultEqualsSingleTileResultForAPositionIndependentMo
     EXPECT_EQ(s2.tiles, 1u);
     EXPECT_EQ(a.value().width, 3840u);
     EXPECT_EQ(a.value().height, 2304u);  // 3840 * 90 / 150
-    // Blending identical values is exact up to float rounding (sum(w*v)/sum(w)); after 8-bit rounding that can
-    // flip a sample sitting on a .5 boundary by one level, never more.
+    // Blending identical values is exact up to float rounding (sum(w*v)/sum(w)); after 8-bit rounding that
+    // can flip a sample sitting on a .5 boundary by one level, never more.
     ASSERT_EQ(a.value().pixels.size(), b.value().pixels.size());
     std::size_t off_by_one = 0;
     for (std::size_t i = 0; i < a.value().pixels.size(); ++i) {
@@ -245,9 +248,9 @@ TEST(UpscalePipeline, ConstantImageStaysConstantAfterBlendAndResample) {
 }
 
 TEST(UpscalePipeline, SeamBlendIsSmoothWhenTilesDisagree) {
-    // Each tile call adds a different constant bias (0.00, 0.08, ...). With a hard seam the jump between adjacent
-    // tiles would be the full 0.08; the feather must spread it over the overlap so no neighbouring output pixels
-    // differ by more than ~one ramp step.
+    // Each tile call adds a different constant bias (0.00, 0.08, ...). With a hard seam the jump between
+    // adjacent tiles would be the full 0.08; the feather must spread it over the overlap so no neighbouring
+    // output pixels differ by more than ~one ramp step.
     Rgb8 src;
     src.width = 96;
     src.height = 16;
@@ -256,7 +259,8 @@ TEST(UpscalePipeline, SeamBlendIsSmoothWhenTilesDisagree) {
     e.scale = 2;
     e.bias_step = 0.08f;
     Options o;
-    o.target_long_edge = 192;  // 2x model pass, target == model size => the Lanczos step is an identity resample
+    o.target_long_edge =
+        192;  // 2x model pass, target == model size => the Lanczos step is an identity resample
     o.tile = 64;
     o.overlap = 16;
     auto r = upscale_image(e, src, o, {}, nullptr, nullptr);
@@ -264,7 +268,8 @@ TEST(UpscalePipeline, SeamBlendIsSmoothWhenTilesDisagree) {
     ASSERT_EQ(r.value().width, 192u);
     int max_step = 0;
     const std::uint8_t* row = &r.value().pixels[(8 * 192) * 3];
-    for (std::uint32_t x = 1; x < 192; ++x) max_step = std::max(max_step, std::abs(int(row[x * 3]) - int(row[(x - 1) * 3])));
+    for (std::uint32_t x = 1; x < 192; ++x)
+        max_step = std::max(max_step, std::abs(int(row[x * 3]) - int(row[(x - 1) * 3])));
     // Bias difference 0.08 * 255 = 20 levels; blended over a 32 px ramp the per-pixel step is ~1.
     EXPECT_LE(max_step, 2);
     // And the seam region really moved between the two tile values (not a hard switch somewhere else).
@@ -341,7 +346,8 @@ TEST(UpscalePipeline, ProgressIsMonotonicAndEndsAtOne) {
     EXPECT_DOUBLE_EQ(seen.back(), 1.0);
 }
 
-// --- resampling ---------------------------------------------------------------------------------------------
+// --- resampling
+// ---------------------------------------------------------------------------------------------
 
 namespace {
 std::vector<float> to_float(const Rgb8& im) {
@@ -364,7 +370,8 @@ TEST(UpscaleResample, IdentityAndConstant) {
 }
 
 TEST(UpscaleResample, LinearRampSurvivesDownscale) {
-    // A horizontal linear ramp is reproduced by Lanczos (partition of unity + symmetry) away from the borders.
+    // A horizontal linear ramp is reproduced by Lanczos (partition of unity + symmetry) away from the
+    // borders.
     const std::uint32_t W = 200, H = 4;
     std::vector<float> f(W * H * 3);
     for (std::uint32_t y = 0; y < H; ++y)
@@ -378,16 +385,19 @@ TEST(UpscaleResample, LinearRampSurvivesDownscale) {
     }
 }
 
-// Golden values from a numpy implementation of the same Lanczos-3 definition (tests/unit/upscale/gen_resample_golden.py).
+// Golden values from a numpy implementation of the same Lanczos-3 definition
+// (tests/unit/upscale/gen_resample_golden.py).
 TEST(UpscaleResample, MatchesNumpyGolden) {
 #include "resample_golden.inc"
     std::vector<float> in(kGoldenIn.begin(), kGoldenIn.end());
     auto up = resample_lanczos(in.data(), kGoldenInW, kGoldenInH, kGoldenUpW, kGoldenUpH);
     ASSERT_EQ(up.pixels.size(), kGoldenUp.size());
-    for (std::size_t i = 0; i < kGoldenUp.size(); ++i) EXPECT_NEAR(up.pixels[i], kGoldenUp[i], 1) << "up i=" << i;
+    for (std::size_t i = 0; i < kGoldenUp.size(); ++i)
+        EXPECT_NEAR(up.pixels[i], kGoldenUp[i], 1) << "up i=" << i;
     auto down = resample_lanczos(in.data(), kGoldenInW, kGoldenInH, kGoldenDownW, kGoldenDownH);
     ASSERT_EQ(down.pixels.size(), kGoldenDown.size());
-    for (std::size_t i = 0; i < kGoldenDown.size(); ++i) EXPECT_NEAR(down.pixels[i], kGoldenDown[i], 1) << "down i=" << i;
+    for (std::size_t i = 0; i < kGoldenDown.size(); ++i)
+        EXPECT_NEAR(down.pixels[i], kGoldenDown[i], 1) << "down i=" << i;
 }
 
 #ifdef HCS_UPSCALE_HAVE_STB

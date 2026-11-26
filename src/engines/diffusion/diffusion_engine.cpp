@@ -26,6 +26,7 @@
 #include <nlohmann/json.hpp>
 
 #include "hcs/image_profiles.hpp"
+#include "hcs/lora.hpp"
 #include "stable-diffusion.h"
 
 #if defined(_MSC_VER)
@@ -911,6 +912,31 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std:
         if (!why.empty())
             return Error(ErrorCode::InvalidArgument, "low_quality_request: " + why);
     }
+    // LoRAs are only applied to the base family they were trained for. The family here comes from the loaded
+    // weights/file name, so this check is authoritative; a family that cannot be recognised cannot be proven
+    // compatible and is rejected rather than rendering with a mismatched adapter.
+    if (req.loras.size() > kMaxLorasPerRequest)
+        return Error(ErrorCode::InvalidArgument,
+                     "at most " + std::to_string(kMaxLorasPerRequest) + " LoRAs per request");
+    for (const auto& l : req.loras) {
+        if (auto v = validate_lora_weight(l.weight); !v)
+            return Error(ErrorCode::InvalidArgument, "lora '" + l.id + "': " + v.error().message);
+        if (l.path.empty())
+            return Error(ErrorCode::InvalidArgument, "lora '" + l.id + "' has no resolved path");
+        switch (lora_compatibility(l.base_family, family)) {
+            case LoraCompat::Compatible:
+                break;
+            case LoraCompat::Incompatible:
+                return Error(ErrorCode::InvalidArgument,
+                             "lora_incompatible: LoRA '" + l.id + "' was trained for '" + l.base_family +
+                                 "' but the loaded model family is '" + family + "'");
+            case LoraCompat::Unknown:
+                return Error(ErrorCode::InvalidArgument, "lora_incompatible: cannot verify LoRA '" + l.id +
+                                                             "' (base family '" + l.base_family +
+                                                             "') against the loaded model (family '" +
+                                                             family + "' not recognised)");
+        }
+    }
     // Family defaults that the engine-wide fallback would get wrong or leave implicit.
     std::string sampler;
     if (const ImageProfile* prof = image_profile(family)) {
@@ -962,6 +988,14 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std:
         cfg = set_float("sample.guidance.txt_cfg", req.cfg_scale);
     if (cfg && !sampler.empty())
         cfg = set_string("sample.method", sampler);
+    if (cfg && !req.loras.empty()) {
+        std::vector<sd_lora_t> sd_loras;
+        sd_loras.reserve(req.loras.size());
+        for (const auto& l : req.loras) sd_loras.push_back(sd_lora_t{false, l.weight, l.path.c_str()});
+        const sd_status_t st = sd_opt_set_loras(opt, "loras", sd_loras.data(), sd_loras.size());
+        if (st != SD_STATUS_OK)
+            cfg = map_status(st, "could not set 'loras'");
+    }
 
     sd_tensor_t* init_tensor = nullptr;
     if (req.init_image) {

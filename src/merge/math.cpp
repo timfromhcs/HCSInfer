@@ -34,8 +34,8 @@ Result<Method> parse_method(std::string_view s) {
         return Method::Dare;
     if (s == "lora")
         return Method::Lora;
-    return make_error(ErrorCode::InvalidArgument, "unknown merge method '" + std::string(s) +
-                                                      "' (linear | slerp | ties | dare | lora)");
+    return make_error(ErrorCode::InvalidArgument,
+                      "unknown merge method '" + std::string(s) + "' (linear | slerp | ties | dare | lora)");
 }
 
 std::uint64_t fnv1a64(std::string_view s) noexcept {
@@ -49,7 +49,8 @@ std::uint64_t fnv1a64(std::string_view s) noexcept {
 
 double dare_uniform(std::uint64_t seed, std::uint64_t tensor_key, std::uint32_t model_index,
                     std::uint64_t index) noexcept {
-    const std::uint64_t key = seed ^ tensor_key ^ (static_cast<std::uint64_t>(model_index) * 0xD6E8FEB86659FD93ull);
+    const std::uint64_t key =
+        seed ^ tensor_key ^ (static_cast<std::uint64_t>(model_index) * 0xD6E8FEB86659FD93ull);
     std::uint64_t z = key + (index + 1) * 0x9E3779B97F4A7C15ull;
     z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ull;
     z = (z ^ (z >> 27)) * 0x94D049BB133111EBull;
@@ -132,7 +133,8 @@ std::uint16_t float_to_bf16(float f) noexcept {
     return static_cast<std::uint16_t>(x >> 16);
 }
 
-void linear_chunk(const std::vector<const float*>& in, const std::vector<double>& w, std::size_t n, float* out) {
+void linear_chunk(const std::vector<const float*>& in, const std::vector<double>& w, std::size_t n,
+                  float* out) {
     double wsum = 0.0;
     for (double v : w) wsum += v;
     for (std::size_t i = 0; i < n; ++i) {
@@ -177,16 +179,19 @@ float ties_select(std::vector<float>& v, double density) {
     const std::size_t n = v.size();
     if (n == 0)
         return 0.0f;
-    const std::size_t k = std::max<std::size_t>(1, static_cast<std::size_t>(std::ceil(density * static_cast<double>(n))));
+    const std::size_t k =
+        std::max<std::size_t>(1, static_cast<std::size_t>(std::ceil(density * static_cast<double>(n))));
     const std::size_t idx = n - std::min(k, n);
     std::nth_element(v.begin(), v.begin() + static_cast<std::ptrdiff_t>(idx), v.end());
     return v[idx];
 }
 
-float ties_threshold(const float* model, const float* base, std::size_t n, double density, std::vector<float>& scratch) {
+float ties_threshold(const float* model, const float* base, std::size_t n, double density,
+                     std::vector<float>& scratch) {
     scratch.resize(n);
     for (std::size_t i = 0; i < n; ++i)
-        scratch[i] = static_cast<float>(std::fabs(static_cast<double>(model[i]) - static_cast<double>(base[i])));
+        scratch[i] =
+            static_cast<float>(std::fabs(static_cast<double>(model[i]) - static_cast<double>(base[i])));
     return ties_select(scratch, density);
 }
 
@@ -221,8 +226,8 @@ void ties_chunk(const float* base, const std::vector<const float*>& models, cons
 }
 
 void dare_chunk(const float* base, const std::vector<const float*>& models, const std::vector<double>& w,
-                double p, std::uint64_t seed, std::uint64_t key, std::uint64_t first, double lambda, std::size_t n,
-                float* out) {
+                double p, std::uint64_t seed, std::uint64_t key, std::uint64_t first, double lambda,
+                std::size_t n, float* out) {
     const double rescale = 1.0 / (1.0 - p);
     for (std::size_t i = 0; i < n; ++i) {
         const double b = base[i];

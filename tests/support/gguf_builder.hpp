@@ -9,8 +9,8 @@ namespace hcs::test {
 
 struct GgufBuildTensor {
     std::string name;
-    std::uint32_t type = 0;               // ggml type id: 0 = F32, 1 = F16, 8 = Q8_0, 30 = BF16
-    std::vector<std::uint64_t> dims;      // GGUF order (ne[0] first = fastest varying)
+    std::uint32_t type = 0;           // ggml type id: 0 = F32, 1 = F16, 8 = Q8_0, 30 = BF16
+    std::vector<std::uint64_t> dims;  // GGUF order (ne[0] first = fastest varying)
     std::vector<std::uint8_t> data;
 };
 

@@ -64,7 +64,8 @@ Result<std::unique_ptr<TensorFile>> TensorFile::open(const std::filesystem::path
             for (auto d : x.shape) {
                 auto m = checked_mul(x.elements, d);
                 if (!m)
-                    return Error(ErrorCode::ModelError, "GGUF tensor '" + t.name + "' element count overflows");
+                    return Error(ErrorCode::ModelError,
+                                 "GGUF tensor '" + t.name + "' element count overflows");
                 x.elements = *m;
             }
             x.rel_offset = t.offset;
@@ -74,8 +75,9 @@ Result<std::unique_ptr<TensorFile>> TensorFile::open(const std::filesystem::path
             else if (t.size_known)
                 x.bytes = t.byte_size;
             else
-                return Error(ErrorCode::Unsupported,
-                             "GGUF tensor '" + t.name + "' has a type this build cannot size (" + x.type_name + ")");
+                return Error(
+                    ErrorCode::Unsupported,
+                    "GGUF tensor '" + t.name + "' has a type this build cannot size (" + x.type_name + ")");
             if (!range_within(x.file_offset, x.bytes, f->size_))
                 return Error(ErrorCode::ModelError, "GGUF tensor '" + t.name + "' lies outside the file");
             f->tensors_.push_back(std::move(x));
@@ -131,9 +133,11 @@ Result<void> TensorFile::read_bytes(std::uint64_t offset, void* dst, std::size_t
     return src_->read_at(offset, dst, n);
 }
 
-Result<void> TensorFile::read_floats(const Tensor& t, std::uint64_t first, std::uint64_t count, float* out) const {
+Result<void> TensorFile::read_floats(const Tensor& t, std::uint64_t first, std::uint64_t count,
+                                     float* out) const {
     if (!is_float(t.dtype))
-        return make_error(ErrorCode::Unsupported, "tensor '" + t.name + "' has type " + t.type_name + ", not a float type");
+        return make_error(ErrorCode::Unsupported,
+                          "tensor '" + t.name + "' has type " + t.type_name + ", not a float type");
     if (!range_within(first, count, t.elements))
         return make_error(ErrorCode::InvalidArgument, "read beyond the end of tensor '" + t.name + "'");
     if (count == 0)

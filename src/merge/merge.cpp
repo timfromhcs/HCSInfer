@@ -27,7 +27,8 @@ Error err(ErrorCode c, std::string m) {
 }
 
 std::string lower(std::string s) {
-    std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(s.begin(), s.end(), s.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     return s;
 }
 
@@ -35,7 +36,8 @@ bool ends_with(const std::string& s, const std::string& suf) {
     return s.size() >= suf.size() && s.compare(s.size() - suf.size(), suf.size(), suf) == 0;
 }
 
-// ---- output sink: file + running SHA-256 ----------------------------------------------------------------------
+// ---- output sink: file + running SHA-256
+// ----------------------------------------------------------------------
 class Sink {
 public:
     Result<void> open(const fs::path& p) {
@@ -95,11 +97,12 @@ std::string shape_str(const std::vector<std::uint64_t>& s) {
     return o + "]";
 }
 
-// ---- LoRA pair discovery --------------------------------------------------------------------------------------
+// ---- LoRA pair discovery
+// --------------------------------------------------------------------------------------
 struct LoraPair {
-    std::string target;                // base tensor name
-    const Tensor* a = nullptr;         // [rank, in]
-    const Tensor* b = nullptr;         // [out, rank]
+    std::string target;         // base tensor name
+    const Tensor* a = nullptr;  // [rank, in]
+    const Tensor* b = nullptr;  // [out, rank]
     std::optional<double> alpha;
 };
 
@@ -118,10 +121,13 @@ Result<std::vector<LoraPair>> discover_lora_pairs(const TensorFile& lora, const 
     for (const auto& t : lora.tensors()) {
         const std::string& n = t.name;
         if (n.rfind("lora_unet_", 0) == 0 || n.rfind("lora_te", 0) == 0)
-            return err(ErrorCode::Unsupported,
-                       "LoRA tensor '" + n + "' uses kohya underscore naming that cannot be mapped to base tensor "
-                       "names; convert it to PEFT (…lora_A/lora_B.weight) or llama.cpp (…lora_a/lora_b) naming");
-        auto set = [&](const std::string& suffix, bool is_a, const std::string& target_suffix, bool alpha_by_prefix) {
+            return err(
+                ErrorCode::Unsupported,
+                "LoRA tensor '" + n +
+                    "' uses kohya underscore naming that cannot be mapped to base tensor "
+                    "names; convert it to PEFT (…lora_A/lora_B.weight) or llama.cpp (…lora_a/lora_b) naming");
+        auto set = [&](const std::string& suffix, bool is_a, const std::string& target_suffix,
+                       bool alpha_by_prefix) {
             if (!ends_with(n, suffix))
                 return false;
             std::string prefix = strip_peft(n.substr(0, n.size() - suffix.size()));
@@ -132,44 +138,53 @@ Result<std::vector<LoraPair>> discover_lora_pairs(const TensorFile& lora, const 
                 s.alpha_name = n.substr(0, n.size() - suffix.size()) + ".alpha";
             return true;
         };
-        if (set(".lora_A.default.weight", true, ".weight", false) || set(".lora_B.default.weight", false, ".weight", false) ||
+        if (set(".lora_A.default.weight", true, ".weight", false) ||
+            set(".lora_B.default.weight", false, ".weight", false) ||
             set(".lora_A.weight", true, ".weight", false) || set(".lora_B.weight", false, ".weight", false) ||
-            set(".lora_down.weight", true, ".weight", true) || set(".lora_up.weight", false, ".weight", true) ||
-            set(".lora_a", true, "", false) || set(".lora_b", false, "", false))
+            set(".lora_down.weight", true, ".weight", true) ||
+            set(".lora_up.weight", false, ".weight", true) || set(".lora_a", true, "", false) ||
+            set(".lora_b", false, "", false))
             continue;
         if (ends_with(n, ".alpha"))
             continue;  // `<module>.alpha` scalars are read through the pair they belong to
         if (n == "__metadata__")
             continue;
-        return err(ErrorCode::ModelError, "LoRA file has a tensor this tool does not understand: '" + n + "'");
+        return err(ErrorCode::ModelError,
+                   "LoRA file has a tensor this tool does not understand: '" + n + "'");
     }
     if (slots.empty())
-        return err(ErrorCode::ModelError, "the LoRA file contains no lora_A/lora_B (or lora_down/lora_up, lora_a/lora_b) pairs");
+        return err(ErrorCode::ModelError,
+                   "the LoRA file contains no lora_A/lora_B (or lora_down/lora_up, lora_a/lora_b) pairs");
     std::vector<LoraPair> out;
     for (auto& [target, s] : slots) {
         if (!s.a || !s.b)
-            return err(ErrorCode::ModelError, "LoRA target '" + target + "' has only one half of its A/B pair");
+            return err(ErrorCode::ModelError,
+                       "LoRA target '" + target + "' has only one half of its A/B pair");
         const Tensor* bt = base.find(target);
         if (!bt)
-            return err(ErrorCode::ModelError, "LoRA targets '" + target + "', which does not exist in the base model");
+            return err(ErrorCode::ModelError,
+                       "LoRA targets '" + target + "', which does not exist in the base model");
         if (!detail::is_float(bt->dtype))
             return err(ErrorCode::Unsupported, "LoRA target '" + target + "' is stored as " + bt->type_name +
                                                    " in the base: quantized targets are not merged in V1.1");
         if (bt->shape.size() != 2 || s.a->shape.size() != 2 || s.b->shape.size() != 2)
-            return err(ErrorCode::Unsupported, "LoRA target '" + target + "' is not a 2-D weight (conv LoRA is not supported)");
+            return err(ErrorCode::Unsupported,
+                       "LoRA target '" + target + "' is not a 2-D weight (conv LoRA is not supported)");
         if (!detail::is_float(s.a->dtype) || !detail::is_float(s.b->dtype))
             return err(ErrorCode::ModelError, "LoRA tensors for '" + target + "' are not float tensors");
         const std::uint64_t rank = s.a->shape[0];
-        if (rank == 0 || s.b->shape[1] != rank || s.a->shape[1] != bt->shape[1] || s.b->shape[0] != bt->shape[0])
-            return err(ErrorCode::ModelError, "LoRA shapes for '" + target + "' (A " + shape_str(s.a->shape) + ", B " +
-                                                  shape_str(s.b->shape) + ") do not fit the base tensor " +
-                                                  shape_str(bt->shape));
+        if (rank == 0 || s.b->shape[1] != rank || s.a->shape[1] != bt->shape[1] ||
+            s.b->shape[0] != bt->shape[0])
+            return err(ErrorCode::ModelError, "LoRA shapes for '" + target + "' (A " + shape_str(s.a->shape) +
+                                                  ", B " + shape_str(s.b->shape) +
+                                                  ") do not fit the base tensor " + shape_str(bt->shape));
         LoraPair p;
         p.target = target;
         p.a = s.a;
         p.b = s.b;
         if (!s.alpha_name.empty())
-            if (const Tensor* at = lora.find(s.alpha_name); at && detail::is_float(at->dtype) && at->elements == 1) {
+            if (const Tensor* at = lora.find(s.alpha_name);
+                at && detail::is_float(at->dtype) && at->elements == 1) {
                 float v = 0;
                 if (auto r = lora.read_floats(*at, 0, 1, &v); r)
                     p.alpha = v;
@@ -215,8 +230,9 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
     if (w.empty())
         w.assign(n_weights, 1.0);
     if (w.size() != n_weights)
-        return err(ErrorCode::InvalidArgument, "expected " + std::to_string(n_weights) + " weight(s) for method '" +
-                                                   to_string(P.method) + "', got " + std::to_string(w.size()));
+        return err(ErrorCode::InvalidArgument, "expected " + std::to_string(n_weights) +
+                                                   " weight(s) for method '" + to_string(P.method) +
+                                                   "', got " + std::to_string(w.size()));
     for (double v : w) {
         if (!std::isfinite(v) || v <= 0.0)
             return err(ErrorCode::InvalidArgument, "weights must be finite and > 0");
@@ -263,7 +279,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
     {
         std::error_code ec;
         if (fs::exists(out_path, ec) && !req.overwrite)
-            return err(ErrorCode::AlreadyExists, "'" + out_path.filename().string() + "' exists; pass overwrite to replace it");
+            return err(ErrorCode::AlreadyExists,
+                       "'" + out_path.filename().string() + "' exists; pass overwrite to replace it");
     }
 
     // ---- open and cross-validate the inputs ----
@@ -278,8 +295,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
     for (std::size_t i = 1; i < files.size(); ++i)
         if (files[i]->format() != base.format())
             return err(ErrorCode::InvalidArgument, std::string("all inputs must use one format: base is ") +
-                                                       base.format_name() + ", input " + std::to_string(i) + " is " +
-                                                       files[i]->format_name());
+                                                       base.format_name() + ", input " + std::to_string(i) +
+                                                       " is " + files[i]->format_name());
 
     std::vector<LoraPair> lora_pairs;
     std::map<std::string, const LoraPair*> lora_by_target;
@@ -292,35 +309,40 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
     } else {
         for (std::size_t i = 1; i < files.size(); ++i) {
             const TensorFile& m = *files[i];
-            const std::string who = "input " + std::to_string(i) + " ('" + m.path().filename().string() + "')";
+            const std::string who =
+                "input " + std::to_string(i) + " ('" + m.path().filename().string() + "')";
             if (m.tensors().size() != base.tensors().size())
                 return err(ErrorCode::InvalidArgument, who + " has " + std::to_string(m.tensors().size()) +
-                                                           " tensors, the base has " + std::to_string(base.tensors().size()));
+                                                           " tensors, the base has " +
+                                                           std::to_string(base.tensors().size()));
             for (const auto& bt : base.tensors()) {
                 const Tensor* mt = m.find(bt.name);
                 if (!mt)
                     return err(ErrorCode::InvalidArgument, who + " has no tensor '" + bt.name + "'");
                 if (!same_shape(bt, *mt))
-                    return err(ErrorCode::InvalidArgument, who + ": tensor '" + bt.name + "' has shape " + shape_str(mt->shape) +
-                                                               ", the base has " + shape_str(bt.shape));
+                    return err(ErrorCode::InvalidArgument, who + ": tensor '" + bt.name + "' has shape " +
+                                                               shape_str(mt->shape) + ", the base has " +
+                                                               shape_str(bt.shape));
                 if (detail::is_float(bt.dtype) != detail::is_float(mt->dtype) ||
                     (!detail::is_float(bt.dtype) && bt.type_name != mt->type_name))
-                    return err(ErrorCode::InvalidArgument, who + ": tensor '" + bt.name + "' has type " + mt->type_name +
-                                                               ", the base has " + bt.type_name);
+                    return err(ErrorCode::InvalidArgument, who + ": tensor '" + bt.name + "' has type " +
+                                                               mt->type_name + ", the base has " +
+                                                               bt.type_name);
             }
         }
         if (base.format() == TensorFile::Format::Gguf)
             for (const auto& bt : base.tensors())
                 if (!detail::is_float(bt.dtype))
-                    return err(ErrorCode::Unsupported,
-                               "tensor '" + bt.name + "' is " + bt.type_name + ": quantized GGUF models cannot be merged in "
-                               "V1.1 (only F32/F16/BF16 tensors)");
+                    return err(ErrorCode::Unsupported, "tensor '" + bt.name + "' is " + bt.type_name +
+                                                           ": quantized GGUF models cannot be merged in "
+                                                           "V1.1 (only F32/F16/BF16 tensors)");
     }
 
     // ---- memory accounting (fail closed before writing anything) ----
     const std::uint64_t chunk = req.chunk_elements;
     const std::uint64_t n_inputs = files.size();
-    std::uint64_t peak = (n_inputs + 2) * chunk * 4;  // input chunks + output chunk (+ encode buffer is <= 4 B/elem)
+    std::uint64_t peak =
+        (n_inputs + 2) * chunk * 4;  // input chunks + output chunk (+ encode buffer is <= 4 B/elem)
     std::uint64_t largest = 0;
     for (const auto& t : base.tensors()) largest = std::max(largest, t.elements);
     if (P.method == Method::Ties)
@@ -370,11 +392,14 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
         meta["hcs_merge_tool"] = "HCSInfer merge";
         h["__metadata__"] = meta;
         for (const auto& t : base.tensors())
-            h[t.name] = {{"dtype", t.type_name}, {"shape", t.shape}, {"data_offsets", {t.rel_offset, t.rel_offset + t.bytes}}};
+            h[t.name] = {{"dtype", t.type_name},
+                         {"shape", t.shape},
+                         {"data_offsets", {t.rel_offset, t.rel_offset + t.bytes}}};
         std::string hs = h.dump();
         while (hs.size() % 8 != 0) hs.push_back(' ');
         std::uint8_t len[8];
-        for (int i = 0; i < 8; ++i) len[i] = static_cast<std::uint8_t>((static_cast<std::uint64_t>(hs.size()) >> (8 * i)) & 0xff);
+        for (int i = 0; i < 8; ++i)
+            len[i] = static_cast<std::uint8_t>((static_cast<std::uint64_t>(hs.size()) >> (8 * i)) & 0xff);
         if (auto r = sink.write(len, 8); !r)
             return r.error();
         if (auto r = sink.write(hs.data(), hs.size()); !r)
@@ -382,7 +407,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
     } else {
         std::vector<std::uint8_t> buf(1u << 20);
         for (std::uint64_t off = 0; off < base.data_offset();) {
-            const std::size_t n = static_cast<std::size_t>(std::min<std::uint64_t>(buf.size(), base.data_offset() - off));
+            const std::size_t n =
+                static_cast<std::size_t>(std::min<std::uint64_t>(buf.size(), base.data_offset() - off));
             if (auto r = base.read_bytes(off, buf.data(), n); !r)
                 return r.error();
             if (auto r = sink.write(buf.data(), n); !r)
@@ -421,7 +447,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
         }
         return {};
     };
-    auto read_into = [&](std::size_t i, const Tensor& t, std::uint64_t first, std::uint64_t n) -> Result<void> {
+    auto read_into = [&](std::size_t i, const Tensor& t, std::uint64_t first,
+                         std::uint64_t n) -> Result<void> {
         in_buf[i].resize(static_cast<std::size_t>(n));
         return files[i]->read_floats(t, first, n, in_buf[i].data());
     };
@@ -439,7 +466,9 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
                 return r.error();
         cursor = bt.rel_offset;
         if (req.progress)
-            req.progress(total_bytes ? static_cast<double>(done_bytes) / static_cast<double>(total_bytes) : 0.0, bt.name);
+            req.progress(
+                total_bytes ? static_cast<double>(done_bytes) / static_cast<double>(total_bytes) : 0.0,
+                bt.name);
 
         const LoraPair* lp = nullptr;
         if (is_lora) {
@@ -492,7 +521,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
                 if (auto r = read_into(1, mt, first, n); !r)
                     return r.error();
                 out_buf.resize(static_cast<std::size_t>(n));
-                slerp_apply(in_buf[0].data(), in_buf[1].data(), static_cast<std::size_t>(n), co, out_buf.data());
+                slerp_apply(in_buf[0].data(), in_buf[1].data(), static_cast<std::size_t>(n), co,
+                            out_buf.data());
                 if (auto r = emit(out_buf.data(), static_cast<std::size_t>(n), bt.dtype); !r)
                     return r.error();
             }
@@ -513,8 +543,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
                         if (auto r = read_into(k + 1, mt, first, n); !r)
                             return r.error();
                         for (std::uint64_t i = 0; i < n; ++i)
-                            scratch[static_cast<std::size_t>(first + i)] = static_cast<float>(
-                                std::fabs(static_cast<double>(in_buf[k + 1][i]) - static_cast<double>(in_buf[0][i])));
+                            scratch[static_cast<std::size_t>(first + i)] = static_cast<float>(std::fabs(
+                                static_cast<double>(in_buf[k + 1][i]) - static_cast<double>(in_buf[0][i])));
                     }
                     thr[k] = ties_select(scratch, P.density);
                 }
@@ -534,7 +564,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
                 }
                 out_buf.resize(static_cast<std::size_t>(n));
                 if (P.method == Method::Ties)
-                    ties_chunk(in_buf[0].data(), ptrs, w, thr, P.lambda, static_cast<std::size_t>(n), out_buf.data());
+                    ties_chunk(in_buf[0].data(), ptrs, w, thr, P.lambda, static_cast<std::size_t>(n),
+                               out_buf.data());
                 else
                     dare_chunk(in_buf[0].data(), ptrs, w, P.drop_rate, P.seed, key, first, P.lambda,
                                static_cast<std::size_t>(n), out_buf.data());
@@ -549,7 +580,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
             std::vector<float> a_mat(static_cast<std::size_t>(rank * cols));
             if (auto r = lf.read_floats(*p.a, 0, rank * cols, a_mat.data()); !r)
                 return r.error();
-            const double alpha = p.alpha ? *p.alpha : (P.lora_alpha > 0.0 ? P.lora_alpha : static_cast<double>(rank));
+            const double alpha =
+                p.alpha ? *p.alpha : (P.lora_alpha > 0.0 ? P.lora_alpha : static_cast<double>(rank));
             const double scale = w[0] * alpha / static_cast<double>(rank);
             const std::uint64_t rows_per = std::max<std::uint64_t>(1, chunk / cols);
             for (std::uint64_t r0 = 0; r0 < rows; r0 += rows_per) {
@@ -563,7 +595,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
                     return r.error();
                 out_buf.resize(static_cast<std::size_t>(nr * cols));
                 lora_rows(in_buf[0].data(), in_buf[1].data(), a_mat.data(), static_cast<std::size_t>(nr),
-                          static_cast<std::size_t>(cols), static_cast<std::size_t>(rank), scale, out_buf.data());
+                          static_cast<std::size_t>(cols), static_cast<std::size_t>(rank), scale,
+                          out_buf.data());
                 if (auto r = emit(out_buf.data(), out_buf.size(), bt.dtype); !r)
                     return r.error();
             }
@@ -600,7 +633,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
         for (const auto& bt : base.tensors()) {
             const Tensor* ot = chk.value()->find(bt.name);
             if (!ot || ot->shape != bt.shape || ot->type_name != bt.type_name)
-                return err(ErrorCode::Internal, "the merged file does not match the base structure at '" + bt.name + "'");
+                return err(ErrorCode::Internal,
+                           "the merged file does not match the base structure at '" + bt.name + "'");
         }
     }
 
@@ -618,19 +652,21 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
         j["tool"] = "HCSInfer merge";
         j["method"] = to_string(P.method);
         j["format"] = rep.format;
-        j["params"] = {{"weights", w},       {"t", P.t},           {"density", P.density}, {"lambda", P.lambda},
-                       {"drop_rate", P.drop_rate}, {"seed", P.seed}, {"lora_alpha", P.lora_alpha}};
+        j["params"] = {{"weights", w},
+                       {"t", P.t},
+                       {"density", P.density},
+                       {"lambda", P.lambda},
+                       {"drop_rate", P.drop_rate},
+                       {"seed", P.seed},
+                       {"lora_alpha", P.lora_alpha}};
         j["inputs"] = nlohmann::json::array();
         for (std::size_t i = 0; i < in_paths.size(); ++i)
             j["inputs"].push_back({{"role", i == 0 ? "base" : (is_lora ? "lora" : "model")},
                                    {"file", in_paths[i].filename().string()},
                                    {"size_bytes", files[i]->file_size()}});
-        j["output"] = {{"file", out_path.filename().string()},
-                       {"size_bytes", rep.bytes_written},
-                       {"sha256", rep.output_sha256},
-                       {"tensors", rep.tensors_total},
-                       {"tensors_merged", rep.tensors_merged},
-                       {"tensors_copied", rep.tensors_copied}};
+        j["output"] = {{"file", out_path.filename().string()}, {"size_bytes", rep.bytes_written},
+                       {"sha256", rep.output_sha256},          {"tensors", rep.tensors_total},
+                       {"tensors_merged", rep.tensors_merged}, {"tensors_copied", rep.tensors_copied}};
         rep.manifest = fs::path(out_path.string() + ".merge.json");
         if (auto r = atomic_write_file(rep.manifest, j.dump(2) + "\n"); !r)
             return r.error();

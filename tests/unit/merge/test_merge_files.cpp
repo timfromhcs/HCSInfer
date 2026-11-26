@@ -1,5 +1,6 @@
-// File-level merge: streaming engine on synthetic safetensors / GGUF files, golden agreement, chunk invariance,
-// fail-closed validation, output rules. Synthetic data only (the real-file run is recorded under docs/test-evidence).
+// File-level merge: streaming engine on synthetic safetensors / GGUF files, golden agreement, chunk
+// invariance, fail-closed validation, output rules. Synthetic data only (the real-file run is recorded under
+// docs/test-evidence).
 #include <gtest/gtest.h>
 
 #include <cmath>
@@ -40,7 +41,8 @@ std::vector<std::uint8_t> f16_bytes(const std::vector<float>& v) {
     return b;
 }
 
-test::StBuildTensor f16_tensor(const std::string& name, std::vector<std::uint64_t> shape, const std::vector<float>& v) {
+test::StBuildTensor f16_tensor(const std::string& name, std::vector<std::uint64_t> shape,
+                               const std::vector<float>& v) {
     test::StBuildTensor t;
     t.name = name;
     t.dtype = "F16";
@@ -134,7 +136,8 @@ TEST(MergeFiles, LoraIntoBaseMatchesNumpyAndCopiesUntouchedTensors) {
     ids.shape = {3};
     ids.data.assign(24, 7);
     test::write_file(e.p("base.safetensors"),
-                     build_safetensors({f32_tensor("layer.weight", {4, 6}, kLoraBase), f32_tensor("other.weight", {2}, {1, 2}), ids}));
+                     build_safetensors({f32_tensor("layer.weight", {4, 6}, kLoraBase),
+                                        f32_tensor("other.weight", {2}, {1, 2}), ids}));
     test::write_file(e.p("lora.safetensors"),
                      build_safetensors({f32_tensor("base_model.model.layer.lora_A.weight", {2, 6}, kLoraA),
                                         f32_tensor("base_model.model.layer.lora_B.weight", {4, 2}, kLoraB)}));
@@ -155,7 +158,8 @@ TEST(MergeFiles, LoraIntoBaseMatchesNumpyAndCopiesUntouchedTensors) {
 
 TEST(MergeFiles, LoraAlphaTensorAndKohyaAndLlamaNaming) {
     Env e;
-    test::write_file(e.p("base.safetensors"), build_safetensors({f32_tensor("layer.weight", {4, 6}, kLoraBase)}));
+    test::write_file(e.p("base.safetensors"),
+                     build_safetensors({f32_tensor("layer.weight", {4, 6}, kLoraBase)}));
     // kohya lora_down/lora_up with an alpha tensor of 4 and rank 2 => scale 2 * strength.
     test::write_file(e.p("kohya.safetensors"),
                      build_safetensors({f32_tensor("layer.lora_down.weight", {2, 6}, kLoraA),
@@ -167,7 +171,8 @@ TEST(MergeFiles, LoraAlphaTensorAndKohyaAndLlamaNaming) {
     expect_close(read_f32_tensor(e.p("k.safetensors"), "layer.weight"), kLoraOut, "kohya + alpha tensor");
     // llama.cpp style names target the full tensor name; alpha defaults to the rank (scale = strength).
     test::write_file(e.p("llama.safetensors"),
-                     build_safetensors({f32_tensor("layer.weight.lora_a", {2, 6}, kLoraA), f32_tensor("layer.weight.lora_b", {4, 2}, kLoraB)}));
+                     build_safetensors({f32_tensor("layer.weight.lora_a", {2, 6}, kLoraA),
+                                        f32_tensor("layer.weight.lora_b", {4, 2}, kLoraB)}));
     auto r2 = req(e, Method::Lora, {"llama.safetensors"}, "l.safetensors");
     r2.params.weights = {1.5};  // 1.5 * (rank/rank) == 0.75 * 4/2
     ASSERT_TRUE(run_merge(r2, e.guard).ok());
@@ -176,7 +181,8 @@ TEST(MergeFiles, LoraAlphaTensorAndKohyaAndLlamaNaming) {
 
 TEST(MergeFiles, LoraFailsClosed) {
     Env e;
-    test::write_file(e.p("base.safetensors"), build_safetensors({f32_tensor("layer.weight", {4, 6}, kLoraBase)}));
+    test::write_file(e.p("base.safetensors"),
+                     build_safetensors({f32_tensor("layer.weight", {4, 6}, kLoraBase)}));
     auto run = [&](std::vector<test::StBuildTensor> t) {
         test::write_file(e.p("l.safetensors"), build_safetensors(t));
         auto r = req(e, Method::Lora, {"l.safetensors"}, "o.safetensors");
@@ -184,20 +190,28 @@ TEST(MergeFiles, LoraFailsClosed) {
         return run_merge(r, e.guard);
     };
     // unknown target
-    EXPECT_EQ(run({f32_tensor("nope.lora_A.weight", {2, 6}, kLoraA), f32_tensor("nope.lora_B.weight", {4, 2}, kLoraB)}).error().code,
+    EXPECT_EQ(run({f32_tensor("nope.lora_A.weight", {2, 6}, kLoraA),
+                   f32_tensor("nope.lora_B.weight", {4, 2}, kLoraB)})
+                  .error()
+                  .code,
               ErrorCode::ModelError);
     // half a pair
     EXPECT_EQ(run({f32_tensor("layer.lora_A.weight", {2, 6}, kLoraA)}).error().code, ErrorCode::ModelError);
     // rank mismatch
-    EXPECT_EQ(run({f32_tensor("layer.lora_A.weight", {2, 6}, kLoraA), f32_tensor("layer.lora_B.weight", {4, 3}, std::vector<float>(12, 1))})
-                  .error().code,
+    EXPECT_EQ(run({f32_tensor("layer.lora_A.weight", {2, 6}, kLoraA),
+                   f32_tensor("layer.lora_B.weight", {4, 3}, std::vector<float>(12, 1))})
+                  .error()
+                  .code,
               ErrorCode::ModelError);
     // column mismatch
-    EXPECT_EQ(run({f32_tensor("layer.lora_A.weight", {2, 5}, std::vector<float>(10, 1)), f32_tensor("layer.lora_B.weight", {4, 2}, kLoraB)})
-                  .error().code,
+    EXPECT_EQ(run({f32_tensor("layer.lora_A.weight", {2, 5}, std::vector<float>(10, 1)),
+                   f32_tensor("layer.lora_B.weight", {4, 2}, kLoraB)})
+                  .error()
+                  .code,
               ErrorCode::ModelError);
     // kohya underscore naming cannot be mapped
-    EXPECT_EQ(run({f32_tensor("lora_unet_down_blocks_0.lora_down.weight", {2, 6}, kLoraA)}).error().code, ErrorCode::Unsupported);
+    EXPECT_EQ(run({f32_tensor("lora_unet_down_blocks_0.lora_down.weight", {2, 6}, kLoraA)}).error().code,
+              ErrorCode::Unsupported);
     // no failure left an output or a partial file behind
     EXPECT_FALSE(std::filesystem::exists(e.p("o.safetensors")));
     EXPECT_FALSE(std::filesystem::exists(e.p("o.safetensors.partial")));
@@ -207,12 +221,16 @@ TEST(MergeFiles, ChunkSizeNeverChangesTheResult) {
     Env e;
     const std::size_t n = 5000;
     const auto b = random_vec(n, 1), a = random_vec(n, 2), c = random_vec(n, 3);
-    test::write_file(e.p("base.safetensors"), build_safetensors({f32_tensor("w", {50, 100}, b), f32_tensor("v", {7}, random_vec(7, 9))}));
-    test::write_file(e.p("m1.safetensors"), build_safetensors({f32_tensor("w", {50, 100}, a), f32_tensor("v", {7}, random_vec(7, 10))}));
-    test::write_file(e.p("m2.safetensors"), build_safetensors({f32_tensor("w", {50, 100}, c), f32_tensor("v", {7}, random_vec(7, 11))}));
+    test::write_file(e.p("base.safetensors"), build_safetensors({f32_tensor("w", {50, 100}, b),
+                                                                 f32_tensor("v", {7}, random_vec(7, 9))}));
+    test::write_file(e.p("m1.safetensors"), build_safetensors({f32_tensor("w", {50, 100}, a),
+                                                               f32_tensor("v", {7}, random_vec(7, 10))}));
+    test::write_file(e.p("m2.safetensors"), build_safetensors({f32_tensor("w", {50, 100}, c),
+                                                               f32_tensor("v", {7}, random_vec(7, 11))}));
     for (Method m : {Method::Linear, Method::Slerp, Method::Ties, Method::Dare}) {
-        const std::vector<std::string> models = m == Method::Slerp ? std::vector<std::string>{"m1.safetensors"}
-                                                                    : std::vector<std::string>{"m1.safetensors", "m2.safetensors"};
+        const std::vector<std::string> models =
+            m == Method::Slerp ? std::vector<std::string>{"m1.safetensors"}
+                               : std::vector<std::string>{"m1.safetensors", "m2.safetensors"};
         std::string first;
         for (std::uint64_t chunk : {1024ull, 3000ull, 1ull << 20}) {
             auto r = req(e, m, models, "o.safetensors");
@@ -279,7 +297,8 @@ TEST(MergeFiles, GgufOutputKeepsHeaderAndPaddingAndMergesFloatData) {
     ASSERT_TRUE(src.ok());
     auto info = storage::parse_gguf(*src.value());
     ASSERT_TRUE(info.ok()) << info.error().message;
-    EXPECT_EQ(out.substr(0, info.value().data_offset), base_bytes.substr(0, info.value().data_offset));  // header verbatim
+    EXPECT_EQ(out.substr(0, info.value().data_offset),
+              base_bytes.substr(0, info.value().data_offset));  // header verbatim
     std::vector<float> w(40);
     std::memcpy(w.data(), out.data() + info.value().data_offset + info.value().tensors[0].offset, 160);
     std::vector<float> want(40);
@@ -287,7 +306,8 @@ TEST(MergeFiles, GgufOutputKeepsHeaderAndPaddingAndMergesFloatData) {
     expect_close(w, want, "gguf f32");
     std::uint16_t h0;
     std::memcpy(&h0, out.data() + info.value().data_offset + info.value().tensors[1].offset, 2);
-    EXPECT_NEAR(half_to_float(h0), (half_to_float(float_to_half(a2[0])) + half_to_float(float_to_half(b2[0]))) / 2.0f, 1e-3);
+    EXPECT_NEAR(half_to_float(h0),
+                (half_to_float(float_to_half(a2[0])) + half_to_float(float_to_half(b2[0]))) / 2.0f, 1e-3);
 }
 
 TEST(MergeFiles, QuantizedGgufIsRejectedNotSilentlyCopied) {
@@ -312,7 +332,9 @@ TEST(MergeFiles, LoraIntoGgufBaseKeepsQuantizedUntouchedTensors) {
     test::GgufBuildTensor q{"blk.0.q", 8, {32}, std::vector<std::uint8_t>(34, 3)};
     test::GgufBuildTensor w{"blk.0.w", 0, {6, 4}, f32_bytes(kLoraBase)};
     test::write_file(e.p("base.gguf"), build_gguf({q, w}));
-    test::write_file(e.p("lora.safetensors"), build_safetensors({f32_tensor("blk.0.w.lora_a", {2, 6}, kLoraA), f32_tensor("blk.0.w.lora_b", {4, 2}, kLoraB)}));
+    test::write_file(e.p("lora.safetensors"),
+                     build_safetensors({f32_tensor("blk.0.w.lora_a", {2, 6}, kLoraA),
+                                        f32_tensor("blk.0.w.lora_b", {4, 2}, kLoraB)}));
     Request r;
     r.base = e.p("base.gguf");
     r.models = {e.p("lora.safetensors")};
@@ -324,7 +346,8 @@ TEST(MergeFiles, LoraIntoGgufBaseKeepsQuantizedUntouchedTensors) {
     ASSERT_FALSE(rep.ok());
     EXPECT_EQ(rep.error().code, ErrorCode::InvalidArgument);
     // With a GGUF LoRA the quantized tensor is copied byte for byte and the float one is merged.
-    test::GgufBuildTensor la{"blk.0.w.lora_a", 0, {6, 2}, f32_bytes(kLoraA)}, lb{"blk.0.w.lora_b", 0, {2, 4}, f32_bytes(kLoraB)};
+    test::GgufBuildTensor la{"blk.0.w.lora_a", 0, {6, 2}, f32_bytes(kLoraA)},
+        lb{"blk.0.w.lora_b", 0, {2, 4}, f32_bytes(kLoraB)};
     test::write_file(e.p("lora.gguf"), build_gguf({la, lb}));
     r.models = {e.p("lora.gguf")};
     rep = run_merge(r, e.guard);
@@ -334,7 +357,8 @@ TEST(MergeFiles, LoraIntoGgufBaseKeepsQuantizedUntouchedTensors) {
     const std::string base_bytes = test::read_file(e.p("base.gguf")), out = test::read_file(e.p("out.gguf"));
     auto src = storage::FileSource::open(e.p("out.gguf"));
     auto info = storage::parse_gguf(*src.value()).value();
-    EXPECT_EQ(out.substr(info.data_offset + info.tensors[0].offset, 34), base_bytes.substr(info.data_offset + info.tensors[0].offset, 34));
+    EXPECT_EQ(out.substr(info.data_offset + info.tensors[0].offset, 34),
+              base_bytes.substr(info.data_offset + info.tensors[0].offset, 34));
     std::vector<float> got(24);
     std::memcpy(got.data(), out.data() + info.data_offset + info.tensors[1].offset, 96);
     expect_close(got, kLoraOut, "gguf lora");
@@ -342,7 +366,8 @@ TEST(MergeFiles, LoraIntoGgufBaseKeepsQuantizedUntouchedTensors) {
 
 TEST(MergeFiles, StructuralMismatchesFailBeforeAnyOutput) {
     Env e;
-    test::write_file(e.p("base.safetensors"), build_safetensors({f32_tensor("w", {4}, {1, 2, 3, 4}), f32_tensor("v", {2}, {1, 2})}));
+    test::write_file(e.p("base.safetensors"),
+                     build_safetensors({f32_tensor("w", {4}, {1, 2, 3, 4}), f32_tensor("v", {2}, {1, 2})}));
     auto check = [&](const std::string& other_bytes, ErrorCode code) {
         test::write_file(e.p("m1.safetensors"), other_bytes);
         auto r = req(e, Method::Linear, {"m1.safetensors"}, "o.safetensors");
@@ -352,13 +377,18 @@ TEST(MergeFiles, StructuralMismatchesFailBeforeAnyOutput) {
         EXPECT_FALSE(std::filesystem::exists(e.p("o.safetensors")));
         EXPECT_FALSE(std::filesystem::exists(e.p("o.safetensors.partial")));
     };
-    check(build_safetensors({f32_tensor("w", {4}, {1, 2, 3, 4})}), ErrorCode::InvalidArgument);                       // tensor count
-    check(build_safetensors({f32_tensor("w", {4}, {1, 2, 3, 4}), f32_tensor("x", {2}, {1, 2})}), ErrorCode::InvalidArgument);  // name
-    check(build_safetensors({f32_tensor("w", {2, 2}, {1, 2, 3, 4}), f32_tensor("v", {2}, {1, 2})}), ErrorCode::InvalidArgument);  // shape
+    check(build_safetensors({f32_tensor("w", {4}, {1, 2, 3, 4})}),
+          ErrorCode::InvalidArgument);  // tensor count
+    check(build_safetensors({f32_tensor("w", {4}, {1, 2, 3, 4}), f32_tensor("x", {2}, {1, 2})}),
+          ErrorCode::InvalidArgument);  // name
+    check(build_safetensors({f32_tensor("w", {2, 2}, {1, 2, 3, 4}), f32_tensor("v", {2}, {1, 2})}),
+          ErrorCode::InvalidArgument);  // shape
     check("this is not a model", ErrorCode::ModelError);
-    check(build_safetensors({f32_tensor("w", {4}, {1, 2, 3, 4})}).substr(0, 40), ErrorCode::ModelError);  // truncated
+    check(build_safetensors({f32_tensor("w", {4}, {1, 2, 3, 4})}).substr(0, 40),
+          ErrorCode::ModelError);  // truncated
     // GGUF next to safetensors
-    check(build_gguf({test::GgufBuildTensor{"w", 0, {4}, f32_bytes({1, 2, 3, 4})}}), ErrorCode::InvalidArgument);
+    check(build_gguf({test::GgufBuildTensor{"w", 0, {4}, f32_bytes({1, 2, 3, 4})}}),
+          ErrorCode::InvalidArgument);
 }
 
 TEST(MergeFiles, ParameterValidation) {
@@ -431,7 +461,8 @@ TEST(MergeFiles, MemoryLimitFailsClosedAndCancellationLeavesNothing) {
     Env e;
     const auto v = random_vec(100000, 1);
     test::write_file(e.p("base.safetensors"), build_safetensors({f32_tensor("w", {100000}, v)}));
-    test::write_file(e.p("m1.safetensors"), build_safetensors({f32_tensor("w", {100000}, random_vec(100000, 2))}));
+    test::write_file(e.p("m1.safetensors"),
+                     build_safetensors({f32_tensor("w", {100000}, random_vec(100000, 2))}));
     auto r = req(e, Method::Ties, {"m1.safetensors"}, "o.safetensors");
     r.max_ram_bytes = 256u << 10;  // below chunk buffers + the 400 KB selection buffer
     r.chunk_elements = 1024;
@@ -464,8 +495,8 @@ TEST(MergeFiles, ManifestRecordsTheOutputHashAndProgressIsReported) {
     ASSERT_TRUE(rep.ok());
     ASSERT_FALSE(prog.empty());
     const std::string bytes = test::read_file(e.p("o.safetensors"));
-    const std::string want = storage::to_hex(storage::sha256(std::span<const std::uint8_t>(
-        reinterpret_cast<const std::uint8_t*>(bytes.data()), bytes.size())));
+    const std::string want = storage::to_hex(storage::sha256(
+        std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(bytes.data()), bytes.size())));
     EXPECT_EQ(rep.value().output_sha256, want);
     auto j = nlohmann::json::parse(test::read_file(rep.value().manifest));
     EXPECT_EQ(j["output"]["sha256"], want);

@@ -24,6 +24,16 @@ fs::path find_ort_runtime(const std::vector<fs::path>& dirs) {
     return {};
 }
 
+fs::path executable_dir() {
+#ifdef _WIN32
+    wchar_t buf[MAX_PATH] = {};
+    const DWORD n = GetModuleFileNameW(nullptr, buf, MAX_PATH);
+    if (n > 0 && n < MAX_PATH)
+        return fs::path(buf).parent_path();
+#endif
+    return {};
+}
+
 fs::path find_upscale_model(const fs::path& dir) {
     std::error_code ec;
     std::vector<fs::path> found;
@@ -31,7 +41,8 @@ fs::path find_upscale_model(const fs::path& dir) {
         if (!e.is_regular_file(ec))
             continue;
         std::string ext = e.path().extension().string();
-        std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        std::transform(ext.begin(), ext.end(), ext.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         if (ext == ".onnx")
             found.push_back(e.path());
     }
@@ -185,7 +196,8 @@ struct OrtUpscaleEngine::Impl {
             const std::string t = status_text(st);
             if (dml)
                 dml_note = t;
-            return Error(ErrorCode::ModelError, "cannot load '" + cfg.model_path.filename().string() + "': " + t);
+            return Error(ErrorCode::ModelError,
+                         "cannot load '" + cfg.model_path.filename().string() + "': " + t);
         }
         return {};
     }
@@ -195,10 +207,11 @@ struct OrtUpscaleEngine::Impl {
         if (dllp.empty()) {
             std::string dirs;
             for (const auto& d : cfg.runtime_dirs) dirs += (dirs.empty() ? "" : ", ") + d.string();
-            return Error(ErrorCode::Unsupported,
-                         "onnxruntime.dll was not found" + (dirs.empty() ? std::string() : " in: " + dirs) +
-                             ". Place a trusted ONNX Runtime (CPU or DirectML build) next to HCSInfer.exe or in "
-                             "<model root>/upscale/");
+            return Error(
+                ErrorCode::Unsupported,
+                "onnxruntime.dll was not found" + (dirs.empty() ? std::string() : " in: " + dirs) +
+                    ". Place a trusted ONNX Runtime (CPU or DirectML build) next to HCSInfer.exe or in "
+                    "<model root>/upscale/");
         }
         std::error_code ec;
         if (cfg.model_path.empty() || !fs::is_regular_file(cfg.model_path, ec))
@@ -218,17 +231,20 @@ struct OrtUpscaleEngine::Impl {
             version = v;
         api = base->GetApi(kApiVersion);
         if (!api)
-            return Error(ErrorCode::Unsupported, "onnxruntime " + version + " does not provide C API version " +
+            return Error(ErrorCode::Unsupported, "onnxruntime " + version +
+                                                     " does not provide C API version " +
                                                      std::to_string(kApiVersion) + " (too old)");
         // Table self-check: a status created by slot 0 must be readable through slots 1 and 2.
         {
             St st = fn<St (*)(int, const char*)>(CreateStatus)(2, "hcs-selfcheck");
-            const bool good = st && fn<int (*)(const void*)>(GetErrorCode)(st) == 2 &&
-                              std::strcmp(fn<const char* (*)(const void*)>(GetErrorMessage)(st), "hcs-selfcheck") == 0;
+            const bool good =
+                st && fn<int (*)(const void*)>(GetErrorCode)(st) == 2 &&
+                std::strcmp(fn<const char* (*)(const void*)>(GetErrorMessage)(st), "hcs-selfcheck") == 0;
             if (st)
                 fn<void (*)(void*)>(ReleaseStatus)(st);
             if (!good)
-                return Error(ErrorCode::Unsupported, "ONNX Runtime " + version + ": API table self-check failed");
+                return Error(ErrorCode::Unsupported,
+                             "ONNX Runtime " + version + ": API table self-check failed");
         }
         if (St st = fn<St (*)(int, const char*, void**)>(CreateEnv)(3, "hcs-upscale", &env))
             return Error(ErrorCode::BackendError, "CreateEnv: " + status_text(st));
@@ -268,12 +284,15 @@ struct OrtUpscaleEngine::Impl {
         if (St st = fn<St (*)(const void*, std::size_t*)>(SessionGetOutputCount)(sess, &n_out))
             return Error(ErrorCode::BackendError, "SessionGetOutputCount: " + status_text(st));
         if (n_in != 1 || n_out != 1)
-            return Error(ErrorCode::ModelError, "the upscale model must have exactly one input and one output (has " +
-                                                    std::to_string(n_in) + "/" + std::to_string(n_out) + ")");
+            return Error(ErrorCode::ModelError,
+                         "the upscale model must have exactly one input and one output (has " +
+                             std::to_string(n_in) + "/" + std::to_string(n_out) + ")");
         for (int which = 0; which < 2; ++which) {
             char* name = nullptr;
-            St st = which == 0 ? fn<St (*)(const void*, std::size_t, void*, char**)>(SessionGetInputName)(sess, 0, alloc, &name)
-                               : fn<St (*)(const void*, std::size_t, void*, char**)>(SessionGetOutputName)(sess, 0, alloc, &name);
+            St st = which == 0 ? fn<St (*)(const void*, std::size_t, void*, char**)>(SessionGetInputName)(
+                                     sess, 0, alloc, &name)
+                               : fn<St (*)(const void*, std::size_t, void*, char**)>(SessionGetOutputName)(
+                                     sess, 0, alloc, &name);
             if (st)
                 return Error(ErrorCode::BackendError, "reading tensor names: " + status_text(st));
             (which == 0 ? in_name : out_name) = name ? name : "";
@@ -289,10 +308,17 @@ struct OrtUpscaleEngine::Impl {
         int et = 0;
         St st1 = fn<St (*)(const void*, const void**)>(CastTypeInfoToTensorInfo)(ti, &tinfo);
         St st2 = st1 ? nullptr : fn<St (*)(const void*, int*)>(GetTensorElementType)(tinfo, &et);
-        St st3 = (st1 || st2) ? nullptr : fn<St (*)(const void*, std::size_t*)>(GetDimensionsCount)(tinfo, &nd);
-        St st4 = (st1 || st2 || st3 || nd != 4) ? nullptr : fn<St (*)(const void*, std::int64_t*, std::size_t)>(GetDimensions)(tinfo, dims, nd);
+        St st3 =
+            (st1 || st2) ? nullptr : fn<St (*)(const void*, std::size_t*)>(GetDimensionsCount)(tinfo, &nd);
+        St st4 = (st1 || st2 || st3 || nd != 4)
+                     ? nullptr
+                     : fn<St (*)(const void*, std::int64_t*, std::size_t)>(GetDimensions)(tinfo, dims, nd);
         const bool bad = st1 || st2 || st3 || st4;
-        const std::string why = st1 ? status_text(st1) : st2 ? status_text(st2) : st3 ? status_text(st3) : st4 ? status_text(st4) : "";
+        const std::string why = st1   ? status_text(st1)
+                                : st2 ? status_text(st2)
+                                : st3 ? status_text(st3)
+                                : st4 ? status_text(st4)
+                                      : "";
         fn<void (*)(void*)>(ReleaseTypeInfo)(ti);
         if (bad)
             return Error(ErrorCode::BackendError, "reading the model input signature: " + why);
@@ -300,7 +326,8 @@ struct OrtUpscaleEngine::Impl {
             return Error(ErrorCode::ModelError, "the upscale model input must be float32 (element type " +
                                                     std::to_string(et) + "); fp16 models are not supported");
         if (nd != 4)
-            return Error(ErrorCode::ModelError, "the upscale model input must be NCHW (rank 4), got rank " + std::to_string(nd));
+            return Error(ErrorCode::ModelError,
+                         "the upscale model input must be NCHW (rank 4), got rank " + std::to_string(nd));
         if (dims[1] > 0 && dims[1] != 3)
             return Error(ErrorCode::ModelError, "the upscale model must take 3 colour channels");
         if (dims[2] > 0 || dims[3] > 0) {
@@ -322,7 +349,8 @@ struct OrtUpscaleEngine::Impl {
         int s = 1;
         while (static_cast<std::size_t>(s) * s * per < out_n) ++s;
         if (static_cast<std::size_t>(s) * s * per != out_n || s > 8)
-            return Error(ErrorCode::ModelError, "the model output size is not a 1..8x integer multiple of its input");
+            return Error(ErrorCode::ModelError,
+                         "the model output size is not a 1..8x integer multiple of its input");
         mi.scale = s;
         return {};
     }
@@ -335,8 +363,10 @@ struct OrtUpscaleEngine::Impl {
             for (int c = 0; c < 3; ++c) chw[c * plane + i] = in[i * 3 + c];
         const std::int64_t shape[4] = {1, 3, static_cast<std::int64_t>(h), static_cast<std::int64_t>(w)};
         void* iv = nullptr;
-        if (St st = fn<St (*)(const void*, void*, std::size_t, const std::int64_t*, std::size_t, int, void**)>(
-                CreateTensorWithDataAsOrtValue)(meminfo, chw.data(), chw.size() * sizeof(float), shape, 4, kElemFloat, &iv))
+        if (St st =
+                fn<St (*)(const void*, void*, std::size_t, const std::int64_t*, std::size_t, int, void**)>(
+                    CreateTensorWithDataAsOrtValue)(meminfo, chw.data(), chw.size() * sizeof(float), shape, 4,
+                                                    kElemFloat, &iv))
             return Error(ErrorCode::BackendError, "CreateTensorWithDataAsOrtValue: " + status_text(st));
         struct Rel {
             Impl* o;
@@ -351,7 +381,8 @@ struct OrtUpscaleEngine::Impl {
         const void* in_vals[1] = {iv};
         void* ov = nullptr;
         if (St st = fn<St (*)(void*, const void*, const char* const*, const void* const*, std::size_t,
-                              const char* const*, std::size_t, void**)>(Run)(sess, nullptr, in_names, in_vals, 1, out_names, 1, &ov))
+                              const char* const*, std::size_t, void**)>(Run)(sess, nullptr, in_names, in_vals,
+                                                                             1, out_names, 1, &ov))
             return Error(ErrorCode::BackendError, "inference failed: " + status_text(st));
         out_rel.v = ov;
         void* info = nullptr;
@@ -361,7 +392,9 @@ struct OrtUpscaleEngine::Impl {
         std::int64_t d[8] = {};
         int et = 0;
         St s1 = fn<St (*)(const void*, std::size_t*)>(GetDimensionsCount)(info, &nd);
-        St s2 = (s1 || nd != 4) ? nullptr : fn<St (*)(const void*, std::int64_t*, std::size_t)>(GetDimensions)(info, d, nd);
+        St s2 = (s1 || nd != 4)
+                    ? nullptr
+                    : fn<St (*)(const void*, std::int64_t*, std::size_t)>(GetDimensions)(info, d, nd);
         St s3 = (s1 || s2) ? nullptr : fn<St (*)(const void*, int*)>(GetTensorElementType)(info, &et);
         const std::string why = s1 ? status_text(s1) : s2 ? status_text(s2) : s3 ? status_text(s3) : "";
         fn<void (*)(void*)>(ReleaseTensorTypeAndShapeInfo)(info);
@@ -374,9 +407,11 @@ struct OrtUpscaleEngine::Impl {
             *out_n = 3 * oh * ow;
         if (!out)
             return {};
-        if (mi.scale > 0 && (oh != static_cast<std::size_t>(h) * mi.scale || ow != static_cast<std::size_t>(w) * mi.scale))
-            return Error(ErrorCode::ModelError, "model output " + std::to_string(ow) + "x" + std::to_string(oh) +
-                                                    " does not match scale " + std::to_string(mi.scale));
+        if (mi.scale > 0 &&
+            (oh != static_cast<std::size_t>(h) * mi.scale || ow != static_cast<std::size_t>(w) * mi.scale))
+            return Error(ErrorCode::ModelError, "model output " + std::to_string(ow) + "x" +
+                                                    std::to_string(oh) + " does not match scale " +
+                                                    std::to_string(mi.scale));
         void* data = nullptr;
         if (St st = fn<St (*)(void*, void**)>(GetTensorMutableData)(ov, &data))
             return Error(ErrorCode::BackendError, "GetTensorMutableData: " + status_text(st));
@@ -452,7 +487,8 @@ ModelInfo OrtUpscaleEngine::info() const {
 std::string OrtUpscaleEngine::runtime_version() const {
     return {};
 }
-Result<void> OrtUpscaleEngine::run_tile(const float*, std::uint32_t, std::uint32_t, float*, const CancellationToken&) {
+Result<void> OrtUpscaleEngine::run_tile(const float*, std::uint32_t, std::uint32_t, float*,
+                                        const CancellationToken&) {
     return ready();
 }
 

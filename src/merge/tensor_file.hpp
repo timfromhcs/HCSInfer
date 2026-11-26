@@ -24,12 +24,12 @@ inline std::uint64_t elem_bytes(DType d) noexcept {
 struct Tensor {
     std::string name;
     DType dtype = DType::Other;
-    std::string type_name;               // "F32", "F16", "BF16", "I64", "ggml_type_12", ...
-    std::vector<std::uint64_t> shape;    // row-major (GGUF dims are reversed into this order)
-    std::uint64_t file_offset = 0;       // absolute offset of the first data byte
+    std::string type_name;             // "F32", "F16", "BF16", "I64", "ggml_type_12", ...
+    std::vector<std::uint64_t> shape;  // row-major (GGUF dims are reversed into this order)
+    std::uint64_t file_offset = 0;     // absolute offset of the first data byte
     std::uint64_t bytes = 0;
     std::uint64_t elements = 0;
-    std::uint64_t rel_offset = 0;        // offset relative to the data section (safetensors begin / GGUF offset)
+    std::uint64_t rel_offset = 0;  // offset relative to the data section (safetensors begin / GGUF offset)
 };
 
 class TensorFile {

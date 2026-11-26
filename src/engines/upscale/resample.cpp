@@ -82,7 +82,8 @@ Rgb8 resample_lanczos(const float* rgb, std::uint32_t w, std::uint32_t h, std::u
             const Taps& t = xt[x];
             float r = 0, g = 0, b = 0;
             for (std::size_t k = 0; k < t.weights.size(); ++k) {
-                const std::int64_t sx = clampi(t.first + static_cast<std::int64_t>(k), 0, static_cast<std::int64_t>(w) - 1);
+                const std::int64_t sx =
+                    clampi(t.first + static_cast<std::int64_t>(k), 0, static_cast<std::int64_t>(w) - 1);
                 const float wt = t.weights[k];
                 const float* p = row + static_cast<std::size_t>(sx) * 3;
                 r += wt * p[0];
@@ -100,7 +101,8 @@ Rgb8 resample_lanczos(const float* rgb, std::uint32_t w, std::uint32_t h, std::u
         std::fill(acc.begin(), acc.end(), 0.0f);
         const Taps& t = yt[y];
         for (std::size_t k = 0; k < t.weights.size(); ++k) {
-            const std::int64_t sy = clampi(t.first + static_cast<std::int64_t>(k), 0, static_cast<std::int64_t>(h) - 1);
+            const std::int64_t sy =
+                clampi(t.first + static_cast<std::int64_t>(k), 0, static_cast<std::int64_t>(h) - 1);
             const float wt = t.weights[k];
             const float* mrow = mid.data() + static_cast<std::size_t>(sy) * out_w * 3;
             for (std::size_t i = 0; i < acc.size(); ++i) acc[i] += wt * mrow[i];

@@ -165,13 +165,14 @@ TEST(LoraScan, HashVerification) {
     Fixture f;
     const std::string bytes = lora_file(kSd1Names);
     test::write_file(f.dir() / "a.safetensors", bytes);
-    const std::string good = storage::to_hex(storage::sha256(std::span<const std::uint8_t>(
-        reinterpret_cast<const std::uint8_t*>(bytes.data()), bytes.size())));
+    const std::string good = storage::to_hex(storage::sha256(
+        std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(bytes.data()), bytes.size())));
     const std::string bad(64, '0');
-    test::write_file(f.dir() / "manifest.json",
-                     manifest(R"({"id":"a","file":"a.safetensors","base_family":"sd15","licence":"x","sha256":")" +
-                              good + R"("},{"id":"b","file":"a.safetensors","base_family":"sd15","licence":"x","sha256":")" +
-                              bad + R"("})"));
+    test::write_file(
+        f.dir() / "manifest.json",
+        manifest(R"({"id":"a","file":"a.safetensors","base_family":"sd15","licence":"x","sha256":")" + good +
+                 R"("},{"id":"b","file":"a.safetensors","base_family":"sd15","licence":"x","sha256":")" +
+                 bad + R"("})"));
     LoraLibrary lib;
     ASSERT_TRUE(lib.scan(f.guard, f.dir(), {.verify_hashes = true}).ok());
     EXPECT_EQ(lib.find("a")->sha256_status, "ok");
@@ -199,7 +200,8 @@ TEST(LoraResolve, FailsClosedWithStructuredErrors) {
     test::write_file(f.dir() / "fx.safetensors", lora_file(kFluxNames));
     test::write_file(
         f.dir() / "manifest.json",
-        manifest(R"({"id":"sd","file":"sd.safetensors","base_family":"sd15","licence":"x","recommended_weight":0.6},
+        manifest(
+            R"({"id":"sd","file":"sd.safetensors","base_family":"sd15","licence":"x","recommended_weight":0.6},
                     {"id":"fx","file":"fx.safetensors","base_family":"flux3","licence":"x"},
                     {"id":"gone","file":"gone.safetensors","base_family":"sd15","licence":"x"})"));
     LoraLibrary lib;
