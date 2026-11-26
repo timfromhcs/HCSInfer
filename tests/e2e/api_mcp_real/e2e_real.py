@@ -236,6 +236,67 @@ def http_phase(exe, model_dir, model_stem, state_dir, evidence):
         code, j = c.jreq("POST", "/v1/chat/completions", body)
         check("chat works after a cancel", code == 200 and j and j["choices"][0]["message"]["content"].strip() != "", code)
 
+        # Client DISCONNECT mid-stream (not the cancel endpoint): the server must notice the dead socket, stop the
+        # real generation and free the job.
+        longb2 = dict(longb)
+        cp = subprocess.Popen(["curl.exe", "-s", "-N", "-m", "300", "-H", "Authorization: Bearer " + token,
+                               "-H", "Content-Type: application/json", "--data-binary", json.dumps(longb2),
+                               base + "/v1/chat/completions"], stdout=subprocess.PIPE, text=True, encoding="utf-8")
+        jobid2, n_chunks = None, 0
+        for line in cp.stdout:
+            line = line.strip()
+            if not line.startswith("data: ") or line == "data: [DONE]":
+                continue
+            d = json.loads(line[6:])
+            if "choices" in d:
+                n_chunks += 1
+                if jobid2 is None:
+                    jobid2 = "job-" + d["id"].split("-")[-1]
+            if n_chunks >= 5:
+                break
+        cp.kill()  # the client vanishes without telling anybody
+        cp.wait()
+        t = time.time()
+        final2 = None
+        for _ in range(300):
+            cc, js = c.jreq("GET", f"/hcs/v1/jobs/{jobid2}")
+            final2 = js.get("state") if js else None
+            if final2 in ("cancelled", "failed", "succeeded"):
+                break
+            time.sleep(0.1)
+        ev["disconnect"] = {"job": jobid2, "final_state": final2, "seconds_to_stop": round(time.time() - t, 2)}
+        check("client disconnect mid-stream stops the real generation (job cancelled)", final2 == "cancelled", js)
+        check("disconnect freed the job within 30 s", time.time() - t < 30, time.time() - t)
+        code, rt = c.jreq("GET", "/hcs/v1/runtime")
+        check("no job left pending after the disconnect", rt and rt.get("jobs_pending") == 0, rt and rt.get("jobs_pending"))
+        body["stream"] = False
+        code, j = c.jreq("POST", "/v1/chat/completions", body)
+        check("chat works after a client disconnect", code == 200 and j and j["choices"][0]["message"]["content"].strip() != "", code)
+
+        # CLI client against the running server (real exe, real model; token via the environment)
+        cenv = dict(os.environ, HCS_API_TOKEN=token)
+        cli = [exe, "--state-dir", state_dir, "models"]
+        conn = ["--port", str(port)]
+
+        def run_cli(*a):
+            r = subprocess.run(cli + list(a) + conn, capture_output=True, text=True, env=cenv, timeout=600)
+            return r.returncode, (r.stdout + r.stderr).strip()
+
+        rc, txt = run_cli("status", "--json")
+        check("CLI models status sees the loaded model", rc == 0 and json.loads(txt).get("loaded_model") == mid, (rc, txt[:200]))
+        rc, txt = run_cli("unload")
+        check("CLI models unload (no id) unloads the loaded model", rc == 0 and ("unloaded " + mid) in txt, (rc, txt))
+        rc, txt = run_cli("unload")
+        check("CLI models unload with nothing loaded -> exit 11", rc == 11, (rc, txt))
+        t = time.time()
+        rc, txt = run_cli("load", mid)
+        ev["cli_load_wall_s"] = round(time.time() - t, 2)
+        check("CLI models load <id> waits for the real load", rc == 0 and ("loaded " + mid) in txt, (rc, txt))
+        code, j = c.jreq("POST", "/v1/chat/completions", body)
+        check("chat works after a CLI-driven load", code == 200 and j and j["choices"][0]["message"]["content"].strip() != "", code)
+        rc, txt = run_cli("load", "no-such-model")
+        check("CLI models load unknown id -> exit 7", rc == 7, (rc, txt))
+
         code, j = c.jreq("POST", f"/hcs/v1/models/{mid}/unload")
         check("unload", code == 200, (code, j))
         return ev
@@ -290,6 +351,78 @@ class McpClient:
 
     def tool(self, name, args=None, timeout=300):
         return self.request("tools/call", {"name": name, "arguments": args or {}}, timeout=timeout)
+
+
+def vault_phase(exe, model_dir, model_stem, state_dir):
+    """Opt-in Model Vault stage with the real engine: `models hash` records the digest, `serve --vault-prefetch`
+    reads the file through the bounded reader, verifies it against that digest, then the engine loads and
+    answers a real chat. Also proves that no file appeared next to the model."""
+    print("== Vault phase (serve --vault-prefetch) ==")
+    ev = {}
+    before = sorted(os.listdir(model_dir))
+    r = subprocess.run([exe, "--state-dir", state_dir, "models", "list", "--json"], capture_output=True, text=True)
+    mid = find_model_id(json.loads(r.stdout)["models"], model_stem)
+    msize = next((m["size_bytes"] for m in json.loads(r.stdout)["models"] if m["id"] == mid), 0)
+    check("vault: model is registered", mid is not None, r.stdout[:200])
+    if not mid:
+        return ev
+    r = subprocess.run([exe, "--state-dir", state_dir, "models", "hash", mid, "--json"], capture_output=True, text=True)
+    check("vault: models hash records the digest", r.returncode == 0, (r.returncode, r.stderr[:200]))
+    digest = json.loads(r.stdout)["sha256"] if r.returncode == 0 else ""
+    ev["hash"] = digest
+    proc = subprocess.Popen([exe, "--state-dir", state_dir, "serve", "--port", "0", "--model-root", model_dir,
+                             "--vault-prefetch", "--vault-buffers", "3", "--vault-chunk-mib", "8"],
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8")
+    q = queue.Queue()
+    start_reader(proc.stderr, q)
+    port = token = None
+    t0 = time.time()
+    while time.time() - t0 < 30 and (port is None or token is None):
+        try:
+            line = q.get(timeout=1)
+        except queue.Empty:
+            continue
+        if line is None:
+            break
+        if "listening on http://" in line:
+            port = int(line.rsplit(":", 1)[1])
+        if line.startswith("HCSInfer API token: "):
+            token = line.split(": ", 1)[1].strip()
+    if not (port and token):
+        check("vault: serve started", False, "no port/token")
+        proc.kill()
+        return ev
+    try:
+        c = Curl(f"http://127.0.0.1:{port}", token)
+        code, j = c.jreq("POST", f"/hcs/v1/models/{mid}/load")
+        job = j["job_id"]
+        state = None
+        for _ in range(1200):
+            code, js = c.jreq("GET", f"/hcs/v1/jobs/{job}")
+            state = js.get("state") if js else None
+            if state in ("succeeded", "failed", "cancelled"):
+                break
+            time.sleep(0.5)
+        check("vault: load through the vault stage succeeded", state == "succeeded", js)
+        code, rt = c.jreq("GET", "/hcs/v1/runtime")
+        v = (rt or {}).get("vault", {}).get("model", {})
+        ev["report"] = v
+        check("vault: runtime reports the stage", rt and rt.get("vault_prefetch") is True and v.get("bytes") == msize, v)
+        check("vault: digest verified against the manifest", v.get("verified_against_manifest") is True and v.get("sha256") == digest, v)
+        check("vault: buffer RAM bounded (<= 3 slots x 8 MiB x 2)", 0 < v.get("buffer_bytes", 0) <= 3 * 8 * 2 * (1 << 20), v.get("buffer_bytes"))
+        body = {"model": mid, "messages": [{"role": "user", "content": "Reply with exactly: vault test"}],
+                "max_tokens": 32, "temperature": 0, "seed": 1}
+        code, j = c.jreq("POST", "/v1/chat/completions", body)
+        check("vault: real chat after a vault load", code == 200 and j and j["choices"][0]["message"]["content"].strip() != "", code)
+        c.jreq("POST", f"/hcs/v1/models/{mid}/unload")
+    finally:
+        proc.terminate()
+        try:
+            proc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+    check("vault: nothing was created next to the model", sorted(os.listdir(model_dir)) == before, os.listdir(model_dir))
+    return ev
 
 
 def mcp_phase(exe, model_dir, model_stem, state_dir):
@@ -444,6 +577,7 @@ def main():
         ev = {"schema_version": 1, "exe": os.path.basename(a.exe), "version": v, "model_file": os.path.basename(a.model),
               "model_size_bytes": os.path.getsize(a.model)}
         ev["http"] = http_phase(a.exe, model_dir, stem, state, a.evidence)
+        ev["vault"] = vault_phase(a.exe, model_dir, stem, state)
         ev["mcp"] = mcp_phase(a.exe, model_dir, stem, state)
         ev["checks"] = RESULTS
         ev["result_status"] = "PASS" if not FAILS else "FAIL"

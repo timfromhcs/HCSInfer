@@ -32,9 +32,34 @@ stderr shows `HCSInfer API listening on http://127.0.0.1:<port>` and
 | `--max-inflight <n>` | concurrent request cap, default 8 |
 | `--timeout-s <n>` | per-request generation timeout, default 300 |
 | `--chat-template auto\|chatml\|plain` | see "Chat prompt construction" |
+| `--vault-prefetch` | opt-in Model Vault load stage (default **off**): read each model file once through the bounded async reader and check its SHA-256 before the engine opens it. See `docs/model-vault.md` for what was measured |
+| `--vault-buffers <n>`, `--vault-chunk-mib <n>` | read-ahead slots (1..16, default 4) and read size (1..128 MiB, default 16) of that stage |
 
 Models are those registered by `HCSInfer models scan <dir>` (registry in the state dir). The server never scans or
 writes model files; a model only loads if its registered path resolves **inside an approved root**.
+
+## Controlling a running server from the CLI
+
+A model lives in the process that loaded it, so the one-shot CLI cannot hold one. `models load|unload|status` are
+therefore plain HTTP clients of a running `serve` (they call the routes in "HCS-native routes"):
+
+```powershell
+$env:HCS_API_TOKEN = "<token serve printed>"           # or pass --token <secret>
+HCSInfer.exe models status                              # health, loaded model, pending jobs   (token optional: health only)
+HCSInfer.exe models load qwen-q4                        # POST /hcs/v1/models/qwen-q4/load, waits for the job
+HCSInfer.exe models unload                              # unloads whatever is loaded (or: unload <id>)
+```
+
+Connection options: `--host` (default 127.0.0.1), `--port` (default 8765), `--token`; load also takes `--timeout-s`
+(default 900; the server-side job keeps running when the CLI gives up) and `--no-wait`; all take `--json`.
+Exit codes are the API's own error codes: `0` ok, `2` bad argument, `3` model error, `5` out of memory, `6` cancelled,
+`7` unknown model, `8` **no server reachable** (the message says so and names `HCSInfer serve`), `9` bad or missing
+token, `11` nothing loaded / invalid state, `14` timeout. Covered by `tests/contract/cli/test_cli_remote.cpp` (real
+sockets, real bearer auth; the engine behind that server is a fake, so it proves the client and its exit codes, not
+inference) and by `tests/e2e/api_mcp_real` (real exe + real model).
+
+`HCSInfer models hash <id>` records the SHA-256 of a registered model file in the registry (read-only pass, nothing is
+written next to the model); `serve --vault-prefetch` then refuses to load a file whose digest differs.
 
 ## Security model
 
