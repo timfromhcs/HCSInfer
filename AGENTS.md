@@ -2317,3 +2317,73 @@ are recorded in `docs/research/v1.1-model-selection.md`; nothing here overrides 
   superset.
 - Deploy to Vercel only after build + browser tests pass; record URL and commit in STATUS.md. Real WebGPU is not
   available in headless CI: those checks are NOT RUN unless done in a real WebGPU browser.
+
+---
+
+## 27. Operating plan from 2026-11-27: from the current tree to a stable release
+
+This section is the binding execution contract for the work after the wave-A/B/C commits. It does not relax any
+rule above. Full detail, commands and gate tables are in `docs/roadmap/PLAN_FINAL_STABLE.md`; status is in
+`docs/roadmap/STATUS.md`.
+
+### 27.1 Verified starting point
+
+- Local `main` is `1469638`, GitHub `origin/main` is `0853143` (v1.0.0-rc.1 plus audit fixes): **41 local commits,
+  365 files, +47,134/-427 lines are not pushed**. They contain waves A (C:-guard, image quality envelope, imgqa,
+  baseline/audit), B (LoRA library, 4K upscaler, model merge, overload controller, vault prefetch, CLI
+  load/unload/status, stress harness, HCSUDA port with 8 kernels and `tune`) and C (image profiles, upstream Vulkan
+  baseline, Real-ESRGAN gated tests, merge to main). `STATUS.md` predates most of these and is stale by design until
+  S0/S1 verify them.
+- The two old `claude/` worktrees contain uncommitted leftovers (38 and 6 files; W2/W3/W4 ported or superseded
+  them). They are user work: do not delete, do not bulk-copy, document only.
+- Hosted `pr-quick-gate` is green on `0853143`; the hosted `release` run produced a **draft** on `40bf581`;
+  `hardware.yml` has never completed. These facts do not prove the 41 local commits.
+
+### 27.2 Branches, push cadence and merge rule
+
+1. All new work happens on `release/v1.1-stable` (created from local `main`). No direct commits to `main`.
+2. **Push after every green wave** to `origin/release/v1.1-stable`. Never push red, never force-push, never push
+   unverified binaries or secrets (`HF_TOKEN` stays an environment variable name only).
+3. **Merge to `main` only after the S5 gate is green**: full CTest on CPU and Vulkan with real models, format and
+   static analysis clean, packaging + SBOM + checksums produced, docs reconciled with the binary. Use a merge
+   commit or fast-forward; never force-push `main`.
+4. Tag `v1.1.0` only when every non-owner gate is PASS. If a core gate remains BLOCKED/NOT RUN for a real external
+   reason, ship `v1.1.0-rc.1`, list the exact blockers in the release notes, and do not call it stable.
+5. Signing, publishing the draft release, a clean-machine VM, Vercel deploy, the self-hosted runner, a physical
+   USB pull and code signing are owner-dependent. Run them only with explicit owner approval; report them as
+   BLOCKED/NOT RUN otherwise, never as PASS.
+
+### 27.3 Build-test-fix loop (one iteration per change, no exceptions)
+
+```text
+INSPECT -> ACCEPTANCE CRITERIA -> BASELINE (reproduce/measure)
+  -> SMALLEST CHANGE -> FORMAT + STATIC ANALYSIS -> CONFIGURE (fresh dir if options changed)
+  -> BUILD smallest affected target -> TARGETED TEST (red->green evidence)
+  -> FULL CTest (CPU; Vulkan when relevant; serial with real models + D:\HCSScratch\realmodel.lock)
+  -> SECURITY/RESOURCE CHECK -> BENCHMARK if performance-related
+  -> DOCS + EVIDENCE -> COMMIT on release/v1.1-stable -> PUSH if wave gate green
+```
+
+On failure: capture the full log and environment, classify `code|configuration|dependency|driver|hardware|model|environment`,
+form a testable hypothesis, apply **one** isolated fix, rebuild, rerun the exact failing test, then the related
+regressions. Keep the fix only if the evidence improves; otherwise revert the experiment and try the next
+hypothesis (at most 3 per failure before widening the investigation). Never weaken an assertion, delete a failing
+test, lower coverage or disable a backend to obtain green. `BLOCKED` is not `PASS`; a mock is never release evidence.
+
+### 27.4 Wave order and exit criteria
+
+| Wave | Scope | Exit (all required) |
+|---|---|---|
+| **S0** Integrate + baseline | Verify all 41 unpushed commits on a clean tree: fresh Release CPU/Vulkan/kernels configure+build, format+clang-tidy, full CTest with real models, web `npm test`, Python tests, package; reconcile STATUS/README. Fix every red test at the root cause. | 0 failures, 0 unexplained warnings; evidence under `docs/test-evidence/final-s0/`; STATUS updated; first push. |
+| **S1** New-feature correctness | Exercise LoRA, upscale, merge, admission control, vault prefetch, CLI load/unload/status, HCSUDA kernels/`tune`, image profiles and the C:-guard with real or documented-boundary tests. Close merge artefacts and test gaps. | Every new feature has a test and an evidence path (PASS or explicitly BLOCKED/NOT RUN with reason); guard green; STATUS rows updated; push. |
+| **S2** Real-model E2E | Full Vulkan CTest with the real models, CLI/API/MCP/Studio workflows on the built binaries, image gallery checked, benchmarks B0/B1 and a quick/full suite, `tune` real run. | Real text, VLM, SD1.5 and FLUX.3 PASS; 0 flaky failures over 3 runs; benchmark JSON metadata complete; push. |
+| **S3** Hardening | Full soak profile where feasible (100 cycles, 30 min generation), fault injection (OOM, USB unplug, device lost, admission control), parser fuzz smoke (ASan where a compiler supports it), stress harness abort conditions, cancellation/shutdown. | PASS with logs or BLOCKED with the concrete missing dependency; leaks/handles flat; push. |
+| **S4** Release package + docs | Rebuild static CPU/Vulkan EXEs from the final tree, restricted-environment check, portable ZIP, wheel, web dist, SBOM, SHA-256, licence/third-party notices, README matrix, support matrix, changelog, release notes, version decision. | Package generated and verified; docs agree with the binary; no overclaim; push. |
+| **S5** Final gate + merge | Repeat the full CPU and Vulkan CTest, format/tidy, package verification and CI-equivalent checks on the final commit, then merge `release/v1.1-stable` into `main`, push `main`, tag and prepare the draft release. | Every gate PASS or explicitly excluded/BLOCKED in the notes; merge commit recorded in STATUS; report in the section 23 format. |
+
+### 27.5 Environment discipline
+
+Every shell that builds or tests sets `TEMP`/`TMP` to `D:\HCSScratch\tmp` via `scripts/env-d-e.ps1`; caches and
+models stay on D:/E:. Builds use `-j4`, real-model tests are serialized with `D:\HCSScratch\realmodel.lock`, and
+free RAM is logged before each real-model phase (21 GB shared with the iGPU). The 2-minute background ticker is a
+reminder only: work continuously; never wait for a ticker message as a timer.
