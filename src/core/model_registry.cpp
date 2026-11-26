@@ -275,6 +275,16 @@ Result<ScanReport> ModelRegistry::scan(const fs::path& root, const PathGuard& gu
         if (it.depth() >= 8) {
             it.disable_recursion_pending();
         }
+        // Fast path (start-up time): a file that is not a model candidate is ignored whatever it resolves to,
+        // so it needs no canonicalisation (several syscalls each; a Python venv under the model root has tens
+        // of thousands of such files). Directories and model-extension files - everything that is descended
+        // into or can become a registry entry - still go through the guard below.
+        {
+            const std::string e0 = lower_ext(it->path());
+            const bool candidate = e0 == ".gguf" || e0 == ".safetensors";
+            if (!candidate && !it->is_directory(ec))
+                continue;
+        }
         // Every entry (file, directory, symlink, junction) must canonicalise inside an approved
         // root; otherwise it is skipped and, for directories, not descended into.
         auto canon = guard.resolve(it->path());

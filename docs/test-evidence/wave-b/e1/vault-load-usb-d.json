@@ -1,0 +1,494 @@
+{
+  "schema_version": 1,
+  "tool": "vault_load_bench.py",
+  "label": "usb-d-lfm3-q8",
+  "timestamp_utc": "2026-11-26T11:08:17Z",
+  "os": "Windows-11-10.0.26200-SP0",
+  "model_file": "LFM3-Omni-2B-Q8_0.gguf",
+  "model_size_bytes": 1846240768,
+  "model_id": "lfm3-omni-2b-q8_0",
+  "vault_buffers": 4,
+  "vault_chunk_mib": 16,
+  "runs_per_cell": 3,
+  "cold_verified": true,
+  "cold_evict_check": {
+    "method": "unbuffered-open",
+    "open_ok": true,
+    "warm_mib_s": 2261.1,
+    "after_evict_mib_s": 45.7,
+    "effective": true
+  },
+  "exe": "HCSInfer.exe",
+  "summary": [
+    {
+      "mode": "engine-default",
+      "cache": "cold",
+      "load_s": {
+        "n": 3,
+        "median": 56.207,
+        "min": 47.222,
+        "max": 56.753,
+        "p90": 56.753
+      },
+      "startup_s": {
+        "n": 3,
+        "median": 0.033,
+        "min": 0.029,
+        "max": 0.145,
+        "p90": 0.145
+      },
+      "vault_s": null,
+      "peak_working_set_bytes": {
+        "n": 3,
+        "median": 744288256,
+        "min": 744267776,
+        "max": 744542208,
+        "p90": 744542208
+      },
+      "peak_pagefile_bytes": {
+        "n": 3,
+        "median": 2196746240,
+        "min": 2196283392,
+        "max": 2196799488,
+        "p90": 2196799488
+      },
+      "io_write_bytes": {
+        "n": 3,
+        "median": 161898,
+        "min": 136077,
+        "max": 169935,
+        "p90": 169935
+      },
+      "io_read_bytes": {
+        "n": 3,
+        "median": 521515776,
+        "min": 521515776,
+        "max": 521553355,
+        "p90": 521553355
+      },
+      "failures": 0
+    },
+    {
+      "mode": "engine-default",
+      "cache": "warm",
+      "load_s": {
+        "n": 3,
+        "median": 1.493,
+        "min": 1.04,
+        "max": 1.632,
+        "p90": 1.632
+      },
+      "startup_s": {
+        "n": 3,
+        "median": 0.03,
+        "min": 0.021,
+        "max": 0.141,
+        "p90": 0.141
+      },
+      "vault_s": null,
+      "peak_working_set_bytes": {
+        "n": 3,
+        "median": 744026112,
+        "min": 743968768,
+        "max": 744062976,
+        "p90": 744062976
+      },
+      "peak_pagefile_bytes": {
+        "n": 3,
+        "median": 2196353024,
+        "min": 2196348928,
+        "max": 2196594688,
+        "p90": 2196594688
+      },
+      "io_write_bytes": {
+        "n": 3,
+        "median": 5604,
+        "min": 4236,
+        "max": 6117,
+        "p90": 6117
+      },
+      "io_read_bytes": {
+        "n": 3,
+        "median": 521515776,
+        "min": 521515776,
+        "max": 521553355,
+        "p90": 521553355
+      },
+      "failures": 0
+    },
+    {
+      "mode": "vault-prefetch",
+      "cache": "cold",
+      "load_s": {
+        "n": 3,
+        "median": 33.578,
+        "min": 31.337,
+        "max": 34.85,
+        "p90": 34.85
+      },
+      "startup_s": {
+        "n": 3,
+        "median": 0.132,
+        "min": 0.058,
+        "max": 0.145,
+        "p90": 0.145
+      },
+      "vault_s": {
+        "n": 3,
+        "median": 25.347,
+        "min": 23.701,
+        "max": 26.274,
+        "p90": 26.274
+      },
+      "peak_working_set_bytes": {
+        "n": 3,
+        "median": 744345600,
+        "min": 744218624,
+        "max": 744476672,
+        "p90": 744476672
+      },
+      "peak_pagefile_bytes": {
+        "n": 3,
+        "median": 2196561920,
+        "min": 2196439040,
+        "max": 2196664320,
+        "p90": 2196664320
+      },
+      "io_write_bytes": {
+        "n": 3,
+        "median": 94182,
+        "min": 87342,
+        "max": 101022,
+        "p90": 101022
+      },
+      "io_read_bytes": {
+        "n": 3,
+        "median": 2874636651,
+        "min": 2874636651,
+        "max": 2874636651,
+        "p90": 2874636651
+      },
+      "failures": 0
+    },
+    {
+      "mode": "vault-prefetch",
+      "cache": "warm",
+      "load_s": {
+        "n": 3,
+        "median": 3.269,
+        "min": 2.849,
+        "max": 3.958,
+        "p90": 3.958
+      },
+      "startup_s": {
+        "n": 3,
+        "median": 0.039,
+        "min": 0.02,
+        "max": 0.142,
+        "p90": 0.142
+      },
+      "vault_s": {
+        "n": 3,
+        "median": 1.361,
+        "min": 1.245,
+        "max": 1.797,
+        "p90": 1.797
+      },
+      "peak_working_set_bytes": {
+        "n": 3,
+        "median": 744398848,
+        "min": 744210432,
+        "max": 744521728,
+        "p90": 744521728
+      },
+      "peak_pagefile_bytes": {
+        "n": 3,
+        "median": 2196402176,
+        "min": 2196377600,
+        "max": 2196529152,
+        "p90": 2196529152
+      },
+      "io_write_bytes": {
+        "n": 3,
+        "median": 10734,
+        "min": 9879,
+        "max": 13641,
+        "p90": 13641
+      },
+      "io_read_bytes": {
+        "n": 3,
+        "median": 2874599072,
+        "min": 2874599072,
+        "max": 2874636651,
+        "p90": 2874636651
+      },
+      "failures": 0
+    }
+  ],
+  "runs": [
+    {
+      "mode": "engine-default",
+      "cache": "cold",
+      "first_health_ok": true,
+      "startup_s": 0.033,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "evict_open_ok": true,
+      "load_s": 47.222,
+      "state": "succeeded",
+      "engine_load_ms": 47189.7928,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744267776,
+      "peak_pagefile_bytes": 2196283392,
+      "io_read_bytes": 521515776,
+      "io_write_bytes": 136077,
+      "repetition": 1
+    },
+    {
+      "mode": "vault-prefetch",
+      "cache": "cold",
+      "first_health_ok": true,
+      "startup_s": 0.132,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "evict_open_ok": true,
+      "load_s": 33.578,
+      "state": "succeeded",
+      "vault_s": 25.347,
+      "vault_mib_s": 69.5,
+      "vault_sha256": "59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4",
+      "vault_verified_against_manifest": false,
+      "vault_buffer_bytes": 67108864,
+      "engine_load_ms": 1339.9666,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744345600,
+      "peak_pagefile_bytes": 2196439040,
+      "io_read_bytes": 2874636651,
+      "io_write_bytes": 94182,
+      "repetition": 1
+    },
+    {
+      "mode": "engine-default",
+      "cache": "warm",
+      "first_health_ok": true,
+      "startup_s": 0.141,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "load_s": 1.632,
+      "state": "succeeded",
+      "engine_load_ms": 1584.7299,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744026112,
+      "peak_pagefile_bytes": 2196348928,
+      "io_read_bytes": 521553355,
+      "io_write_bytes": 6117,
+      "repetition": 1
+    },
+    {
+      "mode": "vault-prefetch",
+      "cache": "warm",
+      "first_health_ok": true,
+      "startup_s": 0.039,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "load_s": 3.269,
+      "state": "succeeded",
+      "vault_s": 1.361,
+      "vault_mib_s": 1294.1,
+      "vault_sha256": "59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4",
+      "vault_verified_against_manifest": false,
+      "vault_buffer_bytes": 67108864,
+      "engine_load_ms": 1451.4726,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744398848,
+      "peak_pagefile_bytes": 2196402176,
+      "io_read_bytes": 2874599072,
+      "io_write_bytes": 10734,
+      "repetition": 1
+    },
+    {
+      "mode": "vault-prefetch",
+      "cache": "warm",
+      "first_health_ok": true,
+      "startup_s": 0.142,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "load_s": 3.958,
+      "state": "succeeded",
+      "vault_s": 1.797,
+      "vault_mib_s": 979.6,
+      "vault_sha256": "59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4",
+      "vault_verified_against_manifest": false,
+      "vault_buffer_bytes": 67108864,
+      "engine_load_ms": 1525.3995,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744521728,
+      "peak_pagefile_bytes": 2196529152,
+      "io_read_bytes": 2874636651,
+      "io_write_bytes": 13641,
+      "repetition": 2
+    },
+    {
+      "mode": "engine-default",
+      "cache": "warm",
+      "first_health_ok": true,
+      "startup_s": 0.021,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "load_s": 1.493,
+      "state": "succeeded",
+      "engine_load_ms": 1458.7411,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 743968768,
+      "peak_pagefile_bytes": 2196353024,
+      "io_read_bytes": 521515776,
+      "io_write_bytes": 5604,
+      "repetition": 2
+    },
+    {
+      "mode": "vault-prefetch",
+      "cache": "cold",
+      "first_health_ok": true,
+      "startup_s": 0.058,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "evict_open_ok": true,
+      "load_s": 34.85,
+      "state": "succeeded",
+      "vault_s": 26.274,
+      "vault_mib_s": 67.0,
+      "vault_sha256": "59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4",
+      "vault_verified_against_manifest": false,
+      "vault_buffer_bytes": 67108864,
+      "engine_load_ms": 1457.881,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744218624,
+      "peak_pagefile_bytes": 2196561920,
+      "io_read_bytes": 2874636651,
+      "io_write_bytes": 101022,
+      "repetition": 2
+    },
+    {
+      "mode": "engine-default",
+      "cache": "cold",
+      "first_health_ok": true,
+      "startup_s": 0.029,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "evict_open_ok": true,
+      "load_s": 56.753,
+      "state": "succeeded",
+      "engine_load_ms": 56717.4386,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744542208,
+      "peak_pagefile_bytes": 2196799488,
+      "io_read_bytes": 521515776,
+      "io_write_bytes": 169935,
+      "repetition": 2
+    },
+    {
+      "mode": "engine-default",
+      "cache": "cold",
+      "first_health_ok": true,
+      "startup_s": 0.145,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "evict_open_ok": true,
+      "load_s": 56.207,
+      "state": "succeeded",
+      "engine_load_ms": 56130.9897,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744288256,
+      "peak_pagefile_bytes": 2196746240,
+      "io_read_bytes": 521553355,
+      "io_write_bytes": 161898,
+      "repetition": 3
+    },
+    {
+      "mode": "vault-prefetch",
+      "cache": "cold",
+      "first_health_ok": true,
+      "startup_s": 0.145,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "evict_open_ok": true,
+      "load_s": 31.337,
+      "state": "succeeded",
+      "vault_s": 23.701,
+      "vault_mib_s": 74.3,
+      "vault_sha256": "59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4",
+      "vault_verified_against_manifest": false,
+      "vault_buffer_bytes": 67108864,
+      "engine_load_ms": 1186.8756,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744476672,
+      "peak_pagefile_bytes": 2196664320,
+      "io_read_bytes": 2874636651,
+      "io_write_bytes": 87342,
+      "repetition": 3
+    },
+    {
+      "mode": "engine-default",
+      "cache": "warm",
+      "first_health_ok": true,
+      "startup_s": 0.03,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "load_s": 1.04,
+      "state": "succeeded",
+      "engine_load_ms": 992.1446,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744062976,
+      "peak_pagefile_bytes": 2196594688,
+      "io_read_bytes": 521515776,
+      "io_write_bytes": 4236,
+      "repetition": 3
+    },
+    {
+      "mode": "vault-prefetch",
+      "cache": "warm",
+      "first_health_ok": true,
+      "startup_s": 0.02,
+      "files": [
+        "LFM3-Omni-2B-Q8_0.gguf",
+        "mmproj-LFM3-Omni-2B-Q8_0.gguf"
+      ],
+      "load_s": 2.849,
+      "state": "succeeded",
+      "vault_s": 1.245,
+      "vault_mib_s": 1414.4,
+      "vault_sha256": "59118f661eaacb93d204723d76355b53347f0940b508c11412f6290fd49158d4",
+      "vault_verified_against_manifest": false,
+      "vault_buffer_bytes": 67108864,
+      "engine_load_ms": 1206.1746,
+      "engine_backend": "cpu",
+      "peak_working_set_bytes": 744210432,
+      "peak_pagefile_bytes": 2196377600,
+      "io_read_bytes": 2874599072,
+      "io_write_bytes": 9879,
+      "repetition": 3
+    }
+  ]
+}

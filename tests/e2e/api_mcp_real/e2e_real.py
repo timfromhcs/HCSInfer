@@ -71,8 +71,11 @@ class Curl:
 
 
 def find_model_id(models, filename_stem):
+    for m in models:  # exact id first; a sibling mmproj contains the model's stem too and is never the main model
+        if m["id"] == filename_stem:
+            return m["id"]
     for m in models:
-        if filename_stem in m["id"]:
+        if filename_stem in m["id"] and not m["id"].startswith("mmproj"):
             return m["id"]
     return None
 

@@ -140,6 +140,24 @@ TEST(ModelRegistryScan, FindsValidatesAndIsIdempotent) {
     EXPECT_EQ(r.size(), 2u);
 }
 
+TEST(ModelRegistryScan, NonModelFilesAreIgnoredWithoutNoiseAndModelsInDeepTreesAreStillFound) {
+    TempDir t;
+    for (int i = 0; i < 300; ++i)
+        write_file(t / "root" / "venv" / "lib" / ("junk" + std::to_string(i) + ".py"), "x");
+    write_file(t / "root" / "venv" / "lib" / "notes.GGUF.txt", "not a model");
+    write_file(t / "root" / "a" / "b" / "c" / "deep.gguf", hcs::test::fake_gguf());
+    write_file(t / "root" / "w" / "m.safetensors", "garbage that is no safetensors header");
+    PathGuard g;
+    ASSERT_TRUE(g.add_root(t / "root"));
+    ModelRegistry r;
+    auto rep = r.scan(t / "root", g);
+    ASSERT_TRUE(rep) << rep.error().message;
+    EXPECT_EQ(rep.value().added, 1u);
+    EXPECT_EQ(rep.value().skipped, 1u);  // only the broken .safetensors; the 301 non-model files make no noise
+    EXPECT_EQ(rep.value().messages.size(), 1u);
+    EXPECT_TRUE(r.get("deep").ok());
+}
+
 TEST(ModelRegistryDigest, SetSha256ValidatesNormalisesAndSurvivesJsonRoundTrip) {
     TempDir t;
     write_file(t / "root" / "good.gguf", hcs::test::fake_gguf());

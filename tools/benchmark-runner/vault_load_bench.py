@@ -17,6 +17,7 @@ Nothing is written next to the model; the only files created live under --state-
 import argparse
 import ctypes
 import ctypes.wintypes as wt
+import glob
 import json
 import os
 import platform
@@ -25,6 +26,7 @@ import statistics
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -118,26 +120,38 @@ def one_run(exe, state_dir, model_dir, model_id, model_file, vault, cold, args):
         cmd += ["--vault-prefetch", "--vault-buffers", str(args.buffers), "--vault-chunk-mib", str(args.chunk_mib)]
     log = open(os.path.join(state_dir, "serve.log"), "ab")
     t0 = time.perf_counter()
-    p = subprocess.Popen(cmd, stdout=log, stderr=log)
+    p = subprocess.Popen(cmd, stdout=log, stderr=subprocess.PIPE)
+    listening = {}
+
+    def pump():
+        for raw in iter(p.stderr.readline, b""):
+            log.write(raw)
+            if b"listening on http://" in raw and "t" not in listening:
+                listening["t"] = time.perf_counter() - t0
+
+    pump_thread = threading.Thread(target=pump, daemon=True)
+    pump_thread.start()
     rec = {"mode": "vault-prefetch" if vault else "engine-default", "cache": "cold" if cold else "warm"}
     try:
-        startup = None
-        while time.perf_counter() - t0 < 60:
-            try:
-                st, _ = http(port, "GET", "/hcs/v1/health", token=False, timeout=2)
-                if st == 200:
-                    startup = time.perf_counter() - t0
-                    break
-            except Exception:
-                time.sleep(0.02)
+        # startup = process start -> the server announces it is listening (the socket is bound and accepting).
+        # Polling /health instead would add Windows' ~0.5 s retry quantum for a refused loopback connect.
+        while time.perf_counter() - t0 < 60 and "t" not in listening:
+            time.sleep(0.002)
+        startup = listening.get("t")
         if startup is None:
-            rec["error"] = "server did not become healthy in 60 s"
+            rec["error"] = "server did not announce a listening socket in 60 s"
             return rec
+        st, _ = http(port, "GET", "/hcs/v1/health", token=False, timeout=5)
+        rec["first_health_ok"] = st == 200
         rec["startup_s"] = round(startup, 3)
+        # The engine loads a sibling mmproj together with a vision-capable text model: treat it like the model.
+        files = [model_file] + sorted(glob.glob(os.path.join(model_dir, "mmproj*.gguf")))
+        rec["files"] = [os.path.basename(f) for f in files]
         if cold:
-            rec["evict_open_ok"] = cache_evict.evict(model_file)
+            rec["evict_open_ok"] = all([cache_evict.evict(f) for f in files])
         else:
-            cache_evict.read_prefix_mib_s(model_file, 100000)  # whole file into the cache first
+            for f in files:
+                cache_evict.read_prefix_mib_s(f, 100000)  # whole file into the cache first
         t1 = time.perf_counter()
         st, j = http(port, "POST", f"/hcs/v1/models/{model_id}/load")
         if st != 202:
@@ -177,6 +191,7 @@ def one_run(exe, state_dir, model_dir, model_id, model_file, vault, cold, args):
             p.wait(10)
         except subprocess.TimeoutExpired:
             p.kill()
+        pump_thread.join(5)
         log.close()
 
 
