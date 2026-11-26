@@ -119,3 +119,53 @@ in `docs/benchmarks.md`.
 * **Device lost:** on `VK_ERROR_DEVICE_LOST` (submit or fence wait) the call returns `BackendError`, the cached context is
   destroyed and the next call rebuilds it. Covered by an injected-fault test (`inject_fault_for_testing`, test seam only);
   a real driver device loss was not provoked.
+
+## HCSUDA-ported kernel set and `HCSInfer tune` (wave B / c1, 2026-11-26)
+
+Eight kernels ported from the owner's own HCSUDA project (provenance: [`hcsuda-port.md`](hcsuda-port.md), decision:
+[ADR-014](decisions/ADR-014-hcsuda-port.md)): tiled f32 / f16 GEMM, int8-dot GEMM, cooperative-matrix f16 GEMM, row
+softmax, LayerNorm, RMSNorm and RoPE. They are driven by `src/kernels/vulkan/vk_runner.cpp` / `vk_ops.cpp`, planned by
+`src/hardware/planner.cpp` (capability-gated, unknown = CPU) and benchmarked by `HCSInfer tune`. Nothing is wired into
+the llama.cpp / stable-diffusion.cpp engines.
+
+**Correctness (real AMD Radeon 680M, driver 26.6.1, Vulkan 1.4.315, subgroup 64).** `hcs_test_vulkan_ops` (ctest label
+`kernel-vulkan`) compares every kernel with the CPU oracle on odd, tail and non-power-of-two shapes with abs+rel
+tolerances, runs each prepared op three times and requires bit-identical output, checks invalid inputs, injected
+device loss and dispatch timeout with recovery, and the Khronos validation layer reported 0 messages (16/16 PASS,
+`docs/test-evidence/wave-b/c1/vulkan_ops_run.txt`). All 10 SPIR-V modules pass `spirv-val` (ctest `spirv-val.*`).
+The coopmat and int8-dot kernels ran because this device reports `cooperative_matrix` (16x16x16 f16xf16->f32,
+subgroup scope) and `integer_dot_product`; on a device that does not, they are reported `NOT RUN on this hardware`.
+
+**RoPE trig tolerance (measured).** Vulkan only bounds `sin`/`cos` inside [-pi, pi], and RoPE angles grow with the
+position. Declared tolerance: abs 1e-3 for unit-scale inputs. Measured max abs error against the double-precision
+oracle: 0 (1x2), 2.6e-7 (7x64), 4.4e-6 (40x126, pos0 17), 8.8e-6 (129x64, pos0 3, base 5e5), 4.4e-5 (512x128) in the
+unit test and 4.0e-5 (512x128) / 2.0e-4 (2048x128) in `tune`. The error grows roughly linearly with the position, so
+the 1e-3 tolerance holds with about 5x margin at 2048 rows and would be exceeded at several thousand positions: RoPE
+is validated only for the shapes in the evidence, and a longer-context bucket needs its own measurement.
+
+**`tune --suite full` (21 samples per bucket).** Median wall time of one dispatch with data resident on the device,
+against a 16-thread `std::thread` row-parallel, compiler-auto-vectorised CPU baseline (not tuned BLAS, not upstream
+GGML):
+
+| kernel | correct (3/3 identical runs) | worst abs err | GPU GFLOP/s (min-max over buckets) | wall speedup vs CPU baseline | promoted buckets |
+|---|---|---|---|---|---|
+| `gemm_coopmat_f16` | 4/4 | 1.9e-05 | 635.3-648.8 | 7.13-21.13x | 2/4 |
+| `gemm_f16_tiled` | 4/4 | 7.2e-05 | 377.2-565.3 | 5.63-17.53x | 4/4 |
+| `gemm_i8dot_tiled` | 4/4 | 0 | 524.3-731.7 | 6.80-25.83x | 4/4 |
+| `gemm_f32_tiled` | 4/4 | 7.2e-05 | 360.3-562.7 | 6.07-14.72x | 4/4 |
+| `softmax_rows` | 3/3 | 3.7e-09 | 9.3-49.5 | 2.23-8.07x | 3/3 |
+| `layernorm_rows` | 3/3 | 4.8e-07 | 10.1-72.2 | 1.77-6.00x | 3/3 |
+| `rmsnorm_rows` | 3/3 | 4.8e-07 | 6.8-40.7 | 1.29-4.46x | 3/3 |
+| `rope_rows` | 2/2 | 0.0002 | 41.6-49.6 | 4.56-6.48x | 1/2 |
+
+Five buckets were correct but **not promoted** because their timing spread exceeded 0.25 (`timing too noisy`); the
+numbers are not used. The speedups compare against a naive CPU baseline on a shared-memory APU and say nothing about
+the upstream GGML Vulkan backend.
+
+**Promotion status (honest).** The planner rule is: correct AND 3 bit-identical runs AND >= 1.05x the baseline gives
+*promoted*; default-enabling additionally needs a **measured upstream GGML Vulkan baseline**, which `tune` records as
+`NOT RUN`. Result on this machine: all 8 kernels are *promoted* (some buckets) against the CPU baseline and **none is
+default-enabled**; `doctor --json` -> `planner` shows every op as `reference` (CPU) with the candidate listed.
+Evidence: `docs/test-evidence/wave-b/c1/` (`tune-evidence.json`, `doctor-with-profile.json`, `vulkan_ops_run.txt`,
+`tune-validation-stdout.txt`). The profile is cached under `HCS_DATA_DIR` as `kernel-profile.json`, keyed by device,
+driver, shader hash and shape bucket.

@@ -1,0 +1,116 @@
+Running main() from D:\HCSInfer\build\windows-msvc-release-vulkan\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 16 tests from 11 test suites.
+[----------] Global test environment set-up.
+[----------] 2 tests from VulkanGemmF32
+[ RUN      ] VulkanGemmF32.MatchesTheOracleOnOddTailAndNonPowerOfTwoShapes
+[device] AMD Radeon(TM) Graphics  key vk:1002:1681:drv=0x00800161:api=1.4.315  subgroup 64  buffers device_local
+[validation] requested 1 active 1
+  gemm_f32 1x1x1  max_abs_err 0  tol_abs 1e-06
+  gemm_f32 1x7x5  max_abs_err 1.19209e-07  tol_abs 2.23607e-06
+  gemm_f32 17x1x33  max_abs_err 4.76837e-07  tol_abs 5.74456e-06
+  gemm_f32 16x16x16  max_abs_err 3.57628e-07  tol_abs 4e-06
+  gemm_f32 33x47x17  max_abs_err 4.76837e-07  tol_abs 4.12311e-06
+  gemm_f32 67x131x95  max_abs_err 3.8147e-06  tol_abs 9.74679e-06
+  gemm_f32 128x64x300  max_abs_err 1.71661e-05  tol_abs 1.73205e-05
+  gemm_f32 257x15x31  max_abs_err 1.43051e-06  tol_abs 5.56776e-06
+[       OK ] VulkanGemmF32.MatchesTheOracleOnOddTailAndNonPowerOfTwoShapes (208 ms)
+[ RUN      ] VulkanGemmF32.ZerosAndExtremeMagnitudes
+  gemm_f32 zeros  max_abs_err 0  tol_abs 1e-06
+  gemm_f32 wide range  max_abs_err 5.72205e-06  tol_abs 0.000151658
+[       OK ] VulkanGemmF32.ZerosAndExtremeMagnitudes (10 ms)
+[----------] 2 tests from VulkanGemmF32 (218 ms total)
+
+[----------] 1 test from VulkanGemmF16
+[ RUN      ] VulkanGemmF16.MatchesTheOracleIncludingOddElementCounts
+  gemm_f16 1x1x1  max_abs_err 0  tol_abs 1e-06
+  gemm_f16 3x5x7  max_abs_err 2.38419e-07  tol_abs 2.64575e-06
+  gemm_f16 37x65x29  max_abs_err 9.53674e-07  tol_abs 5.38516e-06
+  gemm_f16 64x64x64  max_abs_err 2.86102e-06  tol_abs 8e-06
+  gemm_f16 9x9x9  max_abs_err 2.38419e-07  tol_abs 3e-06
+[       OK ] VulkanGemmF16.MatchesTheOracleIncludingOddElementCounts (28 ms)
+[----------] 1 test from VulkanGemmF16 (28 ms total)
+
+[----------] 2 tests from VulkanGemmI8Dot
+[ RUN      ] VulkanGemmI8Dot.IsBitEqualToTheOracle
+[       OK ] VulkanGemmI8Dot.IsBitEqualToTheOracle (31 ms)
+[ RUN      ] VulkanGemmI8Dot.ExtremeValuesStayExact
+[       OK ] VulkanGemmI8Dot.ExtremeValuesStayExact (4 ms)
+[----------] 2 tests from VulkanGemmI8Dot (36 ms total)
+
+[----------] 1 test from VulkanGemmCoopMat
+[ RUN      ] VulkanGemmCoopMat.MatchesTheOracleOnAlignedShapesAndRefusesOthers
+  gemm_coopmat 16x16x16  max_abs_err 2.38419e-07  tol_abs 4e-06
+  gemm_coopmat 32x16x48  max_abs_err 7.15256e-07  tol_abs 6.9282e-06
+  gemm_coopmat 48x80x64  max_abs_err 9.53674e-07  tol_abs 8e-06
+  gemm_coopmat 64x64x128  max_abs_err 1.90735e-06  tol_abs 1.13137e-05
+[       OK ] VulkanGemmCoopMat.MatchesTheOracleOnAlignedShapesAndRefusesOthers (20 ms)
+[----------] 1 test from VulkanGemmCoopMat (20 ms total)
+
+[----------] 1 test from VulkanSoftmax
+[ RUN      ] VulkanSoftmax.MatchesTheOracleAndIsStableForLargeInputs
+  softmax 1x1  max_abs_err 0  tol_abs 1e-06
+  softmax 3x1000  max_abs_err 1.86265e-09  tol_abs 3.16228e-05
+  softmax 8x257  max_abs_err 7.45058e-09  tol_abs 1.60312e-05
+  softmax 5x4096  max_abs_err 4.65661e-10  tol_abs 6.4e-05
+  softmax 1x31  max_abs_err 2.98023e-08  tol_abs 5.56776e-06
+  softmax 17x513  max_abs_err 3.72529e-09  tol_abs 2.26495e-05
+  softmax large values  max_abs_err 5.96046e-08  tol_abs 2e-06
+[       OK ] VulkanSoftmax.MatchesTheOracleAndIsStableForLargeInputs (29 ms)
+[----------] 1 test from VulkanSoftmax (29 ms total)
+
+[----------] 1 test from VulkanLayerNorm
+[ RUN      ] VulkanLayerNorm.MatchesTheOracle
+  layernorm 1x1  max_abs_err 0  tol_abs 1e-06
+  layernorm 3x1000  max_abs_err 2.38419e-07  tol_abs 3.16228e-05
+  layernorm 8x257  max_abs_err 2.38419e-07  tol_abs 1.60312e-05
+  layernorm 2x4096  max_abs_err 2.38419e-07  tol_abs 6.4e-05
+  layernorm 5x33  max_abs_err 2.38419e-07  tol_abs 5.74456e-06
+[       OK ] VulkanLayerNorm.MatchesTheOracle (34 ms)
+[----------] 1 test from VulkanLayerNorm (34 ms total)
+
+[----------] 1 test from VulkanRmsNorm
+[ RUN      ] VulkanRmsNorm.MatchesTheOracleIncludingAllZeroRows
+  rmsnorm 1x1  max_abs_err 0  tol_abs 1e-06
+  rmsnorm 3x1000  max_abs_err 2.38419e-07  tol_abs 3.16228e-05
+  rmsnorm 8x257  max_abs_err 2.38419e-07  tol_abs 1.60312e-05
+  rmsnorm 2x4096  max_abs_err 2.38419e-07  tol_abs 6.4e-05
+  rmsnorm 5x33  max_abs_err 2.38419e-07  tol_abs 5.74456e-06
+  rmsnorm zeros  max_abs_err 0  tol_abs 1e-06
+[       OK ] VulkanRmsNorm.MatchesTheOracleIncludingAllZeroRows (32 ms)
+[----------] 1 test from VulkanRmsNorm (32 ms total)
+
+[----------] 1 test from VulkanRope
+[ RUN      ] VulkanRope.MatchesTheOracleWithinTheDeclaredTrigTolerance
+  rope 1x2 pos0 0  max_abs_err 0  tol_abs 0.001
+  rope 7x64 pos0 0  max_abs_err 2.55415e-07  tol_abs 0.001
+  rope 40x126 pos0 17  max_abs_err 4.35114e-06  tol_abs 0.001
+  rope 129x64 pos0 3  max_abs_err 8.76561e-06  tol_abs 0.001
+  rope 512x128 pos0 0  max_abs_err 4.36306e-05  tol_abs 0.001
+[       OK ] VulkanRope.MatchesTheOracleWithinTheDeclaredTrigTolerance (27 ms)
+[----------] 1 test from VulkanRope (27 ms total)
+
+[----------] 1 test from VulkanOps
+[ RUN      ] VulkanOps.InvalidInputsAreRejectedBeforeAnyDeviceWork
+[       OK ] VulkanOps.InvalidInputsAreRejectedBeforeAnyDeviceWork (0 ms)
+[----------] 1 test from VulkanOps (0 ms total)
+
+[----------] 4 tests from VulkanRunner
+[ RUN      ] VulkanRunner.RejectsBadSpirvAndBadDispatchArguments
+[       OK ] VulkanRunner.RejectsBadSpirvAndBadDispatchArguments (2 ms)
+[ RUN      ] VulkanRunner.ManyBuffersCreateAndDestroyWithoutLeaking
+[       OK ] VulkanRunner.ManyBuffersCreateAndDestroyWithoutLeaking (83 ms)
+[ RUN      ] VulkanRunner.InjectedDeviceLostIsReportedRefusesWorkAndRecoversAfterReset
+  gemm after recovery  max_abs_err 4.76837e-07  tol_abs 4e-06
+[       OK ] VulkanRunner.InjectedDeviceLostIsReportedRefusesWorkAndRecoversAfterReset (256 ms)
+[ RUN      ] VulkanRunner.DispatchTimeoutMarksTheRunnerLostAndResetRecovers
+[       OK ] VulkanRunner.DispatchTimeoutMarksTheRunnerLostAndResetRecovers (263 ms)
+[----------] 4 tests from VulkanRunner (605 ms total)
+
+[----------] 1 test from VulkanZzValidation
+[ RUN      ] VulkanZzValidation.TheKhronosValidationLayerReportedNothing
+[       OK ] VulkanZzValidation.TheKhronosValidationLayerReportedNothing (0 ms)
+[----------] 1 test from VulkanZzValidation (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 16 tests from 11 test suites ran. (1035 ms total)
+[  PASSED  ] 16 tests.
