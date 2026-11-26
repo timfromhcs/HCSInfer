@@ -1,6 +1,7 @@
 // stable-diffusion.cpp image engine adapter. Only this translation unit may include
 // stable-diffusion.h / stb headers; upstream types never leave this module.
 #include "hcs/engines/diffusion_engine.hpp"
+#include "hcs/engines/diffusion_runtime.hpp"
 
 #include <algorithm>
 #include <atomic>
@@ -626,6 +627,13 @@ Result<void> DiffusionImageEngine::load(const LoadRequest& req) {
     if (cfg)
         cfg = set_string("params_backend",
                          comp.params_backend.empty() ? std::string("cpu") : comp.params_backend);
+    if (cfg) {
+        const auto rt = diffusion_runtime_options(use_gpu);
+        if (!rt.flash_attn_mode.empty())
+            cfg = set_string("flash_attn_mode", rt.flash_attn_mode);
+        if (cfg && !rt.conv_direct_mode.empty())
+            cfg = set_string("conv_direct_mode", rt.conv_direct_mode);
+    }
     // HCS LoadRequest::threads == 0 means "engine default"; upstream rejects 0, so only send a positive
     // value.
     if (cfg && req.threads > 0)
