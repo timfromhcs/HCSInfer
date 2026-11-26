@@ -19,6 +19,7 @@
 #include "hcs/state_dir.hpp"
 #include "hcs/version.hpp"
 #include "image_cmd.hpp"
+#include "merge_cmd.hpp"
 #include "train_cmd.hpp"
 #include "vision_cmd.hpp"
 
@@ -63,6 +64,9 @@ const char* kRootHelp =
     "  chat --model <path-or-id> [--prompt ...] [--backend cpu|vulkan] [--json]\n"
     "                                Text generation via llama.cpp (see `chat --help`)\n"
     "  image generate|edit ...       Image generation/edit via stable-diffusion.cpp (see `image --help`)\n"
+    "  merge --method linear|slerp|ties|dare|lora --base F --model F --out F\n"
+    "                                Streaming model merge on safetensors/GGUF float tensors (see `merge "
+    "--help`)\n"
     "  serve [--host ...]            Local HTTP API (OpenAI-compatible + /hcs/v1)\n"
     "  mcp stdio                     MCP server over stdio\n"
     "  vision --model <path-or-id> --image <file> --prompt ... [--mmproj <file>] [--json]\n"
@@ -402,6 +406,8 @@ int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostrea
         return run_image(std::move(args), state_override, out, err);
     if (cmd == "models")
         return cmd_models(std::move(args), state_override, out, err);
+    if (cmd == "merge")
+        return run_merge_cmd(std::move(args), out, err);
     if (cmd == "train") {
 #ifdef HCS_HAVE_TRAIN
         return run_train(std::move(args), state_dir(state_override), out, err);

@@ -15,9 +15,13 @@
 #include <string>
 
 #include "hcs/fs_util.hpp"
+#include "hcs/image_profiles.hpp"
+#include "hcs/lora.hpp"
 #include "hcs/model_registry.hpp"
+#include "hcs/path_guard.hpp"
 #include "hcs/result.hpp"
 #include "hcs/state_dir.hpp"
+#include "hcs/upscale_ort.hpp"
 
 #ifdef HCS_HAVE_DIFFUSION
 #include "hcs/engines/diffusion_engine.hpp"
@@ -57,6 +61,18 @@ const char* image_help() {
            "short\n"
            "                         side < 384 px or < 8 steps is rejected otherwise; output is a smoke "
            "test)\n"
+           "  --lora <id[:weight]>   Apply a LoRA from the library (repeatable, max 4). Weight 0<|w|<=2, "
+           "default\n"
+           "                         = the manifest's recommended weight. A LoRA for another base family\n"
+           "                         (e.g. SD1.5 on FLUX) is rejected with a structured error.\n"
+           "  --lora-dir <dir>       LoRA library folder with manifest.json (default: <model "
+           "root>/lora/image,\n"
+           "                         searched upwards from the model file; see docs/lora.md)\n"
+           "  --upscale <off|4k>     4k: tiled 4x ONNX super-resolution + Lanczos to a 3840 px long edge\n"
+           "                         (default off). Needs onnxruntime.dll + a .onnx model, otherwise exit "
+           "10.\n"
+           "  --upscale-dir <dir>    Folder with the .onnx model and onnxruntime.dll (default: <model "
+           "root>/upscale)\n"
            "  --seed <n>             Sampling seed (default: random)\n"
            "  --backend <b>          auto (default) | cpu | vulkan; explicit failure never falls back "
            "silently\n"
@@ -172,6 +188,44 @@ Result<ImageInput> read_input_image(const std::string& path) {
     return in;
 }
 
+// <ancestor of the model>/<leaf> (e.g. D:\HCSModels\lora\image), searched upwards at most 5 levels.
+fs::path find_library_dir(const fs::path& model_file, const char* leaf1, const char* leaf2) {
+    std::error_code ec;
+    fs::path dir = model_file.parent_path();
+    for (int i = 0; i < 5 && !dir.empty(); ++i, dir = dir.parent_path()) {
+        const fs::path cand = leaf2 ? dir / leaf1 / leaf2 : dir / leaf1;
+        if (fs::is_directory(cand, ec))
+            return cand;
+        if (dir == dir.parent_path())
+            break;
+    }
+    return {};
+}
+
+// "id" or "id:weight". Weight bounds are validated by the library (finite, non-zero, |w| <= 2).
+Result<LoraLibrary::Ref> parse_lora_arg(const std::string& arg) {
+    LoraLibrary::Ref ref;
+    const auto colon = arg.rfind(':');
+    if (colon == std::string::npos) {
+        ref.id = arg;
+    } else {
+        ref.id = arg.substr(0, colon);
+        try {
+            std::size_t pos = 0;
+            const std::string w = arg.substr(colon + 1);
+            ref.weight = std::stof(w, &pos);
+            if (pos != w.size())
+                throw std::invalid_argument("trailing");
+            ref.weight_given = true;
+        } catch (const std::exception&) {
+            return Error(ErrorCode::InvalidArgument, "--lora weight in '" + arg + "' is not a number");
+        }
+    }
+    if (ref.id.empty())
+        return Error(ErrorCode::InvalidArgument, "--lora needs an id (id[:weight])");
+    return ref;
+}
+
 std::string default_output() {
     const auto now = std::chrono::system_clock::now();
     const std::time_t t = std::chrono::system_clock::to_time_t(now);
@@ -227,6 +281,12 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
     take_value(args, "--seed", v_seed, bad);
     take_value(args, "--strength", v_strength, bad);
     take_value(args, "--threads", v_threads, bad);
+    std::string lora_dir, upscale_mode, upscale_dir;
+    std::vector<std::string> lora_args;
+    take_value(args, "--lora-dir", lora_dir, bad);
+    take_value(args, "--upscale", upscale_mode, bad);
+    take_value(args, "--upscale-dir", upscale_dir, bad);
+    for (std::string v; take_value(args, "--lora", v, bad);) lora_args.push_back(v);
     const bool as_json = take_flag(args, "--json");
     const bool force = take_flag(args, "--force");
     const bool allow_low_quality = take_flag(args, "--allow-low-quality");
@@ -309,6 +369,63 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
     lr.model_path = path.value();
     lr.model_id = model;
 
+    if (upscale_mode != "" && upscale_mode != "off" && upscale_mode != "4k")
+        return fail(err, ErrorCode::InvalidArgument, "--upscale must be off or 4k");
+    const bool want_upscale = upscale_mode == "4k";
+
+    // LoRAs: ids only, resolved through the library (paths inside its approved root, family and weight
+    // checked BEFORE the model is loaded). The engine repeats the family check against the loaded weights.
+    if (!lora_args.empty()) {
+        if (lora_args.size() > kMaxLorasPerRequest)
+            return fail(err, ErrorCode::InvalidArgument,
+                        "at most " + std::to_string(kMaxLorasPerRequest) + " --lora options");
+        std::vector<LoraLibrary::Ref> refs;
+        for (const auto& a : lora_args) {
+            auto ref = parse_lora_arg(a);
+            if (!ref)
+                return fail(err, ref.error());
+            refs.push_back(ref.value());
+        }
+        fs::path dir =
+            lora_dir.empty() ? find_library_dir(lr.model_path, "lora", "image") : fs::path(lora_dir);
+        if (dir.empty())
+            return fail(err, ErrorCode::NotFound,
+                        "no LoRA library: pass --lora-dir or create <model root>/lora/image/manifest.json");
+        if (dir.string().find("..") != std::string::npos)
+            return fail(err, ErrorCode::SecurityViolation, "--lora-dir must not contain '..'");
+        PathGuard guard;
+        if (auto r = guard.add_root(dir); !r)
+            return fail(err, r.error());
+        LoraLibrary lib;
+        if (auto r = lib.scan(guard, dir); !r)
+            return fail(err, r.error());
+        auto specs =
+            lib.resolve(refs, guess_image_family(model + " " + fs::path(lr.model_path).filename().string()),
+                        /*allow_unknown_family=*/true);
+        if (!specs)
+            return fail(err, specs.error());
+        req.loras = std::move(specs.value());
+    }
+
+    // Upscaler: constructed now (cheap), checked before the render so a missing runtime/model never costs a
+    // long generation.
+    std::unique_ptr<upscale::OrtUpscaleEngine> upscaler;
+    if (want_upscale) {
+        upscale::OrtConfig oc;
+        fs::path dir =
+            upscale_dir.empty() ? find_library_dir(lr.model_path, "upscale", nullptr) : fs::path(upscale_dir);
+        std::error_code uec;
+        if (!dir.empty() && fs::is_directory(dir, uec)) {
+            oc.runtime_dirs.push_back(dir);
+            oc.model_path = upscale::find_upscale_model(dir);
+        }
+        if (const auto exe = upscale::executable_dir(); !exe.empty())
+            oc.runtime_dirs.push_back(exe);
+        upscaler = std::make_unique<upscale::OrtUpscaleEngine>(std::move(oc));
+        if (auto r = upscaler->ready(); !r)
+            return fail(err, Error(r.error().code, "--upscale 4k is not available: " + r.error().message));
+    }
+
     if (output.empty())
         output = default_output();
     {
@@ -355,7 +472,42 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
         return fail(err, result.error());
     }
 
-    const auto& img = result.value();
+    auto img = std::move(result.value());
+    json upscale_json;
+    if (upscaler) {
+        upscale::Stats st;
+        g_cancel = &source;  // Ctrl-C also cancels the upscale
+        auto up = upscale::upscale_png(
+            *upscaler, img.bytes, upscale::Options{}, source.token(),
+            [&](double f) {
+                if (!as_json)
+                    err << "\r[hcsinfer] upscale " << static_cast<int>(f * 100.0) << "%          "
+                        << std::flush;
+            },
+            &st);
+        g_cancel = nullptr;
+        if (!as_json)
+            err << "\n";
+        if (!up) {
+            if (up.error().code == ErrorCode::Cancelled || g_interrupted.load()) {
+                err << "cancelled\n";
+                return exit_code(ErrorCode::Cancelled);
+            }
+            // The render is kept; the failure is reported, never hidden.
+            err << "warning: upscale failed, writing the un-upscaled image: " << up.error().message << " ["
+                << to_string(up.error().code) << "]\n";
+            upscale_json = {{"status", "failed"}, {"error", up.error().message}};
+        } else if (st.skipped) {
+            upscale_json = {{"status", "skipped"}, {"note", st.skip_reason}};
+        } else {
+            img.bytes = std::move(up.value());
+            img.width = st.out_w;
+            img.height = st.out_h;
+            upscale_json = {{"status", "done"},        {"from_width", st.src_w},
+                            {"from_height", st.src_h}, {"ms", st.model_ms + st.resample_ms},
+                            {"provider", st.provider}, {"tiles", st.tiles}};
+        }
+    }
     {
         std::ofstream f(output, std::ios::binary | std::ios::trunc);
         if (!f)
@@ -384,6 +536,12 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
         j["load_ms"] = lm.load_ms;
         j["generation_ms"] = img.generation_ms;
         j["total_ms"] = total_ms;
+        if (!req.loras.empty()) {
+            j["loras"] = json::array();
+            for (const auto& l : req.loras) j["loras"].push_back({{"id", l.id}, {"weight", l.weight}});
+        }
+        if (!upscale_json.is_null())
+            j["upscale"] = upscale_json;
         out << j.dump(2) << "\n";
     } else {
         out << "wrote " << output << " (" << img.width << "x" << img.height << ", "

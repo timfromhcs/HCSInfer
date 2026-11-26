@@ -85,6 +85,12 @@ TEST(GuiAssets, StudioStructure) {
     EXPECT_NE(js.find("/v1/images/edits"), std::string::npos);
     EXPECT_NE(js.find("tool_calls"), std::string::npos);
     EXPECT_NE(js.find("/hcs/v1/memory"), std::string::npos);
+    // LoRA picker and upscale switch are wired to real routes/fields (never paths: ids and weights only).
+    for (const char* id : {"image-upscale", "image-lora-list"})
+        EXPECT_NE(html.find(std::string("id=\"") + id + "\""), std::string::npos) << id;
+    EXPECT_NE(js.find("/hcs/v1/loras"), std::string::npos);
+    EXPECT_NE(js.find("body.loras"), std::string::npos);
+    EXPECT_NE(js.find("body.upscale"), std::string::npos);
     // Colours are tokens with a dark variant, in both the media query and the explicit data-theme form.
     const std::string css = asset_text("app.css");
     EXPECT_NE(css.find("[data-theme=\"dark\"]"), std::string::npos);

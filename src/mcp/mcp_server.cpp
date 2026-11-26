@@ -125,6 +125,29 @@ json tool_list(std::uint32_t cap) {
         {"prompt", "image_path"}, true));
     const json image_model_opt = str_schema(
         64, "Image model id (kind 'image'); loads it if needed. Omit to use the loaded image model.");
+    const json loras_schema = {
+        {"type", "array"},
+        {"maxItems", kMaxLorasPerRequest},
+        {"description",
+         "LoRAs from hcs.loras.list (ids only; never paths). Rejected when their base family does "
+         "not match the loaded model."},
+        {"items",
+         {{"type", "object"},
+          {"properties",
+           {{"id", str_schema(64, "LoRA id from hcs.loras.list.")},
+            {"weight", {{"type", "number"}, {"minimum", -kMaxLoraWeight}, {"maximum", kMaxLoraWeight}}}}},
+          {"required", json::array({"id"})},
+          {"additionalProperties", false}}}};
+    const json upscale_schema = {
+        {"type", "string"},
+        {"enum", json::array({"off", "4k"})},
+        {"description",
+         "\"4k\": tiled 4x ONNX super-resolution then Lanczos to a 3840 px long edge. Needs "
+         "onnxruntime.dll and a model under <approved root>/upscale; otherwise 'unsupported'."}};
+    tools.push_back(tool("hcs.loras.list", "List LoRAs",
+                         "Image LoRA library: id, base family, trigger words, recommended weight, licence, "
+                         "sha256 and status. Never returns file paths.",
+                         json::object(), {}, true));
     tools.push_back(
         tool("hcs.image.generate", "Generate image",
              "Text-to-image with the loaded (or given) stable-diffusion.cpp model. Returns the PNG inline "
@@ -139,7 +162,9 @@ json tool_list(std::uint32_t cap) {
               {"seed", {{"type", "integer"}, {"minimum", 0}}},
               {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}},
               {"preset", {{"type", "string"}, {"enum", json::array({"fast", "quality"})}}},
-              {"allow_low_quality", {{"type", "boolean"}}}},
+              {"allow_low_quality", {{"type", "boolean"}}},
+              {"loras", loras_schema},
+              {"upscale", upscale_schema}},
              {"prompt"}, false));
     tools.push_back(
         tool("hcs.image.edit", "Edit image",
@@ -156,7 +181,9 @@ json tool_list(std::uint32_t cap) {
               {"seed", {{"type", "integer"}, {"minimum", 0}}},
               {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}},
               {"preset", {{"type", "string"}, {"enum", json::array({"fast", "quality"})}}},
-              {"allow_low_quality", {{"type", "boolean"}}}},
+              {"allow_low_quality", {{"type", "boolean"}}},
+              {"loras", loras_schema},
+              {"upscale", upscale_schema}},
              {"prompt", "input_path"}, false));
     tools.push_back(tool(
         "hcs.runtime.status", "Runtime status",
@@ -371,6 +398,19 @@ json McpServer::wait_image(const api::Submitted& sub, const std::string& req_key
                  {"bytes", r.bytes.size()}};
     if (auto lm = cp_.loaded_model())
         meta["model"] = *lm;
+    if (!r.loras_applied.empty())
+        meta["loras"] = r.loras_applied;
+    if (!r.upscale_status.empty()) {
+        json up = {{"status", r.upscale_status}};
+        if (!r.upscale_detail.empty())
+            up[r.upscale_status == "failed" ? "error" : "note"] = r.upscale_detail;
+        if (r.upscale_status == "done")
+            up.update({{"from_width", r.pre_upscale_width},
+                       {"from_height", r.pre_upscale_height},
+                       {"ms", r.upscale_ms},
+                       {"provider", r.upscale_provider}});
+        meta["upscale"] = std::move(up);
+    }
     return {{"content", json::array({json{{"type", "image"},
                                           {"data", api::base64_encode(r.bytes.data(), r.bytes.size())},
                                           {"mimeType", "image/" + r.format}},
@@ -565,6 +605,18 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
             p.allow_low_quality = args["allow_low_quality"].get<bool>();
         if (args.contains("strength"))
             p.strength = args["strength"].get<float>();
+        if (args.contains("loras"))
+            for (const auto& l : args["loras"]) {
+                LoraLibrary::Ref ref;
+                ref.id = l["id"].get<std::string>();
+                if (l.contains("weight")) {
+                    ref.weight = l["weight"].get<float>();
+                    ref.weight_given = true;
+                }
+                p.loras.push_back(std::move(ref));
+            }
+        if (args.contains("upscale"))
+            p.upscale = args["upscale"].get<std::string>();
         if (edit) {
             // The path rule is enforced before anything is read: nothing outside an approved root is probed.
             auto resolved = cp_.guard().resolve(args["input_path"].get<std::string>());
@@ -587,6 +639,8 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
             return tool_err(sub.error());
         return wait_image(sub.value(), req_key);
     }
+    if (name == "hcs.loras.list")
+        return tool_ok(cp_.loras_json());
     if (name == "hcs.runtime.status") {
         json j = {{"runtime", cp_.runtime_json()}, {"memory", cp_.memory_json()}};
         if (args.value("include_devices", false))
