@@ -317,7 +317,8 @@ TEST(ApiUpscale, InvalidValueIsRejected) {
     EXPECT_EQ(a.fx.image.generations.load(), 0);
 }
 
-// ---- upscale-only route (POST /hcs/v1/images/upscale) -------------------------------------------------------
+// ---- upscale-only route (POST /hcs/v1/images/upscale)
+// -------------------------------------------------------
 namespace {
 
 std::string b64_encode(const std::vector<std::uint8_t>& d) {
@@ -350,7 +351,8 @@ std::string png_b64(std::uint32_t w, std::uint32_t h) {
 
 // A PNG signature + IHDR that claims w x h (no pixel data): enough for the header probe, never decodable.
 std::string fake_ihdr_b64(std::uint32_t w, std::uint32_t h) {
-    std::vector<std::uint8_t> d = {0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A, 0, 0, 0, 13, 'I', 'H', 'D', 'R'};
+    std::vector<std::uint8_t> d = {0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A,
+                                   0,    0,   0,   13,  'I',  'H',  'D',  'R'};
     for (std::uint32_t v : {w, h})
         for (int s = 24; s >= 0; s -= 8) d.push_back(static_cast<std::uint8_t>((v >> s) & 0xFF));
     for (int i = 0; i < 9; ++i) d.push_back(0);  // depth, colour type, ..., CRC (not checked by the probe)
@@ -423,9 +425,9 @@ TEST(ApiUpscaleOnly, BadInputIsRejectedBeforeAnyDecodeOrAllocation) {
     EXPECT_EQ(post_upscale(a, {{"image", 5}}).status, 400);
     EXPECT_EQ(post_upscale(a, {{"image", "data:image/png;base64,!!!notbase64"}}).status, 400);
     // A JPEG header is not a PNG.
-    const std::vector<std::uint8_t> jpeg = {0xFF, 0xD8, 0xFF, 0xE0, 0, 16, 'J', 'F', 'I', 'F', 0, 1, 1, 0, 0, 1,
-                                            0,    1,    0,    0,    0xFF, 0xC0, 0, 17, 8, 0, 32, 0, 32, 3, 1, 0x22, 0,
-                                            2,    0x11, 1,    3,    0x11, 1};
+    const std::vector<std::uint8_t> jpeg = {0xFF, 0xD8, 0xFF, 0xE0, 0, 16, 'J',  'F',  'I', 'F',  0, 1, 1,  0,
+                                            0,    1,    0,    1,    0, 0,  0xFF, 0xC0, 0,   17,   8, 0, 32, 0,
+                                            32,   3,    1,    0x22, 0, 2,  0x11, 1,    3,   0x11, 1};
     auto j = post_upscale(a, {{"image", b64_encode(jpeg)}});
     EXPECT_EQ(j.status, 400) << j.body;
     // 5000 x 5000 = 25 MP claimed in the header: over the 16 MP limit, refused without decoding.

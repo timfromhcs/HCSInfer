@@ -43,8 +43,8 @@ bool contains(const std::string& s, const std::string& n) {
 TEST(CliUpscale, HelpDocumentsTheOptionsAndIsReachableFromImageHelp) {
     auto r = run({"image", "upscale", "--help"});
     EXPECT_EQ(r.code, 0);
-    for (const char* flag : {"--input", "--output", "--tile", "--overlap", "--threads", "--provider", "--target",
-                             "--upscale-dir", "--force", "--json", "Ctrl-C"})
+    for (const char* flag : {"--input", "--output", "--tile", "--overlap", "--threads", "--provider",
+                             "--target", "--upscale-dir", "--force", "--json", "Ctrl-C"})
         EXPECT_TRUE(contains(r.out, flag)) << flag;
     EXPECT_TRUE(contains(run({"image", "--help"}).out, "image upscale"));
 }

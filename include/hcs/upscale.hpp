@@ -89,8 +89,8 @@ struct Stats {
     double model_ms = 0.0;        // whole tile loop (input prep + model + blend)
     double tile_ms_median = 0.0;  // engine run_tile() only, per tile
     double tile_ms_max = 0.0;
-    double blend_ms = 0.0;        // feathered accumulation + normalisation (CPU, part of model_ms)
-    double pre_resize_ms = 0.0;   // optional Lanczos pre-resize of the source (Options::pre_resize_long_edge)
+    double blend_ms = 0.0;       // feathered accumulation + normalisation (CPU, part of model_ms)
+    double pre_resize_ms = 0.0;  // optional Lanczos pre-resize of the source (Options::pre_resize_long_edge)
     double resample_ms = 0.0;
     std::uint64_t peak_bytes_estimate = 0;
     bool skipped = false;

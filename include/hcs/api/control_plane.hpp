@@ -219,8 +219,8 @@ public:
     bool has_upscaler() const noexcept { return upscaler_ != nullptr; }
     // Upscale an existing PNG as a cancellable job "image.upscale" (result via image_result(); the result's
     // upscale_status is "done" or "skipped"). Refused up front with: Unsupported (no runtime/model),
-    // InvalidArgument (not a PNG, too many pixels/bytes), OutOfMemory (even the smallest tile does not fit the
-    // live budget) and the admission controller's overload errors - never after memory was committed.
+    // InvalidArgument (not a PNG, too many pixels/bytes), OutOfMemory (even the smallest tile does not fit
+    // the live budget) and the admission controller's overload errors - never after memory was committed.
     Result<void> validate_upscale(const UpscaleParams& p) const;
     Result<Submitted> submit_upscale(const UpscaleParams& p);
 

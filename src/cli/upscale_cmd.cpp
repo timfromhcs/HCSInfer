@@ -98,7 +98,8 @@ const char* image_upscale_help() {
     return "Usage: HCSInfer image upscale --input <png> --output <png> [options]\n"
            "\n"
            "Upscales an existing PNG: a tiled 4x ONNX super-resolution pass (tile size chosen from the live\n"
-           "memory budget, feather-blended overlaps) followed by a Lanczos-3 resample to exactly --target px\n"
+           "memory budget, feather-blended overlaps) followed by a Lanczos-3 resample to exactly --target "
+           "px\n"
            "on the long edge (default 3840). An image whose long edge is already >= the target is copied\n"
            "unchanged and reported as skipped. Experimental; needs onnxruntime.dll and a .onnx model in\n"
            "--upscale-dir (or next to HCSInfer.exe for the DLL), otherwise exit 10 [unsupported].\n"
@@ -106,12 +107,14 @@ const char* image_upscale_help() {
            "Options:\n"
            "  --input <file>         Source PNG (8-bit; <= 32 MiB, <= 16 MP)\n"
            "  --output <file>        Output PNG (default: <input>-4k.png next to the input)\n"
-           "  --upscale-dir <dir>    Folder with the .onnx model and onnxruntime.dll (default: searched upwards\n"
+           "  --upscale-dir <dir>    Folder with the .onnx model and onnxruntime.dll (default: searched "
+           "upwards\n"
            "                         from the input for an `upscale` folder)\n"
            "  --target <px>          Long edge of the result, 64..16384 (default 3840)\n"
            "  --tile <px>            Force the tile size, 32..2048 (default: largest that fits the budget)\n"
            "  --overlap <px>         Tile overlap, default 16 (clamped to tile/4)\n"
-           "  --pre-resize <px>      Lanczos the source to this long edge BEFORE the model pass (e.g. 960 so 4x\n"
+           "  --pre-resize <px>      Lanczos the source to this long edge BEFORE the model pass (e.g. 960 so "
+           "4x\n"
            "                         lands on 3840); more model time, default off\n"
            "  --budget-mib <n>      Memory budget for the planner (default 1024)\n"
            "  --threads <n>          ONNX Runtime intra-op threads (default: runtime default)\n"
@@ -166,7 +169,8 @@ int run_image_upscale(std::vector<std::string> args, std::ostream& out, std::ost
     };
     if (!numeric("--target", v_target, opt.target_long_edge) || !numeric("--tile", v_tile, opt.tile) ||
         !numeric("--overlap", v_overlap, opt.overlap) ||
-        !numeric("--pre-resize", v_pre, opt.pre_resize_long_edge) || !numeric("--budget-mib", v_budget, budget_mib))
+        !numeric("--pre-resize", v_pre, opt.pre_resize_long_edge) ||
+        !numeric("--budget-mib", v_budget, budget_mib))
         return exit_code(ErrorCode::InvalidArgument);
     if (!v_threads.empty()) {
         std::uint32_t t = 0;

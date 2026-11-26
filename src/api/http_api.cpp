@@ -1131,12 +1131,12 @@ HttpResponse ApiHandler::upscale_image(const HttpRequest& req, const std::string
     json body = json::parse(req.body, nullptr, false);
     if (body.is_discarded())
         return error(400, "invalid_request_error", "invalid_json", "malformed JSON body", rid);
-    const json schema = {{"type", "object"},
-                         {"required", json::array({"image"})},
-                         {"properties",
-                          {{"image", {{"type", "string"}}},
-                           {"upscale", {{"type", "string"}, {"enum", json::array({"4k"})}}}}},
-                         {"additionalProperties", false}};
+    const json schema = {
+        {"type", "object"},
+        {"required", json::array({"image"})},
+        {"properties",
+         {{"image", {{"type", "string"}}}, {"upscale", {{"type", "string"}, {"enum", json::array({"4k"})}}}}},
+        {"additionalProperties", false}};
     if (auto v = validate_json(schema, body); !v)
         return error(400, "invalid_request_error", "invalid_request", v.error().message, rid);
     std::string uri = body["image"].get<std::string>();

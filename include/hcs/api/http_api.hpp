@@ -78,8 +78,8 @@ private:
     HttpResponse upscale_image(const HttpRequest& req, const std::string& rid,
                                const std::shared_ptr<Inflight>& guard);
     // Waits for an image/upscale job (cancelling it on timeout or client disconnect) and renders the result.
-    HttpResponse image_job_response(const HttpRequest& req, const std::string& rid, const Submitted& submitted,
-                                    std::optional<std::uint64_t> seed);
+    HttpResponse image_job_response(const HttpRequest& req, const std::string& rid,
+                                    const Submitted& submitted, std::optional<std::uint64_t> seed);
     HttpResponse error(int status, const std::string& type, const std::string& code, const std::string& msg,
                        const std::string& rid) const;
     HttpResponse from_error(const Error& e, const std::string& rid) const;

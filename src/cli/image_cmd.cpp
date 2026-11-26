@@ -85,7 +85,8 @@ const char* image_help() {
            "\n"
            "Ctrl-C cancels the running generation (exit code 6).\n"
            "\n"
-           "Also: `HCSInfer image upscale --input <png> --output <png>` upscales an existing PNG to a 3840 px\n"
+           "Also: `HCSInfer image upscale --input <png> --output <png>` upscales an existing PNG to a 3840 "
+           "px\n"
            "long edge (see `image upscale --help`).\n";
 }
 

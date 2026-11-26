@@ -201,10 +201,10 @@ Result<upscale::Plan> ControlPlane::plan_upscale_request(const UpscaleParams& p)
                           "the image to upscale must be a PNG (or its header is truncated)");
     const std::uint64_t max_px = std::min<std::uint64_t>(opt_.max_image_pixels, upscale::kMaxSourcePixels);
     if (probe->pixels() > max_px)
-        return make_error(ErrorCode::InvalidArgument,
-                          "input image dimensions " + std::to_string(probe->width) + "x" +
-                              std::to_string(probe->height) + " exceed the " + std::to_string(max_px) +
-                              " pixel limit");
+        return make_error(ErrorCode::InvalidArgument, "input image dimensions " +
+                                                          std::to_string(probe->width) + "x" +
+                                                          std::to_string(probe->height) + " exceed the " +
+                                                          std::to_string(max_px) + " pixel limit");
     if (auto r = upscaler_->ready(); !r)
         return make_error(r.error().code, "upscale is not available: " + r.error().message);
     refresh_budget();
@@ -239,8 +239,8 @@ Result<Submitted> ControlPlane::submit_upscale(const UpscaleParams& p) {
             upscale::Stats st;
             ctx.progress(0.0, "upscaling");
             auto up = upscale::upscale_png(
-                *upscaler_, p.image.bytes, uo, ctx.token(), [&ctx](double f) { ctx.progress(f, "upscaling"); },
-                &st);
+                *upscaler_, p.image.bytes, uo, ctx.token(),
+                [&ctx](double f) { ctx.progress(f, "upscaling"); }, &st);
             if (!up) {
                 if (up.error().code == ErrorCode::Cancelled || ctx.cancelled())
                     return make_error(ErrorCode::Cancelled, "image upscaling cancelled");
