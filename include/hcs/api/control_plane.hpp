@@ -10,7 +10,9 @@
 #include <chrono>
 #include <condition_variable>
 #include <deque>
+#include <filesystem>
 #include <functional>
+#include <future>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -25,9 +27,12 @@
 #include "hcs/benchmark.hpp"
 #include "hcs/job_queue.hpp"
 #include "hcs/logger.hpp"
+#include "hcs/lora.hpp"
 #include "hcs/memory_budget.hpp"
 #include "hcs/model_registry.hpp"
 #include "hcs/path_guard.hpp"
+#include "hcs/scheduler/admission.hpp"
+#include "hcs/upscale.hpp"
 
 namespace hcs::api {
 
@@ -65,6 +70,11 @@ struct ImageParams {
     std::string preset;              // "" | "fast" | "quality" (replaces steps/cfg, model-family specific)
     bool allow_low_quality = false;  // opt in to sizes/steps below the family quality envelope
     std::optional<ImageInput> init_image;  // edit / img2img
+    // 0..kMaxLorasPerRequest LoRAs from the library (hcs/lora.hpp); ids only - paths never come from a
+    // caller.
+    std::vector<LoraLibrary::Ref> loras;
+    // "" | "off" | "4k": after rendering, upscale to a 3840 px long edge (4x model pass + Lanczos, tiled).
+    std::string upscale;
 };
 
 // Benchmark job request. Bounds are the shared bench::validate_plan() bounds.
@@ -128,6 +138,19 @@ struct ControlPlaneOptions {
     // so loads are checked against the machine as it is NOW, not as it was at start-up (M10 audit D4;
     // AGENTS.md 10.1). Returning nullopt keeps the previous budget.
     std::function<std::optional<MemoryMeasurements>()> memory_probe;
+    // Optional overload controller (plan F1): admission control for model loads and every job, the kill
+    // switch and the watchdog. Null = no admission control (the pre-F1 behaviour). The control plane
+    // registers its shed handler on it and removes the handler again in its destructor.
+    std::shared_ptr<scheduler::AdmissionController> admission;
+    // Optional opt-in Model Vault stage (M5 Stage B): called with the resolved model file, the manifest
+    // digest (empty when the model was never hashed) and the load's cancellation token, AFTER the budget
+    // check and the Loading transition and BEFORE the engine opens the file. It reads the file once through
+    // the bounded asynchronous reader and returns a JSON report (bytes, sha256, verified, wall_seconds,
+    // mib_per_second, buffer_bytes). An error (digest mismatch, I/O, cancel) aborts the load before the
+    // engine sees the file. Empty => the engine loads the path directly (the default).
+    std::function<Result<nlohmann::json>(const std::filesystem::path&, const std::string&,
+                                         const CancellationToken&)>
+        model_prefetch;
 };
 
 class ControlPlane {
@@ -137,6 +160,9 @@ public:
     ControlPlane(ModelRegistry& registry, PathGuard& guard, MemoryBudget& budget, JobQueue& queue,
                  ITextEngine* engine, Logger& logger, ControlPlaneOptions options = {},
                  IImageEngine* image_engine = nullptr);
+    ~ControlPlane();  // detaches the shed handler and joins a still-running shed unload
+    ControlPlane(const ControlPlane&) = delete;
+    ControlPlane& operator=(const ControlPlane&) = delete;
 
     // --- models ---------------------------------------------------------------------------
     std::vector<ModelView> models() const;
@@ -173,6 +199,19 @@ public:
     Result<Submitted> submit_image(const ImageParams& p, bool require_init);
     Result<ImageResult> image_result(JobId id) const;  // NotFound until the job produced one
 
+    // --- image LoRA library and upscaler (both optional; absent => the matching request field is
+    // Unsupported) --- Scans `dir` (inside an approved root) into the library served to image requests.
+    // Replaces the previous library; a failed scan keeps the old one.
+    Result<void> scan_loras(const std::filesystem::path& dir, bool verify_hashes = false);
+    // {"directory", "note",
+    // "loras":[{id,name,base_family,trigger_words,recommended_weight,licence,source,sha256,
+    //  sha256_status,size_bytes,status,problems}]}. Never exposes absolute file paths.
+    nlohmann::json loras_json() const;
+    bool has_lora_library() const;
+    // The 4x ONNX upscaler behind `upscale: "4k"`. The control plane owns a shared reference.
+    void set_upscaler(std::shared_ptr<upscale::IUpscaleEngine> engine);
+    bool has_upscaler() const noexcept { return upscaler_ != nullptr; }
+
     // --- benchmark (POST /hcs/v1/benchmarks) ---------------------------------------------------
     // Runs the shared benchmark runner (hcs/benchmark.hpp) against a registered text model as a cancellable
     // job "benchmark.run". The job holds the engine for its whole duration (the measurement needs an idle
@@ -188,6 +227,15 @@ public:
     Result<void> cancel_job(JobId id);
     nlohmann::json job_json(const JobStatus& st) const;
     bool wait_job(JobId id, std::chrono::milliseconds t) const { return queue_.wait(id, t); }
+
+    // --- overload protection (plan F1) -------------------------------------------------------------
+    // Kill switch: cancels every queued/running job, then unloads the model, all inside the configured
+    // deadline (an engine load that cannot be interrupted is reported as unload_pending and finishes in the
+    // background; ~ControlPlane joins it). Works without a configured controller too. Never throws.
+    scheduler::ShedReport shed(const std::string& reason);
+    bool has_admission() const noexcept { return opt_.admission != nullptr; }
+    int retry_after_seconds() const noexcept;  // Retry-After hint for 429/503 answers
+    nlohmann::json overload_json() const;      // {"enabled": false} without a controller
 
     // --- introspection ---------------------------------------------------------------------
     nlohmann::json runtime_json() const;
@@ -210,7 +258,14 @@ private:
     // estimate.
     static std::uint64_t kv_cache_estimate(std::uint64_t model_bytes, std::uint32_t context_tokens) noexcept;
     Result<void> unload_locked();
+    // Admission ticket for one job; a null pointer (success) when no controller is configured.
+    Result<std::shared_ptr<scheduler::Ticket>> admit_job(scheduler::WorkKind kind, const std::string& what,
+                                                         std::uint64_t predicted_bytes);
+    scheduler::ShedReport shed_impl(const std::string& reason);
     Result<Submitted> submit_with_channel(const std::string& name, JobFn fn);
+    // Resolves request LoRA references against the library for `model` (id; "" = the loaded model).
+    Result<std::vector<LoraSpec>> resolve_loras(const ImageParams& p) const;
+    Result<void> check_upscale_request(const ImageParams& p) const;
     void note_result(JobId id, const TextResult& r);
     void note_image_result(JobId id, const ImageResult& r);
     void note_benchmark_result(JobId id, nlohmann::json doc);
@@ -232,8 +287,9 @@ private:
     mutable std::mutex state_mutex_;
     std::optional<std::string> loaded_;
     std::optional<std::uint64_t> loaded_bytes_;
-    bool loaded_is_image_ = false;       // guarded by state_mutex_
-    bool loaded_has_projector_ = false;  // guarded by state_mutex_
+    bool loaded_is_image_ = false;              // guarded by state_mutex_
+    bool loaded_has_projector_ = false;         // guarded by state_mutex_
+    std::optional<nlohmann::json> last_vault_;  // report of the last vault-prefetched load; state_mutex_
     std::atomic<std::uint64_t> active_job_{0};
     std::chrono::steady_clock::time_point started_ = std::chrono::steady_clock::now();
 
@@ -241,6 +297,11 @@ private:
     std::map<std::uint64_t, TextResult> results_;
     std::map<std::uint64_t, ImageResult> image_results_;
     std::map<std::uint64_t, nlohmann::json> benchmark_results_;
+    std::mutex shed_mutex_;                 // guards shed_unload_
+    std::shared_future<bool> shed_unload_;  // a kill-switch unload that outlived its deadline
+    mutable std::mutex lora_mutex_;
+    std::shared_ptr<LoraLibrary> loras_;  // guarded by lora_mutex_ (replaced wholesale by scan_loras)
+    std::shared_ptr<upscale::IUpscaleEngine> upscaler_;
     mutable std::mutex devices_mutex_;
     mutable std::optional<nlohmann::json> devices_cache_;
 };

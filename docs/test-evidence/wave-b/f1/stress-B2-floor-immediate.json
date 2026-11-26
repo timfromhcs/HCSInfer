@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "harness_version": 1,
+  "timestamp_utc": "2026-11-26T11:02:05Z",
+  "git_commit": "50a0403f5451",
+  "mode": "dry",
+  "result_status": "ABORTED",
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.14.6",
+  "server": {
+    "base_url": "http://127.0.0.1:18765",
+    "model": "smolvlm2-500m-video-instruct-q8_0",
+    "runtime": {
+      "chat_template": "auto",
+      "image_engine": {
+        "available": true,
+        "metrics": {
+          "backend": "unknown",
+          "device": "unknown",
+          "image_generation_ms": 0.0,
+          "image_steps": 0,
+          "load_ms": 0.0,
+          "resident_bytes": 0
+        },
+        "streaming": true
+      },
+      "jobs_pending": 0,
+      "loaded_model": null,
+      "overload": {
+        "counters": {
+          "admitted": 1,
+          "rejected_out_of_memory": 0,
+          "rejected_overloaded": 0,
+          "shed_count": 1
+        },
+        "enabled": true,
+        "in_flight": 0,
+        "last_shed": {
+          "duration_ms": 124,
+          "jobs_cancelled": 1,
+          "jobs_idle": true,
+          "model_unloaded": true,
+          "reason": "manual: POST /hcs/v1/runtime/shed",
+          "unload_pending": false
+        },
+        "level": "normal",
+        "limits": {
+          "hard_commit_fraction": 0.97,
+          "hard_floor_bytes": 1073741824,
+          "hysteresis_bytes": 536870912,
+          "max_commit_fraction": 0.9,
+          "max_in_flight": 4,
+          "min_free_ram_bytes": 2684354560,
+          "retry_after_s": 5
+        },
+        "sample": {
+          "commit_fraction": 0.4753094536311079,
+          "commit_limit_bytes": 39499563008,
+          "commit_used_bytes": 18774515712,
+          "free_physical_bytes": 9655283712,
+          "gpu_heap_headroom_bytes": 14085169152,
+          "process_working_set_bytes": 21221376,
+          "total_physical_bytes": 21245952000
+        },
+        "watchdog_running": true
+      },
+      "text_engine": {
+        "available": true,
+        "metrics": {
+          "backend": "unknown",
+          "device": "unknown",
+          "load_ms": 0.0,
+          "resident_bytes": 0,
+          "tokens_per_second": 0.0,
+          "ttft_ms": 0.0
+        },
+        "streaming": true
+      },
+      "uptime_s": 1.8246779,
+      "version": "1.0.0-rc.1"
+    }
+  },
+  "config": {
+    "axes": [
+      "context"
+    ],
+    "context_steps": [
+      16,
+      64,
+      256
+    ],
+    "concurrency_steps": [
+      1,
+      2
+    ],
+    "image_steps": [
+      128,
+      256
+    ],
+    "reps": 1,
+    "max_tokens": 8,
+    "limits": {
+      "floor_mib": 60000,
+      "commit_pct": 90.0,
+      "max_error_rate": 0.5,
+      "max_refused_rate": 0.5,
+      "spike_factor": 8.0,
+      "spike_min_ms": 5000.0,
+      "max_runtime_s": 900.0,
+      "c_growth_mib": 512
+    }
+  },
+  "abort": {
+    "fired": true,
+    "reason": "free_ram_below_floor",
+    "detail": "free RAM 9205 MiB < floor 60000 MiB",
+    "at": "context=16"
+  },
+  "shed_on_abort": {
+    "http_status": 200,
+    "report": {
+      "duration_ms": 0,
+      "jobs_cancelled": 0,
+      "jobs_idle": true,
+      "model_unloaded": false,
+      "reason": "manual: POST /hcs/v1/runtime/shed",
+      "unload_pending": false
+    }
+  },
+  "duration_s": 0.21,
+  "steps": [],
+  "memory_timeline": [
+    {
+      "t": 0.0,
+      "source": "controller",
+      "free_bytes": 9652371456,
+      "commit_fraction": 0.4753,
+      "level": "normal",
+      "in_flight": 0
+    }
+  ]
+}

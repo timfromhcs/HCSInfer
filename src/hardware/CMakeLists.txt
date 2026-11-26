@@ -20,5 +20,5 @@ hcs_add_library(hardware
 target_compile_definitions(hcs_hardware PRIVATE VK_NO_PROTOTYPES)
 target_include_directories(hcs_hardware PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 if(WIN32)
-  target_link_libraries(hcs_hardware PRIVATE advapi32)
+  target_link_libraries(hcs_hardware PRIVATE advapi32 psapi)
 endif()

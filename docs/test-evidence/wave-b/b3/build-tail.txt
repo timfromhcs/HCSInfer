@@ -1,0 +1,85 @@
+[0/2] Re-checking globbed directories...
+[1/74] Building CXX object src\engines\upscale\CMakeFiles\hcs_upscale.dir\resample.cpp.obj
+[2/74] Building CXX object src\engines\upscale\CMakeFiles\hcs_upscale.dir\tiling.cpp.obj
+[3/74] Building CXX object src\engines\upscale\CMakeFiles\hcs_upscale.dir\png_codec.cpp.obj
+[4/74] Building CXX object src\lora\CMakeFiles\hcs_lora.dir\lora_library.cpp.obj
+[5/74] Linking CXX static library lib\hcs_lora.lib
+[6/74] Building CXX object src\engines\diffusion\CMakeFiles\hcs_engine_diffusion.dir\diffusion_engine.cpp.obj
+[7/74] Linking CXX static library lib\hcs_engine_diffusion.lib
+[8/74] Building CXX object src\engines\upscale\CMakeFiles\hcs_upscale.dir\ort_engine.cpp.obj
+[9/74] Linking CXX static library lib\hcs_upscale.lib
+[10/74] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane.cpp.obj
+[11/74] Building CXX object src\api\CMakeFiles\hcs_api.dir\runtime.cpp.obj
+[12/74] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane_vision.cpp.obj
+[13/74] Building CXX object src\api\CMakeFiles\hcs_api.dir\http_server.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[14/74] Building CXX object src\api\CMakeFiles\hcs_api.dir\http_api.cpp.obj
+[15/74] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane_image.cpp.obj
+[16/74] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane_benchmark.cpp.obj
+[17/74] Building CXX object src\merge\CMakeFiles\hcs_merge.dir\math.cpp.obj
+[18/74] Building CXX object src\api\CMakeFiles\hcs_api.dir\llama_stream_adapter.cpp.obj
+[19/74] Building CXX object src\api\CMakeFiles\hcs_api.dir\diffusion_default_engine.cpp.obj
+[20/74] Linking CXX static library lib\hcs_api.lib
+[21/74] Building CXX object src\merge\CMakeFiles\hcs_merge.dir\tensor_file.cpp.obj
+[22/74] Building CXX object src\mcp\CMakeFiles\hcs_mcp.dir\stdio.cpp.obj
+[23/74] Building CXX object src\merge\CMakeFiles\hcs_merge.dir\merge.cpp.obj
+[24/74] Linking CXX static library lib\hcs_merge.lib
+[25/74] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\cli.cpp.obj
+[26/74] Building CXX object src\mcp\CMakeFiles\hcs_mcp.dir\mcp_server.cpp.obj
+[27/74] Linking CXX static library lib\hcs_mcp.lib
+[28/74] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\image_cmd.cpp.obj
+[29/74] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\merge_cmd.cpp.obj
+[30/74] Linking CXX static library lib\hcs_cli.lib
+[31/74] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_safetensors_probe.cpp.obj
+[32/74] Building CXX object tests\unit\merge\CMakeFiles\hcs_test_merge.dir\test_merge_math.cpp.obj
+[33/74] Building CXX object tests\unit\lora\CMakeFiles\hcs_test_lora.dir\test_lora_library.cpp.obj
+[34/74] Building CXX object tests\unit\upscale\CMakeFiles\hcs_test_upscale.dir\test_upscale_pipeline.cpp.obj
+[35/74] Building CXX object tests\unit\upscale\CMakeFiles\hcs_test_upscale.dir\test_ort_backend.cpp.obj
+[36/74] Building CXX object tests\unit\merge\CMakeFiles\hcs_test_merge.dir\test_merge_files.cpp.obj
+[37/74] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_http_benchmarks.cpp.obj
+[38/74] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_runtime_lifecycle.cpp.obj
+[39/74] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_oom_injection.cpp.obj
+[40/74] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_http_handler.cpp.obj
+[41/74] Building CXX object tests\contract\api_chat_tools\CMakeFiles\hcs_test_api_chat_tools_contract.dir\test_chat_tools_contract.cpp.obj
+[42/74] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_transport_negative.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[43/74] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_socket.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[44/74] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_shutdown.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[45/74] Building CXX object tests\contract\api_image\CMakeFiles\hcs_test_api_image.dir\test_image_routes.cpp.obj
+[46/74] Building CXX object tests\contract\api_image\CMakeFiles\hcs_test_api_image_lora_upscale.dir\test_image_lora_upscale.cpp.obj
+[47/74] Building CXX object tests\contract\api_vision\CMakeFiles\hcs_test_api_vision_contract.dir\test_vision_contract.cpp.obj
+[48/74] Building CXX object tests\contract\cli\CMakeFiles\hcs_test_cli.dir\test_cli_merge.cpp.obj
+[49/74] Building CXX object tests\integration\diffusion_engine\CMakeFiles\hcs_test_diffusion_engine.dir\test_diffusion_engine.cpp.obj
+[50/74] Building CXX object tests\contract\mcp_image\CMakeFiles\hcs_test_mcp_image.dir\test_mcp_image.cpp.obj
+[51/74] Building CXX object tests\contract\mcp\CMakeFiles\hcs_test_mcp.dir\test_mcp.cpp.obj
+[52/74] Linking CXX executable bin\hcs_test_api_chat_tools.exe
+[53/74] Linking CXX executable bin\hcs_test_api_schema.exe
+[54/74] Linking CXX executable bin\hcs_test_api_vision.exe
+[55/74] Linking CXX executable bin\hcs_test_core.exe
+[56/74] Linking CXX executable bin\hcs_test_lora.exe
+[57/74] Linking CXX executable bin\hcs_test_merge.exe
+[58/74] Linking CXX executable bin\hcs_test_upscale.exe
+[59/74] Linking CXX executable bin\HCSInfer.exe
+[60/74] Linking CXX executable bin\hcs_test_api_chat_tools_contract.exe
+[61/74] Building CXX object tests\integration\shutdown_real\CMakeFiles\hcs_test_shutdown_real.dir\test_shutdown_real.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[62/74] Linking CXX executable bin\hcs_test_api_image.exe
+[63/74] Building CXX object tests\soak\soak_core\CMakeFiles\hcs_test_soak_core.dir\test_soak_core.cpp.obj
+[64/74] Linking CXX executable bin\hcs_test_api.exe
+[65/74] Linking CXX executable bin\hcs_test_api_image_lora_upscale.exe
+[66/74] Linking CXX executable bin\hcs_test_api_vision_contract.exe
+[67/74] Linking CXX executable bin\hcs_test_mcp.exe
+[68/74] Linking CXX executable bin\hcs_test_mcp_image.exe
+[69/74] Linking CXX executable bin\hcs_test_api_http.exe
+[70/74] Linking CXX executable bin\hcs_test_diffusion_engine.exe
+[71/74] Linking CXX executable bin\hcs_test_shutdown_real.exe
+[72/74] Linking CXX executable bin\hcs_test_cli.exe
+[73/74] Linking CXX executable bin\hcs_test_soak_core.exe
+EXIT=0

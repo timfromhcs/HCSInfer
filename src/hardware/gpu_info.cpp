@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 
+#include <optional>
+
+#include "hcs/hardware/memory_probe.hpp"
 #include "hw.hpp"
 #include "win_util.hpp"
 
@@ -138,6 +141,39 @@ json gpu_report() {
     j["display_driver_registry"] = json::array();
 #endif
     return j;
+}
+
+std::optional<std::uint64_t> sample_gpu_heap_headroom() {
+#ifdef _WIN32
+    const json dx = dxgi_adapters();
+    if (!dx.value("available", false))
+        return std::nullopt;
+    auto segment_headroom = [](const json& a, const char* key) -> std::optional<std::uint64_t> {
+        if (!a.contains(key) || !a[key].is_object())
+            return std::nullopt;
+        const auto& s = a[key];
+        if (!s.contains("budget_bytes") || !s.contains("current_usage_bytes"))
+            return std::nullopt;
+        const auto b = s["budget_bytes"].get<std::uint64_t>();
+        const auto u = s["current_usage_bytes"].get<std::uint64_t>();
+        return b > u ? b - u : 0;
+    };
+    std::optional<std::uint64_t> best;
+    for (const auto& a : dx["adapters"]) {
+        if (a.value("software_adapter", false))
+            continue;
+        const auto local = segment_headroom(a, "memory_local_segment");
+        const auto non_local = segment_headroom(a, "memory_non_local_segment");
+        if (!local && !non_local)
+            continue;
+        const std::uint64_t total = local.value_or(0) + non_local.value_or(0);
+        if (!best || total > *best)
+            best = total;
+    }
+    return best;
+#else
+    return std::nullopt;
+#endif
 }
 
 }  // namespace hcs::hardware

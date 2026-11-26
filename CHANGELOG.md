@@ -4,6 +4,16 @@ Derived from `git log`. No release has been tagged. The version is `1.0.0-rc.1` 
 `HCS_VERSION_SUFFIX "-rc.1"`; the wheel spells it `1.0.0rc1`, npm `1.0.0-rc.1`). Entries describe what the commits
 changed; PASS/NOT RUN state of each feature is in `docs/roadmap/STATUS.md`.
 
+## Unreleased (wave B / e1)
+
+- `HCSInfer models load|unload|status` are now real HTTP clients of a running `serve` (`--host/--port/--token` or
+  `HCS_API_TOKEN`), with the API's exit codes; no server running => exit 8 with a message (was: exit-10 stub).
+- `HCSInfer models hash <id>` records a model's SHA-256 in the registry; a rescan that sees a different size drops it.
+- Opt-in `serve --vault-prefetch`: bounded sequential read + digest check before the engine opens the file
+  (default off; measurements in `docs/model-vault.md`).
+- Faster `models scan` on large trees (non-model files are no longer canonicalised).
+- e2e: client disconnect mid-stream, CLI and vault phases against the real engine.
+
 ## 1.0.0-rc.1 (release candidate, 2026-11-20; tag `v1.0.0-rc.1` pushed, GitHub release is a draft)
 
 Why a release candidate and not 1.0.0: the AGENTS.md section 22 checklist still has core rows that are not PASS (the

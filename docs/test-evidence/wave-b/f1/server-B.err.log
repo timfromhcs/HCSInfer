@@ -1,0 +1,22 @@
+{"ts":"2026-11-26T11:02:03.500Z","level":"info","component":"api","msg":"listening","host":"127.0.0.1","port":"18765"}
+HCSInfer API listening on http://127.0.0.1:18765
+HCSInfer web UI: http://127.0.0.1:18765/  (enter the token on the page, or open it with #token=<token> appended; the fragment is never sent to the server)
+{"ts":"2026-11-26T11:02:03.993Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/health","status":"200","rid":"req-ab9e528b5cdc8c67"}
+{"ts":"2026-11-26T11:02:04.022Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-ebca54df9c0e6f50"}
+{"ts":"2026-11-26T11:02:04.214Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/health","status":"200","rid":"req-1eba91396fe69748"}
+{"ts":"2026-11-26T11:02:04.217Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime","status":"200","rid":"req-6a09c882246aeb03"}
+{"ts":"2026-11-26T11:02:04.220Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-55150cfe741bf703"}
+{"ts":"2026-11-26T11:02:04.223Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-4a91fe869527af3e"}
+{"ts":"2026-11-26T11:02:04.605Z","level":"info","component":"control","msg":"model loaded","model":"smolvlm2-500m-video-instruct-q8_0","kind":"text"}
+{"ts":"2026-11-26T11:02:04.730Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-263285358c26d242"}
+{"ts":"2026-11-26T11:02:04.733Z","level":"warn","component":"control","msg":"kill switch: shedding all load","reason":"manual: POST /hcs/v1/runtime/shed"}
+{"ts":"2026-11-26T11:02:04.758Z","level":"info","component":"api","msg":"request","method":"POST","path":"/v1/chat/completions","status":"409","rid":"req-a6a06827ccf0bdc5"}
+{"ts":"2026-11-26T11:02:04.857Z","level":"info","component":"api","msg":"request","method":"POST","path":"/hcs/v1/runtime/shed","status":"200","rid":"req-63ef79d0f9b6f773"}
+{"ts":"2026-11-26T11:02:04.885Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-0cf580ce35083cdb"}
+{"ts":"2026-11-26T11:02:05.056Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-375afeb7351901f7"}
+{"ts":"2026-11-26T11:02:05.060Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime","status":"200","rid":"req-62f9b376bea88497"}
+{"ts":"2026-11-26T11:02:05.306Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/health","status":"200","rid":"req-495fd8148f7ac033"}
+{"ts":"2026-11-26T11:02:05.310Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime","status":"200","rid":"req-654f03f33351dae2"}
+{"ts":"2026-11-26T11:02:05.314Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-7e29a0ec3c1bf4d6"}
+{"ts":"2026-11-26T11:02:05.317Z","level":"warn","component":"control","msg":"kill switch: shedding all load","reason":"manual: POST /hcs/v1/runtime/shed"}
+{"ts":"2026-11-26T11:02:05.318Z","level":"info","component":"api","msg":"request","method":"POST","path":"/hcs/v1/runtime/shed","status":"200","rid":"req-5b6b1a3db030e939"}

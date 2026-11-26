@@ -94,6 +94,9 @@ purpose.
 | Vision (image in, text out) | Experimental | one image per single-turn request; SmolVLM2-500M and LFM3-Omni-2B, CPU and Vulkan; no video/audio |
 | Image generation and image-to-image | Experimental | SD 1.5 Q8_0 (CPU and Vulkan) and FLUX.3 Klein (Vulkan; minutes per 512x512 image); `url`, `mask`, `multipart` are rejected |
 | Model registry, lifecycle, job queue, cancellation, memory budget, approved-root path guard | Implemented | |
+| Image LoRA library (`loras` on image requests, `GET /hcs/v1/loras`, `--lora`, MCP `hcs.loras.list`) | Experimental | manifest + family-compatibility checks tested with synthetic files; no real LoRA render yet (NOT RUN); [`docs/lora.md`](docs/lora.md) |
+| 4K upscale (`upscale: "4k"`, `--upscale 4k`), tiled 4x ONNX + Lanczos | Experimental, OFF by default | needs a user-supplied `onnxruntime.dll` + `.onnx` model; pipeline and ORT backend verified with a synthetic model, no real super-resolution model run (NOT RUN); [`docs/upscale.md`](docs/upscale.md) |
+| `HCSInfer merge` (linear, SLERP, TIES, DARE, LoRA-into-base) | Experimental | float safetensors/GGUF only, streaming; NumPy-golden unit tests; no HTTP/MCP route; [`docs/merge.md`](docs/merge.md) |
 | HTTP API (`/v1/chat/completions` streaming, `/v1/models`, `/v1/images/*`, `/hcs/v1/*`) | Experimental | loopback + bearer token; [`docs/api.md`](docs/api.md) |
 | MCP over stdio (models, chat, vision, image, runtime, jobs, benchmark tools) | Experimental | [`docs/mcp.md`](docs/mcp.md); exercised by a scripted stdio client, not by a third-party MCP client |
 | MCP Streamable HTTP | Planned | out of scope for this release |
@@ -102,11 +105,12 @@ purpose.
 | `cache stats\|clear` | Implemented | touches only HCS-owned state |
 | Two static EXEs: CPU `HCSInfer.exe` (system DLLs only) and `HCSInfer-vulkan.exe` (also imports the system `vulkan-1.dll`) | Experimental | not labelled "single-file" until the clean-machine run (NOT RUN); unsigned |
 | Python package `hcsinfer` (wheel, sdist, client, `Server`) | Experimental | built, `twine check`ed, installed into a fresh venv; not on PyPI |
-| Model Vault (bounded async reads, SHA-256) and HCSMODEL container | Experimental | **not in the engine load path**; no measured HDD benefit yet |
+| Model Vault (bounded async reads, SHA-256) and HCSMODEL container | Experimental | opt-in `serve --vault-prefetch` in the load path (default off): cold USB load 56 s -> 34 s, warm 1.5 s -> 3.3 s (N=3, [`docs/model-vault.md`](docs/model-vault.md)); HCSMODEL not in the engine path |
 | HCS Studio Web (`web/`, WebGPU/WASM, no server) | Experimental | shell proven in headless Chrome; real WebGPU inference NOT RUN |
 | HCS Train, HCS Agent (policy + process supervisor) | Implemented (logic) | a real training run and a real `prime-agent` session are NOT RUN |
 | HCS Vulkan kernel (Q8_0 GEMV) | Experimental, OFF by default | correct on the 680M but 18x slower than upstream GGML Vulkan |
-| `tune`, `models load`, `models unload` CLI commands | Planned | exit code 10; load/unload works over HTTP and MCP |
+| `models load\|unload\|status` CLI commands | Implemented | HTTP clients of a running `serve` (`--port/--token`); no server => exit 8 |
+| `tune` CLI command | Planned | exit code 10 |
 | Scheduler, telemetry module, further custom kernels | Planned | only with measured benefit |
 | Linux, other GPUs, ROCm | Unsupported | not built or tested |
 
@@ -225,7 +229,7 @@ flowchart TB
     TXT --> LL --> GG
     IMG --> SD --> GG
     GG --> BK
-    VAULT["Model Vault + HCSMODEL (experimental, not in the load path)"] -.-> CP
+    VAULT["Model Vault (opt-in prefetch in the load path) + HCSMODEL (experimental)"] -.-> CP
 ```
 
 [`docs/architecture.md`](docs/architecture.md) and the ADRs in [`docs/decisions/`](docs/decisions/README.md) explain each
@@ -243,7 +247,8 @@ choice (one shared GGML, loopback-only API, static CRT, ...).
 | FLUX.3 asks for `--llm` / `--vae` | it is a multi-file model, see [`docs/supported-models.md`](docs/supported-models.md) |
 | very slow first load from a USB drive | the tested drive reads ~40-65 MiB/s; a second run is warm. Never compare cold with warm |
 | SmartScreen warns about the EXE | the binaries are unsigned (no certificate); verify `SHA256SUMS.txt` |
-| CLI says "planned" (exit code 10) | `tune`, `models load\|unload` are not implemented; load models through `serve` or `mcp` |
+| CLI says "planned" (exit code 10) | only `tune` is not implemented |
+| `models load` says no server reachable (exit 8) | start `HCSInfer serve` first and pass `--port`/`--token` (or `HCS_API_TOKEN`) |
 
 ## Security and privacy
 
@@ -265,8 +270,8 @@ The authoritative list is [`docs/roadmap/STATUS.md`](docs/roadmap/STATUS.md). Th
 - One model is resident and one job runs at a time; vision takes one image per turn; image output is slow
   (FLUX.3 Klein: minutes per image) and the official gated BFL text encoder/VAE files were not available, so FLUX.3
   renders with a substitute encoder and VAE.
-- Engines load model files themselves; the Model Vault is not in the load path, so there is no bounded HDD streaming yet.
-- `models load|unload` and `tune` are not CLI commands; Streamable HTTP MCP is not implemented.
+- Engines open model files themselves; the opt-in vault stage only pre-reads and verifies them (no streaming into engine buffers).
+- `tune` is not a CLI command; Streamable HTTP MCP is not implemented.
 - NOT RUN: real WebGPU inference, a real `prime-agent` session, a real training run, a physical USB unplug, the full soak
   profile, a page-cache-cold load, signing, a clean-machine run of the hosted release artifacts (the hosted `release`
   workflow itself ran green on `40bf581`).

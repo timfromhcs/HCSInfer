@@ -5,6 +5,7 @@
 
 #include "hcs/cli/cli.hpp"
 #include "hcs/result.hpp"
+#include "hcs/storage/sha256.hpp"
 #include "hcs/version.hpp"
 #include "temp_dir.hpp"
 
@@ -93,15 +94,9 @@ TEST(Cli, TuneIsARealCommandWhenTheKernelsAreBuiltAndHonestlyUnsupportedOtherwis
     }
 }
 
-TEST(Cli, PlannedCommandsReturnUnsupported) {
-    EXPECT_EQ(run({"models", "load", "x"}).code, 10);
-    EXPECT_EQ(run({"models", "unload"}).code, 10);
-    // models load/unload are not CLI features (a model lives in a running process); the message must say
-    // where to go.
-    auto ml = run({"models", "load", "x"});
-    EXPECT_TRUE(contains(ml.err, "one-shot CLI"));
-    EXPECT_TRUE(contains(ml.err, "serve"));
-    EXPECT_FALSE(contains(ml.err, "adapters are not implemented"));
+TEST(Cli, ModelsCommandsAreRealClientsNotStubs) {
+    // models load/unload/status are real HTTP clients now (test_cli_remote.cpp); they must not be stubs.
+    EXPECT_FALSE(contains(root_help_text(), "Not in the one-shot CLI"));
     EXPECT_FALSE(contains(root_help_text(), "scaffold"));
     EXPECT_FALSE(contains(root_help_text(), "needs the control-plane model lifecycle"));
 }
@@ -253,6 +248,43 @@ TEST(Cli, ModelsScanListInspectRoundTrip) {
     ASSERT_EQ(again.code, 0);
     EXPECT_EQ(nlohmann::json::parse(again.out)["added"], 0);
     EXPECT_EQ(nlohmann::json::parse(again.out)["updated"], 1);
+}
+
+TEST(Cli, ModelsHashRecordsVerifiesAndRefusesAChangedFile) {
+    TempDir t;
+    const auto file = t / "models" / "tiny-model.gguf";
+    hcs::test::write_file(file, hcs::test::fake_gguf());
+    const std::string state = (t / "state").string();
+    ASSERT_EQ(run({"--state-dir", state, "models", "scan", (t / "models").string()}).code, 0);
+    const std::string bytes = hcs::test::read_file(file);
+    const std::string want = hcs::storage::to_hex(hcs::storage::sha256(
+        std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(bytes.data()), bytes.size())));
+
+    auto h = run({"--state-dir", state, "models", "hash", "tiny-model", "--json"});
+    ASSERT_EQ(h.code, 0) << h.err;
+    EXPECT_EQ(nlohmann::json::parse(h.out)["sha256"], want);
+    auto ins = run({"--state-dir", state, "models", "inspect", "tiny-model"});
+    EXPECT_EQ(nlohmann::json::parse(ins.out)["sha256"], want);  // persisted in the registry
+
+    auto again = run({"--state-dir", state, "models", "hash", "tiny-model", "--json"});
+    ASSERT_EQ(again.code, 0);
+    EXPECT_EQ(nlohmann::json::parse(again.out)["matched_previous"], true);
+
+    std::string flipped = bytes;
+    flipped.back() = static_cast<char>(flipped.back() ^ 0x01);  // same size, different content
+    hcs::test::write_file(file, flipped);
+    auto bad = run({"--state-dir", state, "models", "hash", "tiny-model"});
+    EXPECT_EQ(bad.code, exit_code(ErrorCode::ModelError));
+    EXPECT_TRUE(contains(bad.err, "--update"));
+    EXPECT_EQ(
+        nlohmann::json::parse(run({"--state-dir", state, "models", "inspect", "tiny-model"}).out)["sha256"],
+        want)
+        << "a refused hash must not overwrite the recorded one";
+    EXPECT_EQ(run({"--state-dir", state, "models", "hash", "tiny-model", "--update"}).code, 0);
+
+    EXPECT_EQ(run({"--state-dir", state, "models", "hash", "nope"}).code, 7);
+    EXPECT_EQ(run({"--state-dir", state, "models", "hash"}).code, 2);
+    EXPECT_EQ(run({"models", "hash", "--help"}).code, 0);
 }
 
 TEST(Cli, ScanErrors) {

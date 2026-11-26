@@ -1,0 +1,29 @@
+{
+  "models": [
+    {
+      "architecture": "clip",
+      "display_name": "mmproj-SmolVLM2-500M-Video-Instruct-Q8_0",
+      "format": "gguf",
+      "id": "mmproj-smolvlm2-500m-video-instruct-q8_0",
+      "kind": "text",
+      "license": "unknown",
+      "path": "D:\\HCSModels\\vision\\mmproj-SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
+      "quantization": "unknown",
+      "sha256": "",
+      "size_bytes": 108785184
+    },
+    {
+      "architecture": "llama",
+      "display_name": "SmolVLM2-500M-Video-Instruct-Q8_0",
+      "format": "gguf",
+      "id": "smolvlm2-500m-video-instruct-q8_0",
+      "kind": "text",
+      "license": "unknown",
+      "path": "D:\\HCSModels\\vision\\SmolVLM2-500M-Video-Instruct-Q8_0.gguf",
+      "quantization": "unknown",
+      "sha256": "",
+      "size_bytes": 436808704
+    }
+  ],
+  "schema_version": 1
+}

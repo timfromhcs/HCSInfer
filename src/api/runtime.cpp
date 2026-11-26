@@ -11,11 +11,15 @@
 
 #include "hcs/api/http_api.hpp"
 #include "hcs/fs_util.hpp"
+#include "hcs/upscale_ort.hpp"
 #include "hcs/version.hpp"
 
 #ifdef HCS_HAVE_HARDWARE
 #include "hcs/hardware/doctor.hpp"
 #include "hcs/hardware/memory_probe.hpp"
+#endif
+#ifdef HCS_HAVE_STORAGE
+#include "hcs/storage/vault_prefetch.hpp"
 #endif
 
 namespace hcs::api {
@@ -32,6 +36,8 @@ std::unique_ptr<IImageEngine> make_default_image_engine(JobQueue&) {
 #endif
 
 Runtime::~Runtime() {
+    if (admission)
+        admission->stop_watchdog();  // no kill switch while we are tearing down anyway
     // Jobs of both queues run closures that reference control/engines/registry: stop and join the workers
     // first.
     try {
@@ -112,8 +118,77 @@ Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger&
         };
     }
 #endif
+    {
+        const scheduler::AdmissionConfig ac = options.admission.value_or(scheduler::AdmissionConfig{});
+        if (auto v = scheduler::validate(ac); !v)
+            return v.error();
+        rt->admission = std::make_shared<scheduler::AdmissionController>(
+            ac, options.admission_probe ? options.admission_probe : telemetry::make_system_probe());
+        co.admission = rt->admission;
+    }
+    if (options.vault_prefetch && !co.model_prefetch) {
+#ifdef HCS_HAVE_STORAGE
+        if (options.vault_buffers < 1 || options.vault_buffers > 16 || options.vault_chunk_mib < 1 ||
+            options.vault_chunk_mib > 128)
+            return make_error(ErrorCode::InvalidArgument, "vault prefetch: buffers 1..16, chunk 1..128 MiB");
+        const std::size_t buffers = options.vault_buffers;
+        const std::uint32_t chunk = options.vault_chunk_mib << 20;
+        co.model_prefetch = [buffers, chunk](const std::filesystem::path& file, const std::string& expected,
+                                             const CancellationToken& token) -> Result<nlohmann::json> {
+            storage::PrefetchOptions po;
+            po.buffers = buffers;
+            po.chunk_bytes = chunk;
+            po.expected_sha256 = expected;
+            po.cancel = token;
+            auto r = storage::prefetch_and_verify(file, po);
+            if (!r)
+                return r.error();
+            const auto& v = r.value();
+            return nlohmann::json{{"bytes", v.bytes},
+                                  {"sha256", v.sha256},
+                                  {"verified_against_manifest", v.verified},
+                                  {"wall_seconds", v.wall_seconds},
+                                  {"mib_per_second", v.mib_per_second},
+                                  {"buffer_bytes", v.buffer_bytes}};
+        };
+#else
+        return make_error(ErrorCode::Unsupported,
+                          "vault prefetch needs the storage module, which is not built");
+#endif
+    }
     rt->control = std::make_unique<ControlPlane>(rt->registry, rt->guard, rt->budget, *rt->queue,
                                                  rt->engine.get(), logger, co, rt->image_engine.get());
+    rt->admission->start_watchdog();
+
+    // Image LoRA library: the first approved root that has <root>/lora/image is scanned (read-only; nothing
+    // is hashed unless verification is requested). A scan failure is logged and leaves the library absent.
+    for (const auto& root : rt->guard.roots()) {
+        const auto dir = root / "lora" / "image";
+        std::error_code lec;
+        if (!std::filesystem::is_directory(dir, lec))
+            continue;
+        if (auto r = rt->control->scan_loras(dir); !r)
+            logger.warn("runtime", "LoRA library scan failed", {{"reason", r.error().message}});
+        break;
+    }
+    // 4K upscaler (opt-in per request): ONNX Runtime is loaded dynamically on first use, from <root>/upscale
+    // or the executable's folder only. Without the DLL or a model the request fails with a structured
+    // Unsupported error.
+    {
+        upscale::OrtConfig oc;
+        for (const auto& root : rt->guard.roots()) {
+            const auto dir = root / "upscale";
+            std::error_code uec;
+            if (!std::filesystem::is_directory(dir, uec))
+                continue;
+            oc.runtime_dirs.push_back(dir);
+            if (oc.model_path.empty())
+                oc.model_path = upscale::find_upscale_model(dir);
+        }
+        if (const auto exe = upscale::executable_dir(); !exe.empty())
+            oc.runtime_dirs.push_back(exe);
+        rt->control->set_upscaler(std::make_shared<upscale::OrtUpscaleEngine>(std::move(oc)));
+    }
     return rt;
 }
 
@@ -142,6 +217,21 @@ const char* kServeHelp =
     "  --max-body-bytes <n>     Request body cap (default 1048576)\n"
     "  --max-inflight <n>       Concurrent request cap (default 8)\n"
     "  --timeout-s <n>          Per-request generation timeout (default 300)\n"
+    "  --min-free-ram-mb <n>    Overload protection: refuse work that would leave less RAM free (default "
+    "2560)\n"
+    "  --hard-floor-mb <n>      Watchdog kill switch trips below this free RAM (default 1024)\n"
+    "  --max-commit-pct <n>     Refuse work above this commit charge in percent (default 90)\n"
+    "  --max-active-jobs <n>    Jobs in flight (running + queued) before 503 Retry-After (default 4)\n"
+    "  --watchdog-ms <n>        Watchdog sampling interval (default 1000)\n"
+    "  --no-overload-protection Disable admission control and the watchdog (not recommended)\n"
+    "  --vault-prefetch         Opt-in Model Vault load stage: before the engine opens a model file it is "
+    "read\n"
+    "                           once, sequentially, through the bounded async reader and its SHA-256 is\n"
+    "                           checked against the manifest digest when one exists. Nothing is written to "
+    "disk.\n"
+    "                           Default off: it is only worth it where measured (docs/model-vault.md)\n"
+    "  --vault-buffers <n>      Read-ahead slots for --vault-prefetch, 1..16 (default 4)\n"
+    "  --vault-chunk-mib <n>    Read size per slot for --vault-prefetch, 1..128 (default 16)\n"
     "  --chat-template <t>      auto (default: model template for single-turn, ChatML otherwise) | chatml | "
     "plain\n"
     "  --help                   This text\n";
@@ -177,6 +267,8 @@ TransportOptions serve_transport_options(const ApiOptions& api, const std::strin
 }
 
 void graceful_shutdown(HttpServer& server, Runtime& runtime) {
+    if (runtime.admission)
+        runtime.admission->stop_watchdog();
     runtime.queue->shutdown();  // cancels running/queued jobs; blocked request threads get Cancelled
     runtime.engine_queue->shutdown();
     server.stop();  // now every connection thread can finish and be joined
@@ -191,6 +283,12 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     std::string host;
     unsigned long long port = 8765, body_cap = 1024ull * 1024, inflight = 8, timeout_s = 300;
     bool lan = false;
+    scheduler::AdmissionConfig adm;
+    unsigned long long min_free_mb = adm.min_free_ram_bytes >> 20, hard_floor_mb = adm.hard_floor_bytes >> 20,
+                       commit_pct = 90, max_jobs = adm.max_in_flight, watchdog_ms = 1000;
+    bool overload_off = false;
+    bool lan = false, vault = false;
+    unsigned long long vault_buffers = 4, vault_chunk = 16;
     std::string token, tmpl = "auto";
     std::vector<std::string> roots, hosts, origins;
     for (std::size_t i = 0; i < args.size(); ++i) {
@@ -208,7 +306,15 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
         }
         if (a == "--lan")
             lan = true;
-        else if (a == "--host") {
+        else if (a == "--vault-prefetch")
+            vault = true;
+        else if (a == "--vault-buffers") {
+            if (!need(v) || !parse_uint(v, 16, vault_buffers) || vault_buffers == 0)
+                return bad("--vault-buffers must be 1..16");
+        } else if (a == "--vault-chunk-mib") {
+            if (!need(v) || !parse_uint(v, 128, vault_chunk) || vault_chunk == 0)
+                return bad("--vault-chunk-mib must be 1..128");
+        } else if (a == "--host") {
             if (!need(host))
                 return bad("--host needs a value");
         } else if (a == "--token") {
@@ -241,6 +347,23 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
         } else if (a == "--timeout-s") {
             if (!need(v) || !parse_uint(v, 86400, timeout_s) || timeout_s == 0)
                 return bad("--timeout-s must be 1..86400");
+        } else if (a == "--min-free-ram-mb") {
+            if (!need(v) || !parse_uint(v, 1ull << 22, min_free_mb))
+                return bad("--min-free-ram-mb must be 0..4194304");
+        } else if (a == "--hard-floor-mb") {
+            if (!need(v) || !parse_uint(v, 1ull << 22, hard_floor_mb))
+                return bad("--hard-floor-mb must be 0..4194304");
+        } else if (a == "--max-commit-pct") {
+            if (!need(v) || !parse_uint(v, 100, commit_pct) || commit_pct == 0)
+                return bad("--max-commit-pct must be 1..100");
+        } else if (a == "--max-active-jobs") {
+            if (!need(v) || !parse_uint(v, 1024, max_jobs) || max_jobs == 0)
+                return bad("--max-active-jobs must be 1..1024");
+        } else if (a == "--watchdog-ms") {
+            if (!need(v) || !parse_uint(v, 600000, watchdog_ms) || watchdog_ms == 0)
+                return bad("--watchdog-ms must be 1..600000");
+        } else if (a == "--no-overload-protection") {
+            overload_off = true;
         } else
             return bad("unknown option: " + a);
     }
@@ -274,6 +397,19 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     ro.state_dir = state_dir;
     ro.model_roots = roots;
     ro.control.chat_template = tmpl;
+    adm.enabled = !overload_off;
+    adm.min_free_ram_bytes = min_free_mb << 20;
+    adm.hard_floor_bytes = hard_floor_mb << 20;
+    adm.max_commit_fraction = static_cast<double>(commit_pct) / 100.0;
+    adm.hard_commit_fraction = std::max(adm.hard_commit_fraction, adm.max_commit_fraction);
+    adm.max_in_flight = static_cast<std::size_t>(max_jobs);
+    adm.watchdog_interval = std::chrono::milliseconds(watchdog_ms);
+    if (auto v = scheduler::validate(adm); !v)
+        return bad(v.error().message);
+    ro.admission = adm;
+    ro.vault_prefetch = vault;
+    ro.vault_buffers = static_cast<std::size_t>(vault_buffers);
+    ro.vault_chunk_mib = static_cast<std::uint32_t>(vault_chunk);
     auto rt = Runtime::create(std::move(ro), log);
     if (!rt) {
         err << "error: " << rt.error().message << " [" << to_string(rt.error().code) << "]\n";

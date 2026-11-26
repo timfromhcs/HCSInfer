@@ -38,3 +38,22 @@ TEST(MemoryProbe, LiveMeasurementIsPlausible) {
     EXPECT_GE(m->os_reserve_bytes, kGiB);
     EXPECT_GT(compute_application_budget(*m), 0u) << "this machine has no usable headroom at all";
 }
+
+TEST(MemoryProbe, SystemSampleIsConsistentWhenTheOsAnswers) {
+    const auto s = sample_system_memory();
+    if (!s.total_physical_bytes || !s.available_physical_bytes)
+        GTEST_SKIP() << "OS memory query unavailable (figures stay unknown)";
+    EXPECT_GT(*s.total_physical_bytes, 0u);
+    EXPECT_LE(*s.available_physical_bytes, *s.total_physical_bytes);
+    if (s.commit_used_bytes && s.commit_limit_bytes)
+        EXPECT_GT(*s.commit_limit_bytes, 0u);
+    if (s.process_working_set_bytes)
+        EXPECT_GT(*s.process_working_set_bytes, 0u);  // this very test process has a working set
+}
+
+TEST(MemoryProbe, GpuHeapHeadroomIsEitherUnknownOrAFiniteNumber) {
+    const auto h = sample_gpu_heap_headroom();  // DXGI on Windows; nullopt elsewhere / without an adapter
+    if (!h)
+        GTEST_SKIP() << "no DXGI adapter budget available (reported as unknown)";
+    EXPECT_LT(*h, 1ull << 50);  // sanity bound, not a hardware claim
+}

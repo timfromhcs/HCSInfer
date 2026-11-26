@@ -70,6 +70,8 @@ int http_status_for(ErrorCode c) {
             return 429;
         case ErrorCode::Timeout:
             return 504;
+        case ErrorCode::Overloaded:
+            return 503;  // + Retry-After (see from_error)
         case ErrorCode::Internal:
             return 500;
     }
@@ -304,6 +306,8 @@ HttpResponse ApiHandler::from_error(const Error& e, const std::string& rid) cons
     auto r = error(st, type_for(st), std::string(to_string(e.code)), e.message, rid);
     if (st == 429)
         r.headers.emplace_back("Retry-After", "1");
+    else if (st == 503 && (e.code == ErrorCode::Overloaded || e.code == ErrorCode::OutOfMemory))
+        r.headers.emplace_back("Retry-After", std::to_string(cp_.retry_after_seconds()));  // backpressure
     return r;
 }
 
@@ -352,7 +356,11 @@ HttpResponse ApiHandler::handle(const HttpRequest& req) {
             const bool is_cancel = req.method == "POST" && req.path.rfind("/hcs/v1/jobs/", 0) == 0 &&
                                    req.path.size() > 7 &&
                                    req.path.compare(req.path.size() - 7, 7, "/cancel") == 0;
-            if (!is_health && !is_cancel) {
+            // The kill switch and the overload snapshot are the way out of / the window into an overload, so
+            // they are never throttled either.
+            const bool is_overload_ctl = (req.method == "POST" && req.path == "/hcs/v1/runtime/shed") ||
+                                         (req.method == "GET" && req.path == "/hcs/v1/runtime/overload");
+            if (!is_health && !is_cancel && !is_overload_ctl) {
                 if (inflight_.fetch_add(1) >= opt_.max_inflight) {
                     inflight_.fetch_sub(1);
                     resp = error(429, "rate_limit_error", "too_many_requests", "too many concurrent requests",
@@ -362,7 +370,7 @@ HttpResponse ApiHandler::handle(const HttpRequest& req) {
                     guard = std::make_shared<Inflight>(inflight_);
                 }
             }
-            if (is_health || is_cancel || guard)
+            if (is_health || is_cancel || is_overload_ctl || guard)
                 resp = dispatch(req, rid, guard);
         }
     } catch (const std::exception& e) {
@@ -431,9 +439,11 @@ HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid
                     return not_allowed("GET");
                 return json_ok({{"status", "ok"}, {"version", cp_.options().version}});
             }
-            if (a == "runtime" || a == "devices" || a == "memory" || a == "models") {
+            if (a == "runtime" || a == "devices" || a == "memory" || a == "models" || a == "loras") {
                 if (!is_get)
                     return not_allowed("GET");
+                if (a == "loras")
+                    return json_ok(cp_.loras_json());
                 if (a == "runtime")
                     return json_ok(cp_.runtime_json());
                 if (a == "devices")
@@ -449,6 +459,18 @@ HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid
                     return not_allowed("POST");
                 return benchmarks(req, rid);
             }
+        }
+        if (a == "runtime" && seg.size() == 4 && (seg[3] == "shed" || seg[3] == "overload")) {
+            if (seg[3] == "overload") {
+                if (!is_get)
+                    return not_allowed("GET");
+                return json_ok(cp_.overload_json());
+            }
+            if (!is_post)
+                return not_allowed("POST");
+            // Kill switch: cancel every job and unload the model, bounded by the shed deadline.
+            const auto rep = cp_.shed("manual: POST /hcs/v1/runtime/shed");
+            return json_ok(scheduler::to_json(rep));
         }
         if (a == "models" && seg.size() == 4) {
             if (!is_get)
@@ -938,22 +960,34 @@ HttpResponse ApiHandler::chat(const HttpRequest& req, const std::string& rid,
 namespace {
 
 json image_request_schema(bool edit, std::size_t max_prompt, std::uint32_t max_steps) {
-    json s = {{"type", "object"},
-              {"required", edit ? json::array({"prompt", "image"}) : json::array({"prompt"})},
+    json s = {
+        {"type", "object"},
+        {"required", edit ? json::array({"prompt", "image"}) : json::array({"prompt"})},
+        {"properties",
+         {{"model", {{"type", "string"}, {"maxLength", 64}}},
+          {"prompt", {{"type", "string"}, {"minLength", 1}, {"maxLength", max_prompt}}},
+          {"negative_prompt", {{"type", "string"}, {"maxLength", max_prompt}}},
+          {"n", {{"type", "integer"}, {"enum", json::array({1})}}},
+          {"size", {{"type", "string"}, {"maxLength", 16}}},
+          {"response_format", {{"type", "string"}, {"enum", json::array({"b64_json", "url"})}}},
+          {"steps", {{"type", "integer"}, {"minimum", 1}, {"maximum", max_steps}}},
+          {"seed", {{"type", "integer"}, {"minimum", 0}}},
+          {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}},
+          {"preset", {{"type", "string"}, {"enum", json::array({"fast", "quality"})}}},
+          {"allow_low_quality", {{"type", "boolean"}}},
+          {"loras",
+           {{"type", "array"},
+            {"maxItems", kMaxLorasPerRequest},
+            {"items",
+             {{"type", "object"},
+              {"required", json::array({"id"})},
               {"properties",
-               {{"model", {{"type", "string"}, {"maxLength", 64}}},
-                {"prompt", {{"type", "string"}, {"minLength", 1}, {"maxLength", max_prompt}}},
-                {"negative_prompt", {{"type", "string"}, {"maxLength", max_prompt}}},
-                {"n", {{"type", "integer"}, {"enum", json::array({1})}}},
-                {"size", {{"type", "string"}, {"maxLength", 16}}},
-                {"response_format", {{"type", "string"}, {"enum", json::array({"b64_json", "url"})}}},
-                {"steps", {{"type", "integer"}, {"minimum", 1}, {"maximum", max_steps}}},
-                {"seed", {{"type", "integer"}, {"minimum", 0}}},
-                {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}},
-                {"preset", {{"type", "string"}, {"enum", json::array({"fast", "quality"})}}},
-                {"allow_low_quality", {{"type", "boolean"}}},
-                {"strength", {{"type", "number"}, {"minimum", 0}, {"maximum", 1}}},
-                {"image", {{"type", "string"}}}}}};
+               {{"id", {{"type", "string"}, {"minLength", 1}, {"maxLength", 64}}},
+                {"weight", {{"type", "number"}, {"minimum", -kMaxLoraWeight}, {"maximum", kMaxLoraWeight}}}}},
+              {"additionalProperties", false}}}}},
+          {"upscale", {{"type", "string"}, {"enum", json::array({"off", "4k"})}}},
+          {"strength", {{"type", "number"}, {"minimum", 0}, {"maximum", 1}}},
+          {"image", {{"type", "string"}}}}}};
     return s;
 }
 
@@ -1031,6 +1065,18 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
         p.preset = body["preset"].get<std::string>();
     if (body.contains("allow_low_quality"))
         p.allow_low_quality = body["allow_low_quality"].get<bool>();
+    if (body.contains("loras"))
+        for (const auto& l : body["loras"]) {
+            LoraLibrary::Ref ref;
+            ref.id = l["id"].get<std::string>();
+            if (l.contains("weight")) {
+                ref.weight = l["weight"].get<float>();
+                ref.weight_given = true;
+            }
+            p.loras.push_back(std::move(ref));
+        }
+    if (body.contains("upscale"))
+        p.upscale = body["upscale"].get<std::string>();
     if (body.contains("strength"))
         p.strength = body["strength"].get<float>();
     bool size_given = false;
@@ -1114,6 +1160,20 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
         hcs["seed"] = *p.seed;
     if (!r.preset.empty())
         hcs["preset"] = r.preset;
+    if (!r.loras_applied.empty())
+        hcs["loras"] = r.loras_applied;
+    if (!r.upscale_status.empty()) {
+        json up = {{"status", r.upscale_status}};
+        if (!r.upscale_detail.empty())
+            up[r.upscale_status == "failed" ? "error" : "note"] = r.upscale_detail;
+        if (r.upscale_status == "done") {
+            up["from_width"] = r.pre_upscale_width;
+            up["from_height"] = r.pre_upscale_height;
+            up["ms"] = r.upscale_ms;
+            up["provider"] = r.upscale_provider;
+        }
+        hcs["upscale"] = std::move(up);
+    }
     json j = {{"created", static_cast<std::int64_t>(std::time(nullptr))},
               {"data", json::array({json{{"b64_json", base64_encode(r.bytes.data(), r.bytes.size())}}})},
               {"hcs", std::move(hcs)}};

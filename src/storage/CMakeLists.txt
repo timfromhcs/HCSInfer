@@ -31,7 +31,7 @@ set(BUILD_SHARED_LIBS "${_hcs_saved_shared}")
 hcs_add_library(storage
   SOURCES
     sha256.cpp codec.cpp file_source.cpp hcsmodel.cpp stream.cpp gguf.cpp
-    model_reader.cpp writer.cpp
+    model_reader.cpp writer.cpp vault_prefetch.cpp
   PUBLIC_LINK hcs_core
   PRIVATE_LINK lz4_static libzstd_static)
 target_include_directories(hcs_storage PRIVATE "${lz4_SOURCE_DIR}/lib" "${zstd_SOURCE_DIR}/lib")

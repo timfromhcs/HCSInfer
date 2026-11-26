@@ -17,8 +17,13 @@
 #include "hcs/path_guard.hpp"
 #include "hcs/result.hpp"
 #include "hcs/state_dir.hpp"
+#ifdef HCS_HAVE_STORAGE
+#include "hcs/storage/vault_prefetch.hpp"
+#endif
 #include "hcs/version.hpp"
 #include "image_cmd.hpp"
+#include "models_remote_cmd.hpp"
+#include "merge_cmd.hpp"
 #include "train_cmd.hpp"
 #include "vision_cmd.hpp"
 
@@ -60,12 +65,15 @@ const char* kRootHelp =
     "  models list [--json]          List registered models\n"
     "  models scan <dir> [--json]    Read-only scan of a model folder (GGUF/safetensors headers validated)\n"
     "  models inspect <id>           Show a model manifest as JSON\n"
-    "  models load|unload            Not in the one-shot CLI (a model lives in a running process): use\n"
-    "                                `serve` (POST /hcs/v1/models/<id>/load), MCP, or --model on "
-    "chat/vision/image\n"
+    "  models hash <id> [--update]   Record the file's SHA-256 (checked by `serve --vault-prefetch`)\n"
+    "  models load|unload|status     Control a RUNNING `serve` over its HTTP API (--host/--port/--token,\n"
+    "                                see `models --help`); one-shot commands take --model instead\n"
     "  chat --model <path-or-id> [--prompt ...] [--backend cpu|vulkan] [--json]\n"
     "                                Text generation via llama.cpp (see `chat --help`)\n"
     "  image generate|edit ...       Image generation/edit via stable-diffusion.cpp (see `image --help`)\n"
+    "  merge --method linear|slerp|ties|dare|lora --base F --model F --out F\n"
+    "                                Streaming model merge on safetensors/GGUF float tensors (see `merge "
+    "--help`)\n"
     "  serve [--host ...]            Local HTTP API (OpenAI-compatible + /hcs/v1)\n"
     "  mcp stdio                     MCP server over stdio\n"
     "  vision --model <path-or-id> --image <file> --prompt ... [--mmproj <file>] [--json]\n"
@@ -111,9 +119,23 @@ const char* kModelsHelp =
     "  list [--json]          List registered models\n"
     "  scan <dir> [--json]    Scan <dir> (read-only). <dir> becomes the approved root for this scan.\n"
     "  inspect <id>           Print the manifest of one model as JSON\n"
-    "  load <id>, unload      Not in the one-shot CLI (exit code 10): pass --model to chat/vision/image, or "
-    "load\n"
-    "                         in a running `serve` / MCP process (POST /hcs/v1/models/<id>/load)\n";
+    "  hash <id> [--update]   Record the SHA-256 of the model file (see `models hash --help`)\n"
+    "  load <id>              Load a model in a running `serve` (waits for the load job)\n"
+    "  unload [<id>]          Unload the loaded model of a running `serve`\n"
+    "  status                 Server health, loaded model, pending jobs\n"
+    "\n"
+    "load/unload/status are HTTP clients of `serve`: --host <addr> --port <n> --token <secret> (or the\n"
+    "HCS_API_TOKEN variable). Without a running server they exit 8 with a message (`models load --help`).\n";
+
+const char* kModelsHashHelp =
+    "Usage: HCSInfer models hash <id> [--update] [--json]\n"
+    "\n"
+    "Reads the registered model file once (bounded sequential reader, nothing is written next to it), "
+    "computes\n"
+    "its SHA-256 and records it in the registry. `serve --vault-prefetch` then refuses to load a file whose\n"
+    "digest differs. A changed digest is an error unless --update is given; a later scan that sees a "
+    "different\n"
+    "file size drops the recorded digest.\n";
 
 const char* kModelsListHelp = "Usage: HCSInfer models list [--json]\n";
 const char* kModelsScanHelp =
@@ -351,17 +373,61 @@ int cmd_models(std::vector<std::string> args, const std::string& state_override,
         }
         return fail(err, ErrorCode::Internal, "registry inconsistency");
     }
-    if (sub == "load" || sub == "unload") {
+    if (sub == "hash") {
         if (wants_help(args)) {
-            out << kModelsHelp;
+            out << kModelsHashHelp;
             return 0;
         }
-        return fail(
-            err, ErrorCode::Unsupported,
-            "models " + sub +
-                " is not available in the one-shot CLI: pass --model to chat/vision/image, or use `serve` "
-                "(POST /hcs/v1/models/<id>/load) or MCP");
+#ifdef HCS_HAVE_STORAGE
+        const bool as_json = has_flag(args, "--json");
+        const bool update = has_flag(args, "--update");
+        if (args.size() != 1)
+            return fail(err, ErrorCode::InvalidArgument, "hash requires exactly one <id>");
+        ModelRegistry reg;
+        if (auto r = load_registry(reg, registry_file); !r)
+            return fail(err, r.error());
+        auto m = reg.get(args[0]);
+        if (!m)
+            return fail(err, m.error());
+        auto rep = hcs::storage::prefetch_and_verify(m.value().path, {});
+        if (!rep)
+            return fail(err, rep.error());
+        const std::string stored = m.value().sha256;
+        const bool changed = !stored.empty() && stored != rep.value().sha256;
+        if (changed && !update)
+            return fail(err, ErrorCode::ModelError,
+                        "file digest differs from the recorded one (recorded " + stored + ", now " +
+                            rep.value().sha256 +
+                            "); the file changed or is corrupt - rerun with --update to "
+                            "accept the new content");
+        if (auto s = reg.set_sha256(args[0], rep.value().sha256); !s)
+            return fail(err, s.error());
+        if (auto w = atomic_write_file(registry_file, reg.to_json()); !w)
+            return fail(err, w.error());
+        if (as_json) {
+            json j;
+            j["id"] = args[0];
+            j["sha256"] = rep.value().sha256;
+            j["bytes"] = rep.value().bytes;
+            j["matched_previous"] = !stored.empty() && !changed;
+            j["mib_per_second"] = rep.value().mib_per_second;
+            out << j.dump(2) << "\n";
+        } else {
+            out << args[0] << " sha256 " << rep.value().sha256 << " (" << (rep.value().bytes >> 20)
+                << " MiB read at " << static_cast<std::uint64_t>(rep.value().mib_per_second) << " MiB/s"
+                << (stored.empty() ? ", recorded"
+                    : changed      ? ", updated"
+                                   : ", matches the recorded digest")
+                << ")\n";
+        }
+        return 0;
+#else
+        return fail(err, ErrorCode::Unsupported,
+                    "'models hash' needs the storage module, which is not built");
+#endif
     }
+    if (sub == "load" || sub == "unload" || sub == "status")
+        return run_models_remote(sub, std::move(args), out, err);
     return fail(err, ErrorCode::InvalidArgument, "unknown models subcommand: " + sub);
 }
 
@@ -412,6 +478,8 @@ int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostrea
         return run_image(std::move(args), state_override, out, err);
     if (cmd == "models")
         return cmd_models(std::move(args), state_override, out, err);
+    if (cmd == "merge")
+        return run_merge_cmd(std::move(args), out, err);
     if (cmd == "train") {
 #ifdef HCS_HAVE_TRAIN
         return run_train(std::move(args), state_dir(state_override), out, err);

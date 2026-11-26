@@ -49,16 +49,17 @@ TEST(ErrorTaxonomy, ExitCodesAreStable) {
     EXPECT_EQ(exit_code(ErrorCode::AlreadyExists), 12);
     EXPECT_EQ(exit_code(ErrorCode::Busy), 13);
     EXPECT_EQ(exit_code(ErrorCode::Timeout), 14);
+    EXPECT_EQ(exit_code(ErrorCode::Overloaded), 15);
     EXPECT_EQ(exit_code(ErrorCode::Internal), 70);
 }
 
 TEST(ErrorTaxonomy, NamesAreUniqueAndKnown) {
     std::set<std::string_view> names;
-    for (ErrorCode c :
-         {ErrorCode::Ok, ErrorCode::InvalidArgument, ErrorCode::ModelError, ErrorCode::BackendError,
-          ErrorCode::OutOfMemory, ErrorCode::Cancelled, ErrorCode::NotFound, ErrorCode::IoError,
-          ErrorCode::SecurityViolation, ErrorCode::Unsupported, ErrorCode::InvalidState,
-          ErrorCode::AlreadyExists, ErrorCode::Busy, ErrorCode::Timeout, ErrorCode::Internal}) {
+    for (ErrorCode c : {ErrorCode::Ok, ErrorCode::InvalidArgument, ErrorCode::ModelError,
+                        ErrorCode::BackendError, ErrorCode::OutOfMemory, ErrorCode::Cancelled,
+                        ErrorCode::NotFound, ErrorCode::IoError, ErrorCode::SecurityViolation,
+                        ErrorCode::Unsupported, ErrorCode::InvalidState, ErrorCode::AlreadyExists,
+                        ErrorCode::Busy, ErrorCode::Timeout, ErrorCode::Overloaded, ErrorCode::Internal}) {
         EXPECT_NE(to_string(c), "unknown");
         EXPECT_TRUE(names.insert(to_string(c)).second);
     }

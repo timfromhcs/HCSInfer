@@ -4,12 +4,15 @@
 #include <filesystem>
 #include <iosfwd>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
 #include "hcs/api/control_plane.hpp"
 #include "hcs/api/http_api.hpp"
+#include "hcs/scheduler/admission.hpp"
 #include "hcs/settings.hpp"
+#include "hcs/telemetry/resource_probe.hpp"
 
 namespace hcs::api {
 
@@ -20,9 +23,21 @@ struct RuntimeOptions {
     std::unique_ptr<IImageEngine> image_engine;  // null => make_default_image_engine() (may still be null)
     ControlPlaneOptions control;
     JobQueueOptions queue;
+    // Opt-in Model Vault load stage (M5 Stage B; default OFF, see docs/model-vault.md): every model file is
+    // read once through the bounded asynchronous reader and hashed before the engine opens it. Ignored when
+    // `control.model_prefetch` is already set. Fails Runtime::create with Unsupported when the storage module
+    // is not built in.
+    bool vault_prefetch = false;
+    std::size_t vault_buffers = 4;       // read-ahead slots, 1..16
+    std::uint32_t vault_chunk_mib = 16;  // 1..128
     // Live memory measurement used for the budget. Empty => the hardware module's measurement when it is
     // linked into this build (otherwise the budget stays unknown and /hcs/v1/memory says so).
     std::function<std::optional<MemoryMeasurements>()> memory_probe;
+    // Overload protection (plan F1). Always on; nullopt = the defaults (keep >= 2.5 GiB free, commit < 90 %,
+    // at most 4 jobs in flight). `enabled = false` in the config switches it off. The probe defaults to the
+    // live system probe; tests inject a fake one.
+    std::optional<scheduler::AdmissionConfig> admission;
+    telemetry::ResourceProbe admission_probe;
 };
 
 class Runtime {
@@ -36,6 +51,7 @@ public:
     std::unique_ptr<JobQueue> engine_queue;  // private to the engine adapter (it submits its own jobs)
     std::unique_ptr<ITextEngine> engine;
     std::unique_ptr<IImageEngine> image_engine;
+    std::shared_ptr<scheduler::AdmissionController> admission;  // declared before `control`: outlives it
     std::unique_ptr<ControlPlane> control;
     Settings settings;
 

@@ -31,10 +31,36 @@ stderr shows `HCSInfer API listening on http://127.0.0.1:<port>` and
 | `--max-body-bytes <n>` | request body cap, default 1 MiB |
 | `--max-inflight <n>` | concurrent request cap, default 8 |
 | `--timeout-s <n>` | per-request generation timeout, default 300 |
+| `--min-free-ram-mb <n>` / `--hard-floor-mb <n>` / `--max-commit-pct <n>` / `--max-active-jobs <n>` / `--watchdog-ms <n>` / `--no-overload-protection` | overload protection thresholds, see [overload-protection.md](overload-protection.md) (defaults: keep >= 2560 MiB free, kill switch below 1024 MiB, commit < 90 %, 4 jobs in flight) |
 | `--chat-template auto\|chatml\|plain` | see "Chat prompt construction" |
+| `--vault-prefetch` | opt-in Model Vault load stage (default **off**): read each model file once through the bounded async reader and check its SHA-256 before the engine opens it. See `docs/model-vault.md` for what was measured |
+| `--vault-buffers <n>`, `--vault-chunk-mib <n>` | read-ahead slots (1..16, default 4) and read size (1..128 MiB, default 16) of that stage |
 
 Models are those registered by `HCSInfer models scan <dir>` (registry in the state dir). The server never scans or
 writes model files; a model only loads if its registered path resolves **inside an approved root**.
+
+## Controlling a running server from the CLI
+
+A model lives in the process that loaded it, so the one-shot CLI cannot hold one. `models load|unload|status` are
+therefore plain HTTP clients of a running `serve` (they call the routes in "HCS-native routes"):
+
+```powershell
+$env:HCS_API_TOKEN = "<token serve printed>"           # or pass --token <secret>
+HCSInfer.exe models status                              # health, loaded model, pending jobs   (token optional: health only)
+HCSInfer.exe models load qwen-q4                        # POST /hcs/v1/models/qwen-q4/load, waits for the job
+HCSInfer.exe models unload                              # unloads whatever is loaded (or: unload <id>)
+```
+
+Connection options: `--host` (default 127.0.0.1), `--port` (default 8765), `--token`; load also takes `--timeout-s`
+(default 900; the server-side job keeps running when the CLI gives up) and `--no-wait`; all take `--json`.
+Exit codes are the API's own error codes: `0` ok, `2` bad argument, `3` model error, `5` out of memory, `6` cancelled,
+`7` unknown model, `8` **no server reachable** (the message says so and names `HCSInfer serve`), `9` bad or missing
+token, `11` nothing loaded / invalid state, `14` timeout. Covered by `tests/contract/cli/test_cli_remote.cpp` (real
+sockets, real bearer auth; the engine behind that server is a fake, so it proves the client and its exit codes, not
+inference) and by `tests/e2e/api_mcp_real` (real exe + real model).
+
+`HCSInfer models hash <id>` records the SHA-256 of a registered model file in the registry (read-only pass, nothing is
+written next to the model); `serve --vault-prefetch` then refuses to load a file whose digest differs.
 
 ## Security model
 
@@ -82,7 +108,7 @@ Every error (auth, validation, engine) has the same body and an `X-Request-Id` h
 | 422 | `model_error` |
 | 429 | `too_many_requests` (+ `Retry-After`) |
 | 501 | `unsupported` |
-| 502 / 503 / 504 | `backend_error`, `out_of_memory`, `timeout` |
+| 502 / 503 / 504 | `backend_error`, `out_of_memory` / `overloaded` (both with `Retry-After`, see [overload-protection.md](overload-protection.md)), `timeout` |
 
 (`code` for engine errors is the stable `hcs::ErrorCode` name from `include/hcs/result.hpp`.)
 
@@ -151,6 +177,8 @@ Authenticated, **Experimental**. Real stable-diffusion.cpp output (HTTP route te
 | `allow_low_quality` | boolean, default `false`. Without it a request below the model family's quality envelope is rejected with `400` and a message starting `low_quality_request:` (SD1.5: short side < 384 px or < 8 steps; FLUX.3 Klein: short side < 384 px or < 4 steps without a preset). A 256 px / 2-step SD1.5 render is a pipeline smoke test, not an image. The same field exists on the MCP image tools and as CLI `--allow-low-quality` |
 | `preset` | `fast` \| `quality`: measured steps/cfg point of the loaded family (FLUX.3 Klein only) |
 | `seed`, `negative_prompt`, `cfg_scale` (0..30, 0 = model default) | HCS extensions |
+| `loras` | HCS extension: up to 4 `{"id","weight"?}` objects, ids from `GET /hcs/v1/loras` (paths are not accepted). `weight` is `0 < abs(w) <= 2`, default = the manifest's recommended weight. A LoRA for another base family answers `400` with a message starting `lora_incompatible:`; unknown id `404`; no LoRA library `501`. Checked before the model is touched, repeated by the engine against the loaded weights. See [`docs/lora.md`](lora.md) |
+| `upscale` | HCS extension: `"off"` (default) or `"4k"`: tiled 4x ONNX super-resolution then Lanczos to a 3840 px long edge. A missing `onnxruntime.dll`/model answers `501` **before** the render starts. If the upscale itself fails the un-upscaled image is returned and `hcs.upscale = {"status":"failed","error":...}`. See [`docs/upscale.md`](upscale.md) |
 | `preset` | `fast` or `quality`: replaces `steps` and `cfg_scale` with the measured point of the loaded model family. Only the FLUX.3 family has a table; any other family answers `400`/`InvalidArgument` (never silently ignored). HCS extension, see `docs/supported-models.md` |
 | `n` | only `1` |
 | `response_format` | only `b64_json` (the default here, unlike OpenAI); `url` -> `501` (nothing is hosted) |
@@ -187,7 +215,10 @@ Behaviour shared by both routes:
 | `GET /hcs/v1/runtime` | engine availability/metrics, loaded model, pending jobs, uptime |
 | `GET /hcs/v1/devices` | hardware/Vulkan report (from `hcs_hardware`'s doctor JSON; `{"status":"unknown",...}` without it) |
 | `GET /hcs/v1/memory` | budget (`"unknown"` strings when no live measurement), reservations |
+| `GET /hcs/v1/runtime/overload` | overload controller snapshot: level (`normal`/`pressure`/`critical`), live RAM/commit/GPU-heap sample (`"unknown"` where not measurable), in-flight jobs, counters, limits, last shed. `{"enabled":false}` when disabled. Never throttled |
+| `POST /hcs/v1/runtime/shed` | kill switch: cancels every queued/running job and unloads the model within the shed deadline; returns `{reason,jobs_cancelled,model_unloaded,unload_pending,jobs_idle,duration_ms}`. Needs the bearer token; never throttled |
 | `GET /hcs/v1/models`, `GET /hcs/v1/models/{id}` | manifests + lifecycle state (no file paths) |
+| `GET /hcs/v1/loras` | image LoRA library: id, name, base family, trigger words, recommended weight, licence, source, sha256 (+ `sha256_status`), status, problems. Never file paths. Empty list + a note when no library exists |
 | `POST /hcs/v1/models/{id}/load` | `202 {"job_id","status_url"}` (asynchronous job) |
 | `POST /hcs/v1/models/{id}/unload` | `200`; cancels a running generation first; `409` if that model is not loaded |
 | `GET /hcs/v1/jobs/{id}` | `{id,name,state,error,event_count,result?}`; states `queued running succeeded failed cancelled` |

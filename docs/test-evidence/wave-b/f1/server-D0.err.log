@@ -1,0 +1,5 @@
+{"ts":"2026-11-26T11:02:06.858Z","level":"info","component":"api","msg":"listening","host":"127.0.0.1","port":"18765"}
+HCSInfer API listening on http://127.0.0.1:18765
+HCSInfer web UI: http://127.0.0.1:18765/  (enter the token on the page, or open it with #token=<token> appended; the fragment is never sent to the server)
+{"ts":"2026-11-26T11:02:07.329Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/health","status":"200","rid":"req-2eda6e6bbe543808"}
+{"ts":"2026-11-26T11:02:07.372Z","level":"info","component":"api","msg":"request","method":"GET","path":"/hcs/v1/runtime/overload","status":"200","rid":"req-2de2c295d01d2f95"}

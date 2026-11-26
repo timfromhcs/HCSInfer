@@ -1,8 +1,9 @@
 # Architecture (current implementation + target)
 
 Target architecture: AGENTS.md section 3. This document records what exists in the tree on 2026-11-18 and the rules
-other modules must follow. Modules **absent** from the tree: `memory`, `scheduler`, `telemetry`, `kernels`, `shaders`
-(their names are reserved in `HCS_MODULE_DIRS` but have no sources).
+other modules must follow. Modules **absent** from the tree: `memory`, `kernels`, `shaders`
+(their names are reserved in `HCS_MODULE_DIRS` but have no sources). `scheduler` and `telemetry` exist since plan F1
+(overload protection only; there is no CPU/GPU operator scheduler yet).
 
 ## Layers
 
@@ -16,6 +17,9 @@ HCSInfer.exe (src/app)              -> hcs::cli::run(args, out, err)
   src/gui      (hcs_gui)            embedded HCS Studio assets served by the API listener (GET /, /ui/*)
   src/core     (hcs_core)           control-plane primitives (below)
   src/hardware (hcs_hardware)       doctor: CPU/RAM/OS/GPU/Vulkan/storage, memory probe
+  src/telemetry (hcs_telemetry)     live resource samples (free RAM, commit, working set, GPU heap headroom)
+  src/scheduler (hcs_scheduler)     overload protection: AdmissionController (admission, backpressure, kill switch,
+                                    watchdog); used by the ControlPlane only, never by engines (docs/overload-protection.md)
   src/storage  (hcs_storage)        Model Vault: GGUF header probe, bounded async reads, SHA-256, HCSMODEL container
   src/agent    (hcs_agent)          tool-call sandbox policy, prime-agent provider document, launch plan
   src/process  (hcs_process)        child process supervisor (no shell, bounded capture, Job Object tree-kill)
@@ -34,7 +38,7 @@ for both engines (`SD_USE_UPSTREAM_GGML=ON`, ADR-001). Everything runs in one pr
 
 | Header | Responsibility |
 |---|---|
-| `result.hpp` | `Result<T>`, `Error`, `ErrorCode` with stable exit codes (0,2-14,70) |
+| `result.hpp` | `Result<T>`, `Error`, `ErrorCode` with stable exit codes (0,2-15,70) |
 | `checked_math.hpp` | overflow-safe u64 add/mul/sub, `range_within` |
 | `lifecycle.hpp` | `ModelLifecycle` state machine (AGENTS 10.3), mutex-serialised, compare-and-transition |
 | `model_registry.hpp` | manifests, id rules, read-only scan with header validation, JSON persistence |

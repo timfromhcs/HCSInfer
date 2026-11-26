@@ -269,6 +269,7 @@
     closeNav();
     if (name === "perf") startPerf(); else stopPerf();
     if (name === "models") refreshModels().catch(function () {});
+    if (name === "image") refreshLoras().catch(function () {});
   }
   function initTabs() {
     var tabs = $("tabs");
@@ -694,6 +695,44 @@
       li.appendChild(b); ul.appendChild(li);
     });
   }
+  /* LoRA library (GET /hcs/v1/loras): ids and metadata only, never paths. */
+  var loraLib = [];
+  function renderLoras() {
+    var ul = $("image-lora-list");
+    clear(ul);
+    loraLib.forEach(function (l) {
+      var li = el("li", "lora-item"), lab = el("label", "check"), cb = el("input");
+      cb.type = "checkbox"; cb.dataset.loraId = l.id; cb.disabled = !l.usable;
+      lab.appendChild(cb);
+      var words = (l.trigger_words && l.trigger_words.length) ? " - trigger: " + l.trigger_words.join(", ") : "";
+      lab.appendChild(document.createTextNode(" " + (l.name || l.id) + " (" + l.base_family + ", " + (l.licence || "licence unknown") + ")" + words + (l.usable ? "" : " - " + l.status + (l.problems && l.problems.length ? ": " + l.problems.join("; ") : ""))));
+      li.appendChild(lab);
+      var w = el("input"); w.type = "number"; w.min = "-2"; w.max = "2"; w.step = "0.05"; w.value = String(l.recommended_weight); w.disabled = !l.usable;
+      w.id = "image-lora-w-" + l.id; w.setAttribute("aria-label", "Weight of " + (l.name || l.id));
+      li.appendChild(w);
+      ul.appendChild(li);
+    });
+    text($("image-lora-note"), loraLib.length ? "" : "No LoRAs found. Put files and a manifest.json in <model root>/lora/image (see docs/lora.md).");
+  }
+  async function refreshLoras() {
+    try {
+      var j = await api("GET", "/hcs/v1/loras");
+      loraLib = (j && j.loras) || [];
+    } catch (e) { loraLib = []; }
+    renderLoras();
+  }
+  function selectedLoras() {
+    var out = [];
+    Array.prototype.forEach.call(document.querySelectorAll("#image-lora-list input[type=checkbox]"), function (cb) {
+      if (!cb.checked) return;
+      var w = Number($("image-lora-w-" + cb.dataset.loraId).value);
+      out.push({ id: cb.dataset.loraId, weight: w });
+    });
+    return out;
+  }
+  function clearLoras() {
+    Array.prototype.forEach.call(document.querySelectorAll("#image-lora-list input[type=checkbox]"), function (cb) { cb.checked = false; });
+  }
   function stopImageTimer() { if (image.timer) { clearInterval(image.timer); image.timer = 0; } }
   async function sendImage(ev) {
     ev.preventDefault();
@@ -714,7 +753,11 @@
       var neg = $("image-negative").value.trim(); if (neg) body.negative_prompt = neg;
       var cfg = numOrUndef("image-cfg"); if (cfg !== undefined) body.cfg_scale = cfg;
       if ($("image-lowq").checked) body.allow_low_quality = true;
+      var picked = selectedLoras();
+      if (picked.length > 4) { setBanner("image-state", "error", "at most 4 LoRAs per image."); return; }
+      if (picked.length) body.loras = picked;
     }
+    if ($("image-upscale").value === "4k") body.upscale = "4k";
     image.ctl = new AbortController();
     $("image-send").disabled = true; $("image-stop").hidden = false;
     $("image-busy").hidden = false; $("image-empty").hidden = true;
@@ -729,10 +772,17 @@
       if (!src) throw new ApiError(502, null, "the server returned no image data");
       var h = (j && j.hcs) || {};
       var meta = (i2i ? "image to image" : "text to image") + " - " + (h.width || "?") + "x" + (h.height || "?") + ", " + (h.steps || steps || "?") + " steps, seed " + seed + (typeof h.generation_ms === "number" ? ", " + (h.generation_ms / 1000).toFixed(1) + " s" : ", " + ((performance.now() - t0) / 1000).toFixed(1) + " s wall") + (h.model ? " - " + h.model : "");
+      var note = "";
+      if (h.loras && h.loras.length) meta += " - LoRA " + h.loras.join(", ");
+      if (h.upscale) {
+        if (h.upscale.status === "done") meta += " - upscaled from " + h.upscale.from_width + "x" + h.upscale.from_height + " (" + h.upscale.provider + ", " + (h.upscale.ms / 1000).toFixed(1) + " s)";
+        else if (h.upscale.status === "skipped") note = " Upscale skipped: " + h.upscale.note;
+        else note = " Upscale failed, the original image is shown: " + h.upscale.error;
+      }
       image.gallery.push({ src: src, meta: meta, seed: seed, prompt: prompt });
       if (image.gallery.length > GALLERY_MAX) image.gallery.shift();
       showGalleryItem(image.gallery.length - 1);
-      setBanner("image-state", "ok", "image generated.");
+      setBanner("image-state", "ok", "image generated." + note);
     } catch (e) {
       var d = describe(e);
       text($("image-meta"), "");
@@ -873,7 +923,7 @@
   var RESETS = {
     chat: { "chat-system": "", "chat-temp": "0.7", "chat-max": "256", "chat-seed": "" },
     vision: { "vision-max": "256", "vision-temp": "0" },
-    image: { "image-negative": "", "image-cfg": "" }
+    image: { "image-negative": "", "image-cfg": "", "image-upscale": "off" }
   };
 
   /* ---------- wiring ---------- */
@@ -891,7 +941,7 @@
     Array.prototype.forEach.call(document.querySelectorAll("input[name=theme]"), function (r) { r.addEventListener("change", function () { if (r.checked) setTheme(r.value); }); });
     $("theme-toggle").addEventListener("click", function () { setTheme(THEMES[(THEMES.indexOf(state.theme) + 1) % THEMES.length]); });
     Array.prototype.forEach.call(document.querySelectorAll("[data-reset]"), function (b) {
-      b.addEventListener("click", function () { var m = RESETS[b.dataset.reset]; Object.keys(m).forEach(function (k) { $(k).value = m[k]; }); });
+      b.addEventListener("click", function () { var m = RESETS[b.dataset.reset]; Object.keys(m).forEach(function (k) { $(k).value = m[k]; }); if (b.dataset.reset === "image") clearLoras(); });
     });
     $("auth-form").addEventListener("submit", function (e) {
       e.preventDefault();

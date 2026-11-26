@@ -84,6 +84,20 @@ ControlPlane::ControlPlane(ModelRegistry& registry, PathGuard& guard, MemoryBudg
       log_(logger),
       opt_(std::move(options)) {
     refresh_budget();  // first live measurement; later ones happen on every model load
+    if (opt_.admission)
+        opt_.admission->set_shed_handler([this](const std::string& reason) { return shed_impl(reason); });
+}
+
+ControlPlane::~ControlPlane() {
+    if (opt_.admission)
+        opt_.admission->clear_shed_handler();  // waits for a shed that is running right now
+    std::shared_future<bool> pending;
+    {
+        std::lock_guard lk(shed_mutex_);
+        pending = shed_unload_;
+    }
+    if (pending.valid())
+        pending.wait();  // a kill-switch unload still blocked in an engine load must not outlive us
 }
 
 // Budget total = measured application headroom (AGENTS.md 10.1) + what this process already holds, so that
@@ -241,6 +255,24 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
                     "size or use CPU mode");
     }
 
+    // Overload protection (plan F1): refuse the load when the weights + KV cache would break the RAM floor /
+    // commit limit / GPU heap budget right now. What unloading the current model gives back is credited.
+    if (opt_.admission) {
+        std::uint64_t freed_by_unload = 0;
+        {
+            std::lock_guard lk(state_mutex_);
+            if (loaded_bytes_)
+                freed_by_unload = *loaded_bytes_;
+        }
+        scheduler::WorkRequest wr;
+        wr.kind = scheduler::WorkKind::ModelLoad;
+        wr.what = id;
+        wr.predicted_bytes = saturating_sub(need, freed_by_unload);
+        wr.predicted_gpu_bytes = opt_.backend == Backend::Cpu ? 0 : wr.predicted_bytes;
+        if (auto a = opt_.admission->check_memory(wr); !a)
+            return a.error();
+    }
+
     if (auto s = registry_.state(id)) {
         const auto st = s.value();
         if (st == ModelState::Discovered || st == ModelState::Unloaded || st == ModelState::Failed) {
@@ -313,6 +345,28 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
         }
         lr.projector_path = pp.value();
     }
+    std::optional<json> vault_report;
+    if (opt_.model_prefetch) {
+        // Opt-in Model Vault stage: bounded sequential read + digest check before the engine opens the file.
+        json rep = json::object();
+        auto pr = opt_.model_prefetch(resolved.value(), m.sha256, token);
+        if (pr)
+            rep["model"] = pr.value();
+        if (pr && !lr.projector_path.empty()) {
+            // The projector is a sibling file without a manifest digest: it is read and hashed, not compared.
+            pr = opt_.model_prefetch(std::filesystem::path(lr.projector_path), std::string(), token);
+            if (pr)
+                rep["projector"] = pr.value();
+        }
+        if (!pr) {
+            (void)registry_.fail(id, FailureKind::Recoverable, pr.error().message);
+            release_reservations();
+            log_.warn("control", "vault prefetch failed",
+                      {{"model", id}, {"code", to_string(pr.error().code)}});
+            return pr.error();
+        }
+        vault_report = std::move(rep);
+    }
     Result<void> er = make_error(ErrorCode::Internal, "engine threw");
     try {
         er = image_model ? image_engine_->load(lr) : engine_->load(lr);
@@ -325,6 +379,17 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
         log_.warn("control", "model load failed", {{"model", id}, {"code", to_string(er.error().code)}});
         return er;
     }
+    if (token.cancelled()) {
+        // A cancel / kill switch arrived while the (uninterruptible) engine load was running: honour it now
+        // instead of publishing a model the caller asked to drop.
+        try {
+            (void)(image_model ? image_engine_->unload() : engine_->unload());
+        } catch (...) {  // NOLINT(bugprone-empty-catch) - best effort; the load is being abandoned anyway
+        }
+        (void)registry_.fail(id, FailureKind::Recoverable, "load cancelled");
+        release_reservations();
+        return make_error(ErrorCode::Cancelled, "load cancelled while the engine was loading; model dropped");
+    }
     (void)registry_.transition(id, ModelState::Loaded);
     {
         std::lock_guard lk(state_mutex_);
@@ -332,6 +397,8 @@ Result<void> ControlPlane::load_locked(const std::string& id, const Cancellation
         loaded_bytes_ = need;  // weights + KV estimate: what unloading this model gives back
         loaded_is_image_ = image_model;
         loaded_has_projector_ = !lr.projector_path.empty();
+        if (vault_report)
+            last_vault_ = std::move(vault_report);
     }
     log_.info("control", "model loaded", {{"model", id}, {"kind", std::string(to_string(m.kind))}});
     return {};
@@ -353,7 +420,11 @@ Result<JobId> ControlPlane::submit_load(const std::string& id) {
         return make_error(ErrorCode::InvalidArgument, "invalid model id");
     if (auto m = registry_.get(id); !m)
         return m.error();
-    return queue_.submit("model.load", [this, id](JobContext& ctx) -> Result<void> {
+    auto ticket = admit_job(scheduler::WorkKind::ModelLoad, id, 0);
+    if (!ticket)
+        return ticket.error();
+    return queue_.submit("model.load", [this, id, tk = ticket.value()](JobContext& ctx) -> Result<void> {
+        (void)tk;  // holds the admission slot until the job closure is destroyed
         if (ctx.cancelled())
             return make_error(ErrorCode::Cancelled, "cancelled before start");
         return load_model(id, ctx.token());
@@ -438,77 +509,85 @@ Result<Submitted> ControlPlane::submit_chat(const ChatParams& original) {
         return make_error(
             ErrorCode::Unsupported,
             "the linked text engine does not implement hcs::api::ITextStreamEngine (token streaming)");
-    return submit_with_channel("chat.generate", [this, p](JobContext& ctx) -> Result<void> {
-        if (ctx.cancelled())
-            return make_error(ErrorCode::Cancelled, "cancelled before start");
-        // One critical section for "switch to the requested model" and "use it": a concurrent load/unload
-        // cannot slip in between and make this job run on a different model (M10 audit S2).
-        std::lock_guard lk(engine_mutex_);
-        if (!p.model.empty()) {
-            const auto cur = loaded_model();
-            if (!cur || *cur != p.model) {
-                if (auto r = load_locked(p.model, ctx.token()); !r)
-                    return r;
-            }
-        }
-        std::string id;
-        {
-            std::lock_guard sl(state_mutex_);
-            if (!loaded_)
-                return make_error(ErrorCode::InvalidState,
-                                  "no model is loaded: load one first or pass a model id");
-            id = *loaded_;
-        }
-        if (ctx.cancelled())
-            return make_error(ErrorCode::Cancelled, "cancelled before start");
-        active_job_.store(ctx.id().value);
-        (void)registry_.transition(id, ModelState::Running);
-        TextRequest tr;
-        {
-            const auto& ms = p.messages;
-            const bool single_turn = (ms.size() == 1 && ms[0].role == "user") ||
-                                     (ms.size() == 2 && ms[0].role == "system" && ms[1].role == "user");
-            if (opt_.chat_template == "auto" && single_turn && !p.tools) {
-                tr.prompt = ms.back().content;
-                if (ms.size() == 2)
-                    tr.system_prompt = ms[0].content;
-                tr.apply_chat_template = true;
-            } else {
-                std::string fmt = opt_.chat_template == "plain" ? "plain" : "chatml";
-                if (fmt == "chatml") {
-                    if (auto mm = registry_.get(id); mm && mm.value().architecture == "lfm3")
-                        fmt = "chatml-lfm3";
+    std::size_t prompt_bytes = 0;
+    for (const auto& m : p.messages) prompt_bytes += m.content.size();
+    auto ticket = admit_job(scheduler::WorkKind::Text, p.model,
+                            scheduler::estimate_text_job_bytes(prompt_bytes, p.max_tokens));
+    if (!ticket)
+        return ticket.error();
+    return submit_with_channel(
+        "chat.generate", [this, p, tk = ticket.value()](JobContext& ctx) -> Result<void> {
+            (void)tk;  // holds the admission slot until the job closure is destroyed
+            if (ctx.cancelled())
+                return make_error(ErrorCode::Cancelled, "cancelled before start");
+            // One critical section for "switch to the requested model" and "use it": a concurrent load/unload
+            // cannot slip in between and make this job run on a different model (M10 audit S2).
+            std::lock_guard lk(engine_mutex_);
+            if (!p.model.empty()) {
+                const auto cur = loaded_model();
+                if (!cur || *cur != p.model) {
+                    if (auto r = load_locked(p.model, ctx.token()); !r)
+                        return r;
                 }
-                tr.prompt = build_prompt(ms, fmt);
-                tr.apply_chat_template = false;
             }
-        }
-        tr.max_tokens = p.max_tokens;
-        tr.temperature = p.temperature;
-        tr.seed = p.seed;
-        Result<TextResult> r = make_error(ErrorCode::Internal, "engine threw");
-        try {
-            r = stream_->generate_stream(
-                tr,
-                [&ctx](std::string_view piece) {
-                    if (ctx.cancelled())
-                        return false;
-                    ctx.output(std::string(piece));
-                    return !ctx.cancelled();
-                },
-                ctx.token());
-        } catch (const std::exception& e) {
-            r = error_from_engine_exception(e);
-        }
-        active_job_.store(0);
-        (void)registry_.transition(id, ModelState::Loaded);
-        if (!r)
-            return r.error();
-        note_result(ctx.id(), r.value());
-        if (ctx.cancelled() || r.value().finish_reason == "cancelled")
-            return make_error(ErrorCode::Cancelled, "generation cancelled");
-        return {};
-    });
+            std::string id;
+            {
+                std::lock_guard sl(state_mutex_);
+                if (!loaded_)
+                    return make_error(ErrorCode::InvalidState,
+                                      "no model is loaded: load one first or pass a model id");
+                id = *loaded_;
+            }
+            if (ctx.cancelled())
+                return make_error(ErrorCode::Cancelled, "cancelled before start");
+            active_job_.store(ctx.id().value);
+            (void)registry_.transition(id, ModelState::Running);
+            TextRequest tr;
+            {
+                const auto& ms = p.messages;
+                const bool single_turn = (ms.size() == 1 && ms[0].role == "user") ||
+                                         (ms.size() == 2 && ms[0].role == "system" && ms[1].role == "user");
+                if (opt_.chat_template == "auto" && single_turn && !p.tools) {
+                    tr.prompt = ms.back().content;
+                    if (ms.size() == 2)
+                        tr.system_prompt = ms[0].content;
+                    tr.apply_chat_template = true;
+                } else {
+                    std::string fmt = opt_.chat_template == "plain" ? "plain" : "chatml";
+                    if (fmt == "chatml") {
+                        if (auto mm = registry_.get(id); mm && mm.value().architecture == "lfm3")
+                            fmt = "chatml-lfm3";
+                    }
+                    tr.prompt = build_prompt(ms, fmt);
+                    tr.apply_chat_template = false;
+                }
+            }
+            tr.max_tokens = p.max_tokens;
+            tr.temperature = p.temperature;
+            tr.seed = p.seed;
+            Result<TextResult> r = make_error(ErrorCode::Internal, "engine threw");
+            try {
+                r = stream_->generate_stream(
+                    tr,
+                    [&ctx](std::string_view piece) {
+                        if (ctx.cancelled())
+                            return false;
+                        ctx.output(std::string(piece));
+                        return !ctx.cancelled();
+                    },
+                    ctx.token());
+            } catch (const std::exception& e) {
+                r = error_from_engine_exception(e);
+            }
+            active_job_.store(0);
+            (void)registry_.transition(id, ModelState::Loaded);
+            if (!r)
+                return r.error();
+            note_result(ctx.id(), r.value());
+            if (ctx.cancelled() || r.value().finish_reason == "cancelled")
+                return make_error(ErrorCode::Cancelled, "generation cancelled");
+            return {};
+        });
 }
 
 // ---- jobs ----------------------------------------------------------------------------------
@@ -615,7 +694,14 @@ json ControlPlane::runtime_json() const {
     }
     const auto lm = loaded_model();
     j["loaded_model"] = lm ? json(*lm) : json(nullptr);
+    j["vault_prefetch"] = static_cast<bool>(opt_.model_prefetch);
+    {
+        std::lock_guard lk(state_mutex_);
+        if (last_vault_)
+            j["vault"] = *last_vault_;
+    }
     j["jobs_pending"] = queue_.pending();
+    j["overload"] = overload_json();
     j["uptime_s"] = std::chrono::duration<double>(std::chrono::steady_clock::now() - started_).count();
     j["chat_template"] = opt_.chat_template;
     return j;
@@ -673,6 +759,76 @@ json ControlPlane::memory_json() const {
         es.push_back({{"key", e.key}, {"category", std::string(to_string(e.category))}, {"bytes", e.bytes}});
     j["entries"] = std::move(es);
     return j;
+}
+
+// ---- overload protection (plan F1) ---------------------------------------------------------
+Result<std::shared_ptr<scheduler::Ticket>> ControlPlane::admit_job(scheduler::WorkKind kind,
+                                                                   const std::string& what,
+                                                                   std::uint64_t predicted_bytes) {
+    if (!opt_.admission)
+        return std::shared_ptr<scheduler::Ticket>{};
+    scheduler::WorkRequest wr;
+    wr.kind = kind;
+    wr.what = what;
+    wr.predicted_bytes = predicted_bytes;
+    wr.predicted_gpu_bytes =
+        (kind == scheduler::WorkKind::Image && opt_.backend != Backend::Cpu) ? predicted_bytes : 0;
+    auto t = opt_.admission->admit(wr);
+    if (!t) {
+        log_.warn("control", "job refused by admission control",
+                  {{"kind", std::string(scheduler::to_string(kind))}, {"code", to_string(t.error().code)}});
+        return t.error();
+    }
+    return std::make_shared<scheduler::Ticket>(std::move(t.value()));
+}
+
+int ControlPlane::retry_after_seconds() const noexcept {
+    return opt_.admission ? opt_.admission->retry_after_seconds() : 5;
+}
+
+json ControlPlane::overload_json() const {
+    if (!opt_.admission)
+        return {{"enabled", false}};
+    return opt_.admission->snapshot_json();
+}
+
+scheduler::ShedReport ControlPlane::shed(const std::string& reason) {
+    if (opt_.admission)
+        return opt_.admission->shed(reason);  // records the report, then calls shed_impl through the handler
+    return shed_impl(reason);
+}
+
+scheduler::ShedReport ControlPlane::shed_impl(const std::string& reason) {
+    using clock = std::chrono::steady_clock;
+    const auto t0 = clock::now();
+    const auto deadline_ms =
+        opt_.admission ? opt_.admission->config().shed_deadline : std::chrono::milliseconds(10000);
+    const auto deadline = t0 + deadline_ms;
+    scheduler::ShedReport rep;
+    rep.reason = reason;
+    log_.warn("control", "kill switch: shedding all load", {{"reason", reason}});
+    rep.jobs_cancelled = queue_.cancel_all();
+
+    if ((engine_ || image_engine_) && loaded_model()) {
+        // The unload runs on a helper thread so the deadline holds even when an engine call cannot be
+        // interrupted (a load in progress): such an unload is reported as pending and joined at destruction.
+        std::shared_future<bool> fut;
+        {
+            std::lock_guard lk(shed_mutex_);
+            if (!shed_unload_.valid() ||
+                shed_unload_.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
+                shed_unload_ = std::async(std::launch::async, [this] { return unload_model().ok(); }).share();
+            fut = shed_unload_;
+        }
+        if (fut.wait_until(deadline) == std::future_status::ready)
+            rep.model_unloaded = fut.get();
+        else
+            rep.unload_pending = true;
+    }
+    const auto left = std::chrono::duration_cast<std::chrono::milliseconds>(deadline - clock::now());
+    rep.jobs_idle = queue_.wait_idle(left.count() > 0 ? left : std::chrono::milliseconds(0));
+    rep.duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(clock::now() - t0).count();
+    return rep;
 }
 
 }  // namespace hcs::api
