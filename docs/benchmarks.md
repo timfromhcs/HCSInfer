@@ -325,6 +325,47 @@ A second variant (v2, shared-memory tiling of the activation vector) was measure
 `test-evidence/vulkan-kernels/gemv-q8_0-variants-bench.json`): **no benefit** (within noise on every shape), so the
 hypothesis was rejected and v1 stays the default (`docs/research/vulkan-gemv-v2-shared-memory.md`).
 
+## Upstream GGML Vulkan operators, in-process (wave C / k1, 2026-11-26)
+
+`hcs_ggml_vk_bench --suite llm` (`tools/ggml-vk-bench`, label `performance`) drives the pinned ggml Vulkan backend
+(llama.cpp `d3c3e24`, the engines' GGML) directly: a one-node graph per operation, inputs device resident, 10+
+warm-up runs until 250 ms, **15 timed samples** of `ggml_backend_graph_compute` (submit + wait), median / p90 /
+spread = (p90 - p10) / median, every result spot-checked against a double-precision reference. AMD Radeon 680M
+(`AMD Radeon(TM) Graphics`, driver 26.6.1, Vulkan 1.4.315, subgroup 64), Release, source commit `1469638` (+ the
+uncommitted k1 work), one run, warm, no model files involved (synthetic data). Raw: `test-evidence/wave-c/k1/
+ggml-vk-bench-llm.json` (AGENTS.md 21.1 fields) and `.txt`. A floor of ~0.07 ms per submit is included in every row
+(see RoPE 1x128). Rows with spread > 0.25 are not conclusive.
+
+```
+op         w     shape (m,n,k)       median ms   p90 ms  spread  GFLOP/s  variant / note
+mul_mat    f32   1,4096,4096            0.9387   0.9656   0.058     35.7  decode GEMV, f32 weights
+mul_mat    f16   1,4096,4096            0.5176   0.5214   0.034     64.8
+mul_mat    q8_0  1,4096,4096            0.3223   0.3583   0.159    104.1  q8_0 weights x f32 activations
+mul_mat    q4_k  1,4096,4096            0.2384   0.3006   0.374    140.7  (spread > 0.25)
+mul_mat    q8_0  1,14336,4096           0.9904   1.1309   0.193    118.6
+mul_mat    q4_k  1,14336,4096           0.5189   0.5287   0.048    226.3
+mul_mat    f16   128,4096,4096          2.7986   2.8736   0.083   1534.7  prefill
+mul_mat    q8_0  128,4096,4096          2.5945   2.7721   0.105   1655.4
+mul_mat    f32   512,4096,4096         14.0311  14.4824   0.063   1224.4
+mul_mat    f16   512,4096,4096         10.3010  10.9919   0.124   1667.8
+mul_mat    q8_0  512,4096,4096          9.9295  10.4395   0.095   1730.2
+mul_mat    f32   4096,320,320           0.5060   0.5855   0.212   1657.8  SD 1x1 conv / attention projection
+mul_mat    f32   1024,320,2880         1.2939   1.3144   0.027   1458.7  SD 3x3 conv as GEMM, 32x32 latent
+softmax    f32   1024,1024,0            0.2464   0.2816   0.209     25.5
+rmsnorm    f32   512,4096,0            0.3481   0.3642   0.089     24.1  rms_norm + mul
+layernorm  f32   4096,320,0            0.8088   0.8331   0.052     13.0  norm + mul + add (3 ops)
+rope       f32   4096,128,0            0.1432   0.1654   0.160     11.0  NEOX
+```
+
+One upstream operator failed its own spot check: F32 `mul_mat` 1024x1024x64 (error 1.01e-4 against a 1.0e-4 scale-free
+bound, likely reduced-precision accumulation in the backend); it is recorded as `error` and the F16 variant is used.
+
+`HCSInfer tune --suite llm` puts the HCS kernels next to these numbers (one complete run: `test-evidence/wave-c/k1/
+single-run-table.md`): the HCS GEMM kernels are 2x-5x slower than upstream on the real shapes, softmax / RMSNorm / RoPE
+are at parity, LayerNorm is faster in 4 of 5 buckets in that single run (fused vs upstream's 3-op chain) but is not
+promoted (the rule needs 3 runs and half of those buckets have an upstream spread > 0.25). Repeat runs were BLOCKED
+(see `docs/vulkan-kernels.md`). Nothing is default-enabled.
+
 ## Earlier provisional numbers
 
 `test-evidence/M1/llama/` (llama-bench, uncontrolled, few samples; for example qwen3 0.6B Q4_K CPU pp128 416.65 t/s,

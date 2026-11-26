@@ -6,7 +6,7 @@
   timing spread <= 0.25 (HCS and upstream), beat the CPU baseline by >= 1.05x AND beat the measured upstream GGML
   Vulkan operator by >= 1.05x (ratio = upstream ms / HCS ms). Anything else is NOT promoted, with the first failing
   reason. A single run is never enough ("repeat the whole tune 3 times"). Reads files only; changes nothing.
-.PARAMETER Evidence   Two or more evidence JSON files written by `HCSInfer tune --out <file>`.
+.PARAMETER Evidence   One or more evidence JSON files (promotion needs -MinRuns, default 3) written by `HCSInfer tune --out <file>`.
 .PARAMETER OutJson    Optional path for the machine-readable decision.
 .PARAMETER OutMarkdown Optional path for the markdown table.
 .EXAMPLE   .\scripts\kernel-decision.ps1 -Evidence run1.json,run2.json,run3.json -OutMarkdown decision.md
@@ -17,11 +17,13 @@ param(
     [string]$OutJson,
     [string]$OutMarkdown,
     [double]$MinSpeedup = 1.05,
-    [double]$MaxSpread = 0.25
+    [double]$MaxSpread = 0.25,
+    [int]$MinRuns = 3
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
-if ($Evidence.Count -lt 2) { throw 'Need at least 2 evidence files (the rule requires repeated runs; 3 are recommended).' }
+[System.Threading.Thread]::CurrentThread.CurrentCulture = [System.Globalization.CultureInfo]::InvariantCulture
+if ($Evidence.Count -lt 1) { throw 'Need at least 1 evidence file.' }
 
 $runs = @()
 foreach ($f in $Evidence) {
@@ -73,6 +75,7 @@ foreach ($k in $keys.Keys) {
         elseif ($maxSpU -gt $MaxSpread) { $reason = ('upstream timing too noisy in a run (spread {0:N3} > {1})' -f $maxSpU, $MaxSpread) }
         elseif ($minCpu -lt $MinSpeedup) { $reason = ('below {0}x vs the CPU baseline in a run (min {1:N2}x)' -f $MinSpeedup, $minCpu) }
         elseif ($null -eq $minRatio -or $minRatio -lt $MinSpeedup) { $reason = ('slower than / not >= {0}x faster than the upstream GGML Vulkan operator (ratio min {1:N2}x, max {2:N2}x)' -f $MinSpeedup, $minRatio, $maxRatio) }
+        elseif ($runs.Count -lt $MinRuns) { $reason = ('only {0} run(s): the rule needs {1} whole-suite runs, so nothing is promoted yet (single-run ratio min {2:N2}x)' -f $runs.Count, $MinRuns, $minRatio) }
     }
     $rows += [pscustomobject]@{
         kernel = $kernel; bucket = $bucket

@@ -169,3 +169,89 @@ default-enabled**; `doctor --json` -> `planner` shows every op as `reference` (C
 Evidence: `docs/test-evidence/wave-b/c1/` (`tune-evidence.json`, `doctor-with-profile.json`, `vulkan_ops_run.txt`,
 `tune-validation-stdout.txt`). The profile is cached under `HCS_DATA_DIR` as `kernel-profile.json`, keyed by device,
 driver, shader hash and shape bucket.
+
+## Upstream GGML Vulkan operator baseline and the promotion decision (wave C / k1, 2026-11-26)
+
+**What was missing.** Wave B / c1 recorded the upstream baseline as `NOT RUN`, so no kernel could be default-enabled.
+Wave C / k1 drives the pinned ggml Vulkan backend (llama.cpp `d3c3e24`, the same GGML the engines run) **in-process**:
+`src/kernels/vulkan/ggml_vk_baseline.cpp` (library `hcs_kernels_ggml_baseline`, built only with Vulkan + kernels + the
+llama.cpp engine ON) builds a one-node ggml graph per operation (`ggml_mul_mat` on F32 / F16 / Q8_0 / Q4_K weights,
+`ggml_soft_max`, `ggml_norm`+`mul`+`add`, `ggml_rms_norm`+`mul`, `ggml_rope_ext` NEOX), keeps the inputs device
+resident, times `ggml_backend_graph_compute` (submit + wait, the same wall-clock method as the HCS number: one
+submit + fence) after a warm-up, and spot-checks every result against a double-precision reference so a wrong-but-fast
+operation is never recorded. `HCSInfer tune` calls it for every bucket and writes `upstream_ggml_vulkan`
+`{status, median_ms, spread, variant, ratio_upstream_over_hcs}` into the profile; `tune --no-upstream` skips it.
+For F16 GEMM the faster of {F32, F16} activations is the baseline (conservative); there is **no** upstream operator
+with int8 x int8 -> int32 semantics, so `gemm_i8dot_tiled` is reported `not_comparable` and can never be
+default-enabled (its only possible comparison, a Q8_0 `mul_mat`, has different semantics). A bucket whose upstream
+timing spread exceeds 0.25 is "not a result" (new in `evaluate_promotion`). Standalone tool:
+`hcs_ggml_vk_bench --suite quick|full|llm [--out file.json]` (AGENTS.md 21.1 metadata; label `performance`; real-device
+tests `tests/performance/ggml_vk_baseline`, 7/7 PASS on the 680M).
+
+**Decision rule across repeated runs.** `scripts/kernel-decision.ps1 -Evidence run1.json run2.json run3.json` marks a
+(kernel, bucket) promoted only if, in **every** run, it is correct, 3/3 bit-identical, has spread <= 0.25 (HCS and
+upstream) and beats both the CPU baseline and the measured upstream operator by >= 1.05x; fewer than `-MinRuns` (3)
+runs promotes nothing. Reads files only.
+
+**Measured (AMD Radeon 680M, driver 26.6.1, Vulkan 1.4.315, `tune --suite llm`, 15 samples, ONE complete run;
+evidence `docs/test-evidence/wave-c/k1/`).** Ratio = upstream ms / HCS ms (> 1: HCS faster). Full per-bucket table:
+`docs/test-evidence/wave-c/k1/single-run-table.md`.
+
+| kernel | buckets compared | ratio range (upstream / HCS) | buckets >= 1.05x |
+|---|---|---|---|
+| `gemm_coopmat_f16` | 9 | 0.24x - 0.84x | 0 |
+| `gemm_f16_tiled` | 8 | 0.20x - 1.87x (1.87x is the 128^3 bucket, spread 0.475: not a result) | 0 valid |
+| `gemm_f32_tiled` | 8 | 0.24x - 0.99x | 0 |
+| `gemm_i8dot_tiled` | 0 | `not_comparable` | - |
+| `softmax_rows` | 5 | 0.77x - 1.04x | 0 |
+| `rmsnorm_rows` | 5 | 0.72x - 1.06x | 1 (upstream spread 0.26: not a result) |
+| `rope_rows` | 4 | 0.66x - 1.10x | 2 (upstream spread 0.17 / 0.45) |
+| `layernorm_rows` | 5 | 0.89x - 2.22x | 4 |
+
+* **GEMM: the HCS kernels lose clearly (2x to 5x slower) on every real LLM / SD shape**, e.g. 512x4096x4096 F32:
+  HCS 43.9 ms (coopmat f16) / 25.4 ms (int8) vs upstream F16 10.6 ms; decode GEMV 1x4096x4096: HCS f32 1.80 ms vs
+  upstream F32 1.00 ms, upstream Q8_0 0.32 ms, Q4_K 0.24 ms. Upstream additionally reads quantised weights directly
+  (Q4_K / Q8_0 `mul_mat`, 104-226 GFLOP/s in decode, 1.7 TFLOP/s in prefill on this iGPU), which no HCS kernel does.
+  This is a decisive negative result, not a noise question.
+* **softmax / RMSNorm / RoPE: parity (0.7x-1.1x)**; every >= 1.05x bucket has a noisy upstream timing or is a single
+  run. RoPE at the Llama shapes is within noise of upstream.
+* **LayerNorm: the only family that beat upstream (1.47x-2.22x on 4 of 5 buckets in one run)**. Honest reasons: the
+  HCS kernel is one fused dispatch while upstream's `norm`+`mul`+`add` chain is three. Two of those buckets also had
+  upstream spread 0.27-0.30 (> 0.25) and the other two were measured once, so **nothing is promoted** (rule: 3 runs).
+  Real models that use LayerNorm run it at m x n = 77x768 (CLIP), 729x1152 (SigLIP), 4096x320 (SD1.5 UNet block);
+  those buckets were added to the `llm` suite after the run and are NOT RUN.
+* **Repeat runs: BLOCKED.** The first complete run finished at 21:31; the second/third whole-suite runs (with the
+  fixes below) could not start because `D:\HCSScratch\realmodel.lock` was held by an empty orphan file (0 bytes,
+  created 21:34:52 by another agent's wrapper, no process holding it, no real-model process on the machine). It was
+  not removed because it is not this task's lock. 45-minute waits timed out twice (`docs/test-evidence/wave-c/k1/
+  lock-timeout.txt`). The 3-run decision is therefore **NOT RUN**.
+
+**Oracle fix found by the run (not re-verified on the device: NOT RUN).** At k = 4096 five GEMM buckets reported
+`FAIL (wrong result)` with unit-range inputs (max abs error 1.4e-4 to 4.3e-4 against a sqrt(k)-scaled tolerance of
+6.4e-5, on cancelling elements). The float32 accumulation error of a length-k sum grows ~ k * u * rms(partial sum), so
+this is an oracle-data scale problem (the coopmat kernel, whose hardware accumulation orders differently, passed at
+7.6e-5), not a proven kernel defect. `tune` now shrinks the float operands by (1024/k)^(1/4) each for k > 1024 (the
+variance-preserving scale real weights have; k <= 1024 evidence is unchanged) and does **not** touch any tolerance.
+Whether the 5 buckets now pass is untested.
+
+**Final state: default OFF for every kernel.** No kernel is promoted (single run, GEMM loses outright), so the
+planner keeps routing every op to the reference (CPU) path and the engines never call an HCS kernel. Integration
+points: (a) HCS-owned operations - the only GEMM-like one is `lora_rows` in `src/merge/math.cpp` (rank-r double
+accumulation, single-threaded, followed by a streamed write with a SHA-256 manifest); it was **not** moved to the GPU:
+its output must stay bit-reproducible for the manifest (double vs the kernel's float), and a 4096x4096 layer
+(64 MiB f32) is bounded by the write, not the arithmetic - this is an estimate, not a measurement; (b) a ggml
+backend op override was **not** implemented: no measured >= 1.05x win exists for a shape the models run (GEMM loses;
+LayerNorm was not measured at model shapes and repeated), and a fused LayerNorm saving ~0.1-0.4 ms per op would be
+roughly 1% of an SD step even if it held (an estimate, not a measurement). So no end-to-end token-identity / tokens-per-second comparison applies (nothing
+changed in the engine path).
+
+**Autotuner reset and the TDR guard.** `HCSInfer tune --reset [--device <sel>] [--kernel <id>]` drops only the
+selected device's (and kernel's) saved evidence from `<state-dir>/kernel-profile.json` so the next `tune` re-benchmarks
+from scratch; a corrupt profile is reported and never replaced (`TuneCli.*`, 4/4 PASS on the device; `tune --show`
+prints the table without GPU work). Stale evidence (other driver, other shader hash) is never matched in any case. TDR
+protection: one dispatch whose first (cold) run takes > 1.5 s is abandoned (`kColdAbortMs`), the big shapes are
+ordered ascending so the duration of the next one is predicted from the measured rate, and every runner call checks
+`VK_ERROR_DEVICE_LOST` and a dispatch timeout: `VulkanRunner.InjectedDeviceLostIsReportedRefusesWorkAndRecoversAfterReset`
+and `...DispatchTimeoutMarksTheRunnerLostAndResetRecovers` pass on the real device
+(`docs/test-evidence/wave-c/k1/vulkan_ops_tests.txt`, 20/20). These are soft simulations; a real OS TDR reset was
+not provoked and is NOT RUN.

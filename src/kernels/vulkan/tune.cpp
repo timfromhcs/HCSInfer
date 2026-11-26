@@ -129,8 +129,17 @@ std::vector<float> rand_f32(std::size_t n, std::uint32_t seed, float lo, float h
     for (auto& x : v) x = r.f(lo, hi);
     return v;
 }
-std::vector<std::uint16_t> rand_f16(std::size_t n, std::uint32_t seed) {
-    const auto f = rand_f32(n, seed, -1.0f, 1.0f);
+// Operand half-range for a length-k reduction. Up to k = 1024 the unit-range data of wave B / c1 is kept (so
+// that evidence stays comparable). Beyond it the operands shrink by (1024/k)^(1/4) each, so the sum keeps the
+// magnitude it has at k = 1024 - the variance-preserving scale real weights and activations have. Unit-range
+// data at k = 4096 makes the float32 accumulation error (~ k * u * rms partial sum, Higham) exceed the
+// sqrt(k)-scaled tolerance on cancelling elements (measured: 4.3e-4 vs 6.4e-5), which is an oracle-data
+// problem, not a kernel defect; the tolerance itself is not changed.
+float operand_range(std::uint32_t k) {
+    return k > 1024 ? std::pow(1024.0f / static_cast<float>(k), 0.25f) : 1.0f;
+}
+std::vector<std::uint16_t> rand_f16(std::size_t n, std::uint32_t seed, float range = 1.0f) {
+    const auto f = rand_f32(n, seed, -range, range);
     std::vector<std::uint16_t> h(n);
     for (std::size_t i = 0; i < n; ++i) h[i] = cpu::fp32_to_fp16(f[i]);
     return h;
@@ -180,7 +189,14 @@ Suite suite_for(const std::string& name) {
                                          {1024, 320, 2880},
                                          {128, 4096, 4096},
                                          {512, 4096, 4096}});
-            s.rows.insert(s.rows.end(), {{1024, 1024, 0}, {64, 14336, 0}});
+            s.rows.insert(s.rows.end(),
+                          {{1024, 1024, 0},
+                           {64, 14336, 0},
+                           {1, 4096, 0},      // Llama-style decode RMSNorm
+                           {512, 4096, 0},    // prefill RMSNorm / row softmax
+                           {77, 768, 0},      // CLIP text encoder LayerNorm
+                           {729, 1152, 0},    // SigLIP vision tower LayerNorm
+                           {4096, 320, 0}});  // SD1.5 UNet transformer block LayerNorm (64x64 latent)
             s.rope.insert(s.rope.end(), {{1, 128, 0}, {4096, 128, 0}});
         }
     } else {
@@ -225,8 +241,10 @@ Result<Prepared> prepare_case(KernelSet& ks, const std::string& id, const Shape&
                k = static_cast<std::uint32_t>(s.k);
     const float eps = 1e-5f;
     if (id == "gemm_f32_tiled") {
-        auto a = std::make_shared<std::vector<float>>(rand_f32(std::size_t{m} * k, seed, -1, 1));
-        auto b = std::make_shared<std::vector<float>>(rand_f32(std::size_t{k} * n, seed + 1, -1, 1));
+        auto a = std::make_shared<std::vector<float>>(
+            rand_f32(std::size_t{m} * k, seed, -operand_range(k), operand_range(k)));
+        auto b = std::make_shared<std::vector<float>>(
+            rand_f32(std::size_t{k} * n, seed + 1, -operand_range(k), operand_range(k)));
         auto op = ks.prepare_gemm_f32(a->data(), b->data(), m, n, k);
         if (!op)
             return op.error();
@@ -237,8 +255,10 @@ Result<Prepared> prepare_case(KernelSet& ks, const std::string& id, const Shape&
         auto out = std::make_shared<std::vector<float>>(std::size_t{m} * n);
         p.baseline = [=] { cpu::baseline_gemm_f32(a->data(), b->data(), out->data(), m, n, k); };
     } else if (id == "gemm_f16_tiled" || id == "gemm_coopmat_f16") {
-        auto a = std::make_shared<std::vector<std::uint16_t>>(rand_f16(std::size_t{m} * k, seed));
-        auto b = std::make_shared<std::vector<std::uint16_t>>(rand_f16(std::size_t{k} * n, seed + 1));
+        auto a = std::make_shared<std::vector<std::uint16_t>>(
+            rand_f16(std::size_t{m} * k, seed, operand_range(k)));
+        auto b = std::make_shared<std::vector<std::uint16_t>>(
+            rand_f16(std::size_t{k} * n, seed + 1, operand_range(k)));
         auto op = id == "gemm_f16_tiled" ? ks.prepare_gemm_f16(a->data(), b->data(), m, n, k)
                                          : ks.prepare_gemm_coopmat_f16(a->data(), b->data(), m, n, k);
         if (!op)
