@@ -63,6 +63,15 @@ struct VisionRequest {
     ImageInput image;
 };
 
+// One LoRA applied to an image generation. `path` is already resolved through the PathGuard (it lives in an
+// approved root); `base_family` is the family declared in the library manifest ("" = not declared).
+struct LoraSpec {
+    std::string id;
+    std::string path;
+    std::string base_family;
+    float weight = 1.0f;
+};
+
 struct ImageRequest {
     std::string prompt;
     std::string negative_prompt;
@@ -81,6 +90,9 @@ struct ImageRequest {
     // Without it such a request is an InvalidArgument error: 256 px / 2 steps SD1.5 output is a pipeline
     // smoke test, not an image.
     bool allow_low_quality = false;
+    // 0..n LoRAs (diffusion only). The adapter verifies each against the family it detected and rejects a
+    // mismatch with InvalidArgument (`lora_incompatible`); an engine that cannot apply LoRAs must reject too.
+    std::vector<LoraSpec> loras;
 };
 
 struct EngineMetrics {
