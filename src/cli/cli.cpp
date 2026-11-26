@@ -16,6 +16,7 @@
 #include "hcs/model_registry.hpp"
 #include "hcs/path_guard.hpp"
 #include "hcs/result.hpp"
+#include "hcs/state_dir.hpp"
 #include "hcs/version.hpp"
 #include "image_cmd.hpp"
 #include "train_cmd.hpp"
@@ -76,7 +77,8 @@ const char* kRootHelp =
     "  tune                          Planned - not implemented yet (exit code 10)\n"
     "\n"
     "Global options:\n"
-    "  --state-dir <dir>   State directory (default: $HCS_STATE_DIR, %LOCALAPPDATA%\\HCSInfer or "
+    "  --state-dir <dir>   State directory (default: $HCS_DATA_DIR, $HCS_STATE_DIR, %LOCALAPPDATA%\\HCSInfer "
+    "or "
     "~/.hcsinfer)\n"
     "  --version           Print version\n"
     "  --help, -h          Show help (works at every level)\n"
@@ -152,15 +154,7 @@ bool take_option(std::vector<std::string>& v, const std::string& flag, std::stri
 }
 
 fs::path state_dir(const std::string& override_dir) {
-    if (!override_dir.empty())
-        return fs::path(override_dir);
-    if (const char* e = std::getenv("HCS_STATE_DIR"); e && *e)
-        return fs::path(e);
-    if (const char* l = std::getenv("LOCALAPPDATA"); l && *l)
-        return fs::path(l) / "HCSInfer";
-    if (const char* h = std::getenv("HOME"); h && *h)
-        return fs::path(h) / ".hcsinfer";
-    return fs::path(".hcsinfer");
+    return hcs::resolve_state_dir(override_dir);
 }
 
 Result<void> load_registry(ModelRegistry& reg, const fs::path& file) {

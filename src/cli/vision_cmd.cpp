@@ -14,6 +14,7 @@
 #include "hcs/fs_util.hpp"
 #include "hcs/model_registry.hpp"
 #include "hcs/result.hpp"
+#include "hcs/state_dir.hpp"
 
 #ifdef HCS_HAVE_LLAMA
 #include "hcs/engines/llama_engine.hpp"
@@ -105,15 +106,7 @@ bool take_flag(std::vector<std::string>& a, const std::string& flag) {
 }
 
 fs::path state_dir(const std::string& override_dir) {
-    if (!override_dir.empty())
-        return fs::path(override_dir);
-    if (const char* e = std::getenv("HCS_STATE_DIR"); e && *e)
-        return fs::path(e);
-    if (const char* l = std::getenv("LOCALAPPDATA"); l && *l)
-        return fs::path(l) / "HCSInfer";
-    if (const char* h = std::getenv("HOME"); h && *h)
-        return fs::path(h) / ".hcsinfer";
-    return fs::path(".hcsinfer");
+    return hcs::resolve_state_dir(override_dir);
 }
 
 Result<std::string> resolve_model(const std::string& spec, const std::string& state_override) {

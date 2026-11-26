@@ -11,6 +11,7 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'common.ps1')
+. (Join-Path $PSScriptRoot 'env-d-e.ps1')   # nothing on C: (docs/build.md)
 
 try {
     $root = Get-RepoRoot

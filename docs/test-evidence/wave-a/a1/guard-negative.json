@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "result": "FAIL",
+  "command": "C:\\Users\\hcsme\\AppData\\Local\\Microsoft\\WindowsApps\\Microsoft.PowerShell_8wekyb3d8bbwe\\pwsh.exe -NoProfile -Command [IO.File]::WriteAllBytes('D:/HCSScratch/guard-selftest2/blob.bin',(New-Object byte[] (60MB)))",
+  "command_exit": 0,
+  "limit_mb": 50,
+  "watched_dirs": {
+    "localappdata_temp": "C:\\Users\\hcsme\\AppData\\Local\\Temp",
+    "pip": "C:\\Users\\hcsme\\AppData\\Local\\pip",
+    "hcsinfer_state": "C:\\Users\\hcsme\\AppData\\Local\\HCSInfer",
+    "npm_cache": "C:\\Users\\hcsme\\AppData\\Roaming\\npm-cache",
+    "cargo": "C:\\Users\\hcsme\\.cargo",
+    "hf_cache": "C:\\Users\\hcsme\\.cache\\huggingface",
+    "torch_cache": "C:\\Users\\hcsme\\.cache\\torch",
+    "extra_7": "D:\\HCSScratch\\guard-selftest2"
+  },
+  "before": {
+    "c_free_bytes": 59654418432,
+    "dir_bytes": {
+      "localappdata_temp": 18124612448,
+      "pip": 766155213,
+      "hcsinfer_state": 1098,
+      "npm_cache": 1028539,
+      "cargo": 1621081531,
+      "hf_cache": 3987777,
+      "torch_cache": 0,
+      "extra_7": 0
+    }
+  },
+  "after": {
+    "c_free_bytes": 59665063936,
+    "dir_bytes": {
+      "localappdata_temp": 18124612448,
+      "pip": 766155213,
+      "hcsinfer_state": 1098,
+      "npm_cache": 1028539,
+      "cargo": 1621081531,
+      "hf_cache": 3987777,
+      "torch_cache": 0,
+      "extra_7": 62914560
+    }
+  },
+  "dir_growth_bytes": {
+    "localappdata_temp": 0,
+    "pip": 0,
+    "hcsinfer_state": 0,
+    "npm_cache": 0,
+    "cargo": 0,
+    "hf_cache": 0,
+    "torch_cache": 0,
+    "extra_7": 62914560
+  },
+  "dir_growth_total_positive_bytes": 62914560,
+  "c_free_drop_bytes": -10645504,
+  "c_free_informational_only": true
+}

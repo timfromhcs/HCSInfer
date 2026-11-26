@@ -1,0 +1,2 @@
+test_state_dir.cpp.obj : error LNK2019: unresolved external symbol "class std::filesystem::path __cdecl hcs::resolve_state_dir(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::function<class std::basic_string<char,struct std::char_traits<char
+bin\hcs_test_core.exe : fatal error LNK1120: 1 unresolved externals
