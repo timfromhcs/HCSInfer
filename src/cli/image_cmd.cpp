@@ -49,7 +49,13 @@ const char* image_help() {
            "  --height <n>           Image height, 64..4096, multiple of 8 (default 512)\n"
            "  --steps <n>            Sampling steps, 1..150 (default 20)\n"
            "  --preset <p>           fast | quality: measured steps/cfg point for the loaded model family\n"
-           "                         (FLUX.3 Klein); overrides --steps/--cfg, rejected for other families\n"
+           "                         (SD1.5, SD-Turbo, SDXL-Turbo, FLUX.3 Klein); overrides --steps/--cfg,\n"
+           "                         rejected for a family without a profile\n"
+           "  --sampler <name>       Sampler override (euler, euler_a, heun, dpm2, dpm++2s_a, dpm++2m, ipndm,\n"
+           "                         lcm, ddim_trailing, tcd, res_multistep, lms); default = family profile.\n"
+           "                         LCM-LoRA needs lcm.\n"
+           "  --scheduler <name>     Scheduler override (discrete, karras, exponential, ays, gits, sgm_uniform,\n"
+           "                         simple, smoothstep, lcm, beta); default = engine default\n"
            "  --llm <file>           Text-encoder weights for multi-file models (FLUX.3: Qwen3-VL 4B)\n"
            "  --vae <file>           VAE weights for multi-file models\n"
            "                         (without --llm/--vae a `<model>.components.json` sidecar is read)\n"
@@ -271,6 +277,9 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
     take_value(args, "--device", device, bad);
     take_value(args, "--load-mode", load_mode, bad);
     take_value(args, "--preset", preset, bad);
+    std::string sampler, scheduler;
+    take_value(args, "--sampler", sampler, bad);
+    take_value(args, "--scheduler", scheduler, bad);
     take_value(args, "--llm", llm, bad);
     take_value(args, "--vae", vae, bad);
     take_value(args, "--params-backend", params_backend, bad);
@@ -337,6 +346,12 @@ int run_image(std::vector<std::string> args, const std::string& state_override, 
     if (preset != "" && preset != "fast" && preset != "quality")
         return fail(err, ErrorCode::InvalidArgument, "--preset must be fast or quality");
     req.preset = preset;
+    if (!sampler.empty() && !is_known_image_sampler(sampler))
+        return fail(err, ErrorCode::InvalidArgument, "--sampler '" + sampler + "' is not supported");
+    if (!scheduler.empty() && !is_known_image_scheduler(scheduler))
+        return fail(err, ErrorCode::InvalidArgument, "--scheduler '" + scheduler + "' is not supported");
+    req.sampler = sampler;
+    req.scheduler = scheduler;
     req.allow_low_quality = allow_low_quality;
     for (const std::string* comp : {&llm, &vae}) {
         if (comp->empty())

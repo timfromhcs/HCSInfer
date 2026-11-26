@@ -54,6 +54,10 @@ Result<void> ControlPlane::validate_image(const ImageParams& p, bool require_ini
             !why.empty())
             return make_error(ErrorCode::InvalidArgument, "low_quality_request: " + why);
     }
+    if (!p.sampler.empty() && !is_known_image_sampler(p.sampler))
+        return make_error(ErrorCode::InvalidArgument, "sampler '" + p.sampler + "' is not supported");
+    if (!p.scheduler.empty() && !is_known_image_scheduler(p.scheduler))
+        return make_error(ErrorCode::InvalidArgument, "scheduler '" + p.scheduler + "' is not supported");
     if (!(p.strength >= 0.0f && p.strength <= 1.0f))
         return make_error(ErrorCode::InvalidArgument, "strength must be in 0..1");
     if (!(p.cfg_scale >= 0.0f && p.cfg_scale <= 30.0f))
@@ -260,6 +264,8 @@ Result<Submitted> ControlPlane::submit_image(const ImageParams& p, bool require_
             ir.strength = p.strength;
             ir.cfg_scale = p.cfg_scale;
             ir.preset = p.preset;
+    ir.sampler = p.sampler;
+    ir.scheduler = p.scheduler;
             ir.allow_low_quality = p.allow_low_quality;
             ir.init_image = p.init_image;
             ir.loras = specs;

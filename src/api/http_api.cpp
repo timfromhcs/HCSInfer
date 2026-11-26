@@ -974,6 +974,10 @@ json image_request_schema(bool edit, std::size_t max_prompt, std::uint32_t max_s
           {"seed", {{"type", "integer"}, {"minimum", 0}}},
           {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}},
           {"preset", {{"type", "string"}, {"enum", json::array({"fast", "quality"})}}},
+          {"sampler", {{"type", "string"}, {"maxLength", 32}}},
+          {"scheduler", {{"type", "string"}, {"maxLength", 32}}},
+          {"sampler", {{"type", "string"}, {"maxLength", 32}}},
+          {"scheduler", {{"type", "string"}, {"maxLength", 32}}},
           {"allow_low_quality", {{"type", "boolean"}}},
           {"loras",
            {{"type", "array"},
@@ -1063,6 +1067,10 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
         p.cfg_scale = body["cfg_scale"].get<float>();
     if (body.contains("preset"))
         p.preset = body["preset"].get<std::string>();
+    if (body.contains("sampler"))
+        p.sampler = body["sampler"].get<std::string>();
+    if (body.contains("scheduler"))
+        p.scheduler = body["scheduler"].get<std::string>();
     if (body.contains("allow_low_quality"))
         p.allow_low_quality = body["allow_low_quality"].get<bool>();
     if (body.contains("loras"))

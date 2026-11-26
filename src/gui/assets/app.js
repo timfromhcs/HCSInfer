@@ -748,10 +748,13 @@
     if (size) body.size = size;
     var steps = numOrUndef("image-steps");
     if (steps !== undefined) body.steps = steps;
+    var mp = $("image-modelpreset").value;
+    if (mp) body.preset = mp;
     if (i2i) { body.image = image.initUri; body.strength = Number($("image-strength").value); }
     if (state.mode === "advanced") {
       var neg = $("image-negative").value.trim(); if (neg) body.negative_prompt = neg;
       var cfg = numOrUndef("image-cfg"); if (cfg !== undefined) body.cfg_scale = cfg;
+      var smp = $("image-sampler").value; if (smp) body.sampler = smp;
       if ($("image-lowq").checked) body.allow_low_quality = true;
       var picked = selectedLoras();
       if (picked.length > 4) { setBanner("image-state", "error", "at most 4 LoRAs per image."); return; }
@@ -923,7 +926,7 @@
   var RESETS = {
     chat: { "chat-system": "", "chat-temp": "0.7", "chat-max": "256", "chat-seed": "" },
     vision: { "vision-max": "256", "vision-temp": "0" },
-    image: { "image-negative": "", "image-cfg": "", "image-upscale": "off" }
+    image: { "image-negative": "", "image-cfg": "", "image-sampler": "", "image-modelpreset": "", "image-upscale": "off" }
   };
 
   /* ---------- wiring ---------- */
