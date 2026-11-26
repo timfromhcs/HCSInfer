@@ -1,0 +1,10 @@
+{
+  "D:\\HCSScratch\\b3\\merge-out\\vae-linear.safetensors": {
+    "tensors_compared": 251,
+    "max_abs_diff_vs_input": 0.0
+  },
+  "D:\\HCSScratch\\b3\\merge-out\\vae-slerp.safetensors": {
+    "tensors_compared": 251,
+    "max_abs_diff_vs_input": 0.0
+  }
+}

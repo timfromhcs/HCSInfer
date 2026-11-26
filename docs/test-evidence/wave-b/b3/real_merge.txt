@@ -1,0 +1,35 @@
+free RAM MB before: 9968
+input sha256: D64F3A68E1CC4F9F4E29B6E0DA38A0204FE9A49F2D4053F0EC1FA1CA02F9C4B5
+== merge linear (base = model = real flux2-vae.safetensors) exit=0 peak_working_set_MB=46.3
+{
+  "bytes_written": 336213620,
+  "format": "safetensors",
+  "manifest": "D:\\HCSScratch\\b3\\merge-out\\vae-linear.safetensors.merge.json",
+  "method": "linear",
+  "output": "D:\\HCSScratch\\b3\\merge-out\\vae-linear.safetensors",
+  "output_sha256": "3d7734eba111d6aaa4ca8142db9d394eeee3eba508abe0c57977c9a2b8495022",
+  "peak_buffer_bytes": 67108864,
+  "schema_version": 1,
+  "seconds": 6.3384344,
+  "tensors_copied": 1,
+  "tensors_merged": 250,
+  "tensors_total": 251
+}
+output sha256: 3D7734EBA111D6AAA4CA8142DB9D394EEEE3EBA508ABE0C57977C9A2B8495022  size=336213620
+== merge slerp (base = model = real flux2-vae.safetensors) exit=0 peak_working_set_MB=46.3
+{
+  "bytes_written": 336213620,
+  "format": "safetensors",
+  "manifest": "D:\\HCSScratch\\b3\\merge-out\\vae-slerp.safetensors.merge.json",
+  "method": "slerp",
+  "output": "D:\\HCSScratch\\b3\\merge-out\\vae-slerp.safetensors",
+  "output_sha256": "6b1599358bff4cd8e3003de5f965261f4823be0d4ccd04ce55572329c5aa2ea7",
+  "peak_buffer_bytes": 67108864,
+  "schema_version": 1,
+  "seconds": 6.0024014,
+  "tensors_copied": 1,
+  "tensors_merged": 250,
+  "tensors_total": 251
+}
+output sha256: 6B1599358BFF4CD8E3003DE5F965261F4823BE0D4CCD04CE55572329C5AA2EA7  size=336213620
+input size=336213556

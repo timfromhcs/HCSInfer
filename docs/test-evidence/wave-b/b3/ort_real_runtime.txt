@@ -1,0 +1,94 @@
+onnxruntime 1.31.1 onnx 1.23.2
+wrote D:\HCSScratch\b3\onnx
+onnxruntime.dll sha256: 68D0D5F502BE4509E2A16F932627A95137D748B2FAE519027F80125C0B1F550B
+Running main() from D:\HCSInfer\build\windows-msvc-release-vulkan\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 27 tests from 10 test suites.
+[----------] Global test environment set-up.
+[----------] 3 tests from UpscaleTiles
+[ RUN      ] UpscaleTiles.SingleTileWhenImageFits
+[       OK ] UpscaleTiles.SingleTileWhenImageFits (0 ms)
+[ RUN      ] UpscaleTiles.CoversEveryPixelWithOverlapAndAlignedLastTile
+[       OK ] UpscaleTiles.CoversEveryPixelWithOverlapAndAlignedLastTile (0 ms)
+[ RUN      ] UpscaleTiles.DegenerateInputs
+[       OK ] UpscaleTiles.DegenerateInputs (0 ms)
+[----------] 3 tests from UpscaleTiles (0 ms total)
+
+[----------] 1 test from UpscaleTarget
+[ RUN      ] UpscaleTarget.LongEdgeExactAspectPreserved
+[       OK ] UpscaleTarget.LongEdgeExactAspectPreserved (0 ms)
+[----------] 1 test from UpscaleTarget (0 ms total)
+
+[----------] 3 tests from UpscalePlan
+[ RUN      ] UpscalePlan.NeverUpscalesBeyondTheCap
+[       OK ] UpscalePlan.NeverUpscalesBeyondTheCap (0 ms)
+[ RUN      ] UpscalePlan.TileSizeShrinksWithTheBudgetAndFailsClosed
+[       OK ] UpscalePlan.TileSizeShrinksWithTheBudgetAndFailsClosed (0 ms)
+[ RUN      ] UpscalePlan.FixedTileModelsAndExplicitTile
+[       OK ] UpscalePlan.FixedTileModelsAndExplicitTile (0 ms)
+[----------] 3 tests from UpscalePlan (0 ms total)
+
+[----------] 1 test from UpscaleFeather
+[ RUN      ] UpscaleFeather.MonotonicPositiveAndSumsToOneAcrossAnOverlap
+[       OK ] UpscaleFeather.MonotonicPositiveAndSumsToOneAcrossAnOverlap (0 ms)
+[----------] 1 test from UpscaleFeather (0 ms total)
+
+[----------] 7 tests from UpscalePipeline
+[ RUN      ] UpscalePipeline.TiledResultEqualsSingleTileResultForAPositionIndependentModel
+[       OK ] UpscalePipeline.TiledResultEqualsSingleTileResultForAPositionIndependentModel (252 ms)
+[ RUN      ] UpscalePipeline.ConstantImageStaysConstantAfterBlendAndResample
+[       OK ] UpscalePipeline.ConstantImageStaysConstantAfterBlendAndResample (116 ms)
+[ RUN      ] UpscalePipeline.SeamBlendIsSmoothWhenTilesDisagree
+[       OK ] UpscalePipeline.SeamBlendIsSmoothWhenTilesDisagree (0 ms)
+[ RUN      ] UpscalePipeline.FixedTileModelWithPaddingGivesTheSameImage
+[       OK ] UpscalePipeline.FixedTileModelWithPaddingGivesTheSameImage (112 ms)
+[ RUN      ] UpscalePipeline.SkipsAtTheCapWithoutCallingTheModel
+[       OK ] UpscalePipeline.SkipsAtTheCapWithoutCallingTheModel (0 ms)
+[ RUN      ] UpscalePipeline.CancellationBetweenTilesAndStructuredErrors
+[       OK ] UpscalePipeline.CancellationBetweenTilesAndStructuredErrors (3 ms)
+[ RUN      ] UpscalePipeline.ProgressIsMonotonicAndEndsAtOne
+[       OK ] UpscalePipeline.ProgressIsMonotonicAndEndsAtOne (63 ms)
+[----------] 7 tests from UpscalePipeline (548 ms total)
+
+[----------] 3 tests from UpscaleResample
+[ RUN      ] UpscaleResample.IdentityAndConstant
+[       OK ] UpscaleResample.IdentityAndConstant (0 ms)
+[ RUN      ] UpscaleResample.LinearRampSurvivesDownscale
+[       OK ] UpscaleResample.LinearRampSurvivesDownscale (0 ms)
+[ RUN      ] UpscaleResample.MatchesNumpyGolden
+[       OK ] UpscaleResample.MatchesNumpyGolden (0 ms)
+[----------] 3 tests from UpscaleResample (0 ms total)
+
+[----------] 2 tests from UpscalePng
+[ RUN      ] UpscalePng.RoundTripAndRejectGarbage
+[       OK ] UpscalePng.RoundTripAndRejectGarbage (0 ms)
+[ RUN      ] UpscalePng.UpscalePngEndToEndAndSkipKeepsBytes
+[       OK ] UpscalePng.UpscalePngEndToEndAndSkipKeepsBytes (515 ms)
+[----------] 2 tests from UpscalePng (515 ms total)
+
+[----------] 1 test from OrtDiscovery
+[ RUN      ] OrtDiscovery.FindsRuntimeAndModelOnlyInGivenDirs
+[       OK ] OrtDiscovery.FindsRuntimeAndModelOnlyInGivenDirs (8 ms)
+[----------] 1 test from OrtDiscovery (8 ms total)
+
+[----------] 3 tests from OrtBackend
+[ RUN      ] OrtBackend.MissingRuntimeIsAStructuredUnsupportedError
+[       OK ] OrtBackend.MissingRuntimeIsAStructuredUnsupportedError (2 ms)
+[ RUN      ] OrtBackend.MissingModelIsUnsupportedNotACrash
+[       OK ] OrtBackend.MissingModelIsUnsupportedNotACrash (2 ms)
+[ RUN      ] OrtBackend.BogusDllIsRejectedWithoutCrashing
+[       OK ] OrtBackend.BogusDllIsRejectedWithoutCrashing (3 ms)
+[----------] 3 tests from OrtBackend (7 ms total)
+
+[----------] 3 tests from OrtRealRuntime
+[ RUN      ] OrtRealRuntime.DynamicSyntheticModelMatchesNearestNeighbour
+[       OK ] OrtRealRuntime.DynamicSyntheticModelMatchesNearestNeighbour (178 ms)
+[ RUN      ] OrtRealRuntime.FixedSizeSyntheticModelIsDetectedAndPadded
+[       OK ] OrtRealRuntime.FixedSizeSyntheticModelIsDetectedAndPadded (70 ms)
+[ RUN      ] OrtRealRuntime.ExplicitDirectMlWithoutTheProviderIsAnErrorNotASilentFallback
+[       OK ] OrtRealRuntime.ExplicitDirectMlWithoutTheProviderIsAnErrorNotASilentFallback (1 ms)
+[----------] 3 tests from OrtRealRuntime (250 ms total)
+
+[----------] Global test environment tear-down
+[==========] 27 tests from 10 test suites ran. (1332 ms total)
+[  PASSED  ] 27 tests.
+EXIT=0

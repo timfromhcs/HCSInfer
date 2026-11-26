@@ -151,6 +151,8 @@ Authenticated, **Experimental**. Real stable-diffusion.cpp output (HTTP route te
 | `allow_low_quality` | boolean, default `false`. Without it a request below the model family's quality envelope is rejected with `400` and a message starting `low_quality_request:` (SD1.5: short side < 384 px or < 8 steps; FLUX.3 Klein: short side < 384 px or < 4 steps without a preset). A 256 px / 2-step SD1.5 render is a pipeline smoke test, not an image. The same field exists on the MCP image tools and as CLI `--allow-low-quality` |
 | `preset` | `fast` \| `quality`: measured steps/cfg point of the loaded family (FLUX.3 Klein only) |
 | `seed`, `negative_prompt`, `cfg_scale` (0..30, 0 = model default) | HCS extensions |
+| `loras` | HCS extension: up to 4 `{"id","weight"?}` objects, ids from `GET /hcs/v1/loras` (paths are not accepted). `weight` is `0 < abs(w) <= 2`, default = the manifest's recommended weight. A LoRA for another base family answers `400` with a message starting `lora_incompatible:`; unknown id `404`; no LoRA library `501`. Checked before the model is touched, repeated by the engine against the loaded weights. See [`docs/lora.md`](lora.md) |
+| `upscale` | HCS extension: `"off"` (default) or `"4k"`: tiled 4x ONNX super-resolution then Lanczos to a 3840 px long edge. A missing `onnxruntime.dll`/model answers `501` **before** the render starts. If the upscale itself fails the un-upscaled image is returned and `hcs.upscale = {"status":"failed","error":...}`. See [`docs/upscale.md`](upscale.md) |
 | `preset` | `fast` or `quality`: replaces `steps` and `cfg_scale` with the measured point of the loaded model family. Only the FLUX.3 family has a table; any other family answers `400`/`InvalidArgument` (never silently ignored). HCS extension, see `docs/supported-models.md` |
 | `n` | only `1` |
 | `response_format` | only `b64_json` (the default here, unlike OpenAI); `url` -> `501` (nothing is hosted) |
@@ -188,6 +190,7 @@ Behaviour shared by both routes:
 | `GET /hcs/v1/devices` | hardware/Vulkan report (from `hcs_hardware`'s doctor JSON; `{"status":"unknown",...}` without it) |
 | `GET /hcs/v1/memory` | budget (`"unknown"` strings when no live measurement), reservations |
 | `GET /hcs/v1/models`, `GET /hcs/v1/models/{id}` | manifests + lifecycle state (no file paths) |
+| `GET /hcs/v1/loras` | image LoRA library: id, name, base family, trigger words, recommended weight, licence, source, sha256 (+ `sha256_status`), status, problems. Never file paths. Empty list + a note when no library exists |
 | `POST /hcs/v1/models/{id}/load` | `202 {"job_id","status_url"}` (asynchronous job) |
 | `POST /hcs/v1/models/{id}/unload` | `200`; cancels a running generation first; `409` if that model is not loaded |
 | `GET /hcs/v1/jobs/{id}` | `{id,name,state,error,event_count,result?}`; states `queued running succeeded failed cancelled` |
