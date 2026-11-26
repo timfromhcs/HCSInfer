@@ -242,6 +242,33 @@ TEST(Promotion, DefaultEnableNeedsAMeasuredUpstreamBaseline) {
     EXPECT_FALSE(evaluate_promotion(e).default_enabled);
 }
 
+TEST(Promotion, NoisyOrNonComparableUpstreamEvidenceNeverEnablesByDefault) {
+    const DeviceCaps c = caps_680m();
+    ProfileEntry e = good_entry(c, "gemm_f32_tiled", "h", kGemm);
+    e.upstream_status = "measured";
+    e.upstream_ratio = 3.0;
+    e.upstream_spread = 0.40;  // upstream timing noisier than the 0.25 rule: not a result
+    PromotionDecision d = evaluate_promotion(e);
+    EXPECT_TRUE(d.promoted);
+    EXPECT_FALSE(d.default_enabled);
+    ASSERT_FALSE(d.reasons.empty());
+    EXPECT_NE(d.reasons.back().find("noisy"), std::string::npos) << d.reasons.back();
+    e.upstream_spread = 0.10;
+    EXPECT_TRUE(evaluate_promotion(e).default_enabled);
+
+    e.upstream_status = "not_comparable";
+    e.upstream_ratio.reset();
+    d = evaluate_promotion(e);
+    EXPECT_FALSE(d.default_enabled);
+    ASSERT_FALSE(d.reasons.empty());
+    EXPECT_NE(d.reasons.back().find("no equivalent"), std::string::npos) << d.reasons.back();
+
+    e.upstream_status = "error";
+    d = evaluate_promotion(e);
+    EXPECT_FALSE(d.default_enabled);
+    EXPECT_NE(d.reasons.back().find("failed"), std::string::npos) << d.reasons.back();
+}
+
 TEST(Planner, ShapeBucketsArePowersOfTwo) {
     EXPECT_EQ(shape_bucket({256, 1024, 256}), "m256n1024k256");
     EXPECT_EQ(shape_bucket({67, 131, 95}), "m128n256k128");
