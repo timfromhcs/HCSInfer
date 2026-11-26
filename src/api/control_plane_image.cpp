@@ -104,9 +104,14 @@ Result<Submitted> ControlPlane::submit_image(const ImageParams& p, bool require_
                           "the linked image engine does not implement hcs::api::IImageStreamEngine");
     if (auto v = validate_image(p, require_init); !v)
         return v.error();
+    auto ticket = admit_job(scheduler::WorkKind::Image, p.model,
+                            scheduler::estimate_image_job_bytes(p.width, p.height, p.init_image.has_value()));
+    if (!ticket)
+        return ticket.error();
     return submit_with_channel(
         require_init ? "image.edit" : "image.generate",
-        [this, p, require_init](JobContext& ctx) -> Result<void> {
+        [this, p, require_init, tk = ticket.value()](JobContext& ctx) -> Result<void> {
+            (void)tk;  // holds the admission slot until the job closure is destroyed
             if (ctx.cancelled())
                 return make_error(ErrorCode::Cancelled, "cancelled before start");
             // One critical section for "switch to the requested model" and "use it" (same reasoning as chat,

@@ -153,74 +153,82 @@ Result<Submitted> ControlPlane::submit_vision_chat(const ChatParams& p) {
         return make_error(
             ErrorCode::Unsupported,
             "the linked text engine does not implement hcs::api::IVisionStreamEngine (image input)");
-    return submit_with_channel("vision.analyze", [this, p, vis](JobContext& ctx) -> Result<void> {
-        if (ctx.cancelled())
-            return make_error(ErrorCode::Cancelled, "cancelled before start");
-        if (!p.model.empty()) {
-            const auto cur = loaded_model();
-            if (!cur || *cur != p.model) {
-                if (auto r = load_model(p.model); !r)
-                    return r;
+    auto ticket =
+        admit_job(scheduler::WorkKind::Vision, p.model,
+                  scheduler::estimate_vision_job_bytes(p.messages.back().images.front().bytes.size()));
+    if (!ticket)
+        return ticket.error();
+    return submit_with_channel(
+        "vision.analyze", [this, p, vis, tk = ticket.value()](JobContext& ctx) -> Result<void> {
+            (void)tk;  // holds the admission slot until the job closure is destroyed
+            if (ctx.cancelled())
+                return make_error(ErrorCode::Cancelled, "cancelled before start");
+            if (!p.model.empty()) {
+                const auto cur = loaded_model();
+                if (!cur || *cur != p.model) {
+                    if (auto r = load_model(p.model); !r)
+                        return r;
+                }
             }
-        }
-        std::lock_guard lk(engine_mutex_);
-        std::string id;
-        bool has_projector = false;
-        {
-            std::lock_guard sl(state_mutex_);
-            if (!loaded_)
-                return make_error(ErrorCode::InvalidState,
-                                  "no model is loaded: load one first or pass a model id");
-            if (loaded_is_image_)
-                return make_error(ErrorCode::Unsupported,
-                                  "the loaded model is an image-generation model, not a vision model");
-            id = *loaded_;
-            has_projector = loaded_has_projector_;
-        }
-        if (!has_projector)
-            return make_error(ErrorCode::Unsupported,
-                              "model '" + id +
-                                  "' has no vision projector: place its mmproj*.gguf GGUF next to the model "
-                                  "inside an approved root, rescan, and reload");
-        if (ctx.cancelled())
-            return make_error(ErrorCode::Cancelled, "cancelled before start");
-        active_job_.store(ctx.id().value);
-        (void)registry_.transition(id, ModelState::Running);
-        VisionRequest vr;
-        {
-            const auto& ms = p.messages;
-            vr.text.prompt = ms.back().content;
-            if (ms.size() == 2)
-                vr.text.system_prompt = ms[0].content;
-            vr.text.apply_chat_template = true;
-            vr.text.max_tokens = p.max_tokens;
-            vr.text.temperature = p.temperature;
-            vr.text.seed = p.seed;
-            vr.image = ms.back().images.front();
-        }
-        Result<TextResult> r = make_error(ErrorCode::Internal, "engine threw");
-        try {
-            r = vis->analyze_image_stream(
-                vr,
-                [&ctx](std::string_view piece) {
-                    if (ctx.cancelled())
-                        return false;
-                    ctx.output(std::string(piece));
-                    return !ctx.cancelled();
-                },
-                ctx.token());
-        } catch (const std::exception& e) {
-            r = error_from_engine_exception(e);
-        }
-        active_job_.store(0);
-        (void)registry_.transition(id, ModelState::Loaded);
-        if (!r)
-            return r.error();
-        note_result(ctx.id(), r.value());
-        if (ctx.cancelled() || r.value().finish_reason == "cancelled")
-            return make_error(ErrorCode::Cancelled, "generation cancelled");
-        return {};
-    });
+            std::lock_guard lk(engine_mutex_);
+            std::string id;
+            bool has_projector = false;
+            {
+                std::lock_guard sl(state_mutex_);
+                if (!loaded_)
+                    return make_error(ErrorCode::InvalidState,
+                                      "no model is loaded: load one first or pass a model id");
+                if (loaded_is_image_)
+                    return make_error(ErrorCode::Unsupported,
+                                      "the loaded model is an image-generation model, not a vision model");
+                id = *loaded_;
+                has_projector = loaded_has_projector_;
+            }
+            if (!has_projector)
+                return make_error(
+                    ErrorCode::Unsupported,
+                    "model '" + id +
+                        "' has no vision projector: place its mmproj*.gguf GGUF next to the model "
+                        "inside an approved root, rescan, and reload");
+            if (ctx.cancelled())
+                return make_error(ErrorCode::Cancelled, "cancelled before start");
+            active_job_.store(ctx.id().value);
+            (void)registry_.transition(id, ModelState::Running);
+            VisionRequest vr;
+            {
+                const auto& ms = p.messages;
+                vr.text.prompt = ms.back().content;
+                if (ms.size() == 2)
+                    vr.text.system_prompt = ms[0].content;
+                vr.text.apply_chat_template = true;
+                vr.text.max_tokens = p.max_tokens;
+                vr.text.temperature = p.temperature;
+                vr.text.seed = p.seed;
+                vr.image = ms.back().images.front();
+            }
+            Result<TextResult> r = make_error(ErrorCode::Internal, "engine threw");
+            try {
+                r = vis->analyze_image_stream(
+                    vr,
+                    [&ctx](std::string_view piece) {
+                        if (ctx.cancelled())
+                            return false;
+                        ctx.output(std::string(piece));
+                        return !ctx.cancelled();
+                    },
+                    ctx.token());
+            } catch (const std::exception& e) {
+                r = error_from_engine_exception(e);
+            }
+            active_job_.store(0);
+            (void)registry_.transition(id, ModelState::Loaded);
+            if (!r)
+                return r.error();
+            note_result(ctx.id(), r.value());
+            if (ctx.cancelled() || r.value().finish_reason == "cancelled")
+                return make_error(ErrorCode::Cancelled, "generation cancelled");
+            return {};
+        });
 }
 
 }  // namespace hcs::api

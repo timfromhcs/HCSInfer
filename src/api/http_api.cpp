@@ -70,6 +70,8 @@ int http_status_for(ErrorCode c) {
             return 429;
         case ErrorCode::Timeout:
             return 504;
+        case ErrorCode::Overloaded:
+            return 503;  // + Retry-After (see from_error)
         case ErrorCode::Internal:
             return 500;
     }
@@ -304,6 +306,8 @@ HttpResponse ApiHandler::from_error(const Error& e, const std::string& rid) cons
     auto r = error(st, type_for(st), std::string(to_string(e.code)), e.message, rid);
     if (st == 429)
         r.headers.emplace_back("Retry-After", "1");
+    else if (st == 503 && (e.code == ErrorCode::Overloaded || e.code == ErrorCode::OutOfMemory))
+        r.headers.emplace_back("Retry-After", std::to_string(cp_.retry_after_seconds()));  // backpressure
     return r;
 }
 
@@ -352,7 +356,11 @@ HttpResponse ApiHandler::handle(const HttpRequest& req) {
             const bool is_cancel = req.method == "POST" && req.path.rfind("/hcs/v1/jobs/", 0) == 0 &&
                                    req.path.size() > 7 &&
                                    req.path.compare(req.path.size() - 7, 7, "/cancel") == 0;
-            if (!is_health && !is_cancel) {
+            // The kill switch and the overload snapshot are the way out of / the window into an overload, so
+            // they are never throttled either.
+            const bool is_overload_ctl = (req.method == "POST" && req.path == "/hcs/v1/runtime/shed") ||
+                                         (req.method == "GET" && req.path == "/hcs/v1/runtime/overload");
+            if (!is_health && !is_cancel && !is_overload_ctl) {
                 if (inflight_.fetch_add(1) >= opt_.max_inflight) {
                     inflight_.fetch_sub(1);
                     resp = error(429, "rate_limit_error", "too_many_requests", "too many concurrent requests",
@@ -362,7 +370,7 @@ HttpResponse ApiHandler::handle(const HttpRequest& req) {
                     guard = std::make_shared<Inflight>(inflight_);
                 }
             }
-            if (is_health || is_cancel || guard)
+            if (is_health || is_cancel || is_overload_ctl || guard)
                 resp = dispatch(req, rid, guard);
         }
     } catch (const std::exception& e) {
@@ -449,6 +457,18 @@ HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid
                     return not_allowed("POST");
                 return benchmarks(req, rid);
             }
+        }
+        if (a == "runtime" && seg.size() == 4 && (seg[3] == "shed" || seg[3] == "overload")) {
+            if (seg[3] == "overload") {
+                if (!is_get)
+                    return not_allowed("GET");
+                return json_ok(cp_.overload_json());
+            }
+            if (!is_post)
+                return not_allowed("POST");
+            // Kill switch: cancel every job and unload the model, bounded by the shed deadline.
+            const auto rep = cp_.shed("manual: POST /hcs/v1/runtime/shed");
+            return json_ok(scheduler::to_json(rep));
         }
         if (a == "models" && seg.size() == 4) {
             if (!is_get)

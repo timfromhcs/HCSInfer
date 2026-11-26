@@ -250,10 +250,10 @@ TEST(McpTools, ListHasNarrowSchemasForEveryRequiredTool) {
         EXPECT_TRUE(t.contains("description"));
         EXPECT_TRUE(t["annotations"].contains("readOnlyHint"));
     }
-    for (const char* want :
-         {"hcs.models.list", "hcs.models.inspect", "hcs.models.load", "hcs.models.unload",
-          "hcs.chat.generate", "hcs.runtime.status", "hcs.runtime.benchmark", "hcs.jobs.status",
-          "hcs.jobs.cancel", "hcs.vision.analyze", "hcs.image.generate", "hcs.image.edit"})
+    for (const char* want : {"hcs.models.list", "hcs.models.inspect", "hcs.models.load", "hcs.models.unload",
+                             "hcs.chat.generate", "hcs.runtime.status", "hcs.runtime.benchmark",
+                             "hcs.jobs.status", "hcs.jobs.cancel", "hcs.vision.analyze", "hcs.image.generate",
+                             "hcs.image.edit", "hcs.runtime.shed"})
         EXPECT_TRUE(names.count(want)) << want;
     // deterministic order across calls
     EXPECT_EQ(m.rpc(modern_req(2, "tools/list"))["result"]["tools"], r["result"]["tools"]);
@@ -949,4 +949,44 @@ TEST(McpFraming, UnusualRequestIdsDoNotBreakCorrelation) {
         else
             EXPECT_TRUE(r.contains("error"));
     }
+}
+
+// --- overload protection (plan F1): the same structured errors and the kill switch over MCP ----------------
+#include "fake_probe.hpp"
+
+TEST(McpOverload, ShedToolWorksWithoutAControllerAndIsListedAsDestructive) {
+    Mcp m;
+    const auto r = m.rpc(modern_req(1, "tools/list"));
+    bool found = false;
+    for (const auto& t : r["result"]["tools"])
+        if (t["name"] == "hcs.runtime.shed") {
+            found = true;
+            EXPECT_EQ(t["annotations"]["destructiveHint"], true);
+        }
+    EXPECT_TRUE(found);
+    const auto res = m.tool(2, "hcs.runtime.shed");
+    EXPECT_EQ(res["result"]["isError"], false);
+    EXPECT_EQ(res["result"]["structuredContent"]["jobs_cancelled"], 0);
+    EXPECT_EQ(res["result"]["structuredContent"]["model_unloaded"], false);
+}
+
+TEST(McpOverload, ChatIsRefusedWithTheSameStructuredErrorAsHttp) {
+    test::FakeProbe probe;
+    scheduler::AdmissionConfig cfg;
+    auto adm = std::make_shared<scheduler::AdmissionController>(cfg, probe.probe());
+    api::ControlPlaneOptions o;
+    o.admission = adm;
+    test::ApiFixture fx(true, o);
+    McpServer server(*fx.cp, {}, fx.logger);
+    auto call = [&](const std::string& tool, json args) {
+        return json::parse(server.handle_line(call_req(1, tool, args).dump()));
+    };
+    probe.set_free(2000 * test::kMiB);  // below the soft floor
+    const auto r = call("hcs.chat.generate", {{"prompt", "hi"}, {"model", "tiny"}});
+    EXPECT_EQ(r["result"]["isError"], true);
+    EXPECT_EQ(r["result"]["structuredContent"]["error"]["code"], "overloaded");
+    // The kill switch tool records itself on the controller.
+    const auto s = call("hcs.runtime.shed", json::object());
+    EXPECT_EQ(s["result"]["isError"], false);
+    EXPECT_EQ(adm->snapshot_json()["counters"]["shed_count"], 1);
 }
