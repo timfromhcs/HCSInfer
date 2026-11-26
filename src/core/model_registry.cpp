@@ -232,6 +232,26 @@ Result<void> ModelRegistry::fail(std::string_view id, FailureKind kind, std::str
     return it->second.lifecycle->fail(kind, std::move(reason));
 }
 
+Result<void> ModelRegistry::set_sha256(std::string_view id, std::string_view hex) {
+    if (hex.size() != 64)
+        return make_error(ErrorCode::InvalidArgument, "digest must be 64 hex characters");
+    std::string h;
+    for (char c : hex) {
+        const bool digit = c >= '0' && c <= '9';
+        const bool lo = c >= 'a' && c <= 'f';
+        const bool up = c >= 'A' && c <= 'F';
+        if (!digit && !lo && !up)
+            return make_error(ErrorCode::InvalidArgument, "digest must be 64 hex characters");
+        h.push_back(up ? static_cast<char>(c - 'A' + 'a') : c);
+    }
+    std::lock_guard lock(mutex_);
+    auto it = models_.find(id);
+    if (it == models_.end())
+        return make_error(ErrorCode::NotFound, "no such model");
+    it->second.manifest.sha256 = std::move(h);
+    return {};
+}
+
 Result<ScanReport> ModelRegistry::scan(const fs::path& root, const PathGuard& guard) {
     auto resolved_root = guard.resolve(root);
     if (!resolved_root)
@@ -313,6 +333,8 @@ Result<ScanReport> ModelRegistry::scan(const fs::path& root, const PathGuard& gu
         auto same_path = std::find_if(models_.begin(), models_.end(),
                                       [&](const auto& kv) { return kv.second.manifest.path == m.path; });
         if (same_path != models_.end()) {
+            if (same_path->second.manifest.size_bytes != size)
+                same_path->second.manifest.sha256.clear();  // the recorded digest belongs to another file
             same_path->second.manifest.size_bytes = size;
             ++report.updated;
             continue;

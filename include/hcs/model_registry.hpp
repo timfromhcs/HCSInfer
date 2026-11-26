@@ -56,6 +56,11 @@ public:
     Result<void> remove(std::string_view id);
     std::size_t size() const;
 
+    // Records the file digest of a model (64 lower/upper-case hex chars; stored lower-case). NotFound for an
+    // unknown id, InvalidArgument for a malformed digest. A later scan that sees a different file size clears
+    // it again (a changed file must never be verified against its old digest).
+    Result<void> set_sha256(std::string_view id, std::string_view hex);
+
     Result<ModelState> state(std::string_view id) const;
     Result<void> transition(std::string_view id, ModelState to);
     Result<void> fail(std::string_view id, FailureKind kind, std::string reason);
