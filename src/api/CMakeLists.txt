@@ -1,17 +1,17 @@
 include(HcsHttplib)
 
 hcs_add_library(api
-  SOURCES control_plane.cpp http_api.cpp json_schema.cpp runtime.cpp http_server.cpp control_plane_vision.cpp control_plane_image.cpp control_plane_benchmark.cpp image_probe.cpp data_uri.cpp chat_tools.cpp
+  SOURCES control_plane.cpp http_api.cpp json_schema.cpp runtime.cpp http_server.cpp control_plane_vision.cpp control_plane_image.cpp control_plane_benchmark.cpp image_probe.cpp data_uri.cpp chat_tools.cpp http_client.cpp
   PUBLIC_LINK hcs_core nlohmann_json::nlohmann_json)
 
 # cpp-httplib is third-party code confined to http_server.cpp: relaxed warnings for that file only.
 target_include_directories(hcs_api SYSTEM PRIVATE "${HCS_HTTPLIB_INCLUDE_DIR}")
 if(MSVC)
-  set_source_files_properties(http_server.cpp PROPERTIES COMPILE_OPTIONS "/W3;/WX-")
+  set_source_files_properties(http_server.cpp http_client.cpp PROPERTIES COMPILE_OPTIONS "/W3;/WX-")
 else()
-  set_source_files_properties(http_server.cpp PROPERTIES COMPILE_OPTIONS "-Wno-error")
+  set_source_files_properties(http_server.cpp http_client.cpp PROPERTIES COMPILE_OPTIONS "-Wno-error")
 endif()
-set_source_files_properties(http_server.cpp PROPERTIES COMPILE_DEFINITIONS "_WIN32_WINNT=0x0A00")
+set_source_files_properties(http_server.cpp http_client.cpp PROPERTIES COMPILE_DEFINITIONS "_WIN32_WINNT=0x0A00")
 if(WIN32)
   target_link_libraries(hcs_api PRIVATE ws2_32)
 endif()
@@ -20,6 +20,12 @@ endif()
 if(TARGET hcs_gui)
   target_link_libraries(hcs_api PRIVATE hcs_gui)
   target_compile_definitions(hcs_api PRIVATE HCS_HAVE_GUI=1)
+endif()
+
+# Opt-in Model Vault load stage (`serve --vault-prefetch`): bounded sequential read + digest before the engine.
+if(TARGET hcs_storage)
+  target_link_libraries(hcs_api PRIVATE hcs_storage)
+  target_compile_definitions(hcs_api PRIVATE HCS_HAVE_STORAGE=1)
 endif()
 
 if(TARGET hcs_hardware)

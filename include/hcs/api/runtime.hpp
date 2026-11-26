@@ -20,6 +20,13 @@ struct RuntimeOptions {
     std::unique_ptr<IImageEngine> image_engine;  // null => make_default_image_engine() (may still be null)
     ControlPlaneOptions control;
     JobQueueOptions queue;
+    // Opt-in Model Vault load stage (M5 Stage B; default OFF, see docs/model-vault.md): every model file is
+    // read once through the bounded asynchronous reader and hashed before the engine opens it. Ignored when
+    // `control.model_prefetch` is already set. Fails Runtime::create with Unsupported when the storage module
+    // is not built in.
+    bool vault_prefetch = false;
+    std::size_t vault_buffers = 4;       // read-ahead slots, 1..16
+    std::uint32_t vault_chunk_mib = 16;  // 1..128
     // Live memory measurement used for the budget. Empty => the hardware module's measurement when it is
     // linked into this build (otherwise the budget stays unknown and /hcs/v1/memory says so).
     std::function<std::optional<MemoryMeasurements>()> memory_probe;
