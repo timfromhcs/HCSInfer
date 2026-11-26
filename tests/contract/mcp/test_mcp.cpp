@@ -253,7 +253,7 @@ TEST(McpTools, ListHasNarrowSchemasForEveryRequiredTool) {
     for (const char* want : {"hcs.models.list", "hcs.models.inspect", "hcs.models.load", "hcs.models.unload",
                              "hcs.chat.generate", "hcs.runtime.status", "hcs.runtime.benchmark",
                              "hcs.jobs.status", "hcs.jobs.cancel", "hcs.vision.analyze", "hcs.image.generate",
-                             "hcs.image.edit", "hcs.runtime.shed"})
+                             "hcs.image.edit", "hcs.runtime.shed", "hcs.loras.list"})
         EXPECT_TRUE(names.count(want)) << want;
     // deterministic order across calls
     EXPECT_EQ(m.rpc(modern_req(2, "tools/list"))["result"]["tools"], r["result"]["tools"]);

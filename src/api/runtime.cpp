@@ -11,6 +11,7 @@
 
 #include "hcs/api/http_api.hpp"
 #include "hcs/fs_util.hpp"
+#include "hcs/upscale_ort.hpp"
 #include "hcs/version.hpp"
 
 #ifdef HCS_HAVE_HARDWARE
@@ -158,6 +159,36 @@ Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger&
     rt->control = std::make_unique<ControlPlane>(rt->registry, rt->guard, rt->budget, *rt->queue,
                                                  rt->engine.get(), logger, co, rt->image_engine.get());
     rt->admission->start_watchdog();
+
+    // Image LoRA library: the first approved root that has <root>/lora/image is scanned (read-only; nothing
+    // is hashed unless verification is requested). A scan failure is logged and leaves the library absent.
+    for (const auto& root : rt->guard.roots()) {
+        const auto dir = root / "lora" / "image";
+        std::error_code lec;
+        if (!std::filesystem::is_directory(dir, lec))
+            continue;
+        if (auto r = rt->control->scan_loras(dir); !r)
+            logger.warn("runtime", "LoRA library scan failed", {{"reason", r.error().message}});
+        break;
+    }
+    // 4K upscaler (opt-in per request): ONNX Runtime is loaded dynamically on first use, from <root>/upscale
+    // or the executable's folder only. Without the DLL or a model the request fails with a structured
+    // Unsupported error.
+    {
+        upscale::OrtConfig oc;
+        for (const auto& root : rt->guard.roots()) {
+            const auto dir = root / "upscale";
+            std::error_code uec;
+            if (!std::filesystem::is_directory(dir, uec))
+                continue;
+            oc.runtime_dirs.push_back(dir);
+            if (oc.model_path.empty())
+                oc.model_path = upscale::find_upscale_model(dir);
+        }
+        if (const auto exe = upscale::executable_dir(); !exe.empty())
+            oc.runtime_dirs.push_back(exe);
+        rt->control->set_upscaler(std::make_shared<upscale::OrtUpscaleEngine>(std::move(oc)));
+    }
     return rt;
 }
 

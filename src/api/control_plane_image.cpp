@@ -3,6 +3,7 @@
 // validated here BEFORE the engine is touched: dimensions, pixel budget, steps, strength, prompt size and the
 // init image header (format + decoded pixel count are probed without decoding, AGENTS.md 19.3).
 #include <algorithm>
+#include <cstdio>
 
 #include "hcs/api/control_plane.hpp"
 #include "hcs/api/image_probe.hpp"
@@ -59,6 +60,13 @@ Result<void> ControlPlane::validate_image(const ImageParams& p, bool require_ini
         return make_error(ErrorCode::InvalidArgument, "cfg_scale must be in 0..30");
     if (require_init && !p.init_image)
         return make_error(ErrorCode::InvalidArgument, "an input image is required");
+    if (auto u = check_upscale_request(p); !u)
+        return u;
+    if (!p.loras.empty()) {
+        auto l = resolve_loras(p);
+        if (!l)
+            return l.error();
+    }
     if (p.init_image) {
         const auto& img = *p.init_image;
         if (img.bytes.empty())
@@ -77,6 +85,104 @@ Result<void> ControlPlane::validate_image(const ImageParams& p, bool require_ini
                                   std::to_string(probe->height) + " exceed the " +
                                   std::to_string(opt_.max_image_pixels) + " pixel limit");
     }
+    return {};
+}
+
+// --- LoRA library / upscaler
+// ------------------------------------------------------------------------------------
+
+Result<void> ControlPlane::scan_loras(const std::filesystem::path& dir, bool verify_hashes) {
+    auto fresh = std::make_shared<LoraLibrary>();
+    if (auto r = fresh->scan(guard_, dir, LoraScanOptions{verify_hashes}); !r)
+        return r;
+    std::lock_guard lk(lora_mutex_);
+    loras_ = std::move(fresh);
+    return {};
+}
+
+bool ControlPlane::has_lora_library() const {
+    std::lock_guard lk(lora_mutex_);
+    return loras_ != nullptr;
+}
+
+nlohmann::json ControlPlane::loras_json() const {
+    std::shared_ptr<LoraLibrary> lib;
+    {
+        std::lock_guard lk(lora_mutex_);
+        lib = loras_;
+    }
+    nlohmann::json out = {{"loras", nlohmann::json::array()},
+                          {"max_per_request", kMaxLorasPerRequest},
+                          {"max_weight", kMaxLoraWeight}};
+    if (!lib) {
+        out["note"] = "no LoRA library: create <approved root>/lora/image/manifest.json (see docs/lora.md)";
+        return out;
+    }
+    out["note"] = lib->scan_note();
+    for (const auto& e : lib->entries()) {
+        out["loras"].push_back({{"id", e.id},
+                                {"name", e.name},
+                                {"base_family", e.base_family},
+                                {"trigger_words", e.trigger_words},
+                                {"recommended_weight", e.recommended_weight},
+                                {"licence", e.licence},
+                                {"source", e.source},
+                                {"sha256", e.sha256},
+                                {"sha256_status", e.sha256_status},
+                                {"size_bytes", e.size_bytes},
+                                {"status", e.status},
+                                {"usable", e.usable()},
+                                {"problems", e.problems}});
+    }
+    return out;
+}
+
+void ControlPlane::set_upscaler(std::shared_ptr<upscale::IUpscaleEngine> engine) {
+    upscaler_ = std::move(engine);
+}
+
+Result<std::vector<LoraSpec>> ControlPlane::resolve_loras(const ImageParams& p) const {
+    if (p.loras.empty())
+        return std::vector<LoraSpec>{};
+    std::shared_ptr<LoraLibrary> lib;
+    {
+        std::lock_guard lk(lora_mutex_);
+        lib = loras_;
+    }
+    if (!lib)
+        return make_error(
+            ErrorCode::Unsupported,
+            "no LoRA library is available: create <approved model root>/lora/image/manifest.json "
+            "(see docs/lora.md)");
+    // Family of the model the LoRAs will be applied to: from its id or its file name when recognisable. The
+    // engine repeats the check with the family it detects from the loaded weights (authoritative).
+    const std::string target = !p.model.empty() ? p.model : loaded_model().value_or(std::string());
+    std::string family = guess_image_family(target);
+    if (family.empty() && !target.empty())
+        if (auto m = registry_.get(target); m)
+            family = guess_image_family(m.value().path);
+    auto specs = lib->resolve(p.loras, family, /*allow_unknown_family=*/true);
+    if (!specs)
+        return specs.error();
+    for (auto& s : specs.value()) {  // the approved-root check is repeated at use time, not only at scan time
+        auto g = guard_.resolve(s.path);
+        if (!g)
+            return g.error();
+        s.path = g.value().string();
+    }
+    return specs;
+}
+
+Result<void> ControlPlane::check_upscale_request(const ImageParams& p) const {
+    if (p.upscale.empty() || p.upscale == "off")
+        return {};
+    if (p.upscale != "4k")
+        return make_error(ErrorCode::InvalidArgument, "upscale must be \"off\" or \"4k\"");
+    if (!upscaler_)
+        return make_error(ErrorCode::Unsupported, "no upscaler is configured in this build or process");
+    // The runtime and the model must exist BEFORE the (possibly very long) render starts.
+    if (auto r = upscaler_->ready(); !r)
+        return make_error(r.error().code, "upscale \"4k\" is not available: " + r.error().message);
     return {};
 }
 
@@ -104,13 +210,17 @@ Result<Submitted> ControlPlane::submit_image(const ImageParams& p, bool require_
                           "the linked image engine does not implement hcs::api::IImageStreamEngine");
     if (auto v = validate_image(p, require_init); !v)
         return v.error();
+    auto lora_specs = resolve_loras(p);
+    if (!lora_specs)
+        return lora_specs.error();
     auto ticket = admit_job(scheduler::WorkKind::Image, p.model,
                             scheduler::estimate_image_job_bytes(p.width, p.height, p.init_image.has_value()));
     if (!ticket)
         return ticket.error();
     return submit_with_channel(
         require_init ? "image.edit" : "image.generate",
-        [this, p, require_init, tk = ticket.value()](JobContext& ctx) -> Result<void> {
+        [this, p, require_init, specs = std::move(lora_specs.value()),
+         tk = ticket.value()](JobContext& ctx) -> Result<void> {
             (void)tk;  // holds the admission slot until the job closure is destroyed
             if (ctx.cancelled())
                 return make_error(ErrorCode::Cancelled, "cancelled before start");
@@ -152,6 +262,7 @@ Result<Submitted> ControlPlane::submit_image(const ImageParams& p, bool require_
             ir.preset = p.preset;
             ir.allow_low_quality = p.allow_low_quality;
             ir.init_image = p.init_image;
+            ir.loras = specs;
             Result<ImageResult> r = make_error(ErrorCode::Internal, "engine threw");
             try {
                 r = require_init ? image_stream_->edit_image(ir, ctx.token())
@@ -165,7 +276,47 @@ Result<Submitted> ControlPlane::submit_image(const ImageParams& p, bool require_
                 return r.error();
             if (ctx.cancelled())
                 return make_error(ErrorCode::Cancelled, "image generation cancelled");
-            note_image_result(ctx.id(), r.value());
+            ImageResult res = std::move(r.value());
+            for (const auto& s : specs) {
+                char w[32];
+                std::snprintf(w, sizeof(w), "%g", static_cast<double>(s.weight));
+                res.loras_applied.push_back(s.id + ":" + w);
+            }
+            if (p.upscale == "4k" && upscaler_) {
+                res.upscale_status = "failed";  // overwritten below on success
+                upscale::Options uo;
+                refresh_budget();
+                uo.memory_budget_bytes = budget_.remaining();
+                upscale::Stats st;
+                ctx.progress(0.0, "upscaling");
+                auto up = upscale::upscale_png(
+                    *upscaler_, res.bytes, uo, ctx.token(),
+                    [&ctx](double f) { ctx.progress(f, "upscaling"); }, &st);
+                if (!up) {
+                    if (up.error().code == ErrorCode::Cancelled || ctx.cancelled())
+                        return make_error(ErrorCode::Cancelled, "image upscaling cancelled");
+                    // The rendered image is kept (a long render must not be lost to an upscale failure); the
+                    // response says explicitly that the upscale did not happen and why.
+                    res.upscale_detail =
+                        up.error().message + " [" + std::string(to_string(up.error().code)) + "]";
+                } else {
+                    res.upscale_provider = st.provider;
+                    res.pre_upscale_width = st.src_w;
+                    res.pre_upscale_height = st.src_h;
+                    res.upscale_ms = st.model_ms + st.resample_ms;
+                    if (st.skipped) {
+                        res.upscale_status = "skipped";
+                        res.upscale_detail = st.skip_reason;
+                    } else {
+                        res.upscale_status = "done";
+                        res.bytes = std::move(up.value());
+                        res.width = st.out_w;
+                        res.height = st.out_h;
+                        res.format = "png";
+                    }
+                }
+            }
+            note_image_result(ctx.id(), res);
             return {};
         });
 }

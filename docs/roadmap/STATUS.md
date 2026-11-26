@@ -3,6 +3,21 @@
 Last updated: 2026-11-26 (wave A a4 baseline; earlier: 2026-11-20 wave R final verification of 1.0.0-rc.1 on top of waves F, G, K; wave G hardening gaps on top of wave F; earlier: 2026-11-18 V1-stable waves W1-W4 plus the MCP benchmark tool and the D-S5/D-S6 fixes; CI status: see the Wave A baseline section; the older "unknown" note is superseded). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
 inspected source file; items with no evidence are NOT RUN or BLOCKED.
 
+## Wave B b3 (2026-11-26): image LoRA library, 4K upscaler pipeline, model merge (code side; no downloads)
+
+Branch `wave-b/b3`, build `D:\HCSInfer\build\b3` (`windows-msvc-release`, CPU, `-j4`, `/W4 /WX`, clang-format 19.1.5 check OK).
+Plan rows B3 (LoRA part), B4, D3. Evidence: `docs/test-evidence/wave-b/b3/README.md`. Docs: `docs/lora.md`, `docs/upscale.md`, `docs/merge.md`.
+
+| Item | Status | Proven / not proven |
+|---|---|---|
+| LoRA manifest, scanner, compatibility rules, `loras` on API/MCP/CLI/UI, `GET /hcs/v1/loras`, `hcs.loras.list` | PASS (synthetic) | 11 unit + 13 contract tests (ids only, approved-root paths re-resolved at use, weight bounds, family mismatch = `lora_incompatible` before the render, missing library = `unsupported`); engine hand-off through `sd_opt_set_loras` compiles against the pinned header |
+| Real render with a real LoRA | NOT RUN | no LoRA file exists locally and nothing is downloaded; behaviour of a LoRA on a quantised base is unmeasured |
+| Upscale pipeline (tiling from the memory budget, feather blend, Lanczos to 3840, never beyond the cap), `upscale: off\|4k` on API/MCP/CLI/UI | PASS (test double + synthetic model) | 27 unit tests incl. NumPy golden for Lanczos; control-plane wiring with a nearest-neighbour test double; missing runtime/model = `unsupported` before the render; upscale failure keeps the render |
+| ONNX Runtime backend, real `onnxruntime.dll` 1.31.1 CPU + synthetic ONNX model | PASS | `OrtRealRuntime.*` 3/3 with `HCS_TEST_ORT_DIR`/`HCS_TEST_ONNX_DIR` (skipped by default); DirectML EP NOT RUN (this ORT build has none) |
+| Real super-resolution model (Real-ESRGAN etc.), time/RAM/PSNR/SSIM/LPIPS | NOT RUN | no model on this machine, no download |
+| `HCSInfer merge` linear/SLERP/TIES/DARE/LoRA-into-base | PASS (unit + one real file) | 25 unit tests against NumPy goldens; CLI contract tests; real 320 MB `flux2-vae.safetensors` self-merge (linear and SLERP) bit-exact, 6 s, peak working set 46 MB. Self-merge is the identity, so merge quality is not proven; a merged model has NOT been loaded into an engine (NOT RUN) |
+| Merge as HTTP/MCP job, GPU path | NOT IMPLEMENTED | CLI only (`docs/merge.md`) |
+
 ## Wave A baseline (a4, 2026-11-25/26): fresh build and full CTest of `main` `52ea9e7`
 
 Fresh configure + build into `D:\HCSInferuild4-cpu` (`windows-msvc-release`) and `a4-vk` (`windows-msvc-release-vulkan`), `-j4`,

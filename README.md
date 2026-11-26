@@ -94,6 +94,9 @@ purpose.
 | Vision (image in, text out) | Experimental | one image per single-turn request; SmolVLM2-500M and LFM3-Omni-2B, CPU and Vulkan; no video/audio |
 | Image generation and image-to-image | Experimental | SD 1.5 Q8_0 (CPU and Vulkan) and FLUX.3 Klein (Vulkan; minutes per 512x512 image); `url`, `mask`, `multipart` are rejected |
 | Model registry, lifecycle, job queue, cancellation, memory budget, approved-root path guard | Implemented | |
+| Image LoRA library (`loras` on image requests, `GET /hcs/v1/loras`, `--lora`, MCP `hcs.loras.list`) | Experimental | manifest + family-compatibility checks tested with synthetic files; no real LoRA render yet (NOT RUN); [`docs/lora.md`](docs/lora.md) |
+| 4K upscale (`upscale: "4k"`, `--upscale 4k`), tiled 4x ONNX + Lanczos | Experimental, OFF by default | needs a user-supplied `onnxruntime.dll` + `.onnx` model; pipeline and ORT backend verified with a synthetic model, no real super-resolution model run (NOT RUN); [`docs/upscale.md`](docs/upscale.md) |
+| `HCSInfer merge` (linear, SLERP, TIES, DARE, LoRA-into-base) | Experimental | float safetensors/GGUF only, streaming; NumPy-golden unit tests; no HTTP/MCP route; [`docs/merge.md`](docs/merge.md) |
 | HTTP API (`/v1/chat/completions` streaming, `/v1/models`, `/v1/images/*`, `/hcs/v1/*`) | Experimental | loopback + bearer token; [`docs/api.md`](docs/api.md) |
 | MCP over stdio (models, chat, vision, image, runtime, jobs, benchmark tools) | Experimental | [`docs/mcp.md`](docs/mcp.md); exercised by a scripted stdio client, not by a third-party MCP client |
 | MCP Streamable HTTP | Planned | out of scope for this release |

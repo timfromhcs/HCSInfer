@@ -218,3 +218,43 @@ TEST(McpImage, SchemaAdvertisesAllowLowQualityAndFlagIsForwarded) {
     ASSERT_FALSE(r["result"]["isError"].get<bool>()) << r.dump();
     EXPECT_TRUE(m.fx.image.last.allow_low_quality);
 }
+
+TEST(McpImage, LoraAndUpscaleFieldsAreInTheSchemaAndLoraListNeverLeaksPaths) {
+    json tools = tool_list(256);
+    bool listed = false;
+    for (const auto& t : tools) {
+        const std::string n = t["name"];
+        if (n == "hcs.image.generate" || n == "hcs.image.edit") {
+            const auto& props = t["inputSchema"]["properties"];
+            ASSERT_TRUE(props.contains("loras")) << n;
+            EXPECT_EQ(props["loras"]["maxItems"], 4);
+            EXPECT_EQ(props["loras"]["items"]["additionalProperties"], false);
+            EXPECT_FALSE(props["loras"]["items"]["properties"].contains("path"));
+            EXPECT_EQ(props["upscale"]["enum"], json::array({"off", "4k"}));
+        }
+        if (n == "hcs.loras.list") {
+            listed = true;
+            EXPECT_TRUE(t["annotations"]["readOnlyHint"].get<bool>());
+        }
+    }
+    EXPECT_TRUE(listed);
+    Mcp m;
+    auto r = m.tool(1, "hcs.loras.list");
+    ASSERT_FALSE(r["result"]["isError"].get<bool>()) << r.dump();
+    EXPECT_TRUE(r["result"]["structuredContent"]["loras"].empty());
+}
+
+TEST(McpImage, LoraRequestWithoutLibraryIsUnsupportedAndUpscaleWithoutRuntimeToo) {
+    Mcp m;
+    json base = {{"model", "sdmodel"}, {"prompt", "x"}, {"width", 256}, {"height", 256}, {"steps", 2}};
+    json with_lora = base;
+    with_lora["loras"] = json::array({json{{"id", "style"}}});
+    EXPECT_EQ(code_of(m.tool(1, "hcs.image.generate", with_lora)), "unsupported");
+    json with_up = base;
+    with_up["upscale"] = "4k";
+    EXPECT_EQ(code_of(m.tool(2, "hcs.image.generate", with_up)), "unsupported");
+    EXPECT_EQ(m.fx.image.generations.load(), 0);
+    json bad = base;
+    bad["upscale"] = "8k";
+    EXPECT_TRUE(m.tool(3, "hcs.image.generate", bad)["result"]["isError"].get<bool>());
+}

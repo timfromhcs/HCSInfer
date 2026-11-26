@@ -21,6 +21,17 @@ struct ImageResult {
     std::uint32_t steps = 0;
     double generation_ms = 0.0;
     std::string preset;  // preset that was applied ("" = none); `steps` is the effective count
+    // LoRAs that were applied, as "id:weight" (empty = none requested).
+    std::vector<std::string> loras_applied;
+    // Upscale outcome. "" = not requested; "done" | "skipped" (source already >= target) | "failed" (the
+    // un-upscaled image is returned and `upscale_detail` says why). width/height/bytes describe the FINAL
+    // image.
+    std::string upscale_status;
+    std::string upscale_detail;
+    std::uint32_t pre_upscale_width = 0;
+    std::uint32_t pre_upscale_height = 0;
+    double upscale_ms = 0.0;
+    std::string upscale_provider;
 };
 
 class IImageStreamEngine : public IImageEngine {

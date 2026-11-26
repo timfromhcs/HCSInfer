@@ -1,7 +1,7 @@
 hcs_add_library(cli
-  SOURCES cli.cpp cache_cmd.cpp chat_cmd.cpp image_cmd.cpp vision_cmd.cpp benchmark_cmd.cpp train_cmd.cpp models_remote_cmd.cpp
+  SOURCES cli.cpp cache_cmd.cpp chat_cmd.cpp image_cmd.cpp vision_cmd.cpp benchmark_cmd.cpp train_cmd.cpp models_remote_cmd.cpp merge_cmd.cpp
   PUBLIC_LINK hcs_core
-  PRIVATE_LINK nlohmann_json::nlohmann_json)
+  PRIVATE_LINK hcs_merge hcs_lora hcs_upscale nlohmann_json::nlohmann_json)
 
 # HCS Train (module `train` is listed before `cli` in HCS_MODULE_DIRS): dataset validation, eval gate and
 # adapter bookkeeping behind `HCSInfer train`.
