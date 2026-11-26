@@ -24,7 +24,8 @@ enum class ErrorCode : int {
     AlreadyExists = 12,
     Busy = 13,  // queue full / resource in use
     Timeout = 14,
-    Internal = 70,  // bug / unexpected exception
+    Overloaded = 15,  // admission control refused: too much load or memory pressure (retry later)
+    Internal = 70,    // bug / unexpected exception
 };
 
 constexpr int exit_code(ErrorCode c) noexcept {
@@ -61,6 +62,8 @@ constexpr std::string_view to_string(ErrorCode c) noexcept {
             return "busy";
         case ErrorCode::Timeout:
             return "timeout";
+        case ErrorCode::Overloaded:
+            return "overloaded";
         case ErrorCode::Internal:
             return "internal";
     }
