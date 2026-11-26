@@ -4,8 +4,12 @@
 // docs/test-evidence/wave-b/b3).
 #include <gtest/gtest.h>
 
+#include <atomic>
+#include <chrono>
 #include <cstring>
+#include <thread>
 
+#include "hcs/api/data_uri.hpp"
 #include "hcs/api/http_api.hpp"
 #include "hcs/upscale.hpp"
 #include "image_api_fixture.hpp"
@@ -24,18 +28,25 @@ class NnUpscaler final : public upscale::IUpscaleEngine {
 public:
     Result<void> ready_result;
     bool fail_tiles = false;
-    mutable int tiles = 0;
+    mutable std::atomic<int> tiles{0};
+    std::uint64_t working_bytes = 4096;  // per input pixel (planner input)
+    bool slow = false;                   // each tile blocks until the token is cancelled
     Result<void> ready() const override { return ready_result; }
     upscale::ModelInfo info() const override {
         upscale::ModelInfo m;
         m.scale = 4;
         m.name = "nn-test-double.onnx";
         m.provider = "test-double";
+        m.working_bytes_per_input_pixel = working_bytes;
         return m;
     }
     Result<void> run_tile(const float* in, std::uint32_t w, std::uint32_t h, float* out,
-                          const CancellationToken&) override {
+                          const CancellationToken& token) override {
         ++tiles;
+        if (slow) {
+            while (!token.cancelled()) std::this_thread::sleep_for(std::chrono::milliseconds(2));
+            return make_error(ErrorCode::Cancelled, "cancelled in the tile");
+        }
         if (fail_tiles)
             return make_error(ErrorCode::BackendError, "synthetic tile failure");
         const std::uint32_t ow = w * 4;
@@ -261,10 +272,10 @@ TEST(ApiUpscale, OffIsTheDefaultAndNeverTouchesTheUpscaler) {
     auto r = a.post(Api::body({}));
     ASSERT_EQ(r.status, 200) << r.body;
     EXPECT_FALSE(json::parse(r.body)["hcs"].contains("upscale"));
-    EXPECT_EQ(a.up->tiles, 0);
+    EXPECT_EQ(a.up->tiles.load(), 0);
     auto off = a.post(Api::body({{"upscale", "off"}}));
     ASSERT_EQ(off.status, 200);
-    EXPECT_EQ(a.up->tiles, 0);
+    EXPECT_EQ(a.up->tiles.load(), 0);
 }
 
 TEST(ApiUpscale, FourKProducesA3840LongEdgeImage) {
@@ -280,7 +291,7 @@ TEST(ApiUpscale, FourKProducesA3840LongEdgeImage) {
     const auto [w, h] = png_size_of(j["data"][0]["b64_json"].get<std::string>());
     EXPECT_EQ(w, 3840u);
     EXPECT_EQ(h, 3840u);
-    EXPECT_GT(a.up->tiles, 0);
+    EXPECT_GT(a.up->tiles.load(), 0);
 }
 
 TEST(ApiUpscale, MissingUpscalerOrRuntimeIsUnsupportedBeforeTheRender) {
@@ -304,6 +315,159 @@ TEST(ApiUpscale, InvalidValueIsRejected) {
     EXPECT_EQ(a.post(Api::body({{"upscale", "8k"}})).status, 400);
     EXPECT_EQ(a.post(Api::body({{"upscale", true}})).status, 400);
     EXPECT_EQ(a.fx.image.generations.load(), 0);
+}
+
+// ---- upscale-only route (POST /hcs/v1/images/upscale) -------------------------------------------------------
+namespace {
+
+std::string b64_encode(const std::vector<std::uint8_t>& d) {
+    static const char* t = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    std::string o;
+    for (std::size_t i = 0; i < d.size(); i += 3) {
+        std::uint32_t v = static_cast<std::uint32_t>(d[i]) << 16;
+        if (i + 1 < d.size())
+            v |= static_cast<std::uint32_t>(d[i + 1]) << 8;
+        if (i + 2 < d.size())
+            v |= d[i + 2];
+        o += t[(v >> 18) & 63];
+        o += t[(v >> 12) & 63];
+        o += i + 1 < d.size() ? t[(v >> 6) & 63] : '=';
+        o += i + 2 < d.size() ? t[v & 63] : '=';
+    }
+    return o;
+}
+
+// Valid PNG of w x h (flat grey) made with the production encoder.
+std::string png_b64(std::uint32_t w, std::uint32_t h) {
+    upscale::Rgb8 img;
+    img.width = w;
+    img.height = h;
+    img.pixels.assign(static_cast<std::size_t>(w) * h * 3, 128);
+    auto enc = upscale::encode_png(img);
+    EXPECT_TRUE(enc.ok());
+    return b64_encode(enc.value());
+}
+
+// A PNG signature + IHDR that claims w x h (no pixel data): enough for the header probe, never decodable.
+std::string fake_ihdr_b64(std::uint32_t w, std::uint32_t h) {
+    std::vector<std::uint8_t> d = {0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A, 0, 0, 0, 13, 'I', 'H', 'D', 'R'};
+    for (std::uint32_t v : {w, h})
+        for (int s = 24; s >= 0; s -= 8) d.push_back(static_cast<std::uint8_t>((v >> s) & 0xFF));
+    for (int i = 0; i < 9; ++i) d.push_back(0);  // depth, colour type, ..., CRC (not checked by the probe)
+    return b64_encode(d);
+}
+
+HttpResponse post_upscale(Api& a, const json& body) {
+    return a.handler.handle(a.req("POST", "/hcs/v1/images/upscale", body.dump()));
+}
+
+}  // namespace
+
+TEST(ApiUpscaleOnly, UpscalesAnExistingPngToA3840LongEdgeWithoutAModel) {
+    Api a(true, true);
+    auto r = post_upscale(a, {{"image", "data:image/png;base64," + png_b64(96, 64)}});
+    ASSERT_EQ(r.status, 200) << r.body;
+    const json j = json::parse(r.body);
+    EXPECT_EQ(j["hcs"]["upscale"]["status"], "done");
+    EXPECT_EQ(j["hcs"]["upscale"]["from_width"], 96);
+    EXPECT_EQ(j["hcs"]["upscale"]["from_height"], 64);
+    EXPECT_GT(j["hcs"]["upscale"]["tiles"].get<int>(), 0);
+    EXPECT_GT(j["hcs"]["upscale"]["tile"].get<int>(), 0);
+    EXPECT_EQ(j["hcs"]["width"], 3840);
+    EXPECT_EQ(j["hcs"]["height"], 2560);
+    EXPECT_FALSE(j["hcs"].contains("model")) << "no diffusion model is involved";
+    const auto [w, h] = png_size_of(j["data"][0]["b64_json"].get<std::string>());
+    EXPECT_EQ(w, 3840u);
+    EXPECT_EQ(h, 2560u);
+    EXPECT_EQ(a.fx.image.generations.load(), 0) << "the diffusion engine must not run";
+}
+
+TEST(ApiUpscaleOnly, PortraitKeepsTheAspectRatio) {
+    Api a(true, true);
+    auto r = post_upscale(a, {{"image", png_b64(40, 80)}});  // bare base64 is accepted too
+    ASSERT_EQ(r.status, 200) << r.body;
+    const json j = json::parse(r.body);
+    EXPECT_EQ(j["hcs"]["width"], 1920);
+    EXPECT_EQ(j["hcs"]["height"], 3840);
+}
+
+TEST(ApiUpscaleOnly, SourceAlreadyAtTheCapIsReportedSkippedNotUpscaled) {
+    Api a(true, true);
+    auto r = post_upscale(a, {{"image", png_b64(3840, 8)}});
+    ASSERT_EQ(r.status, 200) << r.body;
+    const json j = json::parse(r.body);
+    EXPECT_EQ(j["hcs"]["upscale"]["status"], "skipped");
+    EXPECT_EQ(j["hcs"]["width"], 3840);
+    EXPECT_EQ(a.up->tiles.load(), 0);
+}
+
+TEST(ApiUpscaleOnly, NoUpscalerOrRuntimeIsUnsupportedWithTheReason) {
+    Api none(true, /*with_upscaler=*/false);
+    auto r = post_upscale(none, {{"image", png_b64(32, 32)}});
+    EXPECT_EQ(r.status, 501) << r.body;
+    EXPECT_EQ(err_of(r)["code"], "unsupported");
+
+    Api missing(true, true);
+    missing.up->ready_result = make_error(ErrorCode::Unsupported, "onnxruntime.dll not found");
+    auto m = post_upscale(missing, {{"image", png_b64(32, 32)}});
+    EXPECT_EQ(m.status, 501) << m.body;
+    EXPECT_NE(err_of(m)["message"].get<std::string>().find("onnxruntime.dll"), std::string::npos);
+    EXPECT_EQ(missing.up->tiles.load(), 0);
+}
+
+TEST(ApiUpscaleOnly, BadInputIsRejectedBeforeAnyDecodeOrAllocation) {
+    Api a(true, true);
+    EXPECT_EQ(post_upscale(a, json::object()).status, 400) << "image is required";
+    EXPECT_EQ(post_upscale(a, {{"image", png_b64(32, 32)}, {"extra", 1}}).status, 400) << "unknown key";
+    EXPECT_EQ(post_upscale(a, {{"image", png_b64(32, 32)}, {"upscale", "8k"}}).status, 400);
+    EXPECT_EQ(post_upscale(a, {{"image", 5}}).status, 400);
+    EXPECT_EQ(post_upscale(a, {{"image", "data:image/png;base64,!!!notbase64"}}).status, 400);
+    // A JPEG header is not a PNG.
+    const std::vector<std::uint8_t> jpeg = {0xFF, 0xD8, 0xFF, 0xE0, 0, 16, 'J', 'F', 'I', 'F', 0, 1, 1, 0, 0, 1,
+                                            0,    1,    0,    0,    0xFF, 0xC0, 0, 17, 8, 0, 32, 0, 32, 3, 1, 0x22, 0,
+                                            2,    0x11, 1,    3,    0x11, 1};
+    auto j = post_upscale(a, {{"image", b64_encode(jpeg)}});
+    EXPECT_EQ(j.status, 400) << j.body;
+    // 5000 x 5000 = 25 MP claimed in the header: over the 16 MP limit, refused without decoding.
+    auto big = post_upscale(a, {{"image", fake_ihdr_b64(5000, 5000)}});
+    EXPECT_EQ(big.status, 400) << big.body;
+    EXPECT_NE(err_of(big)["message"].get<std::string>().find("pixel limit"), std::string::npos);
+    EXPECT_EQ(a.up->tiles.load(), 0);
+}
+
+TEST(ApiUpscaleOnly, MethodMustBePost) {
+    Api a(true, true);
+    EXPECT_EQ(a.handler.handle(a.req("GET", "/hcs/v1/images/upscale")).status, 405);
+}
+
+TEST(ApiUpscaleOnly, BudgetThatCannotFitEvenTheSmallestTileIsRefusedUpFront) {
+    Api a(true, true);
+    a.up->working_bytes = 1ull << 40;  // an engine whose working set can never fit the budget
+    auto r = post_upscale(a, {{"image", png_b64(64, 64)}});
+    EXPECT_EQ(r.status, 503) << r.body;
+    EXPECT_EQ(err_of(r)["code"], "out_of_memory");
+    EXPECT_EQ(a.up->tiles.load(), 0) << "refused before any tile ran";
+}
+
+TEST(ApiUpscaleOnly, CancelStopsTheJobBetweenTilesAndReleasesTheSlot) {
+    Api a(true, true);
+    a.up->slow = true;  // each tile waits until the token is cancelled
+    UpscaleParams p;
+    auto raw = png_b64(64, 64);
+    auto dec = decode_image_data_uri("data:image/png;base64," + raw, 1u << 20);
+    ASSERT_TRUE(dec.ok());
+    p.image = std::move(dec.value());
+    auto sub = a.fx.cp->submit_upscale(p);
+    ASSERT_TRUE(sub.ok()) << sub.error().message;
+    const JobId id = sub.value().id;
+    while (a.up->tiles.load() == 0) std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    ASSERT_TRUE(a.fx.cp->cancel_job(id).ok());
+    ASSERT_TRUE(a.fx.cp->wait_job(id, std::chrono::seconds(10)));
+    auto st = a.fx.cp->job_status(id);
+    ASSERT_TRUE(st.ok());
+    EXPECT_EQ(st.value().state, JobState::Cancelled);
+    EXPECT_FALSE(a.fx.cp->image_result(id).ok()) << "no result is stored for a cancelled upscale";
+    EXPECT_EQ(a.up->tiles.load(), 1) << "no further tile started after the cancel";
 }
 
 TEST(ApiUpscale, TileFailureKeepsTheRenderAndSaysWhy) {

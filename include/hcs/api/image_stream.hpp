@@ -32,6 +32,8 @@ struct ImageResult {
     std::uint32_t pre_upscale_height = 0;
     double upscale_ms = 0.0;
     std::string upscale_provider;
+    std::uint32_t upscale_tiles = 0;    // tiles the 4x pass was split into (0 = none / skipped)
+    std::uint32_t upscale_tile_px = 0;  // tile edge in source pixels chosen from the memory budget
 };
 
 class IImageStreamEngine : public IImageEngine {

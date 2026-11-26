@@ -186,6 +186,86 @@ Result<void> ControlPlane::check_upscale_request(const ImageParams& p) const {
     return {};
 }
 
+Result<upscale::Plan> ControlPlane::plan_upscale_request(const UpscaleParams& p) const {
+    if (!upscaler_)
+        return make_error(ErrorCode::Unsupported, "no upscaler is configured in this build or process");
+    const auto& img = p.image;
+    if (img.bytes.empty())
+        return make_error(ErrorCode::InvalidArgument, "input image is empty");
+    if (img.bytes.size() > opt_.max_image_bytes)
+        return make_error(ErrorCode::InvalidArgument,
+                          "input image exceeds the " + std::to_string(opt_.max_image_bytes) + " byte limit");
+    const auto probe = probe_image(img.bytes.data(), img.bytes.size());
+    if (!probe || probe->format != "png")
+        return make_error(ErrorCode::InvalidArgument,
+                          "the image to upscale must be a PNG (or its header is truncated)");
+    const std::uint64_t max_px = std::min<std::uint64_t>(opt_.max_image_pixels, upscale::kMaxSourcePixels);
+    if (probe->pixels() > max_px)
+        return make_error(ErrorCode::InvalidArgument,
+                          "input image dimensions " + std::to_string(probe->width) + "x" +
+                              std::to_string(probe->height) + " exceed the " + std::to_string(max_px) +
+                              " pixel limit");
+    if (auto r = upscaler_->ready(); !r)
+        return make_error(r.error().code, "upscale is not available: " + r.error().message);
+    refresh_budget();
+    upscale::Options uo;
+    uo.memory_budget_bytes = budget_.remaining();
+    // The planner refuses (OutOfMemory) when even the smallest tile cannot fit the live budget.
+    return upscale::plan_upscale(probe->width, probe->height, upscaler_->info(), uo);
+}
+
+Result<void> ControlPlane::validate_upscale(const UpscaleParams& p) const {
+    auto plan = plan_upscale_request(p);
+    if (!plan)
+        return plan.error();
+    return {};
+}
+
+Result<Submitted> ControlPlane::submit_upscale(const UpscaleParams& p) {
+    auto plan = plan_upscale_request(p);
+    if (!plan)
+        return plan.error();
+    auto ticket = admit_job(scheduler::WorkKind::Image, "image.upscale", plan.value().peak_bytes);
+    if (!ticket)
+        return ticket.error();
+    return submit_with_channel(
+        "image.upscale", [this, p, tk = ticket.value()](JobContext& ctx) -> Result<void> {
+            (void)tk;  // holds the admission slot until the job closure is destroyed
+            if (ctx.cancelled())
+                return make_error(ErrorCode::Cancelled, "cancelled before start");
+            upscale::Options uo;
+            refresh_budget();  // re-measured: the machine may have changed since the request was admitted
+            uo.memory_budget_bytes = budget_.remaining();
+            upscale::Stats st;
+            ctx.progress(0.0, "upscaling");
+            auto up = upscale::upscale_png(
+                *upscaler_, p.image.bytes, uo, ctx.token(), [&ctx](double f) { ctx.progress(f, "upscaling"); },
+                &st);
+            if (!up) {
+                if (up.error().code == ErrorCode::Cancelled || ctx.cancelled())
+                    return make_error(ErrorCode::Cancelled, "image upscaling cancelled");
+                return up.error();
+            }
+            ImageResult res;
+            res.format = "png";
+            res.bytes = std::move(up.value());
+            res.width = st.out_w;
+            res.height = st.out_h;
+            res.pre_upscale_width = st.src_w;
+            res.pre_upscale_height = st.src_h;
+            res.upscale_provider = st.provider;
+            res.upscale_ms = st.model_ms + st.resample_ms;
+            res.generation_ms = res.upscale_ms;
+            res.upscale_tiles = st.tiles;
+            res.upscale_tile_px = st.tile;
+            res.upscale_status = st.skipped ? "skipped" : "done";
+            if (st.skipped)
+                res.upscale_detail = st.skip_reason;
+            note_image_result(ctx.id(), res);
+            return {};
+        });
+}
+
 void ControlPlane::note_image_result(JobId id, const ImageResult& r) {
     std::lock_guard lk(results_mutex_);
     image_results_[id.value] = r;
@@ -309,6 +389,8 @@ Result<Submitted> ControlPlane::submit_image(const ImageParams& p, bool require_
                         res.upscale_detail = st.skip_reason;
                     } else {
                         res.upscale_status = "done";
+                        res.upscale_tiles = st.tiles;
+                        res.upscale_tile_px = st.tile;
                         res.bytes = std::move(up.value());
                         res.width = st.out_w;
                         res.height = st.out_h;

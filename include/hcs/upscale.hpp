@@ -60,6 +60,9 @@ struct Options {
     std::uint32_t tile = 0;                 // 0 => chosen from the budget
     std::uint32_t overlap = 0;              // 0 => 16 (clamped to tile/4)
     std::uint64_t memory_budget_bytes = 0;  // 0 => kUnknownBudgetBytes
+    // 0 => run the model on the source as is, then Lanczos to the target. >0 => Lanczos the source to this
+    // long edge FIRST (e.g. 960 so that 4x lands on 3840 exactly); costs (edge/src)^2 more model time.
+    std::uint32_t pre_resize_long_edge = 0;
 };
 
 struct TileRect {
@@ -83,7 +86,11 @@ struct Stats {
     std::uint32_t tile = 0;
     std::uint32_t overlap = 0;
     std::uint32_t src_w = 0, src_h = 0, out_w = 0, out_h = 0;
-    double model_ms = 0.0;
+    double model_ms = 0.0;        // whole tile loop (input prep + model + blend)
+    double tile_ms_median = 0.0;  // engine run_tile() only, per tile
+    double tile_ms_max = 0.0;
+    double blend_ms = 0.0;        // feathered accumulation + normalisation (CPU, part of model_ms)
+    double pre_resize_ms = 0.0;   // optional Lanczos pre-resize of the source (Options::pre_resize_long_edge)
     double resample_ms = 0.0;
     std::uint64_t peak_bytes_estimate = 0;
     bool skipped = false;

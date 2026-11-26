@@ -233,6 +233,69 @@ TEST(UpscalePipeline, TiledResultEqualsSingleTileResultForAPositionIndependentMo
     EXPECT_EQ(s1.provider, "test-double");
 }
 
+TEST(UpscalePipeline, StatsSplitTheStagesAndCountPerTileTime) {
+    const Rgb8 src = gradient(150, 90);
+    Options o;
+    o.tile = 64;
+    NnEngine e;
+    Stats s;
+    ASSERT_TRUE(upscale_image(e, src, o, {}, nullptr, &s).ok());
+    EXPECT_GT(s.tiles, 1u);
+    EXPECT_GT(s.model_ms, 0.0);
+    EXPECT_GT(s.resample_ms, 0.0);
+    EXPECT_GT(s.tile_ms_median, 0.0);
+    EXPECT_GE(s.tile_ms_max, s.tile_ms_median);
+    EXPECT_GT(s.blend_ms, 0.0);
+    EXPECT_LE(s.blend_ms, s.model_ms) << "blending is part of the tile-loop time";
+    EXPECT_EQ(s.pre_resize_ms, 0.0) << "no pre-resize requested";
+}
+
+TEST(UpscalePipeline, PreResizeLandsOnTheTargetAndRunsTheModelOnTheLargerInput) {
+    // 96x64 -> Lanczos to 960 wide (960x640) -> 4x = 3840x2560 exactly: the final resample is the identity.
+    const Rgb8 src = gradient(96, 64);
+    Options o;
+    o.pre_resize_long_edge = 960;
+    o.tile = 256;
+    NnEngine e;
+    Stats s;
+    auto r = upscale_image(e, src, o, {}, nullptr, &s);
+    ASSERT_TRUE(r.ok()) << r.error().message;
+    EXPECT_EQ(r.value().width, 3840u);
+    EXPECT_EQ(r.value().height, 2560u);
+    EXPECT_EQ(s.src_w, 96u) << "stats still describe the original source";
+    EXPECT_GE(s.pre_resize_ms, 0.0);
+    EXPECT_EQ(e.max_w, 256u) << "the model saw tiles cut from the 960 px image, not the 96 px one";
+    // Without the pre-resize the same call needs far fewer model pixels.
+    NnEngine e2;
+    Stats s2;
+    Options plain;
+    plain.tile = 256;
+    ASSERT_TRUE(upscale_image(e2, src, plain, {}, nullptr, &s2).ok());
+    EXPECT_GT(s.tiles, s2.tiles);
+}
+
+TEST(UpscalePipeline, PreResizeIsValidatedAndNeverAppliedToAnAlreadyLargeSource) {
+    NnEngine e;
+    Options bad;
+    bad.pre_resize_long_edge = 8;  // < 16
+    EXPECT_EQ(upscale_image(e, gradient(32, 32), bad, {}, nullptr, nullptr).error().code,
+              ErrorCode::InvalidArgument);
+    bad.pre_resize_long_edge = 5000;  // > target
+    EXPECT_EQ(upscale_image(e, gradient(32, 32), bad, {}, nullptr, nullptr).error().code,
+              ErrorCode::InvalidArgument);
+    Rgb8 big;
+    big.width = 3840;
+    big.height = 4;
+    big.pixels.assign(3840 * 4 * 3, 9);
+    Options ok;
+    ok.pre_resize_long_edge = 960;
+    Stats s;
+    auto r = upscale_image(e, big, ok, {}, nullptr, &s);
+    ASSERT_TRUE(r.ok());
+    EXPECT_TRUE(s.skipped) << "a source at the cap is skipped, pre-resize or not";
+    EXPECT_EQ(e.calls, 0);
+}
+
 TEST(UpscalePipeline, ConstantImageStaysConstantAfterBlendAndResample) {
     Rgb8 src;
     src.width = 70;

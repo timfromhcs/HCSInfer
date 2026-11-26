@@ -474,6 +474,10 @@ int run(const std::vector<std::string>& raw_args, std::ostream& out, std::ostrea
         return run_cache(std::move(args), state_dir(state_override), out, err);
     if (cmd == "vision")
         return run_vision(std::move(args), state_override, out, err);
+    if (cmd == "image" && !args.empty() && args.front() == "upscale") {
+        args.erase(args.begin());
+        return run_image_upscale(std::move(args), out, err);
+    }
     if (cmd == "image")
         return run_image(std::move(args), state_override, out, err);
     if (cmd == "models")
