@@ -11,6 +11,7 @@
 #include <condition_variable>
 #include <deque>
 #include <functional>
+#include <future>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -28,6 +29,7 @@
 #include "hcs/memory_budget.hpp"
 #include "hcs/model_registry.hpp"
 #include "hcs/path_guard.hpp"
+#include "hcs/scheduler/admission.hpp"
 
 namespace hcs::api {
 
@@ -128,6 +130,10 @@ struct ControlPlaneOptions {
     // so loads are checked against the machine as it is NOW, not as it was at start-up (M10 audit D4;
     // AGENTS.md 10.1). Returning nullopt keeps the previous budget.
     std::function<std::optional<MemoryMeasurements>()> memory_probe;
+    // Optional overload controller (plan F1): admission control for model loads and every job, the kill
+    // switch and the watchdog. Null = no admission control (the pre-F1 behaviour). The control plane
+    // registers its shed handler on it and removes the handler again in its destructor.
+    std::shared_ptr<scheduler::AdmissionController> admission;
 };
 
 class ControlPlane {
@@ -137,6 +143,9 @@ public:
     ControlPlane(ModelRegistry& registry, PathGuard& guard, MemoryBudget& budget, JobQueue& queue,
                  ITextEngine* engine, Logger& logger, ControlPlaneOptions options = {},
                  IImageEngine* image_engine = nullptr);
+    ~ControlPlane();  // detaches the shed handler and joins a still-running shed unload
+    ControlPlane(const ControlPlane&) = delete;
+    ControlPlane& operator=(const ControlPlane&) = delete;
 
     // --- models ---------------------------------------------------------------------------
     std::vector<ModelView> models() const;
@@ -189,6 +198,15 @@ public:
     nlohmann::json job_json(const JobStatus& st) const;
     bool wait_job(JobId id, std::chrono::milliseconds t) const { return queue_.wait(id, t); }
 
+    // --- overload protection (plan F1) -------------------------------------------------------------
+    // Kill switch: cancels every queued/running job, then unloads the model, all inside the configured
+    // deadline (an engine load that cannot be interrupted is reported as unload_pending and finishes in the
+    // background; ~ControlPlane joins it). Works without a configured controller too. Never throws.
+    scheduler::ShedReport shed(const std::string& reason);
+    bool has_admission() const noexcept { return opt_.admission != nullptr; }
+    int retry_after_seconds() const noexcept;  // Retry-After hint for 429/503 answers
+    nlohmann::json overload_json() const;      // {"enabled": false} without a controller
+
     // --- introspection ---------------------------------------------------------------------
     nlohmann::json runtime_json() const;
     nlohmann::json devices_json() const;
@@ -210,6 +228,10 @@ private:
     // estimate.
     static std::uint64_t kv_cache_estimate(std::uint64_t model_bytes, std::uint32_t context_tokens) noexcept;
     Result<void> unload_locked();
+    // Admission ticket for one job; a null pointer (success) when no controller is configured.
+    Result<std::shared_ptr<scheduler::Ticket>> admit_job(scheduler::WorkKind kind, const std::string& what,
+                                                         std::uint64_t predicted_bytes);
+    scheduler::ShedReport shed_impl(const std::string& reason);
     Result<Submitted> submit_with_channel(const std::string& name, JobFn fn);
     void note_result(JobId id, const TextResult& r);
     void note_image_result(JobId id, const ImageResult& r);
@@ -241,6 +263,8 @@ private:
     std::map<std::uint64_t, TextResult> results_;
     std::map<std::uint64_t, ImageResult> image_results_;
     std::map<std::uint64_t, nlohmann::json> benchmark_results_;
+    std::mutex shed_mutex_;                 // guards shed_unload_
+    std::shared_future<bool> shed_unload_;  // a kill-switch unload that outlived its deadline
     mutable std::mutex devices_mutex_;
     mutable std::optional<nlohmann::json> devices_cache_;
 };

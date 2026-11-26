@@ -32,6 +32,8 @@ std::unique_ptr<IImageEngine> make_default_image_engine(JobQueue&) {
 #endif
 
 Runtime::~Runtime() {
+    if (admission)
+        admission->stop_watchdog();  // no kill switch while we are tearing down anyway
     // Jobs of both queues run closures that reference control/engines/registry: stop and join the workers
     // first.
     try {
@@ -112,8 +114,17 @@ Result<std::unique_ptr<Runtime>> Runtime::create(RuntimeOptions options, Logger&
         };
     }
 #endif
+    {
+        const scheduler::AdmissionConfig ac = options.admission.value_or(scheduler::AdmissionConfig{});
+        if (auto v = scheduler::validate(ac); !v)
+            return v.error();
+        rt->admission = std::make_shared<scheduler::AdmissionController>(
+            ac, options.admission_probe ? options.admission_probe : telemetry::make_system_probe());
+        co.admission = rt->admission;
+    }
     rt->control = std::make_unique<ControlPlane>(rt->registry, rt->guard, rt->budget, *rt->queue,
                                                  rt->engine.get(), logger, co, rt->image_engine.get());
+    rt->admission->start_watchdog();
     return rt;
 }
 
@@ -142,6 +153,13 @@ const char* kServeHelp =
     "  --max-body-bytes <n>     Request body cap (default 1048576)\n"
     "  --max-inflight <n>       Concurrent request cap (default 8)\n"
     "  --timeout-s <n>          Per-request generation timeout (default 300)\n"
+    "  --min-free-ram-mb <n>    Overload protection: refuse work that would leave less RAM free (default "
+    "2560)\n"
+    "  --hard-floor-mb <n>      Watchdog kill switch trips below this free RAM (default 1024)\n"
+    "  --max-commit-pct <n>     Refuse work above this commit charge in percent (default 90)\n"
+    "  --max-active-jobs <n>    Jobs in flight (running + queued) before 503 Retry-After (default 4)\n"
+    "  --watchdog-ms <n>        Watchdog sampling interval (default 1000)\n"
+    "  --no-overload-protection Disable admission control and the watchdog (not recommended)\n"
     "  --chat-template <t>      auto (default: model template for single-turn, ChatML otherwise) | chatml | "
     "plain\n"
     "  --help                   This text\n";
@@ -177,6 +195,8 @@ TransportOptions serve_transport_options(const ApiOptions& api, const std::strin
 }
 
 void graceful_shutdown(HttpServer& server, Runtime& runtime) {
+    if (runtime.admission)
+        runtime.admission->stop_watchdog();
     runtime.queue->shutdown();  // cancels running/queued jobs; blocked request threads get Cancelled
     runtime.engine_queue->shutdown();
     server.stop();  // now every connection thread can finish and be joined
@@ -191,6 +211,10 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     std::string host;
     unsigned long long port = 8765, body_cap = 1024ull * 1024, inflight = 8, timeout_s = 300;
     bool lan = false;
+    scheduler::AdmissionConfig adm;
+    unsigned long long min_free_mb = adm.min_free_ram_bytes >> 20, hard_floor_mb = adm.hard_floor_bytes >> 20,
+                       commit_pct = 90, max_jobs = adm.max_in_flight, watchdog_ms = 1000;
+    bool overload_off = false;
     std::string token, tmpl = "auto";
     std::vector<std::string> roots, hosts, origins;
     for (std::size_t i = 0; i < args.size(); ++i) {
@@ -241,6 +265,23 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
         } else if (a == "--timeout-s") {
             if (!need(v) || !parse_uint(v, 86400, timeout_s) || timeout_s == 0)
                 return bad("--timeout-s must be 1..86400");
+        } else if (a == "--min-free-ram-mb") {
+            if (!need(v) || !parse_uint(v, 1ull << 22, min_free_mb))
+                return bad("--min-free-ram-mb must be 0..4194304");
+        } else if (a == "--hard-floor-mb") {
+            if (!need(v) || !parse_uint(v, 1ull << 22, hard_floor_mb))
+                return bad("--hard-floor-mb must be 0..4194304");
+        } else if (a == "--max-commit-pct") {
+            if (!need(v) || !parse_uint(v, 100, commit_pct) || commit_pct == 0)
+                return bad("--max-commit-pct must be 1..100");
+        } else if (a == "--max-active-jobs") {
+            if (!need(v) || !parse_uint(v, 1024, max_jobs) || max_jobs == 0)
+                return bad("--max-active-jobs must be 1..1024");
+        } else if (a == "--watchdog-ms") {
+            if (!need(v) || !parse_uint(v, 600000, watchdog_ms) || watchdog_ms == 0)
+                return bad("--watchdog-ms must be 1..600000");
+        } else if (a == "--no-overload-protection") {
+            overload_off = true;
         } else
             return bad("unknown option: " + a);
     }
@@ -274,6 +315,16 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     ro.state_dir = state_dir;
     ro.model_roots = roots;
     ro.control.chat_template = tmpl;
+    adm.enabled = !overload_off;
+    adm.min_free_ram_bytes = min_free_mb << 20;
+    adm.hard_floor_bytes = hard_floor_mb << 20;
+    adm.max_commit_fraction = static_cast<double>(commit_pct) / 100.0;
+    adm.hard_commit_fraction = std::max(adm.hard_commit_fraction, adm.max_commit_fraction);
+    adm.max_in_flight = static_cast<std::size_t>(max_jobs);
+    adm.watchdog_interval = std::chrono::milliseconds(watchdog_ms);
+    if (auto v = scheduler::validate(adm); !v)
+        return bad(v.error().message);
+    ro.admission = adm;
     auto rt = Runtime::create(std::move(ro), log);
     if (!rt) {
         err << "error: " << rt.error().message << " [" << to_string(rt.error().code) << "]\n";

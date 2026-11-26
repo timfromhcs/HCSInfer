@@ -22,4 +22,21 @@ std::optional<MemoryMeasurements> measure_memory();
 MemoryMeasurements make_measurements(std::uint64_t total_physical_bytes,
                                      std::uint64_t available_physical_bytes);
 
+// Raw live system/process memory figures for the overload controller (src/scheduler, src/telemetry).
+// Read-only OS queries. A figure the OS did not give us is nullopt (rendered as "unknown"), never guessed.
+struct SystemMemorySample {
+    std::optional<std::uint64_t> total_physical_bytes;
+    std::optional<std::uint64_t> available_physical_bytes;
+    std::optional<std::uint64_t> commit_used_bytes;   // system-wide commit charge (Windows CommitTotal)
+    std::optional<std::uint64_t> commit_limit_bytes;  // RAM + page file (Windows CommitLimit)
+    std::optional<std::uint64_t> process_working_set_bytes;
+};
+SystemMemorySample sample_system_memory();
+
+// GPU memory headroom as the OS reports it (Windows: DXGI IDXGIAdapter3::QueryVideoMemoryInfo, local +
+// non-local segment, budget - current usage, best hardware adapter). This is the OS budget for the adapter,
+// not VK_EXT_memory_budget of a Vulkan device (creating a Vulkan device per sample would be too heavy).
+// nullopt when DXGI is unavailable (non-Windows, no adapter, query failure).
+std::optional<std::uint64_t> sample_gpu_heap_headroom();
+
 }  // namespace hcs::hardware

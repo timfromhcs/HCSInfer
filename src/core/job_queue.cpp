@@ -252,6 +252,46 @@ Result<void> JobQueue::cancel(JobId id) {
     return {};
 }
 
+std::size_t JobQueue::cancel_all() {
+    std::unique_lock lock(impl_->mutex);
+    std::size_t n = 0;
+    // Queued jobs: cancelled immediately (collect first: emit_locked releases the lock around callbacks).
+    std::vector<std::shared_ptr<Job>> queued;
+    while (!impl_->pending.empty()) {
+        const auto id = impl_->pending.front();
+        impl_->pending.pop_front();
+        auto it = impl_->jobs.find(id);
+        if (it != impl_->jobs.end() && it->second->state == JobState::Queued) {
+            it->second->state = JobState::Cancelled;
+            it->second->error = Error(ErrorCode::Cancelled, "cancelled by kill switch");
+            it->second->fn = nullptr;
+            queued.push_back(it->second);
+        }
+    }
+    for (auto& kv : impl_->jobs) {
+        if (kv.second->state == JobState::Running) {
+            kv.second->cancel.request_cancel();
+            ++n;
+        }
+    }
+    for (auto& j : queued) {
+        ++n;
+        impl_->emit_locked(lock, *j, JobEventKind::StateChanged, 0.0, "cancelled by kill switch");
+    }
+    impl_->done_cv.notify_all();
+    return n;
+}
+
+bool JobQueue::wait_idle(std::chrono::milliseconds timeout) const {
+    std::unique_lock lock(impl_->mutex);
+    return impl_->done_cv.wait_for(lock, timeout, [&] {
+        for (const auto& kv : impl_->jobs) {
+            if (kv.second->state == JobState::Queued || kv.second->state == JobState::Running)
+                return false;
+        }
+        return true;
+    });
+}
 bool JobQueue::wait(JobId id, std::chrono::milliseconds timeout) const {
     std::unique_lock lock(impl_->mutex);
     auto it = impl_->jobs.find(id.value);

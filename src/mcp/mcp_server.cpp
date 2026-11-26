@@ -183,6 +183,11 @@ json tool_list(std::uint32_t cap) {
            {"maxItems", 8},
            {"items", {{"type", "integer"}, {"minimum", 16}, {"maximum", 1048576}}}}}},
         {"model"}, false));
+    tools.push_back(tool(
+        "hcs.runtime.shed", "Shed all load (kill switch)",
+        "Emergency stop: cancels every queued and running job and unloads the loaded model, bounded by the "
+        "shed deadline. Use when the machine is running out of memory. Returns what was cancelled/unloaded.",
+        {}, {}, false, true));
     tools.push_back(tool("hcs.jobs.status", "Job status",
                          "State of a job returned by another tool or the HTTP API.",
                          {{"job_id", str_schema(24, "e.g. job-12")}}, {"job_id"}, true));
@@ -593,6 +598,8 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
             j["devices"] = cp_.devices_json();
         return tool_ok(std::move(j));
     }
+    if (name == "hcs.runtime.shed")
+        return tool_ok(scheduler::to_json(cp_.shed("manual: MCP tool hcs.runtime.shed")));
     if (name == "hcs.runtime.benchmark") {
         api::BenchmarkParams p;
         p.model = args["model"].get<std::string>();

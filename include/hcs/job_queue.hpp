@@ -105,6 +105,12 @@ public:
     // Queued job: cancelled immediately. Running: token set; job should return ErrorCode::Cancelled.
     // Finished job: no-op success. Unknown id: NotFound.
     Result<void> cancel(JobId id);
+    // Kill switch: cancels every queued job at once and signals every running job. Returns how many jobs were
+    // affected (queued + running). Running jobs still have to observe their token and return; use wait_idle()
+    // to bound that.
+    std::size_t cancel_all();
+    // Blocks until no job is Queued or Running, or the timeout passes; true iff the queue is idle.
+    bool wait_idle(std::chrono::milliseconds timeout) const;
     // Blocks until terminal or timeout; true iff terminal. Unknown id => false.
     bool wait(JobId id, std::chrono::milliseconds timeout) const;
     std::vector<JobEvent> events(JobId id, std::size_t from_seq = 0) const;

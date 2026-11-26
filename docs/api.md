@@ -31,6 +31,7 @@ stderr shows `HCSInfer API listening on http://127.0.0.1:<port>` and
 | `--max-body-bytes <n>` | request body cap, default 1 MiB |
 | `--max-inflight <n>` | concurrent request cap, default 8 |
 | `--timeout-s <n>` | per-request generation timeout, default 300 |
+| `--min-free-ram-mb <n>` / `--hard-floor-mb <n>` / `--max-commit-pct <n>` / `--max-active-jobs <n>` / `--watchdog-ms <n>` / `--no-overload-protection` | overload protection thresholds, see [overload-protection.md](overload-protection.md) (defaults: keep >= 2560 MiB free, kill switch below 1024 MiB, commit < 90 %, 4 jobs in flight) |
 | `--chat-template auto\|chatml\|plain` | see "Chat prompt construction" |
 
 Models are those registered by `HCSInfer models scan <dir>` (registry in the state dir). The server never scans or
@@ -82,7 +83,7 @@ Every error (auth, validation, engine) has the same body and an `X-Request-Id` h
 | 422 | `model_error` |
 | 429 | `too_many_requests` (+ `Retry-After`) |
 | 501 | `unsupported` |
-| 502 / 503 / 504 | `backend_error`, `out_of_memory`, `timeout` |
+| 502 / 503 / 504 | `backend_error`, `out_of_memory` / `overloaded` (both with `Retry-After`, see [overload-protection.md](overload-protection.md)), `timeout` |
 
 (`code` for engine errors is the stable `hcs::ErrorCode` name from `include/hcs/result.hpp`.)
 
@@ -187,6 +188,8 @@ Behaviour shared by both routes:
 | `GET /hcs/v1/runtime` | engine availability/metrics, loaded model, pending jobs, uptime |
 | `GET /hcs/v1/devices` | hardware/Vulkan report (from `hcs_hardware`'s doctor JSON; `{"status":"unknown",...}` without it) |
 | `GET /hcs/v1/memory` | budget (`"unknown"` strings when no live measurement), reservations |
+| `GET /hcs/v1/runtime/overload` | overload controller snapshot: level (`normal`/`pressure`/`critical`), live RAM/commit/GPU-heap sample (`"unknown"` where not measurable), in-flight jobs, counters, limits, last shed. `{"enabled":false}` when disabled. Never throttled |
+| `POST /hcs/v1/runtime/shed` | kill switch: cancels every queued/running job and unloads the model within the shed deadline; returns `{reason,jobs_cancelled,model_unloaded,unload_pending,jobs_idle,duration_ms}`. Needs the bearer token; never throttled |
 | `GET /hcs/v1/models`, `GET /hcs/v1/models/{id}` | manifests + lifecycle state (no file paths) |
 | `POST /hcs/v1/models/{id}/load` | `202 {"job_id","status_url"}` (asynchronous job) |
 | `POST /hcs/v1/models/{id}/unload` | `200`; cancels a running generation first; `409` if that model is not loaded |
