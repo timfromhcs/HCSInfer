@@ -951,6 +951,7 @@ json image_request_schema(bool edit, std::size_t max_prompt, std::uint32_t max_s
                 {"seed", {{"type", "integer"}, {"minimum", 0}}},
                 {"cfg_scale", {{"type", "number"}, {"minimum", 0}, {"maximum", 30}}},
                 {"preset", {{"type", "string"}, {"enum", json::array({"fast", "quality"})}}},
+                {"allow_low_quality", {{"type", "boolean"}}},
                 {"strength", {{"type", "number"}, {"minimum", 0}, {"maximum", 1}}},
                 {"image", {{"type", "string"}}}}}};
     return s;
@@ -1028,6 +1029,8 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
         p.cfg_scale = body["cfg_scale"].get<float>();
     if (body.contains("preset"))
         p.preset = body["preset"].get<std::string>();
+    if (body.contains("allow_low_quality"))
+        p.allow_low_quality = body["allow_low_quality"].get<bool>();
     if (body.contains("strength"))
         p.strength = body["strength"].get<float>();
     bool size_given = false;

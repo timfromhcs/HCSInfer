@@ -1,0 +1,13 @@
+== sd15-apple free_mb=10391
+exit=0
+== sd15-lighthouse free_mb=9825
+exit=0
+== sd15-cabin free_mb=9915
+exit=0
+== flux-apple free_mb=10535
+exit=0
+== flux-lighthouse free_mb=10806
+exit=0
+== flux-fox free_mb=10880
+exit=0
+DONE

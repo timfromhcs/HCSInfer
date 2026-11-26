@@ -4,6 +4,13 @@ Evidence is grouped per milestone. Each directory has a `README.md` explaining w
 build, what passed, and what is NOT RUN / BLOCKED. Raw logs, JSON results and (where useful) produced images are kept
 next to it.
 
+> **Image evidence caveat.** The 256x256 / 2-step PNGs (`M2/image/cpu-*-256x256-2step.png`, `M3-image/*-256x256-2steps.png`)
+> and `M2/image/vulkan-512x512-4step.png` are **pipeline smoke tests only**: they prove that load -> sample -> PNG encode
+> runs, not that image generation produces usable pictures (SD1.5 needs >= 512 px and ~20 steps). They are kept as
+> evidence of the plumbing and must not be shown as examples of output quality. Real renders with prompt, seed, model
+> hash, timing and an honest quality note are in [`docs/gallery/`](../gallery/README.md). Since wave A (a3) such small
+> requests are rejected unless `allow_low_quality` is set.
+
 | Directory | Milestone / scope |
 |---|---|
 | `M0/` | hardware + repository baseline (`doctor.json`, `doctor-no-vulkan.json`, USB-HDD read benchmark, `vulkaninfo`) |

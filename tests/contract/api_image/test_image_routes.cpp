@@ -314,6 +314,108 @@ TEST(ApiImages, RuntimeReportsTheImageEngine) {
 }
 
 // ---- embedded UI hook ------------------------------------------------------------------------------
+// ---- quality envelope (hcs/image_profiles.hpp) -----------------------------------------------------
+namespace {
+// Registers an extra image model whose id names a family; the control plane guesses the family from it.
+void add_image_model(Api& a, const std::string& id) {
+    const auto path = a.fx.root / (id + ".gguf");
+    test::write_file(path, test::fake_gguf());
+    ModelManifest m;
+    m.id = id;
+    m.display_name = id;
+    m.path = path.string();
+    m.format = ModelFormat::Gguf;
+    m.kind = ModelKind::Image;
+    m.size_bytes = 64;
+    ASSERT_TRUE(a.fx.registry.add(m).ok());
+}
+}  // namespace
+
+TEST(ApiImageQuality, Sd15SmokeParametersAreRejectedWithoutOptIn) {
+    Api a;
+    add_image_model(a, "sd15-test");
+    auto r =
+        a.call("POST", "/v1/images/generations",
+               json{{"model", "sd15-test"}, {"prompt", "a red apple"}, {"size", "256x256"}, {"steps", 2}});
+    ASSERT_EQ(r.status, 400) << r.body;
+    const std::string msg = err_of(r)["message"];
+    EXPECT_NE(msg.find("low_quality_request"), std::string::npos) << msg;
+    EXPECT_NE(msg.find("allow_low_quality"), std::string::npos) << msg;
+    EXPECT_EQ(a.fx.image.generations.load(), 0) << "rejected before the engine is touched";
+    EXPECT_EQ(a.fx.image.loads.load(), 0);
+}
+
+TEST(ApiImageQuality, EachDimensionOfTheEnvelopeIsCheckedOnItsOwn) {
+    Api a;
+    add_image_model(a, "sd15-test");
+    EXPECT_EQ(a.call("POST", "/v1/images/generations",
+                     json{{"model", "sd15-test"}, {"prompt", "x"}, {"size", "256x256"}, {"steps", 20}})
+                  .status,
+              400)
+        << "size only";
+    EXPECT_EQ(a.call("POST", "/v1/images/generations",
+                     json{{"model", "sd15-test"}, {"prompt", "x"}, {"size", "512x512"}, {"steps", 4}})
+                  .status,
+              400)
+        << "steps only";
+}
+
+TEST(ApiImageQuality, OptInRendersAndForwardsTheFlag) {
+    Api a;
+    add_image_model(a, "sd15-test");
+    auto r = a.call("POST", "/v1/images/generations",
+                    json{{"model", "sd15-test"},
+                         {"prompt", "a red apple"},
+                         {"size", "256x256"},
+                         {"steps", 2},
+                         {"allow_low_quality", true}});
+    ASSERT_EQ(r.status, 200) << r.body;
+    EXPECT_EQ(a.fx.image.generations.load(), 1);
+    EXPECT_TRUE(a.fx.image.last.allow_low_quality);
+    EXPECT_EQ(a.fx.image.last.width, 256u);
+}
+
+TEST(ApiImageQuality, Sd15DefaultsAreInsideTheEnvelope) {
+    Api a;
+    add_image_model(a, "sd15-test");
+    auto r =
+        a.call("POST", "/v1/images/generations", json{{"model", "sd15-test"}, {"prompt", "a red apple"}});
+    ASSERT_EQ(r.status, 200) << r.body;
+    EXPECT_EQ(a.fx.image.last.width, 512u);
+    EXPECT_EQ(a.fx.image.last.height, 512u);
+    EXPECT_EQ(a.fx.image.last.steps, 20u);
+    EXPECT_FALSE(a.fx.image.last.allow_low_quality);
+}
+
+TEST(ApiImageQuality, FluxPresetPointIsAcceptedAndTinySizeIsNot) {
+    Api a;
+    add_image_model(a, "flux3-klein-test");
+    EXPECT_EQ(a.call("POST", "/v1/images/generations",
+                     json{{"model", "flux3-klein-test"}, {"prompt", "x"}, {"preset", "fast"}})
+                  .status,
+              200);
+    EXPECT_EQ(
+        a.call("POST", "/v1/images/generations",
+               json{{"model", "flux3-klein-test"}, {"prompt", "x"}, {"size", "256x256"}, {"preset", "fast"}})
+            .status,
+        400);
+}
+
+TEST(ApiImageQuality, FamilyThatCannotBeGuessedIsLeftToTheEngine) {
+    Api a;  // "sdmodel" names no family: the control plane does not guess, the engine decides after load
+    auto r = a.call("POST", "/v1/images/generations", a.gen_body());
+    EXPECT_EQ(r.status, 200) << r.body;
+}
+
+TEST(ApiImageQuality, NonBooleanOptInIsRejectedBySchema) {
+    Api a;
+    add_image_model(a, "sd15-test");
+    EXPECT_EQ(a.call("POST", "/v1/images/generations",
+                     json{{"model", "sd15-test"}, {"prompt", "x"}, {"allow_low_quality", "yes"}})
+                  .status,
+              400);
+}
+
 #ifdef HCS_TEST_GUI
 TEST(ApiUi, RootAndAssetsAreServedWithoutATokenButBehindHostAndOriginChecks) {
     Api a;

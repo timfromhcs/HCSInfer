@@ -1,0 +1,1715 @@
+Test project D:/HCSInfer/build/a3
+        Start 826: e2e_gui_real
+        Start 653: TransportNegative.MalformedRequestLinesAreNeverServedAsSuccess
+        Start 654: TransportNegative.BadContentLengthIsRejectedOrIgnoredSafely
+        Start 829: eval_agentic_scorer_selftest
+  1/831 Test #829: eval_agentic_scorer_selftest ......................................................................   Passed    1.16 sec
+        Start 366: ChildProcessJob.ActiveProcessLimitStopsAForkBomb
+  2/831 Test #826: e2e_gui_real ......................................................................................   Passed    4.60 sec
+        Start 658: TransportNegative.LongRunningHandlerAndStreamAreNotKilledByTheRequestDeadline
+  3/831 Test #366: ChildProcessJob.ActiveProcessLimitStopsAForkBomb ..................................................   Passed    4.01 sec
+        Start 657: TransportNegative.SlowlorisHeaderDripIsCutOffInBoundedTime
+  4/831 Test #654: TransportNegative.BadContentLengthIsRejectedOrIgnoredSafely .......................................   Passed    8.18 sec
+        Start 777: MutationFuzz.GgufParserNeverCrashesOrViolatesInvariants
+  5/831 Test #658: TransportNegative.LongRunningHandlerAndStreamAreNotKilledByTheRequestDeadline .....................   Passed    4.22 sec
+        Start 125: SessionReal.CancelKillsTheWholeTreeIncludingAGrandchild
+  6/831 Test #653: TransportNegative.MalformedRequestLinesAreNeverServedAsSuccess ....................................   Passed    9.23 sec
+        Start 128: SessionReal.ShutdownWithARunningRealChildLeavesNothingBehind
+  7/831 Test #657: TransportNegative.SlowlorisHeaderDripIsCutOffInBoundedTime ........................................   Passed    4.21 sec
+        Start 355: ChildProcess.DestroyingTheObjectKillsTheWholeTree
+  8/831 Test #125: SessionReal.CancelKillsTheWholeTreeIncludingAGrandchild ...........................................   Passed    2.23 sec
+        Start 372: NativeLauncher.ActiveProcessAndMemoryCapsAreApplied
+  9/831 Test #128: SessionReal.ShutdownWithARunningRealChildLeavesNothingBehind ......................................   Passed    2.23 sec
+        Start 371: NativeLauncher.DroppingTheChildKillsItsTree
+ 10/831 Test #355: ChildProcess.DestroyingTheObjectKillsTheWholeTree .................................................   Passed    2.09 sec
+        Start 113: SessionCancel.CancelRightAfterCreateStillEndsTheSession
+ 11/831 Test #777: MutationFuzz.GgufParserNeverCrashesOrViolatesInvariants ...........................................   Passed    3.38 sec
+        Start 647: ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded
+ 12/831 Test #113: SessionCancel.CancelRightAfterCreateStillEndsTheSession ...........................................   Passed    0.72 sec
+        Start 370: NativeLauncher.WaitReturnsNulloptWhileRunningAndTerminateEndsTheTree
+ 13/831 Test #372: NativeLauncher.ActiveProcessAndMemoryCapsAreApplied ...............................................   Passed    1.99 sec
+        Start 650: ApiSocketAudit.ServeBudgetKeepsHealthAnsweringUnder64HeldConnections
+ 14/831 Test #371: NativeLauncher.DroppingTheChildKillsItsTree .......................................................   Passed    1.99 sec
+        Start 367: ChildProcessJob.MemoryLimitStopsARunawayAllocation
+ 15/831 Test #647: ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded .................................   Passed    2.15 sec
+        Start 126: SessionReal.EventAndLineCapsHoldAgainstARealFloodingProcess
+ 16/831 Test #126: SessionReal.EventAndLineCapsHoldAgainstARealFloodingProcess .......................................   Passed    0.31 sec
+        Start 759: McpAudit.CancelDuringModelLoadReleasesTheCallSlotPromptly
+ 17/831 Test #370: NativeLauncher.WaitReturnsNulloptWhileRunningAndTerminateEndsTheTree ..............................   Passed    1.99 sec
+        Start 652: TransportNegative.OversizedHeaderIsRejectedAndServerSurvives
+ 18/831 Test #367: ChildProcessJob.MemoryLimitStopsARunawayAllocation ................................................   Passed    0.92 sec
+        Start 664: ShutdownLoading.UnloadRequestedWhileALoadRunsSerialisesAfterItAndEndsUnloaded
+ 19/831 Test #650: ApiSocketAudit.ServeBudgetKeepsHealthAnsweringUnder64HeldConnections ..............................   Passed    2.14 sec
+        Start 655: TransportNegative.PipelinedRequestsAreAnsweredInOrderOrDroppedNeverReordered
+ 20/831 Test #652: TransportNegative.OversizedHeaderIsRejectedAndServerSurvives ......................................   Passed    1.12 sec
+        Start 122: SessionReal.AnEchoedTokenIsRedactedEvenWhenTheChildPrintsIt
+ 21/831 Test #122: SessionReal.AnEchoedTokenIsRedactedEvenWhenTheChildPrintsIt .......................................   Passed    0.14 sec
+        Start 120: SessionReal.ScriptedAgentCompletesThroughTheJobObjectLauncher
+ 22/831 Test #120: SessionReal.ScriptedAgentCompletesThroughTheJobObjectLauncher .....................................   Passed    0.12 sec
+        Start 121: SessionReal.TheChildSeesTheTokenOnlyInItsEnvironmentAndNothingFromTheParent
+ 23/831 Test #759: McpAudit.CancelDuringModelLoadReleasesTheCallSlotPromptly .........................................   Passed    1.58 sec
+        Start 662: ShutdownLoading.ShutdownDuringAnUninterruptibleLoadWaitsForItAndNeverCrashes
+ 24/831 Test #664: ShutdownLoading.UnloadRequestedWhileALoadRunsSerialisesAfterItAndEndsUnloaded .....................   Passed    1.31 sec
+        Start 648: ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout
+ 25/831 Test #121: SessionReal.TheChildSeesTheTokenOnlyInItsEnvironmentAndNothingFromTheParent .......................   Passed    0.14 sec
+        Start 127: SessionReal.ExitCodesMapToStates
+ 26/831 Test #127: SessionReal.ExitCodesMapToStates ..................................................................   Passed    0.17 sec
+        Start 124: SessionReal.WallClockTimeoutKillsTheRealProcess
+ 27/831 Test #655: TransportNegative.PipelinedRequestsAreAnsweredInOrderOrDroppedNeverReordered ......................   Passed    1.22 sec
+        Start 123: SessionReal.APolicyViolationKillsTheRealProcessPromptly
+ 28/831 Test #123: SessionReal.APolicyViolationKillsTheRealProcessPromptly ...........................................   Passed    0.12 sec
+        Start 649: ApiSocketAudit.HealthAnswersFirstTryWhileIdleAndHalfOpenConnectionsAreHeld
+ 29/831 Test #124: SessionReal.WallClockTimeoutKillsTheRealProcess ...................................................   Passed    0.75 sec
+        Start 365: ChildProcessEnv.EmptyReplacedEnvironmentIsValid
+ 30/831 Test #365: ChildProcessEnv.EmptyReplacedEnvironmentIsValid ...................................................   Passed    0.11 sec
+        Start 778: MutationFuzz.PureRandomGarbageIsRejected
+ 31/831 Test #648: ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout ..............................   Passed    1.12 sec
+        Start 368: NativeLauncher.StreamsStdoutAndStderrSeparatelyAndReportsExitCode
+ 32/831 Test #368: NativeLauncher.StreamsStdoutAndStderrSeparatelyAndReportsExitCode .................................   Passed    0.11 sec
+        Start 361: ChildProcessStream.TerminateFromAnotherThreadUnblocksBlockedReaders
+ 33/831 Test #662: ShutdownLoading.ShutdownDuringAnUninterruptibleLoadWaitsForItAndNeverCrashes ......................   Passed    1.31 sec
+        Start 713: Cli.DoctorJsonIsValidAndNeverGuesses
+ 34/831 Test #713: Cli.DoctorJsonIsValidAndNeverGuesses ..............................................................   Passed    0.23 sec
+        Start 663: ShutdownLoading.QueuedLoadThatNeverStartsIsCancelledNotRunAfterShutdown
+ 35/831 Test #361: ChildProcessStream.TerminateFromAnotherThreadUnblocksBlockedReaders ...............................   Passed    0.38 sec
+        Start 351: ChildProcess.CapturesMergedStdoutAndStderr
+ 36/831 Test #351: ChildProcess.CapturesMergedStdoutAndStderr ........................................................   Passed    0.11 sec
+        Start 354: ChildProcess.CapsCapturedOutput
+ 37/831 Test #354: ChildProcess.CapsCapturedOutput ...................................................................   Passed    0.10 sec
+        Start 714: Cli.DoctorTextWorks
+ 38/831 Test #778: MutationFuzz.PureRandomGarbageIsRejected ..........................................................   Passed    0.84 sec
+        Start 369: NativeLauncher.ChildSeesOnlyTheSuppliedEnvironment
+ 39/831 Test #649: ApiSocketAudit.HealthAnswersFirstTryWhileIdleAndHalfOpenConnectionsAreHeld ........................   Passed    1.12 sec
+        Start 352: ChildProcess.ReportsTheExitCode
+ 40/831 Test #369: NativeLauncher.ChildSeesOnlyTheSuppliedEnvironment ................................................   Passed    0.12 sec
+        Start 353: ChildProcess.TimesOutThenTerminateKills
+ 41/831 Test #714: Cli.DoctorTextWorks ...............................................................................   Passed    0.26 sec
+        Start 356: ChildProcess.PassesEnvironmentOverrides
+ 42/831 Test #352: ChildProcess.ReportsTheExitCode ...................................................................   Passed    0.13 sec
+        Start 207: PathGuard.LinkInsideRootPointingOutsideIsRejected
+ 43/831 Test #356: ChildProcess.PassesEnvironmentOverrides ...........................................................   Passed    0.12 sec
+        Start 709: Cli.BenchmarkHelpAndArgumentValidationBeforeLoadingAnything
+ 44/831 Test #207: PathGuard.LinkInsideRootPointingOutsideIsRejected .................................................   Passed    0.15 sec
+        Start 729: CliCache.ClearNeverFollowsLinksOutOfTheStateDirectory
+ 45/831 Test #353: ChildProcess.TimesOutThenTerminateKills ...........................................................   Passed    0.30 sec
+        Start 208: PathGuard.LinkInsideRootPointingInsideIsAccepted
+ 46/831 Test #663: ShutdownLoading.QueuedLoadThatNeverStartsIsCancelledNotRunAfterShutdown ...........................   Passed    0.92 sec
+        Start 675: ApiImages.RequestTimeoutCancelsTheRenderAndReturns504
+ 47/831 Test #729: CliCache.ClearNeverFollowsLinksOutOfTheStateDirectory .............................................   Passed    0.15 sec
+        Start 256: ModelRegistryScan.DoesNotFollowLinksOutOfRoot
+ 48/831 Test #709: Cli.BenchmarkHelpAndArgumentValidationBeforeLoadingAnything .......................................   Passed    0.31 sec
+        Start 364: ChildProcessEnv.ReplacedEnvironmentContainsOnlyWhatWasGiven
+ 49/831 Test #208: PathGuard.LinkInsideRootPointingInsideIsAccepted ..................................................   Passed    0.17 sec
+        Start 404: Stream.InOrderDeliveryAcrossBufferAndWorkerCounts
+ 50/831 Test #256: ModelRegistryScan.DoesNotFollowLinksOutOfRoot .....................................................   Passed    0.17 sec
+        Start 715: Cli.ModelsScanListInspectRoundTrip
+ 51/831 Test #364: ChildProcessEnv.ReplacedEnvironmentContainsOnlyWhatWasGiven .......................................   Passed    0.12 sec
+        Start  95: SessionEvents.LongPollWakesWhenAnEventArrivesAndAtTheEnd
+ 52/831 Test #715: Cli.ModelsScanListInspectRoundTrip ................................................................   Passed    0.11 sec
+        Start 359: ChildProcessStream.StdoutAndStderrArriveOnSeparatePipes
+ 53/831 Test #359: ChildProcessStream.StdoutAndStderrArriveOnSeparatePipes ...........................................   Passed    0.11 sec
+        Start 407: Stream.CancellationFromSinkStopsPromptlyAndLeaksNothing
+ 54/831 Test #675: ApiImages.RequestTimeoutCancelsTheRenderAndReturns504 .............................................   Passed    0.43 sec
+        Start 337: DoctorLive.VulkanReportWhenAvailable
+ 55/831 Test #404: Stream.InOrderDeliveryAcrossBufferAndWorkerCounts .................................................   Passed    0.37 sec
+        Start 360: ChildProcessStream.ReadsReturnZeroWhenNotStreaming
+ 56/831 Test  #95: SessionEvents.LongPollWakesWhenAnEventArrivesAndAtTheEnd ..........................................   Passed    0.40 sec
+        Start 716: Cli.ScanErrors
+ 57/831 Test #716: Cli.ScanErrors ....................................................................................   Passed    0.10 sec
+        Start 797: LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable
+ 58/831 Test #337: DoctorLive.VulkanReportWhenAvailable ..............................................................   Passed    0.33 sec
+ 59/831 Test #407: Stream.CancellationFromSinkStopsPromptlyAndLeaksNothing ...........................................   Passed    0.35 sec
+ 60/831 Test #360: ChildProcessStream.ReadsReturnZeroWhenNotStreaming ................................................   Passed    0.15 sec
+        Start 749: McpTools.BenchmarkCallTimeoutCancelsTheUnderlyingJob
+        Start 580: ApiChat.CancelEndpointStopsRunningGeneration
+        Start 117: SessionShutdown.ShutdownCancelsRunningSessionsAndRefusesNewOnes
+ 61/831 Test #580: ApiChat.CancelEndpointStopsRunningGeneration ......................................................   Passed    0.23 sec
+        Start 798: LlamaEngineErrors.BadArguments
+ 62/831 Test #117: SessionShutdown.ShutdownCancelsRunningSessionsAndRefusesNewOnes ...................................   Passed    0.25 sec
+        Start 357: ChildProcess.RejectsARelativeProgram
+ 63/831 Test #797: LlamaEngineErrors.TruncatedGgufFailsCleanlyAndEngineStaysUsable ...................................   Passed    0.33 sec
+        Start 116: SessionConcurrency.ParallelReadersAndCancelNeverDeadlockOrCrash
+ 64/831 Test #749: McpTools.BenchmarkCallTimeoutCancelsTheUnderlyingJob ..............................................   Passed    0.33 sec
+        Start 358: ChildProcess.RejectsARelativeCwd
+ 65/831 Test #357: ChildProcess.RejectsARelativeProgram ..............................................................   Passed    0.09 sec
+        Start 438: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 9)
+ 66/831 Test #358: ChildProcess.RejectsARelativeCwd ..................................................................   Passed    0.08 sec
+        Start 303: FsUtil.ConcurrentWritersNeverProduceMixedContent
+ 67/831 Test #438: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 9) ....   Passed    0.22 sec
+        Start 109: SessionExit.OutcomeDependsOnExitCodeAndAgentEnd
+ 68/831 Test #798: LlamaEngineErrors.BadArguments ....................................................................   Passed    0.36 sec
+        Start 455: DatasetValidator.IgnoresBlankLinesAndHandlesCrLf
+ 69/831 Test #455: DatasetValidator.IgnoresBlankLinesAndHandlesCrLf ..................................................   Passed    0.09 sec
+        Start 110: SessionTimeout.TheWatchdogKillsAHungAgent
+ 70/831 Test #116: SessionConcurrency.ParallelReadersAndCancelNeverDeadlockOrCrash ...................................   Passed    0.45 sec
+        Start  68: AuditFixture.CommandsOutsideTheAllowListAreDenied
+ 71/831 Test #303: FsUtil.ConcurrentWritersNeverProduceMixedContent ..................................................   Passed    0.45 sec
+        Start 795: LlamaEngineErrors.MissingFileIsNotFound
+ 72/831 Test  #68: AuditFixture.CommandsOutsideTheAllowListAreDenied .................................................   Passed    0.10 sec
+        Start 362: ChildProcessStream.TerminateRacingWithWaitAndRepeatedTerminateAreSafe
+ 73/831 Test #109: SessionExit.OutcomeDependsOnExitCodeAndAgentEnd ...................................................   Passed    0.38 sec
+        Start 569: ApiNative.ImageRoutesReturn501WithReason
+ 74/831 Test #795: LlamaEngineErrors.MissingFileIsNotFound ...........................................................   Passed    0.26 sec
+        Start 111: SessionTimeout.RequestedTimeoutIsClampedToTheConfiguredMaximum
+ 75/831 Test #362: ChildProcessStream.TerminateRacingWithWaitAndRepeatedTerminateAreSafe .............................   Passed    0.29 sec
+ 76/831 Test #110: SessionTimeout.TheWatchdogKillsAHungAgent .........................................................   Passed    0.47 sec
+        Start 406: Stream.SlowSinkBackPressuresWithoutGrowingMemory
+        Start 581: ApiChat.RequestTimeoutCancelsAndReturns504
+ 77/831 Test #569: ApiNative.ImageRoutesReturn501WithReason ..........................................................   Passed    0.22 sec
+        Start 707: Cli.UnknownCommandIsInvalidArgument
+ 78/831 Test #707: Cli.UnknownCommandIsInvalidArgument ...............................................................   Passed    0.10 sec
+        Start 550: ApiAuth.MissingTokenIs401WithChallenge
+ 79/831 Test #406: Stream.SlowSinkBackPressuresWithoutGrowingMemory ..................................................   Passed    0.19 sec
+        Start 774: McpImage.ToolTimeoutCancelsTheRender
+ 80/831 Test #550: ApiAuth.MissingTokenIs401WithChallenge ............................................................   Passed    0.11 sec
+        Start 433: Unplug.FailedStreamReleasesTheFileHandleSoTheFileCanBeDeleted
+ 81/831 Test #581: ApiChat.RequestTimeoutCancelsAndReturns504 ........................................................   Passed    0.29 sec
+        Start 570: ApiNative.ModelLoadIsAJobAndUnloadWorks
+ 82/831 Test #433: Unplug.FailedStreamReleasesTheFileHandleSoTheFileCanBeDeleted .....................................   Passed    0.11 sec
+        Start 240: Settings.ValidationBounds
+ 83/831 Test #570: ApiNative.ModelLoadIsAJobAndUnloadWorks ...........................................................   Passed    0.10 sec
+        Start 642: ApiSocket.SseStreamsIncrementallyOverTheWire
+ 84/831 Test #111: SessionTimeout.RequestedTimeoutIsClampedToTheConfiguredMaximum ....................................   Passed    0.46 sec
+        Start 549: RsiLoop.RecordsSerialiseToJson
+ 85/831 Test #240: Settings.ValidationBounds .........................................................................   Passed    0.07 sec
+        Start 611: ApiBenchmarks.CancelEndpointStopsTheRunningBenchmark
+ 86/831 Test #549: RsiLoop.RecordsSerialiseToJson ....................................................................   Passed    0.08 sec
+        Start 414: Stream.RepeatedStartStopIsStable
+ 87/831 Test #611: ApiBenchmarks.CancelEndpointStopsTheRunningBenchmark ..............................................   Passed    0.11 sec
+        Start 338: DoctorLive.ReadBenchmarkOnTempFile
+ 88/831 Test #774: McpImage.ToolTimeoutCancelsTheRender ..............................................................   Passed    0.41 sec
+        Start 441: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 12)
+ 89/831 Test #414: Stream.RepeatedStartStopIsStable ..................................................................   Passed    0.15 sec
+        Start 720: Cli.TrainGateKeepsRollsBackAndRejectsIncomparableSets
+ 90/831 Test #338: DoctorLive.ReadBenchmarkOnTempFile ................................................................   Passed    0.17 sec
+        Start 541: RsiLoop.CancelDuringTrainingOrEvaluationInstallsNothing
+ 91/831 Test #441: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 12) ...   Passed    0.16 sec
+        Start 506: ChatTemplate.ExcessiveJsonNestingIsRejectedWithoutStackOverflow
+ 92/831 Test #720: Cli.TrainGateKeepsRollsBackAndRejectsIncomparableSets .............................................   Passed    0.12 sec
+        Start 445: DatasetValidator.AcceptsAWellFormedRecordAndCountsByLicence
+ 93/831 Test #642: ApiSocket.SseStreamsIncrementallyOverTheWire ......................................................   Passed    0.38 sec
+        Start  64: AuditFixture.EscapedCommandNamesAreDecodedBeforeChecking
+ 94/831 Test #541: RsiLoop.CancelDuringTrainingOrEvaluationInstallsNothing ...........................................   Passed    0.09 sec
+        Start 450: DatasetValidator.SchemaViolationsAreReportedWithLineNumbers
+ 95/831 Test #445: DatasetValidator.AcceptsAWellFormedRecordAndCountsByLicence .......................................   Passed    0.08 sec
+        Start 796: LlamaEngineErrors.NonGgufIsModelError
+ 96/831 Test  #64: AuditFixture.EscapedCommandNamesAreDecodedBeforeChecking ..........................................   Passed    0.09 sec
+        Start 444: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <02-00 00-00>
+ 97/831 Test #450: DatasetValidator.SchemaViolationsAreReportedWithLineNumbers .......................................   Passed    0.08 sec
+        Start  62: AuditFixture.LineContinuationsDoNotHideCalls
+ 98/831 Test #506: ChatTemplate.ExcessiveJsonNestingIsRejectedWithoutStackOverflow ...................................   Passed    0.20 sec
+        Start 536: RsiLoop.IncomparableCandidateIsInvalidNotInstalledAndNotActivated
+ 99/831 Test  #62: AuditFixture.LineContinuationsDoNotHideCalls ......................................................   Passed    0.08 sec
+        Start 605: ApiBenchmarks.WrongContentTypeMethodAndRoute
+100/831 Test #444: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <02-00 00-00> ..............   Passed    0.11 sec
+        Start 428: SourceFaults.MissingFileIsAnErrorNotACrash
+101/831 Test #536: RsiLoop.IncomparableCandidateIsInvalidNotInstalledAndNotActivated .................................   Passed    0.07 sec
+        Start 437: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 0)
+102/831 Test #428: SourceFaults.MissingFileIsAnErrorNotACrash ........................................................   Passed    0.07 sec
+        Start 590: ApiAudit.NonStreamingChatCancelsTheJobWhenThePeerDisconnects
+103/831 Test #605: ApiBenchmarks.WrongContentTypeMethodAndRoute ......................................................   Passed    0.10 sec
+        Start 585: ApiPrivacy.PromptsAreNeverLogged
+104/831 Test #437: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <01-00 00-00>, 0) ....   Passed    0.09 sec
+        Start 106: SessionPolicy.UnknownToolAndDynamicCodeAndPathEscapeAreAllViolations
+105/831 Test #796: LlamaEngineErrors.NonGgufIsModelError .............................................................   Passed    0.30 sec
+        Start 595: ApiAudit.WithoutAnyMeasurementLoadsStayPermissiveAndMemoryEndpointSaysSo
+106/831 Test #585: ApiPrivacy.PromptsAreNeverLogged ..................................................................   Passed    0.10 sec
+        Start 427: SourceFaults.FileSourceReadBeyondEndIsAnErrorNeverAShortSuccess
+107/831 Test #590: ApiAudit.NonStreamingChatCancelsTheJobWhenThePeerDisconnects ......................................   Passed    0.12 sec
+        Start 645: ApiSocket.ServerStopsCleanly
+108/831 Test #595: ApiAudit.WithoutAnyMeasurementLoadsStayPermissiveAndMemoryEndpointSaysSo ..........................   Passed    0.11 sec
+109/831 Test #427: SourceFaults.FileSourceReadBeyondEndIsAnErrorNeverAShortSuccess ...................................   Passed    0.09 sec
+        Start  94: SessionEvents.EventsPagingAfterAndMaxCount
+        Start 698: VisionHttp.StreamingWorksWithImages
+110/831 Test #698: VisionHttp.StreamingWorksWithImages ...............................................................   Passed    0.11 sec
+        Start 548: RsiLoop.UnusableArgumentsAndACorruptBookAreErrors
+111/831 Test #106: SessionPolicy.UnknownToolAndDynamicCodeAndPathEscapeAreAllViolations ..............................   Passed    0.28 sec
+112/831 Test  #94: SessionEvents.EventsPagingAfterAndMaxCount ........................................................   Passed    0.13 sec
+        Start 347: KernelCpuSizing.RowAndTotalBytes
+        Start 555: ApiHostOrigin.LoopbackHostsAccepted
+113/831 Test #548: RsiLoop.UnusableArgumentsAndACorruptBookAreErrors .................................................   Passed    0.09 sec
+        Start 564: ApiValidation.WrongContentTypeIs415
+114/831 Test #347: KernelCpuSizing.RowAndTotalBytes ..................................................................   Passed    0.09 sec
+        Start 534: RsiLoop.StartsFromTheCurrentlyActiveAdapterAndCanBeRolledBackAfterwards
+115/831 Test #555: ApiHostOrigin.LoopbackHostsAccepted ...............................................................   Passed    0.11 sec
+        Start 556: ApiHostOrigin.LanModeAllowsIpLiteralsButNotNames
+116/831 Test #564: ApiValidation.WrongContentTypeIs415 ...............................................................   Passed    0.11 sec
+        Start 439: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 0)
+117/831 Test #534: RsiLoop.StartsFromTheCurrentlyActiveAdapterAndCanBeRolledBackAfterwards ...........................   Passed    0.12 sec
+        Start 591: ApiAudit.StreamingChatCancelsWhenThePeerDisconnectsBeforeAnyOutput
+118/831 Test #645: ApiSocket.ServerStopsCleanly ......................................................................   Passed    0.43 sec
+        Start 643: ApiSocket.ClientAbortMidStreamCancelsGeneration
+119/831 Test #556: ApiHostOrigin.LanModeAllowsIpLiteralsButNotNames ..................................................   Passed    0.12 sec
+        Start 560: ApiValidation.OversizeBodyIs413
+120/831 Test #439: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 0) ....   Passed    0.09 sec
+        Start 527: Reflect.ProposesBoundedDataLargestFailingCategoryFirstTiesByName
+121/831 Test #560: ApiValidation.OversizeBodyIs413 ...................................................................   Passed    0.11 sec
+        Start 561: ApiValidation.MalformedJsonIs400
+122/831 Test #591: ApiAudit.StreamingChatCancelsWhenThePeerDisconnectsBeforeAnyOutput ................................   Passed    0.15 sec
+        Start 559: ApiHostOrigin.NoCorsHeadersAreEverEmitted
+123/831 Test #527: Reflect.ProposesBoundedDataLargestFailingCategoryFirstTiesByName ..................................   Passed    0.09 sec
+        Start 568: ApiNative.HealthRuntimeDevicesMemoryModels
+124/831 Test #643: ApiSocket.ClientAbortMidStreamCancelsGeneration ...................................................   Passed    0.21 sec
+        Start 340: DoctorLive.RejectsInvalidOptions
+125/831 Test #561: ApiValidation.MalformedJsonIs400 ..................................................................   Passed    0.12 sec
+        Start 432: Unplug.WriterFromARealFileThatIsCutShortFailsAndLeavesNothing
+126/831 Test #559: ApiHostOrigin.NoCorsHeadersAreEverEmitted .........................................................   Passed    0.12 sec
+        Start  92: SessionLaunch.LaunchFailureEndsTheSessionAsFailed
+127/831 Test #568: ApiNative.HealthRuntimeDevicesMemoryModels ........................................................   Passed    0.12 sec
+        Start 430: Unplug.WriterSourceVanishesMidStreamAtEveryChunkBoundaryLeavesNoPartialFile
+128/831 Test #340: DoctorLive.RejectsInvalidOptions ..................................................................   Passed    0.09 sec
+        Start 551: ApiAuth.WrongTokenIs401
+129/831 Test #432: Unplug.WriterFromARealFileThatIsCutShortFailsAndLeavesNothing .....................................   Passed    0.10 sec
+        Start 743: McpTools.ImagePathsAreGuardedEvenForUnsupportedTools
+130/831 Test  #92: SessionLaunch.LaunchFailureEndsTheSessionAsFailed .................................................   Passed    0.14 sec
+        Start 454: DatasetValidator.RejectsRecordsContainingSecrets
+131/831 Test #430: Unplug.WriterSourceVanishesMidStreamAtEveryChunkBoundaryLeavesNoPartialFile .......................   Passed    0.14 sec
+        Start 721: Cli.TrainPipelinePromotesOnKeepAndRollsBack
+132/831 Test #551: ApiAuth.WrongTokenIs401 ...........................................................................   Passed    0.13 sec
+        Start 363: ChildProcessEnv.DefaultInheritsTheParentEnvironment
+133/831 Test #743: McpTools.ImagePathsAreGuardedEvenForUnsupportedTools ..............................................   Passed    0.10 sec
+        Start 601: ApiBenchmarks.QuickSuiteRunsAsAJobAndTheResultIsRetrievableFromTheJob
+134/831 Test #454: DatasetValidator.RejectsRecordsContainingSecrets ..................................................   Passed    0.07 sec
+        Start  31: AgentRedact.CapUtf8SurvivesInvalidUtf8Continuations
+135/831 Test #721: Cli.TrainPipelinePromotesOnKeepAndRollsBack .......................................................   Passed    0.12 sec
+        Start 474: AdapterBook.DuplicateIdFailsUnlessOverwrite
+136/831 Test #363: ChildProcessEnv.DefaultInheritsTheParentEnvironment ...............................................   Passed    0.12 sec
+        Start 475: AdapterBook.MissingAdapterIsNotFound
+137/831 Test  #31: AgentRedact.CapUtf8SurvivesInvalidUtf8Continuations ...............................................   Passed    0.08 sec
+        Start 479: AdapterBook.RollbackWithoutActivationIsNotFound
+138/831 Test #601: ApiBenchmarks.QuickSuiteRunsAsAJobAndTheResultIsRetrievableFromTheJob .............................   Passed    0.12 sec
+        Start   4: SandboxPolicy.SubcommandMustBeArgvOneAndAllowListed
+139/831 Test #474: AdapterBook.DuplicateIdFailsUnlessOverwrite .......................................................   Passed    0.08 sec
+        Start 578: ApiChat.SseStreaming
+140/831 Test #475: AdapterBook.MissingAdapterIsNotFound ..............................................................   Passed    0.08 sec
+        Start 674: ApiImages.ClientDisconnectCancelsTheRender
+141/831 Test #479: AdapterBook.RollbackWithoutActivationIsNotFound ...................................................   Passed    0.08 sec
+        Start 719: Cli.TrainValidateReportsAcceptedAndRejected
+142/831 Test   #4: SandboxPolicy.SubcommandMustBeArgvOneAndAllowListed ...............................................   Passed    0.07 sec
+        Start 546: RsiLoop.ABadCandidateIsRefusedByThePipelineAndNothingIsInstalled
+143/831 Test #578: ApiChat.SseStreaming ..............................................................................   Passed    0.09 sec
+        Start 336: DoctorLive.CpuFeaturesPresent
+144/831 Test #546: RsiLoop.ABadCandidateIsRefusedByThePipelineAndNothingIsInstalled ..................................   Passed    0.07 sec
+        Start 456: DatasetValidator.EmptyInputIsNotClean
+145/831 Test #719: Cli.TrainValidateReportsAcceptedAndRejected .......................................................   Passed    0.09 sec
+        Start 480: AdapterBook.RejectsUnsafeAdapterIds
+146/831 Test #456: DatasetValidator.EmptyInputIsNotClean .............................................................   Passed    0.07 sec
+        Start 153: JsonSchema.UnsupportedKeywordNeverSilentlyWeakens
+147/831 Test #480: AdapterBook.RejectsUnsafeAdapterIds ...............................................................   Passed    0.07 sec
+        Start  74: AuditFixture.SubprocessWithoutLiteralOrWithUnlistedFunctionIsDenied
+148/831 Test #336: DoctorLive.CpuFeaturesPresent .....................................................................   Passed    0.12 sec
+        Start 723: CliCache.HelpListsSubcommandsAndIsNotPlanned
+149/831 Test #153: JsonSchema.UnsupportedKeywordNeverSilentlyWeakens .................................................   Passed    0.08 sec
+        Start 436: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <00-00 00-00>, 0)
+150/831 Test #674: ApiImages.ClientDisconnectCancelsTheRender ........................................................   Passed    0.26 sec
+        Start 296: BenchFull.AFailingSweepPointIsRecordedAndMakesTheRunPartial
+151/831 Test  #74: AuditFixture.SubprocessWithoutLiteralOrWithUnlistedFunctionIsDenied ...............................   Passed    0.09 sec
+        Start 478: AdapterBook.RollbackMovesThePointerBackWithoutDeleting
+152/831 Test #723: CliCache.HelpListsSubcommandsAndIsNotPlanned ......................................................   Passed    0.09 sec
+        Start  36: EventParser.ToolResultWithoutResultIsEmptyOkEvent
+153/831 Test #436: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <00-00 00-00>, 0) ....   Passed    0.10 sec
+        Start 574: ApiChat.NonStreamingCompletionAutoLoadsModel
+154/831 Test #296: BenchFull.AFailingSweepPointIsRecordedAndMakesTheRunPartial .......................................   Passed    0.10 sec
+        Start 258: ModelRegistryScan.NeverModifiesScannedFiles
+155/831 Test  #36: EventParser.ToolResultWithoutResultIsEmptyOkEvent .................................................   Passed    0.09 sec
+        Start 566: ApiRouting.UnknownRoutesAndMethods
+156/831 Test #478: AdapterBook.RollbackMovesThePointerBackWithoutDeleting ............................................   Passed    0.12 sec
+        Start 420: Gguf.TensorBeyondFileOrMisalignedOrBadDims
+157/831 Test #258: ModelRegistryScan.NeverModifiesScannedFiles .......................................................   Passed    0.09 sec
+        Start 426: SourceFaults.MemorySourceRejectsOutOfRangeAndOverflowingReads
+158/831 Test #574: ApiChat.NonStreamingCompletionAutoLoadsModel ......................................................   Passed    0.12 sec
+        Start 449: DatasetValidator.RejectsClaudeDistillationProvenance
+159/831 Test #420: Gguf.TensorBeyondFileOrMisalignedOrBadDims ........................................................   Passed    0.09 sec
+        Start 257: ModelRegistryScan.RootOutsideGuardIsRejected
+160/831 Test #566: ApiRouting.UnknownRoutesAndMethods ................................................................   Passed    0.12 sec
+        Start  63: AuditFixture.HexUnicodeAndOctalEscapesInPathsAreDecoded
+161/831 Test #426: SourceFaults.MemorySourceRejectsOutOfRangeAndOverflowingReads .....................................   Passed    0.09 sec
+        Start 421: Gguf.ArrayDepthAndLengthLimits
+162/831 Test #449: DatasetValidator.RejectsClaudeDistillationProvenance ..............................................   Passed    0.08 sec
+        Start  73: AuditFixture.AdjacentLiteralsAreConcatenatedBeforeAudit
+163/831 Test #257: ModelRegistryScan.RootOutsideGuardIsRejected ......................................................   Passed    0.09 sec
+        Start 492: AdapterBook.OverwriteReplacesTheManifestButNotTheActivationPointer
+164/831 Test  #63: AuditFixture.HexUnicodeAndOctalEscapesInPathsAreDecoded ...........................................   Passed    0.08 sec
+        Start  91: SessionLaunch.ModelsJsonOnDiskNamesTheVariableNeverTheToken
+165/831 Test #421: Gguf.ArrayDepthAndLengthLimits ....................................................................   Passed    0.08 sec
+        Start 464: EvalGate.IncomparableInputsAreInvalidAndFailClosed
+166/831 Test  #73: AuditFixture.AdjacentLiteralsAreConcatenatedBeforeAudit ...........................................   Passed    0.08 sec
+        Start  21: AgentConfig.LocalServerCompatAddsTheCompatBlockOnlyWhenAsked
+167/831 Test #492: AdapterBook.OverwriteReplacesTheManifestButNotTheActivationPointer ................................   Passed    0.09 sec
+        Start 443: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <01-00 00-00>
+168/831 Test #464: EvalGate.IncomparableInputsAreInvalidAndFailClosed ................................................   Passed    0.06 sec
+        Start 724: CliCache.StatsOnMissingOrEmptyStateReportsZeroHonestly
+169/831 Test  #91: SessionLaunch.ModelsJsonOnDiskNamesTheVariableNeverTheToken .......................................   Passed    0.12 sec
+        Start  69: AuditFixture.ShellMetacharactersAreUnauditable
+170/831 Test  #21: AgentConfig.LocalServerCompatAddsTheCompatBlockOnlyWhenAsked ......................................   Passed    0.07 sec
+        Start  22: AgentRedact.RemovesSessionTokenLiteralEverywhere
+171/831 Test  #69: AuditFixture.ShellMetacharactersAreUnauditable ....................................................   Passed    0.07 sec
+172/831 Test #724: CliCache.StatsOnMissingOrEmptyStateReportsZeroHonestly ............................................   Passed    0.08 sec
+        Start 545: RsiLoop.AThrowingHookEndsTheLoopCleanly
+        Start  72: AuditFixture.NonLiteralCommandsAreUnauditable
+173/831 Test  #22: AgentRedact.RemovesSessionTokenLiteralEverywhere ..................................................   Passed    0.08 sec
+174/831 Test #443: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <01-00 00-00> ..............   Passed    0.12 sec
+        Start 448: DatasetValidator.LicenceIsRequiredAndMustBeAllowed
+        Start 476: AdapterBook.ActivateIsRefusedUnlessTheGateKeptIt
+175/831 Test #545: RsiLoop.AThrowingHookEndsTheLoopCleanly ...........................................................   Passed    0.07 sec
+        Start  59: AuditFixture.AliasingOsOrSubprocessIsDenied
+176/831 Test  #72: AuditFixture.NonLiteralCommandsAreUnauditable .....................................................   Passed    0.07 sec
+        Start 596: ApiAudit.RuntimeBuildsItsBudgetFromInjectedMeasurements
+177/831 Test #448: DatasetValidator.LicenceIsRequiredAndMustBeAllowed ................................................   Passed    0.54 sec
+        Start  11: SandboxPolicy.ReadAndWritePaths
+178/831 Test #476: AdapterBook.ActivateIsRefusedUnlessTheGateKeptIt ..................................................   Passed    0.55 sec
+179/831 Test  #59: AuditFixture.AliasingOsOrSubprocessIsDenied .......................................................   Passed    0.50 sec
+        Start 646: ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob
+        Start 542: RsiLoop.WallClockBudgetStopsTheLoop
+180/831 Test  #11: SandboxPolicy.ReadAndWritePaths ...................................................................   Passed    0.09 sec
+        Start  60: AuditFixture.CustomDeniedImportListIsHonoured
+181/831 Test #596: ApiAudit.RuntimeBuildsItsBudgetFromInjectedMeasurements ...........................................   Passed    0.11 sec
+        Start  61: AuditFixture.CodeAfterStringsAndCommentsIsStillScanned
+182/831 Test #646: ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob ..........................................   Passed    0.15 sec
+        Start 206: PathGuard.AddRootValidation
+183/831 Test  #60: AuditFixture.CustomDeniedImportListIsHonoured .....................................................   Passed    0.09 sec
+184/831 Test  #61: AuditFixture.CodeAfterStringsAndCommentsIsStillScanned ............................................   Passed    0.08 sec
+        Start  43: EventParser.DeeplyNestedAndHugeLinesAreSafe
+        Start 167: DataUri.RoundTripsBytes
+185/831 Test #542: RsiLoop.WallClockBudgetStopsTheLoop ...............................................................   Passed    0.17 sec
+        Start 342: MemoryProbe.PolicyReservesTenPercentWithAOneGiBFloorAndHalfGiBMargin
+186/831 Test #206: PathGuard.AddRootValidation .......................................................................   Passed    0.09 sec
+        Start 565: ApiValidation.UnsupportedFeaturesAre501NotSilentlyIgnored
+187/831 Test #167: DataUri.RoundTripsBytes ...........................................................................   Passed    0.08 sec
+        Start 586: ApiPrivacy.FailurePathsNeverLogPromptsBodiesOrCredentials
+188/831 Test #342: MemoryProbe.PolicyReservesTenPercentWithAOneGiBFloorAndHalfGiBMargin ..............................   Passed    0.08 sec
+        Start 557: ApiHostOrigin.ForeignOriginsRejected
+189/831 Test #565: ApiValidation.UnsupportedFeaturesAre501NotSilentlyIgnored .........................................   Passed    0.12 sec
+        Start 152: JsonSchema.ErrorMessageCarriesPath
+190/831 Test #586: ApiPrivacy.FailurePathsNeverLogPromptsBodiesOrCredentials .........................................   Passed    0.13 sec
+        Start 725: CliCache.StatsCountsOnlyHcsOwnedCacheEntries
+191/831 Test #557: ApiHostOrigin.ForeignOriginsRejected ..............................................................   Passed    0.13 sec
+        Start 201: PathGuard.RejectsDotDotTraversal
+192/831 Test  #43: EventParser.DeeplyNestedAndHugeLinesAreSafe .......................................................   Passed    0.26 sec
+        Start 699: VisionHttp.RemoteUrlsPathsAndBadDataUrisAreRejected
+193/831 Test #152: JsonSchema.ErrorMessageCarriesPath ................................................................   Passed    0.09 sec
+        Start 154: JsonSchema.DeepSchemaIsBounded
+194/831 Test #201: PathGuard.RejectsDotDotTraversal ..................................................................   Passed    0.10 sec
+        Start 660: ShutdownIdle.NoModelNoJobsStopsPromptlyAndIsIdempotent
+195/831 Test #725: CliCache.StatsCountsOnlyHcsOwnedCacheEntries ......................................................   Passed    0.14 sec
+        Start 327: HardwareFormat.BusAndDriveTypes
+196/831 Test #154: JsonSchema.DeepSchemaIsBounded ....................................................................   Passed    0.08 sec
+        Start 588: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakNonStreamingResponses
+197/831 Test #699: VisionHttp.RemoteUrlsPathsAndBadDataUrisAreRejected ...............................................   Passed    0.12 sec
+        Start 451: DatasetValidator.DeduplicatesAfterWhitespaceAndCaseNormalisation
+198/831 Test #327: HardwareFormat.BusAndDriveTypes ...................................................................   Passed    0.08 sec
+        Start  30: AgentRedact.CapUtf8CutsOnCodePointBoundary
+199/831 Test #451: DatasetValidator.DeduplicatesAfterWhitespaceAndCaseNormalisation ..................................   Passed    0.08 sec
+        Start   6: SandboxPolicy.NetworkIsOffByDefault
+200/831 Test #588: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakNonStreamingResponses ..................................   Passed    0.12 sec
+        Start 202: PathGuard.RejectsAbsolutePathOutside
+201/831 Test  #30: AgentRedact.CapUtf8CutsOnCodePointBoundary ........................................................   Passed    0.07 sec
+        Start 462: EvalGate.RollsBackWhenHeldoutDoesNotImproveEnough
+202/831 Test   #6: SandboxPolicy.NetworkIsOffByDefault ...............................................................   Passed    0.09 sec
+        Start 540: RsiLoop.CancelFlagStopsBeforeAnyWork
+203/831 Test #202: PathGuard.RejectsAbsolutePathOutside ..............................................................   Passed    0.09 sec
+        Start 689: ApiUi.RootAndAssetsAreServedWithoutATokenButBehindHostAndOriginChecks
+204/831 Test #462: EvalGate.RollsBackWhenHeldoutDoesNotImproveEnough .................................................   Passed    0.08 sec
+        Start 431: Unplug.WriterIsReusableAfterAFailureAndProducesAValidContainer
+205/831 Test #540: RsiLoop.CancelFlagStopsBeforeAnyWork ..............................................................   Passed    0.08 sec
+        Start 731: McpProtocol.DiscoverRejectsUnknownRequestedVersionWithSupportedList
+206/831 Test #689: ApiUi.RootAndAssetsAreServedWithoutATokenButBehindHostAndOriginChecks .............................   Passed    0.10 sec
+        Start  96: SessionEvents.UnknownOrMalformedIdsAreNotFound
+207/831 Test #431: Unplug.WriterIsReusableAfterAFailureAndProducesAValidContainer ....................................   Passed    0.10 sec
+        Start 537: RsiLoop.TooFewHeldOutSamplesIsNeverEnoughEvidence
+208/831 Test #731: McpProtocol.DiscoverRejectsUnknownRequestedVersionWithSupportedList ...............................   Passed    0.10 sec
+        Start 434: Unplug.InvalidFileHandleIsAStructuredIoErrorNotACrash
+209/831 Test  #96: SessionEvents.UnknownOrMalformedIdsAreNotFound ....................................................   Passed    0.10 sec
+        Start  66: AuditFixture.HostileBytesNeverThrow
+210/831 Test #660: ShutdownIdle.NoModelNoJobsStopsPromptlyAndIsIdempotent ............................................   Passed    0.47 sec
+        Start 400: Writer.RefusesToOverwriteAndValidatesOptions
+211/831 Test #537: RsiLoop.TooFewHeldOutSamplesIsNeverEnoughEvidence .................................................   Passed    0.11 sec
+        Start  75: AuditFixture.NetworkArgumentsToAllowedProgramsAreDenied
+212/831 Test #434: Unplug.InvalidFileHandleIsAStructuredIoErrorNotACrash .............................................   Passed    0.09 sec
+        Start 129: ChatToolsRequest.NoToolsIsOff
+213/831 Test #400: Writer.RefusesToOverwriteAndValidatesOptions ......................................................   Passed    0.10 sec
+        Start 730: McpProtocol.ServerDiscoverAdvertisesVersionsAndTools
+214/831 Test  #66: AuditFixture.HostileBytesNeverThrow ...............................................................   Passed    0.12 sec
+        Start 339: DoctorLive.ReadBenchmarkMissingFileIsErrorNotCrash
+215/831 Test  #75: AuditFixture.NetworkArgumentsToAllowedProgramsAreDenied ...........................................   Passed    0.11 sec
+        Start 425: SourceFaults.ReadErrorClassIsPropagatedNotMasked
+216/831 Test #129: ChatToolsRequest.NoToolsIsOff .....................................................................   Passed    0.10 sec
+        Start 331: CpuDecode.IdentityFamilyModelStepping
+217/831 Test #425: SourceFaults.ReadErrorClassIsPropagatedNotMasked ..................................................   Passed    0.08 sec
+        Start 107: SessionPolicy.WithoutEnforcementViolationsAreRecordedButNothingIsKilled
+218/831 Test #730: McpProtocol.ServerDiscoverAdvertisesVersionsAndTools ..............................................   Passed    0.13 sec
+        Start 597: ApiAudit.RuntimeDefaultsToTheLiveHardwareMeasurement
+219/831 Test #331: CpuDecode.IdentityFamilyModelStepping .............................................................   Passed    0.09 sec
+        Start 297: BenchFull.CancellationInsideASweepAborts
+220/831 Test #339: DoctorLive.ReadBenchmarkMissingFileIsErrorNotCrash ................................................   Passed    0.14 sec
+        Start 162: JsonGuard.VeryDeepDocumentIsFlaggedBeforeAnyRecursiveParse
+221/831 Test #297: BenchFull.CancellationInsideASweepAborts ..........................................................   Passed    0.07 sec
+        Start 535: RsiLoop.NothingFailingStopsImmediatelyAndTrainsNothing
+222/831 Test #597: ApiAudit.RuntimeDefaultsToTheLiveHardwareMeasurement ..............................................   Passed    0.09 sec
+        Start 696: VisionControlPlane.ValidationRejectsBadShapesAndImages
+223/831 Test #162: JsonGuard.VeryDeepDocumentIsFlaggedBeforeAnyRecursiveParse ........................................   Passed    0.08 sec
+        Start 326: HardwareFormat.MibS
+224/831 Test #107: SessionPolicy.WithoutEnforcementViolationsAreRecordedButNothingIsKilled ...........................   Passed    0.15 sec
+        Start 554: ApiHostOrigin.DnsRebindingHostRejectedEvenWithValidToken
+225/831 Test #535: RsiLoop.NothingFailingStopsImmediatelyAndTrainsNothing ............................................   Passed    0.07 sec
+        Start 589: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakStreaming
+226/831 Test #326: HardwareFormat.MibS ...............................................................................   Passed    0.07 sec
+        Start 703: VisionMcp.AnalyzeReadsApprovedPathAndReturnsText
+227/831 Test #696: VisionControlPlane.ValidationRejectsBadShapesAndImages ............................................   Passed    0.10 sec
+        Start 239: Settings.IgnoresUnknownKeys
+228/831 Test #554: ApiHostOrigin.DnsRebindingHostRejectedEvenWithValidToken ..........................................   Passed    0.10 sec
+        Start 157: Base64.ZeroLengthWithNullPointerIsSafe
+229/831 Test #589: ApiAudit.InvalidUtf8ModelOutputDoesNotBreakStreaming ..............................................   Passed    0.11 sec
+        Start 163: ImageProbe.PngDimensionsFromHeaderOnly
+230/831 Test #239: Settings.IgnoresUnknownKeys .......................................................................   Passed    0.07 sec
+        Start  93: SessionEvents.HappyPathProducesOrderedBoundedEvents
+231/831 Test #703: VisionMcp.AnalyzeReadsApprovedPathAndReturnsText ..................................................   Passed    0.11 sec
+        Start 460: EvalGate.RollsBackWhenAnyRegressionSuiteDrops
+232/831 Test #157: Base64.ZeroLengthWithNullPointerIsSafe ............................................................   Passed    0.07 sec
+        Start 298: BenchPrompt.SizedPromptsGrowAndAreDeterministic
+233/831 Test #163: ImageProbe.PngDimensionsFromHeaderOnly ............................................................   Passed    0.07 sec
+        Start 348: KernelCpuGemv.MatchesADirectDequantisedDotProduct
+234/831 Test #460: EvalGate.RollsBackWhenAnyRegressionSuiteDrops .....................................................   Passed    0.07 sec
+        Start 594: ApiAudit.BudgetIsRemeasuredOnEveryLoad
+235/831 Test #298: BenchPrompt.SizedPromptsGrowAndAreDeterministic ...................................................   Passed    0.07 sec
+        Start 411: Stream.CorruptChunkOnDiskIsDetectedWithoutHang
+236/831 Test #348: KernelCpuGemv.MatchesADirectDequantisedDotProduct .................................................   Passed    0.07 sec
+        Start  14: AgentConfig.ProviderJsonHasTheExpectedShape
+237/831 Test  #93: SessionEvents.HappyPathProducesOrderedBoundedEvents ...............................................   Passed    0.14 sec
+        Start  38: EventParser.TurnEndFromNonAssistantOrWithoutMessageIsDropped
+238/831 Test #594: ApiAudit.BudgetIsRemeasuredOnEveryLoad ............................................................   Passed    0.09 sec
+        Start 543: RsiLoop.TrainingFailureEndsTheLoopWithoutPromotion
+239/831 Test  #14: AgentConfig.ProviderJsonHasTheExpectedShape .......................................................   Passed    0.07 sec
+        Start 634: ApiChatTools.StreamingEmitsToolCallsDeltaAndFinishReason
+240/831 Test  #38: EventParser.TurnEndFromNonAssistantOrWithoutMessageIsDropped ......................................   Passed    0.08 sec
+        Start 346: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns
+241/831 Test #346: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns ..........................................   Passed    0.06 sec
+        Start 382: HcsModelParser.AcceptsValidContainerAndExposesFields
+242/831 Test #543: RsiLoop.TrainingFailureEndsTheLoopWithoutPromotion ................................................   Passed    0.10 sec
+        Start 230: Settings.DefaultsAreSafeAndValid
+243/831 Test #382: HcsModelParser.AcceptsValidContainerAndExposesFields ..............................................   Passed    0.08 sec
+        Start 255: ModelRegistryScan.SafetensorsHeaderChecked
+244/831 Test #634: ApiChatTools.StreamingEmitsToolCallsDeltaAndFinishReason ..........................................   Passed    0.16 sec
+        Start 697: VisionHttp.DataUriImageReturnsTheModelAnswer
+245/831 Test #411: Stream.CorruptChunkOnDiskIsDetectedWithoutHang ....................................................   Passed    0.31 sec
+        Start 417: Gguf.TruncationAtEveryPositionIsRejectedSafely
+246/831 Test #230: Settings.DefaultsAreSafeAndValid ..................................................................   Passed    0.10 sec
+        Start 625: ApiChatTools.NonStreamReturnsToolCalls
+247/831 Test #255: ModelRegistryScan.SafetensorsHeaderChecked ........................................................   Passed    0.09 sec
+        Start 226: JobQueue.DestructorCancelsWithoutHanging
+248/831 Test #697: VisionHttp.DataUriImageReturnsTheModelAnswer ......................................................   Passed    0.12 sec
+        Start 758: McpAudit.DuplicateInFlightRequestIdIsRejected
+249/831 Test #226: JobQueue.DestructorCancelsWithoutHanging ..........................................................   Passed    0.10 sec
+        Start 533: RsiLoop.AGainThatRegressesASuiteIsNotKept
+250/831 Test #625: ApiChatTools.NonStreamReturnsToolCalls ............................................................   Passed    0.12 sec
+        Start 248: ModelRegistry.RejectsBadAndDuplicateIds
+251/831 Test #417: Gguf.TruncationAtEveryPositionIsRejectedSafely ....................................................   Passed    0.17 sec
+        Start  32: EventParser.AgentStartAndEnd
+252/831 Test #248: ModelRegistry.RejectsBadAndDuplicateIds ...........................................................   Passed    0.10 sec
+        Start 563: ApiValidation.SchemaViolationsAre400
+253/831 Test #533: RsiLoop.AGainThatRegressesASuiteIsNotKept .........................................................   Passed    0.12 sec
+254/831 Test #758: McpAudit.DuplicateInFlightRequestIdIsRejected .....................................................   Passed    0.18 sec
+        Start 165: ImageProbe.GifBmpJpeg
+        Start 587: ApiPrivacy.ImageBytesAreNeverLogged
+255/831 Test  #32: EventParser.AgentStartAndEnd ......................................................................   Passed    0.11 sec
+        Start 241: Settings.NonLoopbackBindNeedsExplicitLanOptIn
+256/831 Test #165: ImageProbe.GifBmpJpeg .............................................................................   Passed    0.09 sec
+        Start 316: GuiAssets.NoExternalUrlsOrInlineCode
+257/831 Test #563: ApiValidation.SchemaViolationsAre400 ..............................................................   Passed    0.11 sec
+        Start 459: EvalGate.KeepsWhenRegressionSuitesImproveOrStayEqual
+258/831 Test #241: Settings.NonLoopbackBindNeedsExplicitLanOptIn .....................................................   Passed    0.10 sec
+        Start 633: ApiChatTools.ControlTokensInToolOutputCannotForgeATurn
+259/831 Test #587: ApiPrivacy.ImageBytesAreNeverLogged ...............................................................   Passed    0.11 sec
+        Start 579: ApiChat.SseClientDisconnectCancelsTheRealWork
+260/831 Test #459: EvalGate.KeepsWhenRegressionSuitesImproveOrStayEqual ..............................................   Passed    0.08 sec
+        Start 105: SessionPolicy.ABrokenToolCallKillsTheTreeAndEndsPolicyKilled
+261/831 Test #633: ApiChatTools.ControlTokensInToolOutputCannotForgeATurn ............................................   Passed    0.09 sec
+        Start 494: TrainPipeline.RollbackIsRecordedButNotActivated
+262/831 Test #579: ApiChat.SseClientDisconnectCancelsTheRealWork .....................................................   Passed    0.16 sec
+        Start 423: Gguf.TypeLayoutTable
+263/831 Test #494: TrainPipeline.RollbackIsRecordedButNotActivated ...................................................   Passed    0.08 sec
+        Start 504: ChatTemplate.WronglyTypedFieldsNeverThrow
+264/831 Test #105: SessionPolicy.ABrokenToolCallKillsTheTreeAndEndsPolicyKilled ......................................   Passed    0.12 sec
+        Start 242: Settings.LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch
+265/831 Test #316: GuiAssets.NoExternalUrlsOrInlineCode ..............................................................   Passed    0.25 sec
+        Start 727: CliCache.ClearRemovesCachesAndTempFilesButNeverStateOrModels
+266/831 Test #423: Gguf.TypeLayoutTable ..............................................................................   Passed    0.07 sec
+        Start 198: MemoryBudget.RemeasureCanOvercommit
+267/831 Test #504: ChatTemplate.WronglyTypedFieldsNeverThrow .........................................................   Passed    0.08 sec
+        Start 231: Settings.RoundTripThroughFile
+268/831 Test #242: Settings.LoopbackCheckIsAnIpLiteralParseNotAPrefixMatch ...........................................   Passed    0.07 sec
+        Start 489: AdapterBook.CorruptPointerFileFailsClosedEverywhere
+269/831 Test #198: MemoryBudget.RemeasureCanOvercommit ...............................................................   Passed    0.08 sec
+        Start 488: AdapterBook.BaseModelsAreIndependentAndHashCaseIsIgnored
+270/831 Test #231: Settings.RoundTripThroughFile .....................................................................   Passed    0.08 sec
+        Start 249: ModelRegistry.LifecycleThroughRegistryAndRemovalGuard
+271/831 Test #727: CliCache.ClearRemovesCachesAndTempFilesButNeverStateOrModels ......................................   Passed    0.13 sec
+        Start 722: Cli.TrainPipelineRejectsIncomparableInputWithoutWriting
+272/831 Test #249: ModelRegistry.LifecycleThroughRegistryAndRemovalGuard .............................................   Passed    0.07 sec
+        Start 635: ApiChatTools.StreamingPlainAnswerIsLossless
+273/831 Test #488: AdapterBook.BaseModelsAreIndependentAndHashCaseIsIgnored ..........................................   Passed    0.10 sec
+        Start   5: SandboxPolicy.DeniedArgumentsAreRejectedAlsoWithEqualsForm
+274/831 Test #722: Cli.TrainPipelineRejectsIncomparableInputWithoutWriting ...........................................   Passed    0.09 sec
+        Start 571: ApiNative.LoadPathTraversalInModelIdIsRejected
+275/831 Test #489: AdapterBook.CorruptPointerFileFailsClosedEverywhere ...............................................   Passed    0.19 sec
+        Start 600: ApiAudit.ControlTokensInUserTextAreNeutralised
+276/831 Test #635: ApiChatTools.StreamingPlainAnswerIsLossless .......................................................   Passed    0.09 sec
+        Start 429: SourceFaults.StreamOverFileCutShortFailsWithoutHangAndRecovers
+277/831 Test   #5: SandboxPolicy.DeniedArgumentsAreRejectedAlsoWithEqualsForm ........................................   Passed    0.09 sec
+        Start 473: AdapterBook.InstallGetAndList
+278/831 Test #571: ApiNative.LoadPathTraversalInModelIdIsRejected ....................................................   Passed    0.09 sec
+        Start 453: DatasetValidator.RejectsDeeplyNestedJsonWithoutCrashing
+279/831 Test #600: ApiAudit.ControlTokensInUserTextAreNeutralised ....................................................   Passed    0.10 sec
+        Start 115: SessionConcurrency.FinishedSessionsAreEvictedBeyondTheCap
+280/831 Test #473: AdapterBook.InstallGetAndList .....................................................................   Passed    0.09 sec
+        Start 385: HcsModelParser.BadMagicVersionEndianFlagsReserved
+281/831 Test #453: DatasetValidator.RejectsDeeplyNestedJsonWithoutCrashing ...........................................   Passed    0.08 sec
+        Start 490: AdapterBook.OversizedPointerFileIsRefusedNotRead
+282/831 Test #429: SourceFaults.StreamOverFileCutShortFailsWithoutHangAndRecovers ....................................   Passed    0.13 sec
+        Start 119: SessionJson.InfoSerialisesWithoutEndTimeWhileRunning
+283/831 Test #385: HcsModelParser.BadMagicVersionEndianFlagsReserved .................................................   Passed    0.07 sec
+        Start 702: VisionHttp.ImageInSystemMessageIsRejected
+284/831 Test #490: AdapterBook.OversizedPointerFileIsRefusedNotRead ..................................................   Passed    0.09 sec
+        Start 610: ApiBenchmarks.LoadFailureEndsTheJobFailedWithAnError
+285/831 Test #119: SessionJson.InfoSerialisesWithoutEndTimeWhileRunning ..............................................   Passed    0.08 sec
+        Start 418: Gguf.HugeCountsAreRejectedBeforeAllocation
+286/831 Test #702: VisionHttp.ImageInSystemMessageIsRejected .........................................................   Passed    0.10 sec
+        Start 567: ApiRouting.RequestIdOnEverythingAndUnique
+287/831 Test #418: Gguf.HugeCountsAreRejectedBeforeAllocation ........................................................   Passed    0.08 sec
+        Start 532: RsiLoop.ImprovementThenStallStopsAtPatienceWithTheGoodAdapterActive
+288/831 Test #115: SessionConcurrency.FinishedSessionsAreEvictedBeyondTheCap .........................................   Passed    0.26 sec
+        Start 335: DoctorLive.ReportStructureNoVulkan
+289/831 Test #610: ApiBenchmarks.LoadFailureEndsTheJobFailedWithAnError ..............................................   Passed    0.13 sec
+        Start 701: VisionHttp.ModelWithoutProjectorIs501NotAFakeAnswer
+290/831 Test #567: ApiRouting.RequestIdOnEverythingAndUnique .........................................................   Passed    0.11 sec
+        Start 544: RsiLoop.EvaluationFailuresEndTheLoopWithoutPromotion
+291/831 Test #532: RsiLoop.ImprovementThenStallStopsAtPatienceWithTheGoodAdapterActive ...............................   Passed    0.11 sec
+        Start 562: ApiValidation.PathologicalNestingIs400
+292/831 Test #701: VisionHttp.ModelWithoutProjectorIs501NotAFakeAnswer ...............................................   Passed    0.11 sec
+        Start 159: JsonGuard.BracketsInsideStringsDoNotCount
+293/831 Test #335: DoctorLive.ReportStructureNoVulkan ................................................................   Passed    0.14 sec
+        Start 531: RsiLoop.ANonImprovingAdapterIsRecordedButNeverActivatedAndPatienceStopsTheLoop
+294/831 Test #544: RsiLoop.EvaluationFailuresEndTheLoopWithoutPromotion ..............................................   Passed    0.08 sec
+        Start 412: Stream.SubRangeOfChunks
+295/831 Test #562: ApiValidation.PathologicalNestingIs400 ............................................................   Passed    0.11 sec
+296/831 Test #159: JsonGuard.BracketsInsideStringsDoNotCount .........................................................   Passed    0.08 sec
+        Start 468: EvalReport.ScoresFeedTheGate
+        Start 499: ChatTemplate.MatchesJinjaGoldenWithToolsAndParallelCalls
+297/831 Test #531: RsiLoop.ANonImprovingAdapterIsRecordedButNeverActivatedAndPatienceStopsTheLoop ....................   Passed    0.09 sec
+        Start 495: TrainPipeline.InvalidGateIsRecordedNotActivated
+298/831 Test #468: EvalReport.ScoresFeedTheGate ......................................................................   Passed    0.08 sec
+        Start 726: CliCache.ClearRequiresYesAndRemovesNothingWithout
+299/831 Test #412: Stream.SubRangeOfChunks ...........................................................................   Passed    0.12 sec
+        Start 228: JobQueue.RejectsEmptyFunction
+300/831 Test #499: ChatTemplate.MatchesJinjaGoldenWithToolsAndParallelCalls ..........................................   Passed    0.09 sec
+        Start 575: ApiChat.NoModelLoadedAndNoModelGivenIs409
+301/831 Test #495: TrainPipeline.InvalidGateIsRecordedNotActivated ...................................................   Passed    0.08 sec
+        Start 422: Gguf.InvalidAlignment
+302/831 Test #228: JobQueue.RejectsEmptyFunction .....................................................................   Passed    0.09 sec
+        Start 465: EvalGate.NonFiniteOrOutOfRangeScoresAreInvalid
+303/831 Test #422: Gguf.InvalidAlignment .............................................................................   Passed    0.08 sec
+        Start 616: RuntimeLifecycle.ExplicitShutdownThenDestroyStillWorks
+304/831 Test #726: CliCache.ClearRequiresYesAndRemovesNothingWithout .................................................   Passed    0.13 sec
+        Start 487: AdapterBook.RollbackFromTheFirstAdapterReturnsToTheBaseModel
+305/831 Test #575: ApiChat.NoModelLoadedAndNoModelGivenIs409 .........................................................   Passed    0.12 sec
+        Start 250: ModelRegistry.FailMarksFailed
+306/831 Test #465: EvalGate.NonFiniteOrOutOfRangeScoresAreInvalid ....................................................   Passed    0.07 sec
+        Start 728: CliCache.ClearOnMissingStateDirectoryIsANoOp
+307/831 Test #250: ModelRegistry.FailMarksFailed .....................................................................   Passed    0.07 sec
+        Start 656: TransportNegative.RequestBodyIsNotReinterpretedAsAPipelinedRequest
+308/831 Test #487: AdapterBook.RollbackFromTheFirstAdapterReturnsToTheBaseModel ......................................   Passed    0.09 sec
+        Start 386: HcsModelParser.HeaderAndTableChecksumMismatch
+309/831 Test #616: RuntimeLifecycle.ExplicitShutdownThenDestroyStillWorks ............................................   Passed    0.11 sec
+        Start 170: Result.ValueAndError
+310/831 Test #728: CliCache.ClearOnMissingStateDirectoryIsANoOp ......................................................   Passed    0.08 sec
+        Start 641: ApiSocket.ChatCompletionOverTheWire
+311/831 Test #386: HcsModelParser.HeaderAndTableChecksumMismatch .....................................................   Passed    0.07 sec
+        Start 712: Cli.VisionHelpAndArgumentValidationBeforeLoadingAnything
+312/831 Test #170: Result.ValueAndError ..............................................................................   Passed    0.07 sec
+        Start 232: Settings.MissingFileYieldsDefaults
+313/831 Test #656: TransportNegative.RequestBodyIsNotReinterpretedAsAPipelinedRequest ................................   Passed    0.11 sec
+        Start 472: EvalReport.ComparabilityRequiresSameSuiteAndSet
+314/831 Test #232: Settings.MissingFileYieldsDefaults ................................................................   Passed    0.07 sec
+        Start  19: AgentConfig.LiteralTokenBehaviourIsUnchangedWithoutApiKeyEnv
+315/831 Test #712: Cli.VisionHelpAndArgumentValidationBeforeLoadingAnything ..........................................   Passed    0.09 sec
+        Start 498: TrainPipeline.DuplicateAdapterIdIsRejected
+316/831 Test #641: ApiSocket.ChatCompletionOverTheWire ...............................................................   Passed    0.13 sec
+        Start 402: RandomAccess.OneChunkDecodesWithoutTouchingOthers
+317/831 Test #472: EvalReport.ComparabilityRequiresSameSuiteAndSet ...................................................   Passed    0.07 sec
+        Start 247: ModelRegistry.AddGetListRemove
+318/831 Test  #19: AgentConfig.LiteralTokenBehaviourIsUnchangedWithoutApiKeyEnv ......................................   Passed    0.08 sec
+        Start 606: ApiBenchmarks.OversizedBodyIs413BeforeParsing
+319/831 Test #498: TrainPipeline.DuplicateAdapterIdIsRejected ........................................................   Passed    0.08 sec
+        Start 685: ApiImageQuality.Sd15DefaultsAreInsideTheEnvelope
+320/831 Test #247: ModelRegistry.AddGetListRemove ....................................................................   Passed    0.07 sec
+        Start 750: McpStdio.StdoutCarriesOnlyJsonRpcAndLogsStayElsewhere
+321/831 Test #402: RandomAccess.OneChunkDecodesWithoutTouchingOthers .................................................   Passed    0.11 sec
+        Start 419: Gguf.HugeStringLengthIsRejected
+322/831 Test #606: ApiBenchmarks.OversizedBodyIs413BeforeParsing .....................................................   Passed    0.10 sec
+        Start 253: ModelRegistryScan.FindsValidatesAndIsIdempotent
+323/831 Test #685: ApiImageQuality.Sd15DefaultsAreInsideTheEnvelope ..................................................   Passed    0.09 sec
+        Start 705: Cli.HelpWorksAtEveryLevel
+324/831 Test #419: Gguf.HugeStringLengthIsRejected ...................................................................   Passed    0.07 sec
+        Start 395: HcsModelParser.CorruptCompressedBlockDetectedAtDecode
+325/831 Test #750: McpStdio.StdoutCarriesOnlyJsonRpcAndLogsStayElsewhere .............................................   Passed    0.12 sec
+        Start 547: RsiLoop.AHookThatReusesAnAdapterIdCannotOverwriteTheAuditTrail
+326/831 Test #705: Cli.HelpWorksAtEveryLevel .........................................................................   Passed    0.09 sec
+        Start 463: EvalGate.GainWithRegressionIsStillRollback
+327/831 Test #253: ModelRegistryScan.FindsValidatesAndIsIdempotent ...................................................   Passed    0.11 sec
+        Start 496: TrainPipeline.IncomparableReportsAreRejectedBeforeInstall
+328/831 Test #395: HcsModelParser.CorruptCompressedBlockDetectedAtDecode .............................................   Passed    0.09 sec
+        Start 711: Cli.ChatValidatesArgumentsBeforeLoadingAnything
+329/831 Test #547: RsiLoop.AHookThatReusesAnAdapterIdCannotOverwriteTheAuditTrail ....................................   Passed    0.09 sec
+        Start  12: SandboxPolicy.OutputCapTruncatesOnUtf8Boundary
+330/831 Test #463: EvalGate.GainWithRegressionIsStillRollback ........................................................   Passed    0.07 sec
+        Start 328: HardwareFormat.TimestampLooksLikeUtcIso
+331/831 Test #496: TrainPipeline.IncomparableReportsAreRejectedBeforeInstall .........................................   Passed    0.08 sec
+        Start 197: MemoryBudget.Resize
+332/831 Test  #12: SandboxPolicy.OutputCapTruncatesOnUtf8Boundary ....................................................   Passed    0.08 sec
+        Start 613: RuntimeLifecycle.DestroyWithRunningChatJobDoesNotCrash
+333/831 Test #711: Cli.ChatValidatesArgumentsBeforeLoadingAnything ...................................................   Passed    0.10 sec
+        Start 209: PathGuard.WindowsCaseInsensitiveRootMatch
+334/831 Test #328: HardwareFormat.TimestampLooksLikeUtcIso ...........................................................   Passed    0.08 sec
+        Start 387: HcsModelParser.UnknownCodecAndFlags
+335/831 Test #197: MemoryBudget.Resize ...............................................................................   Passed    0.08 sec
+        Start 343: MemoryProbe.BudgetNeverUnderflowsWhenTheMachineIsAlmostFull
+336/831 Test #209: PathGuard.WindowsCaseInsensitiveRootMatch .........................................................   Passed    0.09 sec
+        Start 482: AdapterBook.CorruptManifestFailsClosed
+337/831 Test #387: HcsModelParser.UnknownCodecAndFlags ...............................................................   Passed    0.08 sec
+        Start  65: AuditFixture.UnterminatedAndMalformedInputNeverThrowsAndIsNotFreePass
+338/831 Test #343: MemoryProbe.BudgetNeverUnderflowsWhenTheMachineIsAlmostFull .......................................   Passed    0.08 sec
+        Start 632: ApiChatTools.BadToolShapesAre400
+339/831 Test #482: AdapterBook.CorruptManifestFailsClosed ............................................................   Passed    0.09 sec
+        Start 401: Writer.CancelledWriteRemovesOnlyItsOwnPartialFile
+340/831 Test  #65: AuditFixture.UnterminatedAndMalformedInputNeverThrowsAndIsNotFreePass .............................   Passed    0.08 sec
+        Start 477: AdapterBook.ActivateThenActiveReportsIt
+341/831 Test #632: ApiChatTools.BadToolShapesAre400 ..................................................................   Passed    0.10 sec
+        Start 469: EvalReport.RejectsMissingOrMalformedFields
+342/831 Test #613: RuntimeLifecycle.DestroyWithRunningChatJobDoesNotCrash ............................................   Passed    0.25 sec
+        Start 509: SftExamples.RecordWithoutAssistantTurnIsAnError
+343/831 Test #401: Writer.CancelledWriteRemovesOnlyItsOwnPartialFile .................................................   Passed    0.10 sec
+        Start 718: Cli.TrainHelpAndArgumentValidation
+344/831 Test #469: EvalReport.RejectsMissingOrMalformedFields ........................................................   Passed    0.08 sec
+        Start 470: EvalReport.RejectsNonJsonAndDeepNesting
+345/831 Test #477: AdapterBook.ActivateThenActiveReportsIt ...........................................................   Passed    0.11 sec
+        Start 573: ApiNative.MalformedJobIds
+346/831 Test #509: SftExamples.RecordWithoutAssistantTurnIsAnError ...................................................   Passed    0.08 sec
+        Start 636: ApiChatTools.Lfm3PromptHasBosAndEmptyThinkBlocks
+347/831 Test #470: EvalReport.RejectsNonJsonAndDeepNesting ...........................................................   Passed    0.07 sec
+        Start 491: AdapterBook.APointerNamingAnUnsafeOrMissingAdapterIsAnErrorNotAPathEscape
+348/831 Test #718: Cli.TrainHelpAndArgumentValidation ................................................................   Passed    0.09 sec
+        Start 118: SessionShutdown.DestroyingTheManagerWhileRunningEndsTheChild
+349/831 Test #636: ApiChatTools.Lfm3PromptHasBosAndEmptyThinkBlocks ..................................................   Passed    0.08 sec
+        Start   3: SandboxPolicy.RejectsUnlistedShellsAndPathPrograms
+350/831 Test #573: ApiNative.MalformedJobIds .........................................................................   Passed    0.10 sec
+        Start  71: AuditFixture.ProgramNamesAreCanonicalised
+351/831 Test #491: AdapterBook.APointerNamingAnUnsafeOrMissingAdapterIsAnErrorNotAPathEscape .........................   Passed    0.09 sec
+        Start 235: Settings.MigratesLegacyV0
+352/831 Test   #3: SandboxPolicy.RejectsUnlistedShellsAndPathPrograms ................................................   Passed    0.07 sec
+        Start 484: AdapterBook.ManifestJsonRoundTripsAndRejectsDefects
+353/831 Test #118: SessionShutdown.DestroyingTheManagerWhileRunningEndsTheChild ......................................   Passed    0.10 sec
+        Start 236: Settings.MigratedFileIsRewrittenAtCurrentVersion
+354/831 Test  #71: AuditFixture.ProgramNamesAreCanonicalised .........................................................   Passed    0.08 sec
+        Start 617: BudgetFaultSeam.InjectedRefusalIsAnOutOfMemoryAndLeavesTheLedgerUntouched
+355/831 Test #235: Settings.MigratesLegacyV0 .........................................................................   Passed    0.07 sec
+        Start 158: JsonGuard.AcceptsShallowAndRejectsDeep
+356/831 Test #484: AdapterBook.ManifestJsonRoundTripsAndRejectsDefects ...............................................   Passed    0.07 sec
+        Start 452: DatasetValidator.EnforcesSizeCapsWithoutBufferingHostileLines
+357/831 Test #236: Settings.MigratedFileIsRewrittenAtCurrentVersion ..................................................   Passed    0.08 sec
+        Start 394: HcsModelParser.WrongChunkHashDetectedAtDecode
+358/831 Test #617: BudgetFaultSeam.InjectedRefusalIsAnOutOfMemoryAndLeavesTheLedgerUntouched .........................   Passed    0.08 sec
+        Start 196: MemoryBudget.InvalidArguments
+359/831 Test #158: JsonGuard.AcceptsShallowAndRejectsDeep ............................................................   Passed    0.07 sec
+        Start 742: McpTools.ModelIdPathTraversalIsRejected
+360/831 Test #452: DatasetValidator.EnforcesSizeCapsWithoutBufferingHostileLines .....................................   Passed    0.08 sec
+        Start 631: ApiChatTools.ForcedChoiceAndLegacyFunctionsAre501
+361/831 Test #394: HcsModelParser.WrongChunkHashDetectedAtDecode .....................................................   Passed    0.08 sec
+        Start 447: DatasetValidator.RejectsToolCallsWithBadArguments
+362/831 Test #196: MemoryBudget.InvalidArguments .....................................................................   Passed    0.07 sec
+        Start 166: ImageProbe.RejectsGarbageTruncatedAndZeroSized
+363/831 Test #742: McpTools.ModelIdPathTraversalIsRejected ...........................................................   Passed    0.09 sec
+        Start 161: JsonGuard.BoundaryAtMaxDepth
+364/831 Test #447: DatasetValidator.RejectsToolCallsWithBadArguments .................................................   Passed    0.08 sec
+        Start 392: HcsModelParser.NonContiguousOrInconsistentSizes
+365/831 Test #631: ApiChatTools.ForcedChoiceAndLegacyFunctionsAre501 .................................................   Passed    0.10 sec
+        Start 393: HcsModelParser.BadTextFields
+366/831 Test #166: ImageProbe.RejectsGarbageTruncatedAndZeroSized ....................................................   Passed    0.09 sec
+        Start 695: VisionControlPlane.PlainTextChatStillUsesTheTextPath
+367/831 Test #161: JsonGuard.BoundaryAtMaxDepth ......................................................................   Passed    0.08 sec
+        Start 222: JobQueue.MultipleWorkersRunConcurrently
+368/831 Test #392: HcsModelParser.NonContiguousOrInconsistentSizes ...................................................   Passed    0.10 sec
+        Start 584: ApiChat.LoadFailureSurfacesAsErrorAndModelIsRecoverable
+369/831 Test #393: HcsModelParser.BadTextFields ......................................................................   Passed    0.10 sec
+        Start 744: McpTools.JobIdsAreValidated
+370/831 Test #695: VisionControlPlane.PlainTextChatStillUsesTheTextPath ..............................................   Passed    0.11 sec
+        Start 624: OomInjection.ManyRefusalsInARowNeverLeakBudget
+371/831 Test #744: McpTools.JobIdsAreValidated .......................................................................   Passed    0.09 sec
+        Start 203: PathGuard.RejectsSiblingWithSharedPrefix
+372/831 Test #584: ApiChat.LoadFailureSurfacesAsErrorAndModelIsRecoverable ...........................................   Passed    0.11 sec
+        Start 681: ApiImageEdits.RejectsBadInputImagesAndMultipart
+373/831 Test #222: JobQueue.MultipleWorkersRunConcurrently ...........................................................   Passed    0.16 sec
+        Start 732: McpProtocol.RequestsMustCarryMetaVersionAndCapabilities
+374/831 Test #624: OomInjection.ManyRefusalsInARowNeverLeakBudget ....................................................   Passed    0.11 sec
+        Start 442: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <00-00 00-00>
+375/831 Test #203: PathGuard.RejectsSiblingWithSharedPrefix ..........................................................   Passed    0.10 sec
+        Start 700: VisionHttp.NonImageBytesAndOversizedDimensionsAre400
+376/831 Test #681: ApiImageEdits.RejectsBadInputImagesAndMultipart ...................................................   Passed    0.10 sec
+        Start 503: ChatTemplate.RejectsUnsupportedInputInsteadOfRenderingItDifferently
+377/831 Test #732: McpProtocol.RequestsMustCarryMetaVersionAndCapabilities ...........................................   Passed    0.10 sec
+        Start 388: HcsModelParser.OffsetPlusSizeOverflow
+378/831 Test #442: Codecs/RoundTrip.BitExactViaReadRangeStreamAndEveryChunk/4-byte object <00-00 00-00> ..............   Passed    0.12 sec
+        Start 558: ApiHostOrigin.SameOriginAndAllowListAccepted
+379/831 Test #503: ChatTemplate.RejectsUnsupportedInputInsteadOfRenderingItDifferently ...............................   Passed    0.08 sec
+        Start 693: VisionControlPlane.LoadsProjectorAndStreamsTheAnswer
+380/831 Test #388: HcsModelParser.OffsetPlusSizeOverflow .............................................................   Passed    0.08 sec
+        Start 745: McpTools.NoEngineIsReportedAsUnsupported
+381/831 Test #700: VisionHttp.NonImageBytesAndOversizedDimensionsAre400 ..............................................   Passed    0.11 sec
+        Start 330: HardwareFormat.RenderTextShowsSyntheticValues
+382/831 Test #558: ApiHostOrigin.SameOriginAndAllowListAccepted ......................................................   Passed    0.10 sec
+        Start 440: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 1)
+383/831 Test #330: HardwareFormat.RenderTextShowsSyntheticValues .....................................................   Passed    0.07 sec
+        Start 612: ApiBenchmarks.CancellingAQueuedBenchmarkNeverTouchesTheEngine
+384/831 Test #693: VisionControlPlane.LoadsProjectorAndStreamsTheAnswer ..............................................   Passed    0.09 sec
+385/831 Test #745: McpTools.NoEngineIsReportedAsUnsupported ..........................................................   Passed    0.08 sec
+        Start 525: EvalFailures.ReadsOnlyFailedEntriesAndTolerantOfAMissingResultsArray
+        Start 538: RsiLoop.MaxCyclesIsClampedToTheHardCeiling
+386/831 Test #440: All/CodecRoundTrip.BitExactForCompressibleRandomAndTinyInputs/(4-byte object <02-00 00-00>, 1) ....   Passed    0.08 sec
+        Start 446: DatasetValidator.AcceptsToolCallTrajectories
+387/831 Test #525: EvalFailures.ReadsOnlyFailedEntriesAndTolerantOfAMissingResultsArray ..............................   Passed    0.07 sec
+        Start 311: ImageProfiles.Flux3MeasuredFastPresetIsInsideTheEnvelope
+388/831 Test #612: ApiBenchmarks.CancellingAQueuedBenchmarkNeverTouchesTheEngine .....................................   Passed    0.10 sec
+        Start 246: ModelId.MakeIdSanitises
+389/831 Test #538: RsiLoop.MaxCyclesIsClampedToTheHardCeiling ........................................................   Passed    0.12 sec
+390/831 Test #446: DatasetValidator.AcceptsToolCallTrajectories ......................................................   Passed    0.06 sec
+        Start 694: VisionControlPlane.ModelWithoutProjectorIsACleanUnsupportedError
+        Start 640: ApiSocket.OversizeBodyRejectedByTransportBeforeReadingIt
+391/831 Test #311: ImageProfiles.Flux3MeasuredFastPresetIsInsideTheEnvelope ..........................................   Passed    0.07 sec
+        Start  29: AgentRedact.CapUtf8NoTruncationWhenFits
+392/831 Test #246: ModelId.MakeIdSanitises ...........................................................................   Passed    0.07 sec
+        Start 510: TemplateJson.UsesPythonSeparatorsAndKeepsUnicode
+393/831 Test  #29: AgentRedact.CapUtf8NoTruncationWhenFits ...........................................................   Passed    0.07 sec
+        Start 602: ApiBenchmarks.FullSuiteReturnsPrefillAndDecodeSweeps
+394/831 Test #694: VisionControlPlane.ModelWithoutProjectorIsACleanUnsupportedError ..................................   Passed    0.09 sec
+        Start 746: McpTools.BenchmarkQuickSuiteReturnsTheAgentsDocument
+395/831 Test #510: TemplateJson.UsesPythonSeparatorsAndKeepsUnicode ..................................................   Passed    0.07 sec
+        Start 483: AdapterBook.PointerPersistsAcrossInstances
+396/831 Test #640: ApiSocket.OversizeBodyRejectedByTransportBeforeReadingIt ..........................................   Passed    0.12 sec
+        Start  67: AuditFixture.AllowedLiteralCommandsPass
+397/831 Test #746: McpTools.BenchmarkQuickSuiteReturnsTheAgentsDocument ..............................................   Passed    0.08 sec
+        Start 341: DoctorLive.TextAndJsonRunnersWork
+398/831 Test #483: AdapterBook.PointerPersistsAcrossInstances ........................................................   Passed    0.08 sec
+        Start 688: ApiImageQuality.NonBooleanOptInIsRejectedBySchema
+399/831 Test #602: ApiBenchmarks.FullSuiteReturnsPrefillAndDecodeSweeps ..............................................   Passed    0.11 sec
+        Start 539: RsiLoop.PatienceBelowOneIsTreatedAsOne
+400/831 Test  #67: AuditFixture.AllowedLiteralCommandsPass ...........................................................   Passed    0.08 sec
+        Start 155: Base64.Rfc4648Vectors
+401/831 Test #688: ApiImageQuality.NonBooleanOptInIsRejectedBySchema .................................................   Passed    0.09 sec
+        Start  33: EventParser.ToolCallExtractsCodeOrCommandPayload
+402/831 Test #539: RsiLoop.PatienceBelowOneIsTreatedAsOne ............................................................   Passed    0.08 sec
+403/831 Test #155: Base64.Rfc4648Vectors .............................................................................   Passed    0.08 sec
+        Start 741: McpTools.ChatNeedsExactlyOneOfPromptOrMessages
+        Start 748: McpTools.BenchmarkValidationAndNoEngineAreHonestErrors
+404/831 Test #341: DoctorLive.TextAndJsonRunnersWork .................................................................   Passed    0.12 sec
+        Start 164: ImageProbe.RealGeneratedPng
+405/831 Test  #33: EventParser.ToolCallExtractsCodeOrCommandPayload ..................................................   Passed    0.07 sec
+        Start  97: SessionEvents.MalformedHostileOutputIsIgnoredNotFatal
+406/831 Test #741: McpTools.ChatNeedsExactlyOneOfPromptOrMessages ....................................................   Passed    0.08 sec
+        Start 629: ApiChatTools.AssistantToolCallAndToolResultRoundTrip
+407/831 Test #164: ImageProbe.RealGeneratedPng .......................................................................   Passed    0.07 sec
+        Start 512: Prepare.RejectedRecordsNeverReachTheOutput
+408/831 Test #748: McpTools.BenchmarkValidationAndNoEngineAreHonestErrors ............................................   Passed    0.09 sec
+        Start 528: Reflect.NothingFailingYieldsAStopProposalAndUncategorisedIsNamed
+409/831 Test #528: Reflect.NothingFailingYieldsAStopProposalAndUncategorisedIsNamed ..................................   Passed    0.07 sec
+        Start 389: HcsModelParser.OverlappingChunkPayloads
+410/831 Test  #97: SessionEvents.MalformedHostileOutputIsIgnoredNotFatal .............................................   Passed    0.12 sec
+411/831 Test #512: Prepare.RejectedRecordsNeverReachTheOutput ........................................................   Passed    0.09 sec
+412/831 Test #629: ApiChatTools.AssistantToolCallAndToolResultRoundTrip ..............................................   Passed    0.10 sec
+        Start 471: EvalReport.ReadsFromAFile
+        Start 526: EvalFailures.RejectsMalformedInputAndCleansHostileStrings
+        Start 132: ChatToolsRequest.RequiredAndNamedChoiceAreUnsupported
+413/831 Test #389: HcsModelParser.OverlappingChunkPayloads ...........................................................   Passed    0.08 sec
+        Start 399: Writer.MixedChunkCodecsInOneContainer
+414/831 Test #471: EvalReport.ReadsFromAFile .........................................................................   Passed    0.08 sec
+        Start 706: Cli.VersionAndNoArgs
+415/831 Test #526: EvalFailures.RejectsMalformedInputAndCleansHostileStrings .........................................   Passed    0.08 sec
+416/831 Test #132: ChatToolsRequest.RequiredAndNamedChoiceAreUnsupported .............................................   Passed    0.08 sec
+        Start 687: ApiImageQuality.FamilyThatCannotBeGuessedIsLeftToTheEngine
+        Start 627: ApiChatTools.ToolsAreRenderedIntoTheChatMLSystemTurn
+417/831 Test #399: Writer.MixedChunkCodecsInOneContainer .............................................................   Passed    0.09 sec
+        Start 200: PathGuard.AcceptsPathsInsideRoot
+418/831 Test #706: Cli.VersionAndNoArgs ..............................................................................   Passed    0.09 sec
+        Start 322: GuiAssets.MethodHandling
+419/831 Test #687: ApiImageQuality.FamilyThatCannotBeGuessedIsLeftToTheEngine ........................................   Passed    0.09 sec
+        Start 333: CpuDecode.Avx512NeedsZmmState
+420/831 Test #627: ApiChatTools.ToolsAreRenderedIntoTheChatMLSystemTurn ..............................................   Passed    0.09 sec
+        Start 416: Gguf.RejectsBadMagicAndVersions
+421/831 Test #322: GuiAssets.MethodHandling ..........................................................................   Passed    0.07 sec
+        Start 390: HcsModelParser.ChunkOverlapsTableOrHeader
+422/831 Test #200: PathGuard.AcceptsPathsInsideRoot ..................................................................   Passed    0.08 sec
+        Start 245: ModelId.Validation
+423/831 Test #333: CpuDecode.Avx512NeedsZmmState .....................................................................   Passed    0.07 sec
+        Start 461: EvalGate.ToleranceAllowsSmallNoiseOnlyWhenConfigured
+424/831 Test #416: Gguf.RejectsBadMagicAndVersions ...................................................................   Passed    0.07 sec
+        Start 349: KernelCpuGemv.SingleRowSingleBlockAndZeroWeights
+425/831 Test #390: HcsModelParser.ChunkOverlapsTableOrHeader .........................................................   Passed    0.07 sec
+        Start 398: Writer.RawFallbackWhenSavingsBelowThreshold
+426/831 Test #245: ModelId.Validation ................................................................................   Passed    0.07 sec
+        Start 500: ChatTemplate.MatchesJinjaGoldenForPlainMultiTurnUtf8
+427/831 Test #461: EvalGate.ToleranceAllowsSmallNoiseOnlyWhenConfigured ..............................................   Passed    0.07 sec
+        Start 502: ChatTemplate.ToolSchemaKeyOrderIsPreserved
+428/831 Test #349: KernelCpuGemv.SingleRowSingleBlockAndZeroWeights ..................................................   Passed    0.07 sec
+        Start 517: Prepare.AnInputWithNoUsableExampleIsAnError
+429/831 Test #500: ChatTemplate.MatchesJinjaGoldenForPlainMultiTurnUtf8 ..............................................   Passed    0.07 sec
+        Start 501: ChatTemplate.GenerationPromptEndsWithEmptyThinkBlock
+430/831 Test #502: ChatTemplate.ToolSchemaKeyOrderIsPreserved ........................................................   Passed    0.07 sec
+        Start 397: CheckedMath.StorageRelevantBoundaries
+431/831 Test #517: Prepare.AnInputWithNoUsableExampleIsAnError .......................................................   Passed    0.08 sec
+        Start 552: ApiAuth.EveryRouteExceptHealthNeedsAuth
+432/831 Test #398: Writer.RawFallbackWhenSavingsBelowThreshold .......................................................   Passed    0.12 sec
+        Start 244: Settings.ProfileNames
+433/831 Test #501: ChatTemplate.GenerationPromptEndsWithEmptyThinkBlock ..............................................   Passed    0.07 sec
+        Start 221: JobQueue.JobsRunInSubmissionOrderOnOneWorker
+434/831 Test #397: CheckedMath.StorageRelevantBoundaries .............................................................   Passed    0.07 sec
+        Start 195: MemoryBudget.NoDoubleCountingOfSharedRegion
+435/831 Test #244: Settings.ProfileNames .............................................................................   Passed    0.07 sec
+        Start 486: AdapterBook.HistoryIsOneStepDeepAndRollbackSwapsActiveAndPrevious
+436/831 Test #552: ApiAuth.EveryRouteExceptHealthNeedsAuth ...........................................................   Passed    0.10 sec
+        Start 518: Prepare.EvalPromptLoaderNormalisesAndRejectsGarbage
+437/831 Test #221: JobQueue.JobsRunInSubmissionOrderOnOneWorker ......................................................   Passed    0.08 sec
+        Start 710: Cli.ImplementedTransportsHaveHelpAndValidateArguments
+438/831 Test #195: MemoryBudget.NoDoubleCountingOfSharedRegion .......................................................   Passed    0.08 sec
+        Start 516: Prepare.RefusesToOverwriteAndRejectsBadArguments
+439/831 Test #518: Prepare.EvalPromptLoaderNormalisesAndRejectsGarbage ...............................................   Passed    0.08 sec
+        Start   7: SandboxPolicy.PathArgumentsMustStayInsideApprovedRoots
+440/831 Test #486: AdapterBook.HistoryIsOneStepDeepAndRollbackSwapsActiveAndPrevious .................................   Passed    0.11 sec
+        Start 229: CancellationToken.SourceAndToken
+441/831 Test #710: Cli.ImplementedTransportsHaveHelpAndValidateArguments .............................................   Passed    0.09 sec
+        Start 332: CpuDecode.FeaturesRequireOsSupport
+442/831 Test #516: Prepare.RefusesToOverwriteAndRejectsBadArguments ..................................................   Passed    0.09 sec
+        Start 384: HcsModelParser.TruncatedTableAndTruncatedPayload
+443/831 Test #229: CancellationToken.SourceAndToken ..................................................................   Passed    0.08 sec
+        Start   2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd
+444/831 Test #332: CpuDecode.FeaturesRequireOsSupport ................................................................   Passed    0.07 sec
+        Start 227: JobQueue.RetainsBoundedNumberOfFinishedJobs
+445/831 Test #384: HcsModelParser.TruncatedTableAndTruncatedPayload ..................................................   Passed    0.07 sec
+        Start 680: ApiImageEdits.BareBase64IsAccepted
+446/831 Test   #2: SandboxPolicy.AllowsListedCommandWithDefaultsAndPinsCwd ...........................................   Passed    0.07 sec
+        Start 156: Base64.BinaryAlphabetEdgesAndLength
+447/831 Test #227: JobQueue.RetainsBoundedNumberOfFinishedJobs .......................................................   Passed    0.07 sec
+        Start 435: Unplug.InvalidRandomAccessHandleFailsCleanlyWhileStreamingKeepsItsOwnHandle
+448/831 Test #680: ApiImageEdits.BareBase64IsAccepted ................................................................   Passed    0.08 sec
+        Start  15: AgentConfig.ProviderRejectsUnsafeFields
+449/831 Test #156: Base64.BinaryAlphabetEdgesAndLength ...............................................................   Passed    0.07 sec
+        Start 513: Prepare.ExtraLicenceMustBeAllowedExplicitly
+450/831 Test  #15: AgentConfig.ProviderRejectsUnsafeFields ...........................................................   Passed    0.07 sec
+        Start 628: ApiChatTools.ToolsWithoutSystemMessageGetOne
+451/831 Test #435: Unplug.InvalidRandomAccessHandleFailsCleanlyWhileStreamingKeepsItsOwnHandle .......................   Passed    0.09 sec
+        Start 321: GuiAssets.OtherPathsAreNotHandled
+452/831 Test #513: Prepare.ExtraLicenceMustBeAllowedExplicitly .......................................................   Passed    0.08 sec
+        Start 457: DatasetValidator.IssueListIsCappedButCountsAreExact
+453/831 Test #321: GuiAssets.OtherPathsAreNotHandled .................................................................   Passed    0.07 sec
+        Start 737: McpTools.ListHasNarrowSchemasForEveryRequiredTool
+454/831 Test #628: ApiChatTools.ToolsWithoutSystemMessageGetOne ......................................................   Passed    0.09 sec
+        Start 171: Result.VoidSpecialisation
+455/831 Test #457: DatasetValidator.IssueListIsCappedButCountsAreExact ...............................................   Passed    0.08 sec
+        Start 708: Cli.PlannedCommandsReturnUnsupported
+456/831 Test #737: McpTools.ListHasNarrowSchemasForEveryRequiredTool .................................................   Passed    0.09 sec
+        Start 514: Prepare.DropsRecordsThatOverlapTheHeldOutEval
+457/831 Test #171: Result.VoidSpecialisation .........................................................................   Passed    0.09 sec
+        Start 205: PathGuard.EmptyGuardRejectsEverything
+458/831 Test #708: Cli.PlannedCommandsReturnUnsupported ..............................................................   Passed    0.09 sec
+        Start 576: ApiChat.UnknownModelIs404
+459/831 Test #205: PathGuard.EmptyGuardRejectsEverything .............................................................   Passed    0.08 sec
+        Start 413: Stream.PlainFileStreamsWithoutHashes
+460/831 Test #514: Prepare.DropsRecordsThatOverlapTheHeldOutEval .....................................................   Passed    0.10 sec
+        Start  88: SessionCreate.RejectsBadConfiguration
+461/831 Test #576: ApiChat.UnknownModelIs404 .........................................................................   Passed    0.10 sec
+        Start 100: SessionEvents.TotalEventByteCapIsEnforced
+462/831 Test #413: Stream.PlainFileStreamsWithoutHashes ..............................................................   Passed    0.09 sec
+        Start 619: OomInjection.RefusedKvReservationReleasesTheAlreadyReservedWeights
+463/831 Test  #88: SessionCreate.RejectsBadConfiguration .............................................................   Passed    0.13 sec
+        Start 520: Prepare.RecordsContainingTurnControlTokensAreNotRendered
+464/831 Test #100: SessionEvents.TotalEventByteCapIsEnforced .........................................................   Passed    0.12 sec
+        Start 522: Prepare.EmptyAndOversizedInputsAreErrorsNotCrashes
+465/831 Test #619: OomInjection.RefusedKvReservationReleasesTheAlreadyReservedWeights ................................   Passed    0.10 sec
+        Start 704: VisionMcp.PathEscapesNonImagesAndMissingProjectorAreCleanErrors
+466/831 Test #520: Prepare.RecordsContainingTurnControlTokensAreNotRendered ..........................................   Passed    0.08 sec
+        Start  20: AgentConfig.ApiKeyEnvMustBeAnUpperCaseVariableName
+467/831 Test #522: Prepare.EmptyAndOversizedInputsAreErrorsNotCrashes ................................................   Passed    0.08 sec
+        Start 345: KernelCpuFp16.RoundTripsRepresentableValuesExactly
+468/831 Test  #20: AgentConfig.ApiKeyEnvMustBeAnUpperCaseVariableName ................................................   Passed    0.08 sec
+        Start 735: McpProtocol.LegacyHandshakeStillWorks
+469/831 Test #704: VisionMcp.PathEscapesNonImagesAndMissingProjectorAreCleanErrors ...................................   Passed    0.11 sec
+        Start  98: SessionEvents.OversizedOutputLineIsDroppedAndTheStreamRecovers
+470/831 Test #345: KernelCpuFp16.RoundTripsRepresentableValuesExactly ................................................   Passed    0.08 sec
+        Start 639: ApiSocket.ForeignOriginRejectedOverTheWire
+471/831 Test #735: McpProtocol.LegacyHandshakeStillWorks .............................................................   Passed    0.09 sec
+        Start 736: McpProtocol.MalformedMessages
+472/831 Test  #98: SessionEvents.OversizedOutputLineIsDroppedAndTheStreamRecovers ....................................   Passed    0.12 sec
+        Start 237: Settings.NewerSchemaIsRejectedNotDowngraded
+473/831 Test #736: McpProtocol.MalformedMessages .....................................................................   Passed    0.09 sec
+        Start 740: McpTools.LoadChatUnloadRoundTrip
+474/831 Test #639: ApiSocket.ForeignOriginRejectedOverTheWire ........................................................   Passed    0.14 sec
+        Start 638: ApiSocket.AuthIsEnforcedOverTheWire
+475/831 Test #237: Settings.NewerSchemaIsRejectedNotDowngraded .......................................................   Passed    0.08 sec
+        Start 623: OomInjection.RefusedSwitchLeavesNoStaleReservationAndTheNextLoadWorks
+476/831 Test #740: McpTools.LoadChatUnloadRoundTrip ..................................................................   Passed    0.09 sec
+        Start 621: OomInjection.BadAllocEscapingTheEngineLoadIsAStructuredOutOfMemory
+477/831 Test #638: ApiSocket.AuthIsEnforcedOverTheWire ...............................................................   Passed    0.11 sec
+        Start 637: ApiSocket.HealthIsReachableWithoutToken
+478/831 Test #623: OomInjection.RefusedSwitchLeavesNoStaleReservationAndTheNextLoadWorks .............................   Passed    0.10 sec
+        Start 692: VisionPairing.AmbiguousFolderIsNotGuessed
+479/831 Test #621: OomInjection.BadAllocEscapingTheEngineLoadIsAStructuredOutOfMemory ................................   Passed    0.10 sec
+        Start 599: ApiAudit.JobErrorsOverHttpDoNotLeakLocalPaths
+480/831 Test #692: VisionPairing.AmbiguousFolderIsNotGuessed .........................................................   Passed    0.09 sec
+        Start 683: ApiImageQuality.EachDimensionOfTheEnvelopeIsCheckedOnItsOwn
+481/831 Test #637: ApiSocket.HealthIsReachableWithoutToken ...........................................................   Passed    0.13 sec
+        Start 521: Prepare.RefusesToOverwriteExistingOutputFilesEvenWithoutManifest
+482/831 Test #599: ApiAudit.JobErrorsOverHttpDoNotLeakLocalPaths .....................................................   Passed    0.12 sec
+        Start 188: Lifecycle.NamesAreDistinct
+483/831 Test #683: ApiImageQuality.EachDimensionOfTheEnvelopeIsCheckedOnItsOwn .......................................   Passed    0.10 sec
+        Start 505: ChatTemplate.WronglyTypedIdIsTreatedAsEmpty
+484/831 Test #521: Prepare.RefusesToOverwriteExistingOutputFilesEvenWithoutManifest ..................................   Passed    0.10 sec
+        Start 259: Logger.WritesOneJsonObjectPerLine
+485/831 Test #188: Lifecycle.NamesAreDistinct ........................................................................   Passed    0.09 sec
+        Start  90: SessionLaunch.TheChildEnvironmentIsRebuiltFromAnAllowList
+486/831 Test #505: ChatTemplate.WronglyTypedIdIsTreatedAsEmpty .......................................................   Passed    0.09 sec
+        Start 325: HardwareFormat.Bytes
+487/831 Test #259: Logger.WritesOneJsonObjectPerLine .................................................................   Passed    0.09 sec
+        Start 151: JsonSchema.ArraysEnumsAndAnyOf
+488/831 Test #325: HardwareFormat.Bytes ..............................................................................   Passed    0.07 sec
+        Start 424: SourceFaults.GgufParseFailsCleanlyForEveryInjectionPoint
+489/831 Test #151: JsonSchema.ArraysEnumsAndAnyOf ....................................................................   Passed    0.07 sec
+        Start 684: ApiImageQuality.OptInRendersAndForwardsTheFlag
+490/831 Test  #90: SessionLaunch.TheChildEnvironmentIsRebuiltFromAnAllowList .........................................   Passed    0.12 sec
+        Start 615: RuntimeLifecycle.DestroyIdleRuntimeIsClean
+491/831 Test #424: SourceFaults.GgufParseFailsCleanlyForEveryInjectionPoint ..........................................   Passed    0.11 sec
+        Start 176: CheckedMath.Mul
+492/831 Test #684: ApiImageQuality.OptInRendersAndForwardsTheFlag ....................................................   Passed    0.10 sec
+        Start 466: EvalReport.ParsesAValidReport
+493/831 Test #615: RuntimeLifecycle.DestroyIdleRuntimeIsClean ........................................................   Passed    0.11 sec
+        Start 572: ApiNative.RegistryPathOutsideApprovedRootNeverReachesEngine
+494/831 Test #176: CheckedMath.Mul ...................................................................................   Passed    0.08 sec
+        Start  77: AuditFixture.PythonCommandForms
+495/831 Test #466: EvalReport.ParsesAValidReport .....................................................................   Passed    0.09 sec
+        Start  13: AgentConfig.LoopbackBaseUrlAcceptsOnlyLoopbackV1
+496/831 Test  #13: AgentConfig.LoopbackBaseUrlAcceptsOnlyLoopbackV1 ..................................................   Passed    0.07 sec
+        Start 607: ApiBenchmarks.UnknownOrInvalidModelIsRejectedBeforeAnyJobStarts
+497/831 Test  #77: AuditFixture.PythonCommandForms ...................................................................   Passed    0.10 sec
+        Start 344: MemoryProbe.LiveMeasurementIsPlausible
+498/831 Test #572: ApiNative.RegistryPathOutsideApprovedRootNeverReachesEngine .......................................   Passed    0.22 sec
+        Start 320: GuiAssets.UnknownAssetIs404AndNamespaceEdges
+499/831 Test #344: MemoryProbe.LiveMeasurementIsPlausible ............................................................   Passed    0.08 sec
+        Start 225: JobQueue.ShutdownCancelsRunningAndQueuedAndRejectsNewWork
+500/831 Test #607: ApiBenchmarks.UnknownOrInvalidModelIsRejectedBeforeAnyJobStarts ...................................   Passed    0.11 sec
+        Start 614: RuntimeLifecycle.DestroyWithRunningLoadJobDoesNotCrash
+501/831 Test #320: GuiAssets.UnknownAssetIs404AndNamespaceEdges ......................................................   Passed    0.08 sec
+        Start 493: TrainPipeline.KeepInstallsAndActivates
+502/831 Test #225: JobQueue.ShutdownCancelsRunningAndQueuedAndRejectsNewWork .........................................   Passed    0.10 sec
+        Start  23: AgentRedact.IgnoresTooShortLiteralsSoOrdinaryTextSurvives
+503/831 Test #614: RuntimeLifecycle.DestroyWithRunningLoadJobDoesNotCrash ............................................   Passed    0.11 sec
+        Start 186: Lifecycle.CompareAndTransition
+504/831 Test #493: TrainPipeline.KeepInstallsAndActivates ............................................................   Passed    0.10 sec
+        Start 108: SessionPolicy.AllowedToolCallsAreNotViolations
+505/831 Test  #23: AgentRedact.IgnoresTooShortLiteralsSoOrdinaryTextSurvives .........................................   Passed    0.08 sec
+        Start 254: ModelRegistryScan.DuplicateStemsGetSuffixedIds
+506/831 Test #186: Lifecycle.CompareAndTransition ....................................................................   Passed    0.09 sec
+        Start 753: McpStdio.CancelNotificationStopsWorkAndSuppressesTheResponse
+507/831 Test #254: ModelRegistryScan.DuplicateStemsGetSuffixedIds ....................................................   Passed    0.12 sec
+        Start 620: OomInjection.EngineReturnedOutOfMemoryRollsBackAndKeepsTheCode
+508/831 Test #108: SessionPolicy.AllowedToolCallsAreNotViolations ....................................................   Passed    0.15 sec
+        Start 172: Result.MoveOnlyAndString
+509/831 Test #753: McpStdio.CancelNotificationStopsWorkAndSuppressesTheResponse ......................................   Passed    0.17 sec
+        Start 754: McpStdio.ConcurrentCallLimit
+510/831 Test #172: Result.MoveOnlyAndString ..........................................................................   Passed    0.09 sec
+        Start 529: Reflect.SizingCannotOverflow
+511/831 Test #620: OomInjection.EngineReturnedOutOfMemoryRollsBackAndKeepsTheCode ....................................   Passed    0.12 sec
+        Start 497: TrainPipeline.RejectsBadHashesAndIds
+512/831 Test #529: Reflect.SizingCannotOverflow ......................................................................   Passed    0.09 sec
+        Start 481: AdapterBook.ActiveOnAnUnknownBaseIsEmptyNotAnError
+513/831 Test #497: TrainPipeline.RejectsBadHashesAndIds ..............................................................   Passed    0.09 sec
+        Start  56: AuditFixture.FStringsNestedFourDeepWithDistinctQuotesAreStillAudited
+514/831 Test #754: McpStdio.ConcurrentCallLimit ......................................................................   Passed    0.19 sec
+        Start 507: ChatTemplate.ToolCallsWithoutArgumentsRenderEmptyParameterBlock
+515/831 Test #481: AdapterBook.ActiveOnAnUnknownBaseIsEmptyNotAnError ................................................   Passed    0.10 sec
+        Start  28: AgentRedact.DoesNotLoopOnRedactionMarkerInInput
+516/831 Test  #56: AuditFixture.FStringsNestedFourDeepWithDistinctQuotesAreStillAudited ..............................   Passed    0.10 sec
+        Start 160: JsonGuard.UnbalancedInputIsDecidedWithoutCrashing
+517/831 Test #507: ChatTemplate.ToolCallsWithoutArgumentsRenderEmptyParameterBlock ...................................   Passed    0.08 sec
+        Start 252: ModelRegistry.LoadJsonRejectsGarbage
+518/831 Test  #28: AgentRedact.DoesNotLoopOnRedactionMarkerInInput ...................................................   Passed    0.08 sec
+        Start 403: Reader.FactorySniffsFormatAndRejectsGarbage
+519/831 Test #160: JsonGuard.UnbalancedInputIsDecidedWithoutCrashing .................................................   Passed    0.07 sec
+        Start  76: AuditFixture.PathsInCommandsMustStayInsideTheRoot
+520/831 Test #252: ModelRegistry.LoadJsonRejectsGarbage ..............................................................   Passed    0.07 sec
+        Start 313: GuiAssets.EveryAssetIsServedWithCspAndRightType
+521/831 Test #403: Reader.FactorySniffsFormatAndRejectsGarbage .......................................................   Passed    0.10 sec
+        Start 760: McpAudit.ErrorsDoNotLeakAbsoluteLocalPaths
+522/831 Test  #76: AuditFixture.PathsInCommandsMustStayInsideTheRoot .................................................   Passed    0.08 sec
+        Start 104: SessionSecrets.ToolCallLogsCarryMetadataNotCode
+523/831 Test #313: GuiAssets.EveryAssetIsServedWithCspAndRightType ...................................................   Passed    0.07 sec
+        Start 405: Stream.BufferMemoryIsBoundedAndBudgetEnforced
+524/831 Test #760: McpAudit.ErrorsDoNotLeakAbsoluteLocalPaths ........................................................   Passed    0.09 sec
+        Start 210: PathGuard.WindowsRejectsDeviceNamespaceAndStreams
+525/831 Test #104: SessionSecrets.ToolCallLogsCarryMetadataNotCode ...................................................   Passed    0.12 sec
+        Start 308: ImageProfiles.GuessFamilyFromIdOrFileName
+526/831 Test #210: PathGuard.WindowsRejectsDeviceNamespaceAndStreams .................................................   Passed    0.11 sec
+        Start 508: SftExamples.SplitsPerAssistantTurnAtTheGenerationPrompt
+527/831 Test #405: Stream.BufferMemoryIsBoundedAndBudgetEnforced .....................................................   Passed    0.19 sec
+        Start 757: McpAudit.DeeplyNestedLinesOverStdioAreRejectedAndServerKeepsServing
+528/831 Test #308: ImageProfiles.GuessFamilyFromIdOrFileName .........................................................   Passed    0.09 sec
+        Start 458: EvalGate.KeepsWhenHeldoutImprovesAndNothingRegresses
+529/831 Test #508: SftExamples.SplitsPerAssistantTurnAtTheGenerationPrompt ...........................................   Passed    0.09 sec
+        Start 175: CheckedMath.Add
+530/831 Test #458: EvalGate.KeepsWhenHeldoutImprovesAndNothingRegresses ..............................................   Passed    0.09 sec
+        Start 626: ApiChatTools.PlainAnswerWithToolsStaysAnAnswer
+531/831 Test #757: McpAudit.DeeplyNestedLinesOverStdioAreRejectedAndServerKeepsServing ...............................   Passed    0.12 sec
+        Start 199: MemoryBudget.ConstructFromMeasurements
+532/831 Test #175: CheckedMath.Add ...................................................................................   Passed    0.08 sec
+        Start 682: ApiImageQuality.Sd15SmokeParametersAreRejectedWithoutOptIn
+533/831 Test #626: ApiChatTools.PlainAnswerWithToolsStaysAnAnswer ....................................................   Passed    0.10 sec
+        Start 168: DataUri.RejectsEverythingThatIsNotAStrictImageDataUri
+534/831 Test #199: MemoryBudget.ConstructFromMeasurements ............................................................   Passed    0.09 sec
+        Start 485: AdapterBook.ActivatingTheSameAdapterTwiceDoesNotErasePreviousFromHistory
+535/831 Test #682: ApiImageQuality.Sd15SmokeParametersAreRejectedWithoutOptIn ........................................   Passed    0.09 sec
+        Start 396: HcsModelParser.SerializationRoundTrip
+536/831 Test #168: DataUri.RejectsEverythingThatIsNotAStrictImageDataUri .............................................   Passed    0.07 sec
+        Start 717: Cli.CorruptRegistryIsReportedNotCrashed
+537/831 Test #485: AdapterBook.ActivatingTheSameAdapterTwiceDoesNotErasePreviousFromHistory ..........................   Passed    0.09 sec
+        Start 630: ApiChatTools.ToolChoiceNoneHidesTheToolsFromTheModel
+538/831 Test #396: HcsModelParser.SerializationRoundTrip .............................................................   Passed    0.07 sec
+        Start 251: ModelRegistry.JsonRoundTrip
+539/831 Test #717: Cli.CorruptRegistryIsReportedNotCrashed ...........................................................   Passed    0.08 sec
+        Start 234: Settings.FailedSaveKeepsPreviousFile
+540/831 Test #630: ApiChatTools.ToolChoiceNoneHidesTheToolsFromTheModel ..............................................   Passed    0.08 sec
+541/831 Test #251: ModelRegistry.JsonRoundTrip .......................................................................   Passed    0.07 sec
+        Start 223: JobQueue.EventCallbackReceivesStreamAndMayThrow
+        Start 618: OomInjection.RefusedWeightsReservationRollsBackAndTheModelIsRetryable
+542/831 Test #234: Settings.FailedSaveKeepsPreviousFile ..............................................................   Passed    0.07 sec
+        Start  99: SessionEvents.EventCountCapKeepsTheFinalEventAndSaysSo
+543/831 Test #223: JobQueue.EventCallbackReceivesStreamAndMayThrow ...................................................   Passed    0.08 sec
+        Start 519: Prepare.EvalFileWithWronglyTypedRoleDoesNotThrow
+544/831 Test #618: OomInjection.RefusedWeightsReservationRollsBackAndTheModelIsRetryable .............................   Passed    0.11 sec
+        Start  18: AgentConfig.TokenViaEnvKeepsTheSecretOutOfModelsJsonAndArgv
+545/831 Test #519: Prepare.EvalFileWithWronglyTypedRoleDoesNotThrow ..................................................   Passed    0.09 sec
+        Start 408: Stream.PreCancelledTokenReturnsCancelled
+546/831 Test  #99: SessionEvents.EventCountCapKeepsTheFinalEventAndSaysSo ............................................   Passed    0.14 sec
+        Start 312: GuiAssets.RootServesIndexHtmlWithStrictCsp
+547/831 Test  #18: AgentConfig.TokenViaEnvKeepsTheSecretOutOfModelsJsonAndArgv .......................................   Passed    0.09 sec
+        Start 691: VisionPairing.NameMatchPairsMmprojIgnoringQuantisation
+548/831 Test #312: GuiAssets.RootServesIndexHtmlWithStrictCsp ........................................................   Passed    0.09 sec
+        Start  57: AuditFixture.NetworkModulesAreDeniedInEveryImportForm
+549/831 Test #408: Stream.PreCancelledTokenReturnsCancelled ..........................................................   Passed    0.13 sec
+        Start 220: JobQueue.FullQueueRejectsWithBusy
+550/831 Test #691: VisionPairing.NameMatchPairsMmprojIgnoringQuantisation ............................................   Passed    0.11 sec
+        Start 302: FsUtil.ParentThatIsAFileIsAnErrorNotACrash
+551/831 Test  #57: AuditFixture.NetworkModulesAreDeniedInEveryImportForm .............................................   Passed    0.09 sec
+        Start 769: McpImage.GenerateReturnsAnImageContentBlock
+552/831 Test #220: JobQueue.FullQueueRejectsWithBusy .................................................................   Passed    0.09 sec
+        Start 511: Prepare.ProducesRenderedExamplesManifestAndHashes
+553/831 Test #302: FsUtil.ParentThatIsAFileIsAnErrorNotACrash ........................................................   Passed    0.09 sec
+        Start  81: AuditFixture.TextThatOnlyLooksLikeAPathIsNotFlagged
+554/831 Test #769: McpImage.GenerateReturnsAnImageContentBlock .......................................................   Passed    0.09 sec
+        Start  35: EventParser.ToolResultJoinsTextPartsAndReadsDuration
+555/831 Test #511: Prepare.ProducesRenderedExamplesManifestAndHashes .................................................   Passed    0.09 sec
+        Start 334: CpuDecode.NoCpuidReportsUnknownNotFalse
+556/831 Test  #81: AuditFixture.TextThatOnlyLooksLikeAPathIsNotFlagged ...............................................   Passed    0.08 sec
+        Start 524: Prepare.HostileDeepNestingInAnInputDoesNotCrashThePipeline
+557/831 Test  #35: EventParser.ToolResultJoinsTextPartsAndReadsDuration ..............................................   Passed    0.07 sec
+        Start 415: Gguf.ParsesValidFile
+558/831 Test #334: CpuDecode.NoCpuidReportsUnknownNotFalse ...........................................................   Passed    0.07 sec
+        Start 789: DiffusionComponents.UnknownParamsBackendIsInvalidArgument
+559/831 Test #524: Prepare.HostileDeepNestingInAnInputDoesNotCrashThePipeline ........................................   Passed    0.09 sec
+        Start 212: PathGuard.WindowsRejectsWildcardsAndTrailingDotsInsideRoot
+560/831 Test #415: Gguf.ParsesValidFile ..............................................................................   Passed    0.07 sec
+        Start 383: HcsModelParser.TruncatedHeader
+561/831 Test #789: DiffusionComponents.UnknownParamsBackendIsInvalidArgument .........................................   Passed    0.08 sec
+        Start 776: MutationFuzz.HcsModelParserNeverCrashesOrViolatesInvariants
+562/831 Test #212: PathGuard.WindowsRejectsWildcardsAndTrailingDotsInsideRoot ........................................   Passed    0.08 sec
+        Start 515: Prepare.CapsRecordsPerInputAndSplitsDevDeterministically
+563/831 Test #383: HcsModelParser.TruncatedHeader ....................................................................   Passed    0.07 sec
+        Start 690: ApiUi.OnlyGetAndHeadAndTheApiStaysAuthenticated
+564/831 Test #690: ApiUi.OnlyGetAndHeadAndTheApiStaysAuthenticated ...................................................   Passed    0.10 sec
+        Start  42: EventParser.WrongTypedUsageFallsBackToZero
+565/831 Test #515: Prepare.CapsRecordsPerInputAndSplitsDevDeterministically ..........................................   Passed    0.14 sec
+        Start 233: Settings.AtomicWriteReplacesAndLeavesNoTempFiles
+566/831 Test #776: MutationFuzz.HcsModelParserNeverCrashesOrViolatesInvariants .......................................   Passed    0.18 sec
+        Start  37: EventParser.TurnEndYieldsAssistantTextAndUsage
+567/831 Test  #42: EventParser.WrongTypedUsageFallsBackToZero ........................................................   Passed    0.09 sec
+        Start 523: Prepare.DuplicateExamplesAcrossInputsAreWrittenOnce
+568/831 Test #233: Settings.AtomicWriteReplacesAndLeavesNoTempFiles ..................................................   Passed    0.09 sec
+        Start 391: HcsModelParser.HugeDeclaredAllocationsAreCapped
+569/831 Test  #37: EventParser.TurnEndYieldsAssistantTextAndUsage ....................................................   Passed    0.09 sec
+        Start 679: ApiImageEdits.AcceptsADataUriAndKeepsTheInputSizeByDefault
+570/831 Test #523: Prepare.DuplicateExamplesAcrossInputsAreWrittenOnce ...............................................   Passed    0.12 sec
+        Start 261: Logger.EscapesControlCharacters
+571/831 Test #391: HcsModelParser.HugeDeclaredAllocationsAreCapped ...................................................   Passed    0.10 sec
+        Start 733: McpProtocol.ModernResultsCarryResultTypeAndServerInfo
+572/831 Test #679: ApiImageEdits.AcceptsADataUriAndKeepsTheInputSizeByDefault ........................................   Passed    0.12 sec
+        Start  78: AuditFixture.ExtraCommandsAreAppliedOnTopOfTheDefaults
+573/831 Test #261: Logger.EscapesControlCharacters ...................................................................   Passed    0.09 sec
+        Start 763: McpFraming.InvalidUtf8AndEmbeddedNulAreParseErrorsAndTheStreamContinues
+574/831 Test #733: McpProtocol.ModernResultsCarryResultTypeAndServerInfo .............................................   Passed    0.11 sec
+        Start 324: GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles
+575/831 Test  #78: AuditFixture.ExtraCommandsAreAppliedOnTopOfTheDefaults ............................................   Passed    0.10 sec
+        Start 213: PathGuard.WindowsStillAcceptsLookalikeLegitimateNames
+576/831 Test #324: GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles ..................................................   Passed    0.09 sec
+        Start  17: AgentConfig.LaunchPlanRejectsUnsafeInputs
+577/831 Test #763: McpFraming.InvalidUtf8AndEmbeddedNulAreParseErrorsAndTheStreamContinues ...........................   Passed    0.12 sec
+        Start 622: OomInjection.BadAllocDuringGenerationFailsTheJobAndTheModelStaysLoaded
+578/831 Test #213: PathGuard.WindowsStillAcceptsLookalikeLegitimateNames .............................................   Passed    0.11 sec
+        Start  27: AgentRedact.HandlesEmptyAndSecretAtEndOfInput
+579/831 Test  #17: AgentConfig.LaunchPlanRejectsUnsafeInputs .........................................................   Passed    0.09 sec
+        Start 577: ApiChat.TemplateRouting
+580/831 Test  #27: AgentRedact.HandlesEmptyAndSecretAtEndOfInput .....................................................   Passed    0.08 sec
+        Start 738: McpTools.ModelsListAndInspect
+581/831 Test #622: OomInjection.BadAllocDuringGenerationFailsTheJobAndTheModelStaysLoaded ............................   Passed    0.13 sec
+        Start   1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules
+582/831 Test #577: ApiChat.TemplateRouting ...........................................................................   Passed    0.13 sec
+        Start 323: GuiAssets.NoSecretsEmbedded
+583/831 Test #738: McpTools.ModelsListAndInspect .....................................................................   Passed    0.11 sec
+584/831 Test   #1: SandboxPolicy.CreateRejectsHardDeniedAndMalformedRules ............................................   Passed    0.10 sec
+        Start 102: SessionSecrets.TheTokenIsRedactedFromEventsLogsAndPersistedFiles
+        Start 180: Lifecycle.EveryPairBehavesAccordingToTable
+585/831 Test #323: GuiAssets.NoSecretsEmbedded .......................................................................   Passed    0.09 sec
+        Start  55: AuditFixture.FStringExpressionsAreAudited
+586/831 Test #180: Lifecycle.EveryPairBehavesAccordingToTable ........................................................   Passed    0.09 sec
+        Start 185: Lifecycle.CannotFailFromIdleStates
+587/831 Test #102: SessionSecrets.TheTokenIsRedactedFromEventsLogsAndPersistedFiles ..................................   Passed    0.14 sec
+        Start 184: Lifecycle.NonRecoverableFailureOnlyAllowsUnloading
+588/831 Test  #55: AuditFixture.FStringExpressionsAreAudited .........................................................   Passed    0.10 sec
+        Start 243: Settings.ContextTokenCapMatchesEngineCap
+589/831 Test #185: Lifecycle.CannotFailFromIdleStates ................................................................   Passed    0.09 sec
+        Start 609: ApiBenchmarks.WithoutATextEngineTheRouteSaysUnsupportedInsteadOfPretending
+590/831 Test #184: Lifecycle.NonRecoverableFailureOnlyAllowsUnloading ................................................   Passed    0.08 sec
+        Start 794: LlamaEngineErrors.GenerateBeforeLoadIsInvalidState
+591/831 Test #243: Settings.ContextTokenCapMatchesEngineCap ..........................................................   Passed    0.08 sec
+        Start  16: AgentConfig.LaunchPlanIsOfflineAndScoped
+592/831 Test #609: ApiBenchmarks.WithoutATextEngineTheRouteSaysUnsupportedInsteadOfPretending ........................   Passed    0.11 sec
+        Start 301: FsUtil.FailedRenameLeavesPreviousStateAndNoTempFile
+593/831 Test #794: LlamaEngineErrors.GenerateBeforeLoadIsInvalidState ................................................   Passed    0.09 sec
+        Start 467: EvalReport.RoundTripsThroughJson
+594/831 Test  #16: AgentConfig.LaunchPlanIsOfflineAndScoped ..........................................................   Passed    0.08 sec
+        Start  10: SandboxPolicy.ArgumentCountAndSizeAndNulAreBounded
+595/831 Test #467: EvalReport.RoundTripsThroughJson ..................................................................   Passed    0.07 sec
+        Start 215: JobQueue.FailureCarriesError
+596/831 Test #301: FsUtil.FailedRenameLeavesPreviousStateAndNoTempFile ...............................................   Passed    0.09 sec
+        Start 604: ApiBenchmarks.MalformedAndOutOfSchemaBodiesAre400
+597/831 Test  #10: SandboxPolicy.ArgumentCountAndSizeAndNulAreBounded ................................................   Passed    0.08 sec
+        Start 150: JsonSchema.NumericAndStringBounds
+598/831 Test #215: JobQueue.FailureCarriesError ......................................................................   Passed    0.07 sec
+        Start 644: ApiSocket.BindsLoopbackOnlyByDefault
+599/831 Test #604: ApiBenchmarks.MalformedAndOutOfSchemaBodiesAre400 .................................................   Passed    0.10 sec
+600/831 Test #150: JsonSchema.NumericAndStringBounds .................................................................   Passed    0.07 sec
+        Start 179: Lifecycle.StaticTableMatchesSpecification
+        Start 751: McpStdio.OversizeLineIsRejectedNotBuffered
+601/831 Test #179: Lifecycle.StaticTableMatchesSpecification .........................................................   Passed    0.07 sec
+        Start 734: McpProtocol.PingIsRemovedInModernEra
+602/831 Test #644: ApiSocket.BindsLoopbackOnlyByDefault ..............................................................   Passed    0.12 sec
+        Start 214: JobQueue.RunsJobToSuccessWithEvents
+603/831 Test #751: McpStdio.OversizeLineIsRejectedNotBuffered ........................................................   Passed    0.09 sec
+        Start  24: AgentRedact.RemovesCommonCredentialShapes
+604/831 Test #734: McpProtocol.PingIsRemovedInModernEra ..............................................................   Passed    0.09 sec
+        Start 262: Logger.ParseLevel
+605/831 Test #214: JobQueue.RunsJobToSuccessWithEvents ...............................................................   Passed    0.09 sec
+606/831 Test  #24: AgentRedact.RemovesCommonCredentialShapes .........................................................   Passed    0.08 sec
+        Start 770: McpImage.GenerateValidatesEverythingBeforeTheEngine
+        Start 183: Lifecycle.RecoverableFailureCanRevalidate
+607/831 Test #262: Logger.ParseLevel .................................................................................   Passed    0.08 sec
+        Start  41: EventParser.WrongFieldTypesNeverThrow
+608/831 Test #183: Lifecycle.RecoverableFailureCanRevalidate .........................................................   Passed    0.09 sec
+        Start 300: FsUtil.AtomicWriteReplacesExistingAndEmptyContentIsAllowed
+609/831 Test #770: McpImage.GenerateValidatesEverythingBeforeTheEngine ...............................................   Passed    0.10 sec
+        Start 147: ChatToolsStream.UnusableCallRegionIsReturnedAsContent
+610/831 Test  #41: EventParser.WrongFieldTypesNeverThrow .............................................................   Passed    0.08 sec
+        Start 378: Sha256.HexRoundTrip
+611/831 Test #147: ChatToolsStream.UnusableCallRegionIsReturnedAsContent .............................................   Passed    0.08 sec
+        Start 747: McpTools.BenchmarkFullSuiteReturnsSweepsAndSweepSizesRequireFull
+612/831 Test #300: FsUtil.AtomicWriteReplacesExistingAndEmptyContentIsAllowed ........................................   Passed    0.10 sec
+        Start 174: ErrorTaxonomy.NamesAreUniqueAndKnown
+613/831 Test #378: Sha256.HexRoundTrip ...............................................................................   Passed    0.08 sec
+        Start 686: ApiImageQuality.FluxPresetPointIsAcceptedAndTinySizeIsNot
+614/831 Test #174: ErrorTaxonomy.NamesAreUniqueAndKnown ..............................................................   Passed    0.08 sec
+        Start 131: ChatToolsRequest.ToolChoiceNoneAndAuto
+615/831 Test #747: McpTools.BenchmarkFullSuiteReturnsSweepsAndSweepSizesRequireFull ..................................   Passed    0.10 sec
+        Start 101: SessionEvents.StderrBecomesAtMost200CappedLogEvents
+616/831 Test #686: ApiImageQuality.FluxPresetPointIsAcceptedAndTinySizeIsNot .........................................   Passed    0.09 sec
+        Start 739: McpTools.InvalidArgumentsAreToolErrorsUnknownToolIsProtocolError
+617/831 Test #131: ChatToolsRequest.ToolChoiceNoneAndAuto ............................................................   Passed    0.08 sec
+        Start 329: HardwareFormat.RenderTextHandlesEmptyReportWithUnknown
+618/831 Test #101: SessionEvents.StderrBecomesAtMost200CappedLogEvents ...............................................   Passed    0.12 sec
+        Start  82: AuditFixture.FStringPathPrefixIsChecked
+619/831 Test #739: McpTools.InvalidArgumentsAreToolErrorsUnknownToolIsProtocolError ..................................   Passed    0.09 sec
+        Start 187: Lifecycle.ExactlyOneConcurrentOwnerWinsTheLoad
+620/831 Test #329: HardwareFormat.RenderTextHandlesEmptyReportWithUnknown ............................................   Passed    0.07 sec
+        Start 173: ErrorTaxonomy.ExitCodesAreStable
+621/831 Test  #82: AuditFixture.FStringPathPrefixIsChecked ...........................................................   Passed    0.07 sec
+        Start  26: AgentRedact.ShortPrefixLookalikesAreLeftAlone
+622/831 Test #173: ErrorTaxonomy.ExitCodesAreStable ..................................................................   Passed    0.07 sec
+        Start   8: SandboxPolicy.WorkingDirectoryIsGuarded
+623/831 Test  #26: AgentRedact.ShortPrefixLookalikesAreLeftAlone .....................................................   Passed    0.07 sec
+        Start 593: ApiAudit.KvCacheOfAHugeContextCountsAgainstTheBudget
+624/831 Test #187: Lifecycle.ExactlyOneConcurrentOwnerWinsTheLoad ....................................................   Passed    0.14 sec
+        Start 315: GuiAssets.EmbeddedBytesMatchExpectedMarkers
+625/831 Test   #8: SandboxPolicy.WorkingDirectoryIsGuarded ...........................................................   Passed    0.08 sec
+        Start 310: ImageProfiles.PresetSkipsTheStepCheckButNotTheSizeCheck
+626/831 Test #315: GuiAssets.EmbeddedBytesMatchExpectedMarkers .......................................................   Passed    0.07 sec
+        Start  44: EventParser.InvalidUtf8AndControlBytesNeverThrow
+627/831 Test #593: ApiAudit.KvCacheOfAHugeContextCountsAgainstTheBudget ..............................................   Passed    0.10 sec
+628/831 Test #310: ImageProfiles.PresetSkipsTheStepCheckButNotTheSizeCheck ...........................................   Passed    0.07 sec
+        Start 608: ApiBenchmarks.RequiresBearerToken
+        Start 307: ImageProfiles.UnknownFamilyHasNoProfileAndNoEnvelope
+629/831 Test  #44: EventParser.InvalidUtf8AndControlBytesNeverThrow ..................................................   Passed    0.07 sec
+        Start 598: ApiAudit.RedactPathsScrubsDirectoriesButKeepsFileNames
+630/831 Test #307: ImageProfiles.UnknownFamilyHasNoProfileAndNoEnvelope ..............................................   Passed    0.08 sec
+        Start 204: PathGuard.RejectsEmptyAndNul
+631/831 Test #608: ApiBenchmarks.RequiresBearerToken .................................................................   Passed    0.11 sec
+        Start 169: DataUri.SizeLimitIsCheckedBeforeDecoding
+632/831 Test #598: ApiAudit.RedactPathsScrubsDirectoriesButKeepsFileNames ............................................   Passed    0.09 sec
+        Start 181: Lifecycle.FullHappyPathAndReload
+633/831 Test #204: PathGuard.RejectsEmptyAndNul ......................................................................   Passed    0.09 sec
+        Start 309: ImageProfiles.Sd15EnvelopeBoundaries
+634/831 Test #169: DataUri.SizeLimitIsCheckedBeforeDecoding ..........................................................   Passed    0.08 sec
+        Start 603: ApiBenchmarks.DefaultsToQuickAndModelIsRequired
+635/831 Test #181: Lifecycle.FullHappyPathAndReload ..................................................................   Passed    0.08 sec
+        Start 238: Settings.RejectsCorruptAndMistypedInput
+636/831 Test #309: ImageProfiles.Sd15EnvelopeBoundaries ..............................................................   Passed    0.08 sec
+        Start 592: ApiAudit.ModelLargerThanTheMeasuredBudgetIsRefusedBeforeAnythingIsEvicted
+637/831 Test #238: Settings.RejectsCorruptAndMistypedInput ...........................................................   Passed    0.08 sec
+        Start 381: Codec.NamesAndIds
+638/831 Test #603: ApiBenchmarks.DefaultsToQuickAndModelIsRequired ...................................................   Passed    0.13 sec
+        Start 775: McpImage.SchemaAdvertisesAllowLowQualityAndFlagIsForwarded
+639/831 Test #592: ApiAudit.ModelLargerThanTheMeasuredBudgetIsRefusedBeforeAnythingIsEvicted .........................   Passed    0.11 sec
+        Start 530: RsiLoop.KeepsAnImprovingAdapterInstallsItAndActivatesIt
+640/831 Test #381: Codec.NamesAndIds .................................................................................   Passed    0.07 sec
+        Start 785: DiffusionComponents.SidecarWithParentTraversalIsRejected
+641/831 Test #775: McpImage.SchemaAdvertisesAllowLowQualityAndFlagIsForwarded ........................................   Passed    0.09 sec
+        Start  70: AuditFixture.CommandLineQuotingAndLimits
+642/831 Test #530: RsiLoop.KeepsAnImprovingAdapterInstallsItAndActivatesIt ...........................................   Passed    0.08 sec
+        Start 771: McpImage.NoImageEngineIsUnsupportedNotFake
+643/831 Test #785: DiffusionComponents.SidecarWithParentTraversalIsRejected ..........................................   Passed    0.08 sec
+        Start 314: GuiAssets.StudioStructure
+644/831 Test  #70: AuditFixture.CommandLineQuotingAndLimits ..........................................................   Passed    0.08 sec
+        Start 350: KernelCpuGemv.NonPowerOfTwoRowsAndColumns
+645/831 Test #771: McpImage.NoImageEngineIsUnsupportedNotFake ........................................................   Passed    0.08 sec
+        Start 263: Logger.DefaultGlobalLoggerExists
+646/831 Test #314: GuiAssets.StudioStructure .........................................................................   Passed    0.07 sec
+        Start  25: AgentRedact.BearerIsCaseInsensitiveAndKeepsShortValues
+647/831 Test #350: KernelCpuGemv.NonPowerOfTwoRowsAndColumns .........................................................   Passed    0.07 sec
+        Start  40: EventParser.NonJsonAndStructurallyWrongLinesProduceNothing
+648/831 Test #263: Logger.DefaultGlobalLoggerExists ..................................................................   Passed    0.07 sec
+        Start 553: ApiAuth.EmptyConfiguredTokenNeverAuthenticates
+649/831 Test  #25: AgentRedact.BearerIsCaseInsensitiveAndKeepsShortValues ............................................   Passed    0.07 sec
+        Start 319: GuiAssets.TraversalAndMalformedPathsAreRejected
+650/831 Test  #40: EventParser.NonJsonAndStructurallyWrongLinesProduceNothing ........................................   Passed    0.07 sec
+        Start  58: AuditFixture.ProcessModulesAndCallsAreDenied
+651/831 Test #319: GuiAssets.TraversalAndMalformedPathsAreRejected ...................................................   Passed    0.07 sec
+        Start 112: SessionCancel.CancelKillsTheChildAndIsOnlyValidWhileRunning
+652/831 Test  #58: AuditFixture.ProcessModulesAndCallsAreDenied ......................................................   Passed    0.07 sec
+        Start 114: SessionConcurrency.OnlyOneSessionRunsAtATime
+653/831 Test #553: ApiAuth.EmptyConfiguredTokenNeverAuthenticates ....................................................   Passed    0.10 sec
+        Start  46: AuditFixture.OnlyPythonReplIsAvailable
+654/831 Test  #46: AuditFixture.OnlyPythonReplIsAvailable ............................................................   Passed    0.08 sec
+        Start 673: ApiImages.SwitchingBetweenTextAndImageModelsUnloadsThePreviousOne
+655/831 Test #114: SessionConcurrency.OnlyOneSessionRunsAtATime ......................................................   Passed    0.12 sec
+        Start 189: MemoryBudgetMath.PhysicalOnly
+656/831 Test #673: ApiImages.SwitchingBetweenTextAndImageModelsUnloadsThePreviousOne .................................   Passed    0.09 sec
+        Start  89: SessionLaunch.ArgvEnvironmentAndLimitsComeFromTheLaunchPlan
+657/831 Test #189: MemoryBudgetMath.PhysicalOnly .....................................................................   Passed    0.07 sec
+        Start 299: FsUtil.AtomicWriteCreatesParentsAndRoundTripsBinary
+658/831 Test #112: SessionCancel.CancelKillsTheChildAndIsOnlyValidWhileRunning .......................................   Passed    0.24 sec
+        Start 217: JobQueue.CancelRunningJobIsCooperative
+659/831 Test #299: FsUtil.AtomicWriteCreatesParentsAndRoundTripsBinary ...............................................   Passed    0.09 sec
+        Start 761: McpFraming.CrLfTerminatorsAndBlankLinesAreTolerated
+660/831 Test  #89: SessionLaunch.ArgvEnvironmentAndLimitsComeFromTheLaunchPlan .......................................   Passed    0.12 sec
+        Start 768: McpImage.ToolsAreListedWithRealSchemas
+661/831 Test #217: JobQueue.CancelRunningJobIsCooperative ............................................................   Passed    0.09 sec
+        Start 773: McpImage.CancellationNotificationStopsTheRender
+662/831 Test #761: McpFraming.CrLfTerminatorsAndBlankLinesAreTolerated ...............................................   Passed    0.09 sec
+        Start 216: JobQueue.ThrowingJobBecomesInternalFailureAndQueueSurvives
+663/831 Test #768: McpImage.ToolsAreListedWithRealSchemas ............................................................   Passed    0.08 sec
+        Start 376: Sha256.MillionAs
+664/831 Test #773: McpImage.CancellationNotificationStopsTheRender ...................................................   Passed    0.13 sec
+        Start 788: DiffusionComponents.MalformedSidecarIsInvalidArgument
+665/831 Test #216: JobQueue.ThrowingJobBecomesInternalFailureAndQueueSurvives ........................................   Passed    0.08 sec
+        Start   9: SandboxPolicy.TimeoutIsDefaultedClampedAndNeverZero
+666/831 Test #376: Sha256.MillionAs ..................................................................................   Passed    0.09 sec
+        Start  79: AuditFixture.AbsoluteAndTraversalPathLiteralsOutsideTheRootAreDenied
+667/831 Test #788: DiffusionComponents.MalformedSidecarIsInvalidArgument .............................................   Passed    0.07 sec
+        Start 762: McpFraming.FinalLineWithoutNewlineIsStillServed
+668/831 Test   #9: SandboxPolicy.TimeoutIsDefaultedClampedAndNeverZero ...............................................   Passed    0.07 sec
+        Start  47: AuditFixture.UnknownToolNameIsCappedInVerdict
+669/831 Test   #7: SandboxPolicy.PathArgumentsMustStayInsideApprovedRoots ............................................   Passed    7.38 sec
+        Start 764: McpFraming.LineAtTheLimitIsServedOneByteOverIsRejected
+670/831 Test  #79: AuditFixture.AbsoluteAndTraversalPathLiteralsOutsideTheRootAreDenied ..............................   Passed    0.07 sec
+        Start 133: ChatToolsRequest.LegacyFunctionsAreUnsupported
+671/831 Test  #47: AuditFixture.UnknownToolNameIsCappedInVerdict .....................................................   Passed    0.09 sec
+        Start 790: DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel
+672/831 Test #762: McpFraming.FinalLineWithoutNewlineIsStillServed ...................................................   Passed    0.11 sec
+        Start 765: McpFraming.ErrorStormKeepsStdoutOneJsonObjectPerLine
+673/831 Test #764: McpFraming.LineAtTheLimitIsServedOneByteOverIsRejected ............................................   Passed    0.11 sec
+        Start 218: JobQueue.CancelQueuedJobNeverRuns
+674/831 Test #133: ChatToolsRequest.LegacyFunctionsAreUnsupported ....................................................   Passed    0.10 sec
+        Start 219: JobQueue.CancelFinishedIsNoOpAndUnknownIsNotFound
+675/831 Test #790: DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel ......................................   Passed    0.11 sec
+        Start  53: AuditFixture.InterpreterInternalsEscapeHatchesAreDenied
+676/831 Test #765: McpFraming.ErrorStormKeepsStdoutOneJsonObjectPerLine ..............................................   Passed    0.11 sec
+        Start  51: AuditFixture.DynamicCodeBuiltinsAreDenied
+677/831 Test #219: JobQueue.CancelFinishedIsNoOpAndUnknownIsNotFound .................................................   Passed    0.10 sec
+        Start  87: SessionCreate.WorkspaceMustNotContainTheAgentState
+678/831 Test #218: JobQueue.CancelQueuedJobNeverRuns .................................................................   Passed    0.12 sec
+        Start  83: AuditFixture.DocumentedLimit_RuntimeBuiltStringsAreNotFollowed
+679/831 Test  #53: AuditFixture.InterpreterInternalsEscapeHatchesAreDenied ...........................................   Passed    0.09 sec
+        Start  50: AuditFixture.OversizedCodeIsRejectedAsMalformed
+680/831 Test  #51: AuditFixture.DynamicCodeBuiltinsAreDenied .........................................................   Passed    0.09 sec
+        Start 377: Sha256.HardwareMatchesPortableOnManyLengthsAndSplits
+681/831 Test  #87: SessionCreate.WorkspaceMustNotContainTheAgentState ................................................   Passed    0.10 sec
+        Start 143: ChatToolsParse.UnparseableBlockStaysVisible
+682/831 Test  #83: AuditFixture.DocumentedLimit_RuntimeBuiltStringsAreNotFollowed ....................................   Passed    0.10 sec
+        Start 193: MemoryBudget.ExceedingBudgetFailsAndLeavesStateUntouched
+683/831 Test  #50: AuditFixture.OversizedCodeIsRejectedAsMalformed ...................................................   Passed    0.09 sec
+        Start 194: MemoryBudget.OverflowIsOutOfMemoryNotWraparound
+684/831 Test #377: Sha256.HardwareMatchesPortableOnManyLengthsAndSplits ..............................................   Passed    0.08 sec
+        Start 192: MemoryBudget.ReserveAndRelease
+685/831 Test #143: ChatToolsParse.UnparseableBlockStaysVisible .......................................................   Passed    0.08 sec
+        Start  86: SessionCreate.RejectsBadRoots
+686/831 Test #193: MemoryBudget.ExceedingBudgetFailsAndLeavesStateUntouched ..........................................   Passed    0.09 sec
+        Start  34: EventParser.ToolCallPayloadIsCappedOnUtf8Boundary
+687/831 Test #194: MemoryBudget.OverflowIsOutOfMemoryNotWraparound ...................................................   Passed    0.08 sec
+        Start  49: AuditFixture.DangerousWordsInStringsAndCommentsDoNotTrip
+688/831 Test #192: MemoryBudget.ReserveAndRelease ....................................................................   Passed    0.08 sec
+        Start 752: McpStdio.BatchesAreRejected
+689/831 Test  #86: SessionCreate.RejectsBadRoots .....................................................................   Passed    0.09 sec
+        Start 130: ChatToolsRequest.ParsesToolsAndDefaultsToAuto
+690/831 Test  #34: EventParser.ToolCallPayloadIsCappedOnUtf8Boundary .................................................   Passed    0.08 sec
+        Start 103: SessionSecrets.TaskPreviewIsCappedOnAUtf8Boundary
+691/831 Test  #49: AuditFixture.DangerousWordsInStringsAndCommentsDoNotTrip ..........................................   Passed    0.09 sec
+        Start 379: Codec.CompressibleDataActuallyShrinks
+692/831 Test #752: McpStdio.BatchesAreRejected .......................................................................   Passed    0.09 sec
+        Start  39: EventParser.StreamingDeltasAndUnknownTypesProduceNothing
+693/831 Test #130: ChatToolsRequest.ParsesToolsAndDefaultsToAuto .....................................................   Passed    0.08 sec
+        Start 651: ApiSocketAudit.GracefulShutdownCancelsRunningGenerationPromptly
+694/831 Test #379: Codec.CompressibleDataActuallyShrinks .............................................................   Passed    0.08 sec
+        Start  54: AuditFixture.UnicodeLookalikeIdentifiersAreDenied
+695/831 Test  #39: EventParser.StreamingDeltasAndUnknownTypesProduceNothing ..........................................   Passed    0.07 sec
+696/831 Test #103: SessionSecrets.TaskPreviewIsCappedOnAUtf8Boundary .................................................   Passed    0.13 sec
+        Start 211: PathGuard.WindowsRejectsDosDeviceNamesInsideRoot
+        Start 582: ApiChat.ConcurrencyBoundReturns429
+697/831 Test  #54: AuditFixture.UnicodeLookalikeIdentifiersAreDenied .................................................   Passed    0.07 sec
+        Start  45: EventParser.RandomMutationsOfValidLinesNeverThrow
+698/831 Test #651: ApiSocketAudit.GracefulShutdownCancelsRunningGenerationPromptly ...................................   Passed    0.14 sec
+        Start 767: McpFraming.UnusualRequestIdsDoNotBreakCorrelation
+699/831 Test #211: PathGuard.WindowsRejectsDosDeviceNamesInsideRoot ..................................................   Passed    0.08 sec
+        Start 134: ChatToolsRequest.RejectsMalformedDefinitions
+700/831 Test #582: ApiChat.ConcurrencyBoundReturns429 ................................................................   Passed    0.11 sec
+        Start 799: LlamaEngineErrors.VisionRequestValidation
+701/831 Test  #45: EventParser.RandomMutationsOfValidLinesNeverThrow .................................................   Passed    0.08 sec
+        Start 380: Codec.CorruptBlockIsRejectedNotCrashing
+702/831 Test #134: ChatToolsRequest.RejectsMalformedDefinitions ......................................................   Passed    0.07 sec
+        Start 583: ApiChat.NoEngineReportsUnsupportedHonestly
+703/831 Test #767: McpFraming.UnusualRequestIdsDoNotBreakCorrelation .................................................   Passed    0.09 sec
+        Start 270: GgufProbe.UnknownContentStaysUnknown
+704/831 Test #799: LlamaEngineErrors.VisionRequestValidation .........................................................   Passed    0.08 sec
+        Start 409: Stream.SinkErrorPropagatesAndStops
+705/831 Test #380: Codec.CorruptBlockIsRejectedNotCrashing ...........................................................   Passed    0.10 sec
+        Start 304: FsUtil.ReadFileLimitedEnforcesTheBoundBeforeAllocating
+706/831 Test #270: GgufProbe.UnknownContentStaysUnknown ..............................................................   Passed    0.09 sec
+        Start 318: GuiAssets.TokenComesFromFragmentNeverQueryString
+707/831 Test #583: ApiChat.NoEngineReportsUnsupportedHonestly ........................................................   Passed    0.12 sec
+        Start 178: CheckedMath.RangeWithin
+708/831 Test #318: GuiAssets.TokenComesFromFragmentNeverQueryString ..................................................   Passed    0.07 sec
+        Start 786: DiffusionComponents.SidecarWithAbsolutePathIsRejected
+709/831 Test #304: FsUtil.ReadFileLimitedEnforcesTheBoundBeforeAllocating ............................................   Passed    0.09 sec
+        Start 772: McpImage.EditReadsOnlyFromApprovedRootsAndKeepsTheInputSize
+710/831 Test #409: Stream.SinkErrorPropagatesAndStops ................................................................   Passed    0.14 sec
+        Start 224: JobQueue.ProgressEventsAreBoundedButOutputIsNot
+711/831 Test #178: CheckedMath.RangeWithin ...........................................................................   Passed    0.08 sec
+        Start 182: Lifecycle.TransitionToFailedRequiresFail
+712/831 Test #786: DiffusionComponents.SidecarWithAbsolutePathIsRejected .............................................   Passed    0.09 sec
+        Start 374: Sha256.KnownVectorsDefaultImplementation
+713/831 Test #182: Lifecycle.TransitionToFailedRequiresFail ..........................................................   Passed    0.08 sec
+        Start 148: JsonSchema.TypesAndRequired
+714/831 Test #772: McpImage.EditReadsOnlyFromApprovedRootsAndKeepsTheInputSize .......................................   Passed    0.11 sec
+715/831 Test #224: JobQueue.ProgressEventsAreBoundedButOutputIsNot ...................................................   Passed    0.10 sec
+        Start  52: AuditFixture.ExecEvalReferencedWithoutDirectCallAreDenied
+        Start 305: ImageProfiles.Sd15DefaultsAre512x512TwentyStepsEulerA
+716/831 Test #374: Sha256.KnownVectorsDefaultImplementation ..........................................................   Passed    0.10 sec
+        Start 317: GuiAssets.ModelOutputIsRenderedAsDomNodesNeverAsHtml
+717/831 Test #148: JsonSchema.TypesAndRequired .......................................................................   Passed    0.09 sec
+        Start 410: Stream.SinkExceptionBecomesInternalError
+718/831 Test  #52: AuditFixture.ExecEvalReferencedWithoutDirectCallAreDenied .........................................   Passed    0.10 sec
+        Start 375: Sha256.KnownVectorsPortableImplementation
+719/831 Test #305: ImageProfiles.Sd15DefaultsAre512x512TwentyStepsEulerA .............................................   Passed    0.11 sec
+        Start  85: SessionCreate.RejectsBadTasks
+720/831 Test #317: GuiAssets.ModelOutputIsRenderedAsDomNodesNeverAsHtml ..............................................   Passed    0.08 sec
+        Start 676: ApiImages.JobCancelEndpointStopsAnImageJob
+721/831 Test #375: Sha256.KnownVectorsPortableImplementation .........................................................   Passed    0.08 sec
+        Start  48: AuditFixture.OrdinaryCodeIsAllowed
+722/831 Test #410: Stream.SinkExceptionBecomesInternalError ..........................................................   Passed    0.11 sec
+        Start 146: ChatToolsStream.HoldsBackTagPrefixAndParsesCall
+723/831 Test  #85: SessionCreate.RejectsBadTasks .....................................................................   Passed    0.10 sec
+        Start 190: MemoryBudgetMath.VulkanHeadroomCapsBudget
+724/831 Test  #48: AuditFixture.OrdinaryCodeIsAllowed ................................................................   Passed    0.08 sec
+        Start 678: ApiImages.RuntimeReportsTheImageEngine
+725/831 Test #146: ChatToolsStream.HoldsBackTagPrefixAndParsesCall ...................................................   Passed    0.09 sec
+726/831 Test #676: ApiImages.JobCancelEndpointStopsAnImageJob ........................................................   Passed    0.13 sec
+        Start 677: ApiImages.EngineFailureBecomesAStructuredError
+        Start 144: ChatToolsParse.TruncatedBlockWithoutFunctionEndIsKeptAsText
+727/831 Test #190: MemoryBudgetMath.VulkanHeadroomCapsBudget .........................................................   Passed    0.08 sec
+        Start 766: McpFraming.ToolCallArgumentTypeConfusionIsAnErrorNeverACrash
+728/831 Test #678: ApiImages.RuntimeReportsTheImageEngine ............................................................   Passed    0.09 sec
+        Start 149: JsonSchema.AdditionalPropertiesFalseRejectsUnknown
+729/831 Test #144: ChatToolsParse.TruncatedBlockWithoutFunctionEndIsKeptAsText .......................................   Passed    0.09 sec
+        Start 177: CheckedMath.SaturatingSub
+730/831 Test #677: ApiImages.EngineFailureBecomesAStructuredError ....................................................   Passed    0.10 sec
+        Start 755: McpStdio.EofCancelsStragglersAfterGraceAndExits
+731/831 Test #766: McpFraming.ToolCallArgumentTypeConfusionIsAnErrorNeverACrash ......................................   Passed    0.10 sec
+        Start 291: BenchQuick.InvalidPlanIsRejectedBeforeTouchingTheTarget
+732/831 Test #149: JsonSchema.AdditionalPropertiesFalseRejectsUnknown ................................................   Passed    0.08 sec
+        Start 277: GgufProbe.AbsurdStringLengthIsRejected
+733/831 Test #177: CheckedMath.SaturatingSub .........................................................................   Passed    0.08 sec
+        Start 139: ChatToolsRender.ToolResponseWrapsOnce
+734/831 Test #291: BenchQuick.InvalidPlanIsRejectedBeforeTouchingTheTarget ...........................................   Passed    0.08 sec
+        Start 260: Logger.LevelFiltering
+735/831 Test #755: McpStdio.EofCancelsStragglersAfterGraceAndExits ...................................................   Passed    0.11 sec
+        Start 145: ChatToolsStream.PlainTextStreamsWithoutLoss
+736/831 Test #277: GgufProbe.AbsurdStringLengthIsRejected ............................................................   Passed    0.08 sec
+        Start 140: ChatToolsParse.PlainTextHasNoCalls
+737/831 Test #139: ChatToolsRender.ToolResponseWrapsOnce .............................................................   Passed    0.08 sec
+        Start 661: ShutdownIdle.LoadedModelAndAKeepAliveClientDoNotBlockShutdown
+738/831 Test #260: Logger.LevelFiltering .............................................................................   Passed    0.08 sec
+        Start 142: ChatToolsParse.MultipleCallsAndHermesJson
+739/831 Test #145: ChatToolsStream.PlainTextStreamsWithoutLoss .......................................................   Passed    0.08 sec
+        Start 264: EngineInterface.TextAdapterContract
+740/831 Test #140: ChatToolsParse.PlainTextHasNoCalls ................................................................   Passed    0.07 sec
+        Start 275: GgufProbe.UnsupportedVersionIsRejected
+741/831 Test #142: ChatToolsParse.MultipleCallsAndHermesJson .........................................................   Passed    0.07 sec
+        Start 276: GgufProbe.V1IsValidButNotParsed
+742/831 Test #264: EngineInterface.TextAdapterContract ...............................................................   Passed    0.07 sec
+        Start 191: MemoryBudgetMath.SaturatesInsteadOfUnderflowing
+743/831 Test #661: ShutdownIdle.LoadedModelAndAKeepAliveClientDoNotBlockShutdown .....................................   Passed    0.13 sec
+        Start 295: BenchFull.PointsThatDoNotFitTheContextAreSkippedWithAReason
+744/831 Test #275: GgufProbe.UnsupportedVersionIsRejected ............................................................   Passed    0.07 sec
+        Start 136: ChatToolsRender.ToolsBlockUsesPythonJsonLayout
+745/831 Test #276: GgufProbe.V1IsValidButNotParsed ...................................................................   Passed    0.08 sec
+        Start 137: ChatToolsRender.AssistantToolCallsAreXml
+746/831 Test #191: MemoryBudgetMath.SaturatesInsteadOfUnderflowing ...................................................   Passed    0.07 sec
+        Start 274: GgufProbe.BadMagicIsRejected
+747/831 Test #295: BenchFull.PointsThatDoNotFitTheContextAreSkippedWithAReason .......................................   Passed    0.07 sec
+        Start 268: GgufProbe.DiffusionModelIsClassifiedAsImageWithoutMetadata
+748/831 Test #136: ChatToolsRender.ToolsBlockUsesPythonJsonLayout ....................................................   Passed    0.08 sec
+        Start 272: GgufProbe.TruncatedTensorTableIsIncompleteNotFatal
+749/831 Test #137: ChatToolsRender.AssistantToolCallsAreXml ..........................................................   Passed    0.07 sec
+        Start 289: BenchQuick.ColdNoteComesFromMeta
+750/831 Test #274: GgufProbe.BadMagicIsRejected ......................................................................   Passed    0.08 sec
+        Start 271: GgufProbe.StringArrayMetadataIsSkipped
+751/831 Test #272: GgufProbe.TruncatedTensorTableIsIncompleteNotFatal ................................................   Passed    0.08 sec
+        Start 269: GgufProbe.ArchitectureMarksDiffusion
+752/831 Test #268: GgufProbe.DiffusionModelIsClassifiedAsImageWithoutMetadata ........................................   Passed    0.10 sec
+        Start 671: ApiImages.MalformedOversizedAndWrongContentType
+753/831 Test #289: BenchQuick.ColdNoteComesFromMeta ..................................................................   Passed    0.08 sec
+        Start 285: BenchStats.MedianPercentileAndStatsShape
+754/831 Test #271: GgufProbe.StringArrayMetadataIsSkipped ............................................................   Passed    0.10 sec
+        Start 292: BenchQuick.CancellationStopsBetweenSamplesAndUnloads
+755/831 Test #269: GgufProbe.ArchitectureMarksDiffusion ..............................................................   Passed    0.08 sec
+        Start 287: BenchQuick.DocumentShapeAndMeasuredStatistics
+756/831 Test #671: ApiImages.MalformedOversizedAndWrongContentType ...................................................   Passed    0.09 sec
+        Start  80: AuditFixture.PathLiteralsInsideTheRootAreAllowed
+757/831 Test #285: BenchStats.MedianPercentileAndStatsShape ..........................................................   Passed    0.09 sec
+        Start 283: GgufProbe.FileProbeReadsAndReportsMissingFiles
+758/831 Test #292: BenchQuick.CancellationStopsBetweenSamplesAndUnloads ..............................................   Passed    0.09 sec
+        Start 286: BenchPlan.ValidationBounds
+759/831 Test #287: BenchQuick.DocumentShapeAndMeasuredStatistics .....................................................   Passed    0.09 sec
+        Start 290: BenchQuick.LoadFailureAndZeroTokenGenerationAreErrors
+760/831 Test  #80: AuditFixture.PathLiteralsInsideTheRootAreAllowed ..................................................   Passed    0.10 sec
+        Start 282: GgufProbe.NameCapStopsWalking
+761/831 Test #283: GgufProbe.FileProbeReadsAndReportsMissingFiles ....................................................   Passed    0.10 sec
+        Start 267: GgufProbe.TextModelWithArchitecture
+762/831 Test #286: BenchPlan.ValidationBounds ........................................................................   Passed    0.09 sec
+        Start 279: GgufProbe.HugeFixedArrayCountIsRejectedByBufferBounds
+763/831 Test #290: BenchQuick.LoadFailureAndZeroTokenGenerationAreErrors .............................................   Passed    0.09 sec
+        Start 266: EngineInterface.DefaultsAreConservative
+764/831 Test #282: GgufProbe.NameCapStopsWalking .....................................................................   Passed    0.10 sec
+        Start 265: EngineInterface.ImageAdapterContract
+765/831 Test #267: GgufProbe.TextModelWithArchitecture ...............................................................   Passed    0.08 sec
+        Start 281: GgufProbe.UnknownMetadataTypeIsRejected
+766/831 Test #279: GgufProbe.HugeFixedArrayCountIsRejectedByBufferBounds .............................................   Passed    0.08 sec
+        Start 784: DiffusionBlocking.NotLoadedIsAnErrorNotACrash
+767/831 Test #266: EngineInterface.DefaultsAreConservative ...........................................................   Passed    0.08 sec
+        Start 278: GgufProbe.AbsurdArrayCountIsRejectedWithoutAllocating
+768/831 Test #265: EngineInterface.ImageAdapterContract ..............................................................   Passed    0.08 sec
+        Start 672: ApiImages.NoImageModelLoadedIsAConflictNotACrash
+769/831 Test #281: GgufProbe.UnknownMetadataTypeIsRejected ...........................................................   Passed    0.08 sec
+        Start  84: AuditFixture.DocumentedLimit_AllowListedBuildToolsRunProjectCode
+770/831 Test #278: GgufProbe.AbsurdArrayCountIsRejectedWithoutAllocating .............................................   Passed    0.07 sec
+        Start 141: ChatToolsParse.XmlCallIsTypedBySchema
+771/831 Test #784: DiffusionBlocking.NotLoadedIsAnErrorNotACrash .....................................................   Passed    0.09 sec
+        Start 293: BenchFull.OneTokenPrefillPointIsNotAFailureWhenTheDecodeCountIsZero
+772/831 Test #672: ApiImages.NoImageModelLoadedIsAConflictNotACrash ..................................................   Passed    0.09 sec
+        Start 135: ChatToolsRequest.RejectsTooManyAndTooLarge
+773/831 Test  #84: AuditFixture.DocumentedLimit_AllowListedBuildToolsRunProjectCode ..................................   Passed    0.09 sec
+        Start 756: McpAudit.DeeplyNestedParamsAreRejectedNotACrash
+774/831 Test #141: ChatToolsParse.XmlCallIsTypedBySchema .............................................................   Passed    0.08 sec
+        Start 787: DiffusionComponents.SidecarWithMissingFileIsNotFound
+775/831 Test #293: BenchFull.OneTokenPrefillPointIsNotAFailureWhenTheDecodeCountIsZero ...............................   Passed    0.08 sec
+        Start 288: BenchQuick.UnloadAtEndCanBeDisabled
+776/831 Test #135: ChatToolsRequest.RejectsTooManyAndTooLarge ........................................................   Passed    0.08 sec
+        Start 284: GgufProbe.FileProbeHonoursTheByteLimit
+777/831 Test #756: McpAudit.DeeplyNestedParamsAreRejectedNotACrash ...................................................   Passed    0.09 sec
+        Start 138: ChatToolsRender.RejectsBadAssistantToolCalls
+778/831 Test #288: BenchQuick.UnloadAtEndCanBeDisabled ...............................................................   Passed    0.08 sec
+779/831 Test #787: DiffusionComponents.SidecarWithMissingFileIsNotFound ..............................................   Passed    0.09 sec
+        Start 306: ImageProfiles.Flux3KeepsTheMeasuredCfgOfOne
+        Start 280: GgufProbe.TooManyTensorDimsIsRejected
+780/831 Test #284: GgufProbe.FileProbeHonoursTheByteLimit ............................................................   Passed    0.08 sec
+        Start 659: TransportNegative.ConcurrencyLimitOverTheWireReturns429ButHealthAndCancelStayUp
+781/831 Test #138: ChatToolsRender.RejectsBadAssistantToolCalls ......................................................   Passed    0.07 sec
+        Start 294: BenchFull.SweepsAreMeasuredPerSizeAndCarryRawSamples
+782/831 Test #306: ImageProfiles.Flux3KeepsTheMeasuredCfgOfOne .......................................................   Passed    0.08 sec
+        Start 273: GgufProbe.TinyInputsAreRejectedWithoutReading
+783/831 Test #280: GgufProbe.TooManyTensorDimsIsRejected .............................................................   Passed    0.08 sec
+        Start 665: ShutdownGenerating.StreamingClientIsEndedAndShutdownIsPrompt
+784/831 Test #294: BenchFull.SweepsAreMeasuredPerSizeAndCarryRawSamples ..............................................   Passed    0.08 sec
+        Start 666: ShutdownGenerating.ControlPlaneUnloadCancelsTheRunningJobThenTheNextChatWorks
+785/831 Test #273: GgufProbe.TinyInputsAreRejectedWithoutReading .....................................................   Passed    0.07 sec
+        Start 373: NativeLauncher.RejectsRelativePathsAndMissingExecutables
+786/831 Test #659: TransportNegative.ConcurrencyLimitOverTheWireReturns429ButHealthAndCancelStayUp ...................   Passed    0.15 sec
+        Start 670: ApiImages.RejectsInvalidRequestsBeforeTheEngineIsTouched
+787/831 Test #373: NativeLauncher.RejectsRelativePathsAndMissingExecutables ..........................................   Passed    0.08 sec
+        Start 669: ApiImages.WrongMethodAndMissingEngine
+788/831 Test #665: ShutdownGenerating.StreamingClientIsEndedAndShutdownIsPrompt ......................................   Passed    0.16 sec
+        Start 668: ApiImages.DefaultsApplyWhenOnlyAPromptIsGiven
+789/831 Test #670: ApiImages.RejectsInvalidRequestsBeforeTheEngineIsTouched ..........................................   Passed    0.09 sec
+        Start 667: ApiImages.GenerationReturnsBase64PngAndRecordsTheJob
+790/831 Test #666: ShutdownGenerating.ControlPlaneUnloadCancelsTheRunningJobThenTheNextChatWorks .....................   Passed    0.15 sec
+        Start 779: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng
+791/831 Test #669: ApiImages.WrongMethodAndMissingEngine .............................................................   Passed    0.09 sec
+        Start 780: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize
+792/831 Test #668: ApiImages.DefaultsApplyWhenOnlyAPromptIsGiven .....................................................   Passed    0.10 sec
+        Start 781: DiffusionBlocking.ProgressSinkStillReceivesProgress
+793/831 Test #667: ApiImages.GenerationReturnsBase64PngAndRecordsTheJob ..............................................   Passed    0.09 sec
+        Start 782: DiffusionBlocking.CancellationStopsTheRender
+794/831 Test #779: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng ........................................***Skipped   0.08 sec
+        Start 783: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering
+795/831 Test #780: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize .......................................***Skipped   0.08 sec
+        Start 791: DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15
+796/831 Test #781: DiffusionBlocking.ProgressSinkStillReceivesProgress ...............................................***Skipped   0.08 sec
+        Start 792: DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem
+797/831 Test #782: DiffusionBlocking.CancellationStopsTheRender ......................................................***Skipped   0.08 sec
+        Start 793: DiffusionQuality.Sd15SmokeParametersAreRejectedUnlessOptedIn
+798/831 Test #783: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering .......................................***Skipped   0.08 sec
+        Start 800: LlamaEngineReal.CpuGeneration
+799/831 Test #791: DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15 ..........................................***Skipped   0.08 sec
+        Start 801: LlamaEngineReal.VulkanGeneration
+800/831 Test #792: DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem .............................................***Skipped   0.08 sec
+        Start 802: LlamaEngineReal.GreedyIsDeterministicOnCpu
+801/831 Test #793: DiffusionQuality.Sd15SmokeParametersAreRejectedUnlessOptedIn ......................................***Skipped   0.09 sec
+        Start 803: LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly
+802/831 Test #800: LlamaEngineReal.CpuGeneration .....................................................................***Skipped   0.09 sec
+        Start 804: LlamaEngineReal.CancellationMidGenerationCpu
+803/831 Test #801: LlamaEngineReal.VulkanGeneration ..................................................................***Skipped   0.10 sec
+        Start 805: LlamaEngineReal.CancellationMidGenerationVulkan
+804/831 Test #802: LlamaEngineReal.GreedyIsDeterministicOnCpu ........................................................***Skipped   0.11 sec
+        Start 806: LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth
+805/831 Test #803: LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly ..........................................***Skipped   0.10 sec
+        Start 807: LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth
+806/831 Test #804: LlamaEngineReal.CancellationMidGenerationCpu ......................................................***Skipped   0.09 sec
+        Start 808: LlamaEngineReal.ModelSwitchBetweenBackendsAndModels
+807/831 Test #805: LlamaEngineReal.CancellationMidGenerationVulkan ...................................................***Skipped   0.09 sec
+        Start 809: LlamaEngineReal.LoadModesAreAccepted
+808/831 Test #806: LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth .................................................***Skipped   0.09 sec
+        Start 810: LlamaVisionReal.DescribesAGeneratedImageOnCpu
+809/831 Test #807: LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth ..............................................***Skipped   0.09 sec
+        Start 811: LlamaVisionReal.DescribesAGeneratedImageOnVulkan
+810/831 Test #808: LlamaEngineReal.ModelSwitchBetweenBackendsAndModels ...............................................***Skipped   0.09 sec
+        Start 812: LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs
+811/831 Test #809: LlamaEngineReal.LoadModesAreAccepted ..............................................................***Skipped   0.07 sec
+        Start 813: LlamaVisionReal.UnloadAndReloadReleasesTheProjector
+812/831 Test #810: LlamaVisionReal.DescribesAGeneratedImageOnCpu .....................................................***Skipped   0.08 sec
+        Start 814: LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine
+813/831 Test #811: LlamaVisionReal.DescribesAGeneratedImageOnVulkan ..................................................***Skipped   0.08 sec
+        Start 815: LlamaVisionReal.CancellationStopsAVisionJob
+814/831 Test #812: LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs ....................***Skipped   0.08 sec
+        Start 816: LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly
+815/831 Test #813: LlamaVisionReal.UnloadAndReloadReleasesTheProjector ...............................................***Skipped   0.07 sec
+        Start 817: LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors
+816/831 Test #814: LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine .......................................***Skipped   0.07 sec
+        Start 818: LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected
+817/831 Test #815: LlamaVisionReal.CancellationStopsAVisionJob .......................................................***Skipped   0.07 sec
+        Start 819: LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError
+818/831 Test #816: LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly ........................................***Skipped   0.07 sec
+        Start 820: ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine
+819/831 Test #817: LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors ...................................***Skipped   0.07 sec
+        Start 821: ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly
+820/831 Test #818: LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected ...................................***Skipped   0.07 sec
+        Start 822: ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe
+821/831 Test #819: LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError ...............................***Skipped   0.08 sec
+        Start 823: RealGguf.HeaderParsesAndTensorsLieInsideTheFile
+822/831 Test #820: ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine .......................................***Skipped   0.08 sec
+        Start 824: RealGguf.StreamingDeliversEveryByteInOrder
+823/831 Test #821: ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly ..............................***Skipped   0.09 sec
+        Start 825: e2e_api_mcp_real
+824/831 Test #823: RealGguf.HeaderParsesAndTensorsLieInsideTheFile ...................................................***Skipped   0.18 sec
+        Start 827: e2e_gui_xss
+825/831 Test #822: ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe ...................................***Skipped   0.32 sec
+        Start 828: e2e_image_real
+826/831 Test #825: e2e_api_mcp_real ..................................................................................***Skipped   0.42 sec
+827/831 Test #824: RealGguf.StreamingDeliversEveryByteInOrder ........................................................***Skipped   0.46 sec
+        Start 830: e2e_llama_agentic_real
+        Start 831: e2e_vision_real
+828/831 Test #827: e2e_gui_xss .......................................................................................***Skipped   1.59 sec
+829/831 Test #828: e2e_image_real ....................................................................................***Skipped   1.45 sec
+830/831 Test #830: e2e_llama_agentic_real ............................................................................***Skipped   1.43 sec
+831/831 Test #831: e2e_vision_real ...................................................................................***Skipped   0.64 sec
+
+100% tests passed out of 831
+
+Label Time Summary:
+contract       =  65.75 sec*proc (226 tests)
+e2e            =  10.12 sec*proc (6 tests)
+integration    =   5.51 sec*proc (46 tests)
+kernel-cpu     =   0.43 sec*proc (6 tests)
+parser         =   4.40 sec*proc (3 tests)
+unit           =  81.72 sec*proc (544 tests)
+
+Total Test time (real) =  46.58 sec
+
+The following tests did not run:
+	779 - DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng (Skipped)
+	780 - DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize (Skipped)
+	781 - DiffusionBlocking.ProgressSinkStillReceivesProgress (Skipped)
+	782 - DiffusionBlocking.CancellationStopsTheRender (Skipped)
+	783 - DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering (Skipped)
+	791 - DiffusionPreset.PresetWithoutAFamilyTableIsAnErrorOnSd15 (Skipped)
+	792 - DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem (Skipped)
+	793 - DiffusionQuality.Sd15SmokeParametersAreRejectedUnlessOptedIn (Skipped)
+	800 - LlamaEngineReal.CpuGeneration (Skipped)
+	801 - LlamaEngineReal.VulkanGeneration (Skipped)
+	802 - LlamaEngineReal.GreedyIsDeterministicOnCpu (Skipped)
+	803 - LlamaEngineReal.PromptTooLongForContextIsRejectedCleanly (Skipped)
+	804 - LlamaEngineReal.CancellationMidGenerationCpu (Skipped)
+	805 - LlamaEngineReal.CancellationMidGenerationVulkan (Skipped)
+	806 - LlamaEngineReal.LoadUnloadTenTimesCpuNoLeakGrowth (Skipped)
+	807 - LlamaEngineReal.LoadUnloadTenTimesVulkanNoLeakGrowth (Skipped)
+	808 - LlamaEngineReal.ModelSwitchBetweenBackendsAndModels (Skipped)
+	809 - LlamaEngineReal.LoadModesAreAccepted (Skipped)
+	810 - LlamaVisionReal.DescribesAGeneratedImageOnCpu (Skipped)
+	811 - LlamaVisionReal.DescribesAGeneratedImageOnVulkan (Skipped)
+	812 - LlamaVisionReal.GreedyOutputIsDeterministicAndEngineSurvivesRepeatsAndTextJobs (Skipped)
+	813 - LlamaVisionReal.UnloadAndReloadReleasesTheProjector (Skipped)
+	814 - LlamaVisionReal.BadImagesFailCleanlyWithoutKillingTheEngine (Skipped)
+	815 - LlamaVisionReal.CancellationStopsAVisionJob (Skipped)
+	816 - LlamaVisionReal.TextOnlyLoadReportsMissingProjectorCleanly (Skipped)
+	817 - LlamaVisionReal.MissingOrBrokenProjectorFilesAreCleanLoadErrors (Skipped)
+	818 - LlamaVisionReal.ProjectorThatDoesNotMatchTheTextModelIsRejected (Skipped)
+	819 - LlamaVisionReal.LoadingAProjectorAsTheMainModelIsAnUnsupportedError (Skipped)
+	820 - ShutdownReal.IdleWithALoadedModelShutsDownAndFreesTheEngine (Skipped)
+	821 - ShutdownReal.ShutdownDuringARealStreamingGenerationCancelsItPromptly (Skipped)
+	822 - ShutdownReal.ShutdownWhileTheRealModelIsLoadingIsBoundedAndSafe (Skipped)
+	823 - RealGguf.HeaderParsesAndTensorsLieInsideTheFile (Skipped)
+	824 - RealGguf.StreamingDeliversEveryByteInOrder (Skipped)
+	825 - e2e_api_mcp_real (Skipped)
+	827 - e2e_gui_xss (Skipped)
+	828 - e2e_image_real (Skipped)
+	830 - e2e_llama_agentic_real (Skipped)
+	831 - e2e_vision_real (Skipped)

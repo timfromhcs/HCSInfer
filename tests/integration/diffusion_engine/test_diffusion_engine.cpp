@@ -58,6 +58,7 @@ ImageRequest small_request() {
     q.height = 256;
     q.steps = 2;
     q.seed = 7;
+    q.allow_low_quality = true;  // pipeline smoke test: 256 px / 2 steps is outside the SD1.5 envelope
     return q;
 }
 
@@ -257,6 +258,23 @@ TEST(DiffusionPreset, UnknownPresetNameIsRejectedEvenWithoutAModel) {
     ASSERT_FALSE(r);
     EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument) << r.error().message;
     queue.shutdown();
+}
+
+// Real SD1.5: the quality envelope is enforced by the engine with the family it detected at load time.
+// The rejection happens before any sampling, so this is cheap.
+TEST(DiffusionQuality, Sd15SmokeParametersAreRejectedUnlessOptedIn) {
+    REQUIRE_MODEL_OR_SKIP(path);
+    Loaded m(path);
+    ImageRequest q = small_request();
+    q.allow_low_quality = false;
+    auto r = m.engine.generate_image(q, CancellationToken{});
+    ASSERT_FALSE(r);
+    EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument) << r.error().message;
+    EXPECT_NE(r.error().message.find("low_quality_request"), std::string::npos) << r.error().message;
+    q.width = q.height = 512;  // size ok, 2 steps still not
+    auto r2 = m.engine.generate_image(q, CancellationToken{});
+    ASSERT_FALSE(r2);
+    EXPECT_NE(r2.error().message.find("steps"), std::string::npos) << r2.error().message;
 }
 
 // SD1.5 has no measured preset table: asking for one must fail loudly, never fall back to the request's

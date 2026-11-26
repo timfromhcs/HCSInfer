@@ -248,7 +248,7 @@ def main():
             if img_id:
                 pg.tab("image")
                 pg.js("var s=document.getElementById('image-model'); s.value=%s; s.dispatchEvent(new Event('change'))" % json.dumps(img_id))
-                pg.js("document.querySelectorAll('input[name=image-preset]')[0].click(); document.getElementById('image-size').value='256x256'; document.getElementById('image-prompt').value='a red apple on a wooden table, studio light'; document.getElementById('image-seed').value='42'")
+                pg.js("Array.from(document.querySelectorAll('input[name=image-preset]')).find(function(r){return r.value==='20'}).click(); document.getElementById('image-size').value='512x512'; document.getElementById('image-prompt').value='a red apple on a wooden table, studio light'; document.getElementById('image-seed').value='42'")
                 pg.js("document.getElementById('image-form').requestSubmit()")
                 pg.pump(2)
                 check("busy bar shown while rendering", pg.js("!document.getElementById('image-busy').hidden") or pg.js("document.getElementById('image-gallery').children.length") >= 1)

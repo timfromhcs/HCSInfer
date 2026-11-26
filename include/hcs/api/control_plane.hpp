@@ -61,8 +61,9 @@ struct ImageParams {
     std::uint32_t steps = 20;
     std::optional<std::uint64_t> seed;
     float strength = 0.75f;
-    float cfg_scale = 0.0f;  // 0 => engine default
-    std::string preset;      // "" | "fast" | "quality" (replaces steps/cfg, model-family specific)
+    float cfg_scale = 0.0f;          // 0 => engine default
+    std::string preset;              // "" | "fast" | "quality" (replaces steps/cfg, model-family specific)
+    bool allow_low_quality = false;  // opt in to sizes/steps below the family quality envelope
     std::optional<ImageInput> init_image;  // edit / img2img
 };
 

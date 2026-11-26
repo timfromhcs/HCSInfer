@@ -77,6 +77,10 @@ struct ImageRequest {
     // `cfg_scale` with the values measured for the loaded model family (docs/test-evidence/flux3). A preset
     // that has no entry for the loaded family is an InvalidArgument error, never silently ignored.
     std::string preset;
+    // Opt-in to sizes/step counts below the loaded family's quality envelope (hcs/image_profiles.hpp).
+    // Without it such a request is an InvalidArgument error: 256 px / 2 steps SD1.5 output is a pipeline
+    // smoke test, not an image.
+    bool allow_low_quality = false;
 };
 
 struct EngineMetrics {

@@ -148,9 +148,15 @@ Authenticated, **Experimental**. Real stable-diffusion.cpp output (HTTP route te
 | `model` | image model id (kind `image`); loaded first if it is not the loaded model. Omit to use the loaded image model (none loaded -> `409 invalid_state`) |
 | `size` | `"<W>x<H>"`, default `512x512`; each in 64..2048 and a multiple of 8, W*H <= 1 Mpixel (`ControlPlaneOptions::max_generate_pixels`) |
 | `steps` | 1..150, default 20 |
+| `allow_low_quality` | boolean, default `false`. Without it a request below the model family's quality envelope is rejected with `400` and a message starting `low_quality_request:` (SD1.5: short side < 384 px or < 8 steps; FLUX.3 Klein: short side < 384 px or < 4 steps without a preset). A 256 px / 2-step SD1.5 render is a pipeline smoke test, not an image. The same field exists on the MCP image tools and as CLI `--allow-low-quality` |
+| `preset` | `fast` \| `quality`: measured steps/cfg point of the loaded family (FLUX.3 Klein only) |
 | `seed`, `negative_prompt`, `cfg_scale` (0..30, 0 = model default) | HCS extensions |
 | `n` | only `1` |
 | `response_format` | only `b64_json` (the default here, unlike OpenAI); `url` -> `501` (nothing is hosted) |
+
+Per-family defaults (`include/hcs/image_profiles.hpp`): SD1.5 = 512x512, 20 steps, sampler Euler a, cfg 7; FLUX.3 Klein =
+512x512, 16 steps (or the measured `fast` = 6 / `quality` = 16 presets), cfg 1.0. The family is detected when the model is
+loaded (and, for an early synchronous rejection, guessed from the model id); a model whose family is unknown has no envelope.
 
 Response `200`: `{"created", "data":[{"b64_json":"<PNG>"}], "hcs":{"job_id","request_id","model","format","width","height","steps","generation_ms","seed?"}}`.
 

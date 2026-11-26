@@ -1,5 +1,7 @@
 # M3 image routes (HTTP + MCP) - real-model evidence
 
+> **Smoke tests only.** The small PNGs in this directory (256x256 / 2 steps, 512x512 / 4 steps) prove that the pipeline runs end to end (load, sample, PNG encode). They are **not** examples of image quality: SD1.5 needs >= 512 px and ~20 steps. For real renders see [docs/gallery](../../gallery/README.md).
+
 Date: 2026-11-17. Machine: Windows 11 (26200), Ryzen 7 7735HS, Radeon 680M. Builds: `build/img-api` (Release,
 **CPU-only**, `HCS_ENABLE_VULKAN=OFF`) and `build/windows-msvc-release-vulkan` (Release, `HCS_ENABLE_VULKAN=ON`), both
 MSVC 19.44 x64, Ninja, `/W4 /WX` on HCS targets, llama.cpp **and** stable-diffusion.cpp adapters linked (one GGUF

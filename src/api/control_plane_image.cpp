@@ -6,6 +6,7 @@
 
 #include "hcs/api/control_plane.hpp"
 #include "hcs/api/image_probe.hpp"
+#include "hcs/image_profiles.hpp"
 
 namespace hcs::api {
 
@@ -40,6 +41,18 @@ Result<void> ControlPlane::validate_image(const ImageParams& p, bool require_ini
     if (p.steps == 0 || p.steps > opt_.max_image_steps)
         return make_error(ErrorCode::InvalidArgument,
                           "steps must be in 1.." + std::to_string(opt_.max_image_steps));
+    if (!p.allow_low_quality) {
+        // Early, synchronous quality-envelope check when the family can be read from the model id (the engine
+        // repeats it authoritatively with the detected family).
+        std::string family = guess_image_family(p.model);
+        if (family.empty() && p.model.empty()) {
+            if (const auto cur = loaded_model())
+                family = guess_image_family(*cur);
+        }
+        if (const auto why = image_envelope_violation(family, p.width, p.height, p.steps, !p.preset.empty());
+            !why.empty())
+            return make_error(ErrorCode::InvalidArgument, "low_quality_request: " + why);
+    }
     if (!(p.strength >= 0.0f && p.strength <= 1.0f))
         return make_error(ErrorCode::InvalidArgument, "strength must be in 0..1");
     if (!(p.cfg_scale >= 0.0f && p.cfg_scale <= 30.0f))
@@ -132,6 +145,7 @@ Result<Submitted> ControlPlane::submit_image(const ImageParams& p, bool require_
             ir.strength = p.strength;
             ir.cfg_scale = p.cfg_scale;
             ir.preset = p.preset;
+            ir.allow_low_quality = p.allow_low_quality;
             ir.init_image = p.init_image;
             Result<ImageResult> r = make_error(ErrorCode::Internal, "engine threw");
             try {

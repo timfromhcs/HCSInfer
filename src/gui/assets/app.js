@@ -713,6 +713,7 @@
     if (state.mode === "advanced") {
       var neg = $("image-negative").value.trim(); if (neg) body.negative_prompt = neg;
       var cfg = numOrUndef("image-cfg"); if (cfg !== undefined) body.cfg_scale = cfg;
+      if ($("image-lowq").checked) body.allow_low_quality = true;
     }
     image.ctl = new AbortController();
     $("image-send").disabled = true; $("image-stop").hidden = false;
@@ -943,7 +944,7 @@
       copyText(String(g.seed), "Seed");
       setBanner("image-state", "ok", "seed " + g.seed + " is now in the Seed field.");
     });
-    $("image-steps").value = "16"; syncPreset();
+    $("image-steps").value = "20"; syncPreset();
     setImageMode("txt2img");
     $("vision-copy").addEventListener("click", function () { copyText($("vision-out").raw || "", "Answer"); });
     $("ob-copy").addEventListener("click", function () { copyText("HCSInfer models scan <folder>", "Command"); });

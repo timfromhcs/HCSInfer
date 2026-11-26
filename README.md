@@ -68,7 +68,10 @@ loudly instead of silently falling back to the CPU.
 |---|---|
 | ![Chat](docs/screenshots/studio-chat-light.png) | ![Performance](docs/screenshots/studio-performance-dark.png) |
 
-| Models and memory split | Image Studio (4-step SD 1.5 draft) | Phone, dark |
+Real image-generation examples (SD 1.5 at 512x512/20 steps and FLUX.3 Klein, with prompt, seed, model hash, time and an
+honest quality note) are in [`docs/gallery/`](docs/gallery/README.md).
+
+| Models and memory split | Image Studio (4-step smoke render, not a quality example) | Phone, dark |
 |---|---|---|
 | ![Models](docs/screenshots/studio-models-light.png) | ![Image Studio](docs/screenshots/studio-image-light.png) | ![Phone](docs/screenshots/studio-phone-dark.png) |
 
@@ -140,7 +143,7 @@ $exe = '.\HCSInfer.exe'
 & $exe chat --model E:\models\model.gguf --prompt "Hello" --backend cpu
 & $exe vision --model E:\models\vlm.gguf --image .\photo.png --prompt "Describe this image"
 & $exe image generate --model E:\models\sd15-q8_0.gguf --prompt "a red apple on a plain table" `
-   --width 256 --height 256 --steps 2 --backend cpu --json
+   --width 512 --height 512 --steps 20 --backend cpu --json
 & $exe benchmark --suite quick --model E:\models\model.gguf --backend cpu --export bench.json
 & $exe cache stats --json
 ```
