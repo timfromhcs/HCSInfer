@@ -434,7 +434,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ninja-build ccache \
-            libvulkan-dev vulkan-tools mesa-vulkan-drivers glslc spirv-tools
+            libvulkan-dev vulkan-tools mesa-vulkan-drivers glslc spirv-tools spirv-headers
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .ccache
@@ -443,7 +443,7 @@ jobs:
       - name: Vulkan environment
         run: |
           mkdir -p artifacts
-          icd="$(ls /usr/share/vulkan/icd.d/lvp_icd*.json | head -1)"
+          icd="$(find /usr/share/vulkan/icd.d -name 'lvp_icd*.json' | sort | head -1)"
           echo "VK_ICD_FILENAMES=$icd" >> "$GITHUB_ENV"
           { echo "icd: $icd"; glslc --version | head -2; spirv-val --version | head -1; } | tee artifacts/vulkan-tools.txt
           VK_ICD_FILENAMES="$icd" vulkaninfo --summary | tee artifacts/vulkaninfo.txt
