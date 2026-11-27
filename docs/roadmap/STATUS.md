@@ -82,6 +82,17 @@ Evidence: `docs/test-evidence/final-s1/README.md`. Branch `release/v1.1-stable` 
 | LoRA/upscale/merge/admission/vault/CLI/planner/image-profile/guard tests | **PASS** | covered by the S0 CPU (1054/1054) and Vulkan (1085/1085) CTest runs; new features are not mocks in those suites where a real file was available |
 | Real trainer run, real `prime-agent` session, real WebGPU | NOT RUN | external model/credential/hardware dependencies |
 
+## S2 (2026-11-27): real-model E2E and controlled benchmarks
+
+Evidence: `docs/test-evidence/final-s2/README.md`. Branch `release/v1.1-stable` at `94d879d` + this wave.
+
+| Item | Status | Proven / not proven |
+|---|---|---|
+| B0 CPU / B1 Vulkan full benchmarks, same LFM3 hash/seed | **PASS** | CPU 18.97 t/s decode, 2579 ms TTFT; Vulkan 35.97 t/s, 311.9 ms TTFT; **1.90x decode / 8.27x TTFT** on the 680M; raw samples, p90 and all metadata in `bench-{cpu,vulkan}-full.json`. One machine, no thermal data, page cache not flushed. |
+| HCS Studio on the Vulkan build with real models | **PASS** | `studio-shots-vk.txt` 42/42: real model load, streamed chat, Stop/cancel, t2i + i2i, no CSP/console errors; `serve-vulkan.log` shows the real 202/200 responses. Wave C's "Vulkan-engine chat in the UI" gap is closed. |
+| HTTP/MCP real inference and agentic eval | **PASS** | S0 CPU and Vulkan CTest e2e suites (see S0 section); `e2e_llama_agentic_real` PASS with `HCS_TEST_LFM3` on both builds. |
+| Benchmark provenance | caveat | the EXEs were configured at `6bfe340+dirty`; S4 rebuilds static EXEs from the final clean tree and records hashes. |
+
 ## Audit fixes (2026-11-21, after wave R)
 
 A release audit found overstated or stale claims in README/ADR-008/STATUS/benchmarks (single-file wording, benchmark binary

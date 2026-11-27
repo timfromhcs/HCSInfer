@@ -1,0 +1,31 @@
+      ]
+    },
+    "wall_ms": {
+      "max": 5954.0963,
+      "median": 5895.1934,
+      "min": 5707.7521,
+      "p90": 5954.0963,
+      "samples": [
+        5707.7521,
+        5901.6269,
+        5954.0963,
+        5895.1934,
+        5712.0047
+      ]
+    }
+  },
+  "schema_version": 1,
+  "seed": 42,
+  "storage_source": "usb (NTFS, rotational: unknown)",
+  "suite": "full",
+  "sweep_note": "prompts are sized by repeating a fixed sentence to approximate target_prompt_tokens; prompt_tokens is the count the engine measured. Sweeps vary the prompt fill of one loaded context (context_tokens); the prefill sweep generates 1 token (TTFT and prompt tokens/s only).",
+  "temperature": 0.0,
+  "timestamp_utc": "2026-11-27T01:41:12Z",
+  "total_layers": 24,
+  "ttft_ms_median": 2579.2675,
+  "ttft_ms_p90": 2604.2927,
+  "vulkan_api_version": "unknown",
+  "wall_ms_median": 5895.1934,
+  "warmup_iterations": 1
+}
+BENCH_CPU_EXIT=0
