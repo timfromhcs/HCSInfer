@@ -52,6 +52,11 @@ TEST(LoraFamilies, KnownGroupsAndExactCompat) {
     // Same tensor-naming group but a different architecture generation is still incompatible.
     EXPECT_EQ(lora_compatibility("flux1", "flux3"), LoraCompat::Incompatible);
     EXPECT_EQ(lora_compatibility("sd15", ""), LoraCompat::Unknown);
+    // Turbo checkpoints are SD2 / SDXL derivatives: an SD1.5 LoRA (LCM-LoRA-SD1.5) must not apply to them.
+    EXPECT_EQ(lora_compatibility("sd15", "sdturbo"), LoraCompat::Incompatible);
+    EXPECT_EQ(lora_compatibility("sd2", "sdturbo"), LoraCompat::Compatible);
+    EXPECT_EQ(lora_compatibility("sdxl", "sdxlturbo"), LoraCompat::Compatible);
+    EXPECT_EQ(lora_compatibility("sd15", "sdxlturbo"), LoraCompat::Incompatible);
 }
 
 TEST(LoraSniff, DistinguishesGroups) {
@@ -244,3 +249,4 @@ TEST(LoraResolve, FailsClosedWithStructuredErrors) {
     ASSERT_TRUE(none.ok());
     EXPECT_TRUE(none.value().empty());
 }
+

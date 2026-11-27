@@ -25,6 +25,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include "hcs/gguf_probe.hpp"
 #include "hcs/image_profiles.hpp"
 #include "hcs/lora.hpp"
 #include "stable-diffusion.h"
@@ -369,29 +370,6 @@ Result<Components> read_sidecar(const std::filesystem::path& model) {
     return c;
 }
 
-// Quality/time points per model family. Values come from the step sweep in docs/test-evidence/flux3
-// (distilled FLUX.3 Klein: 16 steps is the upstream reference, cfg 1.0).
-struct PresetPoint {
-    std::uint32_t steps;
-    float cfg;
-};
-
-// Measured on Radeon 680M (docs/test-evidence/wave-f, single noisy samples): 6 steps matches 8 steps on PSNR
-// vs the 16-step render (24.1 dB each; DSSIM 0.091 vs 0.077) and is ~23 % faster than 16 steps (~9 % faster
-// than 8); 4 steps drops to 20.3 dB and was not faster in this sample.
-constexpr PresetPoint kFlux3Fast{6, 1.0f};
-constexpr PresetPoint kFlux3Quality{16, 1.0f};
-
-std::optional<PresetPoint> preset_for(const std::string& family, const std::string& preset) {
-    if (family == "flux3") {
-        if (preset == "fast")
-            return kFlux3Fast;
-        if (preset == "quality")
-            return kFlux3Quality;
-    }
-    return std::nullopt;
-}
-
 bool valid_preset_name(const std::string& p) {
     return p.empty() || p == "fast" || p == "quality";
 }
@@ -680,9 +658,17 @@ Result<void> DiffusionImageEngine::load(const LoadRequest& req) {
     s->device_name = chosen->name;
     s->device_description = chosen->description;
     s->gpu = use_gpu;
-    s->family = family_from_log(log);
+    // Structure first: the tensor shapes of the checkpoint (never the file name) say SD1.x / SD2.x / SDXL; the
+    // name only separates a Turbo distillation from its base. Then sd.cpp's own log, then the name alone.
+    {
+        const GgufProbeResult probe = probe_gguf_file(req.model_path);
+        if (probe.valid && probe.complete)
+            s->family = classify_image_family(probe.diffusion, req.model_path);
+    }
     if (s->family.empty())
-        s->family = guess_image_family(req.model_path);  // file-name hint when sd.cpp's log is not conclusive
+        s->family = family_from_log(log);
+    if (s->family.empty())
+        s->family = guess_image_family(req.model_path);  // file-name hint when neither is conclusive
 
     EngineMetrics m;
     m.backend = use_gpu ? "vulkan" : "cpu";
@@ -889,7 +875,7 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std:
     // table entry for this family is rejected rather than silently ignored.
     ImageRequest req = request;
     if (!req.preset.empty()) {
-        const auto pt = preset_for(family, req.preset);
+        const auto pt = image_preset(family, req.preset);
         if (!pt)
             return Error(ErrorCode::InvalidArgument,
                          "preset '" + req.preset + "' is not defined for the loaded model" +
@@ -944,6 +930,13 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std:
             req.cfg_scale = prof->default_cfg;
         sampler = std::string(prof->sampler);
     }
+    if (!req.sampler.empty()) {
+        if (!is_known_image_sampler(req.sampler))
+            return Error(ErrorCode::InvalidArgument, "sampler '" + req.sampler + "' is not supported");
+        sampler = req.sampler;
+    }
+    if (!req.scheduler.empty() && !is_known_image_scheduler(req.scheduler))
+        return Error(ErrorCode::InvalidArgument, "scheduler '" + req.scheduler + "' is not supported");
     sd_img_gen_opt_t* opt = sd_img_gen_opt_create();
     if (!opt)
         return Error(ErrorCode::OutOfMemory, "could not allocate image options");
@@ -988,6 +981,8 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std:
         cfg = set_float("sample.guidance.txt_cfg", req.cfg_scale);
     if (cfg && !sampler.empty())
         cfg = set_string("sample.method", sampler);
+    if (cfg && !req.scheduler.empty())
+        cfg = set_string("sample.scheduler", req.scheduler);
     if (cfg && !req.loras.empty()) {
         std::vector<sd_lora_t> sd_loras;
         sd_loras.reserve(req.loras.size());
@@ -1084,3 +1079,4 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std:
 }
 
 }  // namespace hcs::engines
+

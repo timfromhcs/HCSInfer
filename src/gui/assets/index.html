@@ -154,6 +154,13 @@
           <p class="note">Higher strength moves further from the input image.</p>
         </div>
 
+        <label>Model preset
+          <select id="image-modelpreset" title="Measured steps/CFG point for the loaded model family (SD 1.5, SD-Turbo, SDXL-Turbo, FLUX.3 Klein). Overrides Steps and Guidance scale.">
+            <option value="" selected>Custom (use Steps below)</option>
+            <option value="fast">Fast (family-specific)</option>
+            <option value="quality">Quality (family-specific)</option>
+          </select>
+        </label>
         <fieldset class="presets">
           <legend>Steps preset</legend>
           <div class="seg" role="radiogroup" aria-label="Steps preset">
@@ -186,6 +193,11 @@
             <ul id="image-lora-list"></ul>
             <p class="note" id="image-lora-note"></p>
           </fieldset>
+          <label>Sampler
+            <select id="image-sampler" title="Default = the model family's choice. LCM-LoRA needs lcm.">
+              <option value="" selected>Default</option><option>euler</option><option>euler_a</option><option>heun</option><option>dpm2</option><option>dpm++2m</option><option>lcm</option><option>ddim_trailing</option>
+            </select>
+          </label>
           <label>Guidance scale <input id="image-cfg" type="number" min="0" max="30" step="0.5" placeholder="model default"></label>
           <button type="button" class="ghost" data-reset="image">Reset to defaults</button>
         </div>

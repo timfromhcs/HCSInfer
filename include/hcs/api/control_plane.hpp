@@ -68,6 +68,8 @@ struct ImageParams {
     float strength = 0.75f;
     float cfg_scale = 0.0f;          // 0 => engine default
     std::string preset;              // "" | "fast" | "quality" (replaces steps/cfg, model-family specific)
+    std::string sampler;             // "" = family default; see is_known_image_sampler
+    std::string scheduler;           // "" = family default; see is_known_image_scheduler
     bool allow_low_quality = false;  // opt in to sizes/steps below the family quality envelope
     std::optional<ImageInput> init_image;  // edit / img2img
     // 0..kMaxLorasPerRequest LoRAs from the library (hcs/lora.hpp); ids only - paths never come from a
