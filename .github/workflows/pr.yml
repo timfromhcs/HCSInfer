@@ -6,8 +6,13 @@
 # inference, soak, the feature-flagged Vulkan kernel, and the package on a CLEAN machine (this runner has the
 # MSVC redistributable). Tests that need HCS_TEST_GGUF report "Skipped" and must be read as NOT RUN, not PASS.
 #
+# The matrix includes windows-msvc-release-static, the exact preset release.yml ships as HCSInfer.exe, so a
+# static-CRT link or test failure is found on the PR, not after the tag is pushed.
+# Hosted TEMP is on C: and the product C:-guard refuses writes there: tests that call guarded code use
+# tests/support/temp_dir.hpp safe_temp_base() (build-tree drive). New tests that write through guarded commands must too.
+#
 # Status: green on `main` (see docs/roadmap/STATUS.md for the run id).
-# Hardening TODO: pin actions/* to full commit SHAs once the repository is hosted and the SHAs can be verified.
+# Actions are pinned to full commit SHAs (the trailing comment is the release tag); dependabot proposes bumps.
 name: pr-quick-gate
 
 on:
@@ -27,6 +32,40 @@ defaults:
     shell: pwsh
 
 jobs:
+  version-consistency:
+    name: version consistency (CMake / pyproject / package.json)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Assert versions agree
+        run: ./scripts/check-version.ps1
+
+  actionlint:
+    name: actionlint (workflow static checks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      # Official release binary, verified against the SHA-256 published in actionlint_1.7.12_checksums.txt.
+      ACTIONLINT_VERSION: "1.7.12"
+      ACTIONLINT_SHA256: "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install actionlint (checksum verified)
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL -o actionlint.tgz "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          echo "${ACTIONLINT_SHA256}  actionlint.tgz" | sha256sum -c -
+          tar -xzf actionlint.tgz actionlint
+      - name: Lint workflows
+        shell: bash
+        run: ./actionlint -color
+
   build-test:
     name: build + ctest (${{ matrix.preset }})
     runs-on: windows-latest
@@ -34,9 +73,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        preset: [windows-msvc-release, windows-msvc-debug]
+        preset: [windows-msvc-release, windows-msvc-debug, windows-msvc-release-static]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           persist-credentials: false
@@ -81,7 +120,7 @@ jobs:
             "NOT RUN (skipped, need HCS_TEST_GGUF or a GPU build): $(@($skipped).Count)" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
           }
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: ci-evidence-${{ matrix.preset }}
@@ -117,7 +156,7 @@ jobs:
           "package verified: $(@($sums).Count) files, SBOM $(@($sbom.components).Count) components" |
             Tee-Object -Append $env:GITHUB_STEP_SUMMARY
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: matrix.preset == 'windows-msvc-release'
         with:
           name: package-${{ matrix.preset }}
@@ -138,7 +177,7 @@ jobs:
     # future runner image updates its bundled LLVM the job can fail on pure re-wrapping; that is then a real
     # formatter-version change to be handled deliberately, not a flake.
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Check formatting
@@ -155,10 +194,10 @@ jobs:
         shell: pwsh
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "22"
       - name: Unit + static security tests
@@ -186,7 +225,7 @@ jobs:
     # units) - see docs/static-analysis.md. A finding now fails the job on purpose; the reason for every check that
     # is excluded by default is documented there and in the script.
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           persist-credentials: false
@@ -202,7 +241,7 @@ jobs:
           .\scripts\static-analysis.ps1 -Preset windows-msvc-release -Scope src -Parallel 4 -FailOnFindings *>&1 |
             Tee-Object -FilePath artifacts/clang-tidy.txt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: clang-tidy
@@ -216,10 +255,10 @@ jobs:
     # Wave B. No executable is bundled here, so the "real" tests skip (NOT RUN); release.yml runs them against the
     # freshly built EXE. This job proves the package builds, type-checks and its client logic works.
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.12"
       - name: Install tooling
@@ -240,7 +279,7 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Generate SBOM
@@ -250,7 +289,7 @@ jobs:
           $b = Get-Content artifacts\sbom\hcsinfer.cdx.json -Raw | ConvertFrom-Json
           if ($b.bomFormat -ne 'CycloneDX' -or @($b.components).Count -lt 1) { throw 'SBOM malformed' }
           "SBOM components: $(@($b.components).Count)" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: sbom
           path: artifacts/sbom/hcsinfer.cdx.json

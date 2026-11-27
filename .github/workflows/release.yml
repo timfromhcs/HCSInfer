@@ -9,8 +9,15 @@
 # installs into a fresh venv and `hcsinfer --help` works. It does NOT prove Vulkan execution, real-model inference or
 # a clean-machine run.
 #
-# Action pins: official actions are pinned by major tag. Hardening TODO (same as pr.yml): replace with full commit
-# SHAs once they can be verified from the hosted repository.
+# Stages: version-consistency (tag == CMake == pyproject == package.json) -> exe-cpu / exe-vulkan / web ->
+# wheels (reusable workflow .github/workflows/wheels.yml, consumes the exe artifacts of this run) -> release.
+#
+# Draft handling: an existing DRAFT for the tag is updated (assets replaced, stale assets removed, notes refreshed);
+# a PUBLISHED release for the tag is never touched (the job fails). Pre-release is derived from the version (-rc/-beta/
+# -alpha), never hard-coded. Notes come from docs/release-notes-<version>.md. Stable (non-pre-release) tags require
+# BOTH HCSInfer.exe and HCSInfer-vulkan.exe; for -rc tags the Vulkan build may be missing and is then reported.
+#
+# Action pins: full commit SHAs, trailing comment = release tag (dependabot, .github/dependabot.yml, proposes bumps).
 name: release
 
 on:
@@ -34,12 +41,30 @@ env:
   VULKAN_SDK_VERSION: "1.4.357.0"
 
 jobs:
+  version-consistency:
+    name: version consistency (tag, CMake, pyproject, package.json)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+      prerelease: ${{ steps.check.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Assert versions agree
+        id: check
+        env:
+          TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+        run: ./scripts/check-version.ps1 -Tag $env:TAG
+
   exe-cpu:
     name: HCSInfer.exe (CPU, static CRT)
+    needs: [version-consistency]
     runs-on: windows-latest
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           persist-credentials: false
@@ -74,7 +99,7 @@ jobs:
           Initialize-MsvcEnvironment
           .\scripts\package.ps1 -Preset windows-msvc-release-static -Zip
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: exe-cpu
           path: |
@@ -86,13 +111,15 @@ jobs:
 
   exe-vulkan:
     name: HCSInfer-vulkan.exe (CPU + Vulkan, static CRT)
+    needs: [version-consistency]
     runs-on: windows-latest
     timeout-minutes: 150
-    # The hosted runner has no GPU and the Vulkan SDK install is the least-proven step of this workflow, so a failure
-    # here must not block the CPU artifacts. The result is reported honestly (the artifact simply is not produced).
-    continue-on-error: true
+    # Release candidates tolerate a failed Vulkan build (the SDK install is the least-proven step and the hosted
+    # runner has no GPU); the artifact is then simply absent and the draft says so. STABLE tags require it: there the
+    # failure is not tolerated and the release job additionally refuses to run without the file.
+    continue-on-error: ${{ needs.version-consistency.outputs.prerelease == 'true' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           persist-credentials: false
@@ -122,74 +149,22 @@ jobs:
           $bad = $out | Where-Object { $_ -match '^\s+(\S+\.dll)\s*$' } | ForEach-Object { $Matches[1] } |
             Where-Object { $_ -match '^(MSVCP|VCRUNTIME|VCOMP|api-ms-win-crt)' }
           if ($bad) { throw "unexpected imports: $bad" }
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: exe-vulkan
           path: build/windows-msvc-release-static-vulkan/bin/HCSInfer.exe
           if-no-files-found: error
 
-  python:
-    name: Python wheels (platform wheel + sdist)
-    needs: [exe-cpu, exe-vulkan]
+  wheels:
+    name: Python wheels (reusable workflow)
+    needs: [version-consistency, exe-cpu, exe-vulkan]
+    # Consumes the exe-cpu / exe-vulkan artifacts of this run; the Vulkan one is optional for release candidates.
     if: ${{ !cancelled() && needs.exe-cpu.result == 'success' }}
-    runs-on: windows-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - uses: actions/download-artifact@v4
-        with:
-          name: exe-cpu
-          path: dl-cpu
-      - uses: actions/download-artifact@v4
-        if: needs.exe-vulkan.result == 'success'
-        with:
-          name: exe-vulkan
-          path: dl-vulkan
-      - name: Stage executables into the package
-        run: |
-          $bin = 'python\src\hcsinfer\bin'
-          New-Item -ItemType Directory -Force $bin | Out-Null
-          Copy-Item (Get-ChildItem dl-cpu -Recurse -Filter HCSInfer.exe | Select-Object -First 1).FullName "$bin\HCSInfer.exe"
-          if (Test-Path dl-vulkan) {
-            Copy-Item (Get-ChildItem dl-vulkan -Recurse -Filter HCSInfer.exe | Select-Object -First 1).FullName "$bin\HCSInfer-vulkan.exe"
-          }
-          Copy-Item THIRD_PARTY_NOTICES.md python/
-          Get-ChildItem $bin
-      - name: Build sdist (without exe) and platform wheel
-        run: |
-          python -m pip install --upgrade pip build twine pytest mypy
-          # sdist first, from a tree without the exe (the sdist excludes bin/ by configuration).
-          python -m build --sdist python --outdir dist
-          python -m build --wheel python --outdir dist
-          python -m twine check dist/*
-          Get-ChildItem dist
-      - name: Install the wheel into a fresh venv and run it
-        run: |
-          python -m venv venv-wheel
-          $wheel = (Get-ChildItem dist -Filter '*win_amd64.whl' | Select-Object -First 1).FullName
-          if (-not $wheel) { throw 'platform wheel missing' }
-          .\venv-wheel\Scripts\python -m pip install $wheel pytest
-          .\venv-wheel\Scripts\hcsinfer --help
-          if ($LASTEXITCODE -ne 0) { throw 'hcsinfer --help failed' }
-          .\venv-wheel\Scripts\python -m pytest python\tests -q
-          if ($LASTEXITCODE -ne 0) { throw 'python tests failed' }
-      - name: Type-check
-        run: |
-          python -m pip install -e python
-          python -m mypy --config-file python\pyproject.toml python\src python\tests
-      - uses: actions/upload-artifact@v4
-        with:
-          name: python-dist
-          path: dist/*
-          if-no-files-found: error
+    uses: ./.github/workflows/wheels.yml
 
   web:
     name: Web demo dist (not deployed)
+    needs: [version-consistency]
     runs-on: windows-latest
     timeout-minutes: 15
     defaults:
@@ -197,15 +172,15 @@ jobs:
         shell: pwsh
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "22"
       - run: npm test
       - run: npm run build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: web-dist
           path: web/dist
@@ -213,28 +188,41 @@ jobs:
 
   release:
     name: Checksums + SBOM + draft release
-    needs: [exe-cpu, exe-vulkan, python, web]
-    if: ${{ !cancelled() && needs.exe-cpu.result == 'success' && needs.python.result == 'success' && needs.web.result == 'success' }}
+    needs: [version-consistency, exe-cpu, exe-vulkan, wheels, web]
+    # Stable tags need the Vulkan build too; release candidates may ship without it (the assemble step reports it).
+    if: >-
+      ${{ !cancelled() && needs.exe-cpu.result == 'success' && needs.wheels.result == 'success'
+      && needs.web.result == 'success'
+      && (needs.version-consistency.outputs.prerelease == 'true' || needs.exe-vulkan.result == 'success') }}
     runs-on: windows-latest
     timeout-minutes: 20
     permissions:
-      contents: write   # create the DRAFT release (only on tags)
+      contents: write   # create/update the DRAFT release (only on tags)
+    env:
+      VERSION: ${{ needs.version-consistency.outputs.version }}
+      PRERELEASE: ${{ needs.version-consistency.outputs.prerelease }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           path: staged
       - name: Assemble release files
         run: |
           New-Item -ItemType Directory -Force release | Out-Null
-          Copy-Item staged\exe-cpu\build\windows-msvc-release-static\bin\HCSInfer.exe release\HCSInfer.exe
-          if (Test-Path staged\exe-vulkan) {
-            Copy-Item (Get-ChildItem staged\exe-vulkan -Recurse -Filter HCSInfer.exe | Select-Object -First 1).FullName release\HCSInfer-vulkan.exe
-          }
+          $cpu = 'staged\exe-cpu\build\windows-msvc-release-static\bin\HCSInfer.exe'
+          if (-not (Test-Path $cpu)) { throw "missing CPU executable: $cpu" }
+          Copy-Item $cpu release\HCSInfer.exe
+          $vk = Get-ChildItem staged\exe-vulkan -Recurse -Filter HCSInfer.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($vk) { Copy-Item $vk.FullName release\HCSInfer-vulkan.exe }
+          elseif ($env:PRERELEASE -eq 'true') { "WARNING: HCSInfer-vulkan.exe is absent from this release candidate" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY }
+          else { throw 'stable release requires HCSInfer-vulkan.exe (exe-vulkan produced no artifact)' }
           Get-ChildItem staged\exe-cpu -Recurse -Include *.zip | Copy-Item -Destination release
-          Copy-Item staged\python-dist\* release
+          # Wheels/sdist come from the wheels workflow (artifact name python-dist*; platform wheels may be several).
+          $py = @(Get-ChildItem staged -Directory -Filter 'python-dist*' | ForEach-Object { Get-ChildItem $_.FullName -File })
+          if ($py.Count -lt 1) { throw 'no wheel/sdist artifacts (python-dist*) were produced by the wheels workflow' }
+          $py | Copy-Item -Destination release
           Compress-Archive -Path staged\web-dist\* -DestinationPath release\hcs-studio-web-dist.zip
           .\scripts\sbom.ps1 -OutFile release\hcsinfer.cdx.json
           $lines = Get-ChildItem release -File | Where-Object { $_.Name -ne 'SHA256SUMS.txt' } | Sort-Object Name | ForEach-Object {
@@ -243,7 +231,11 @@ jobs:
           # LF line endings so `sha256sum -c` works on Linux/macOS (Set-Content would write CRLF on Windows).
           [System.IO.File]::WriteAllText((Join-Path (Get-Location) 'release\SHA256SUMS.txt'), (($lines -join "`n") + "`n"), [System.Text.Encoding]::ASCII)
           Get-Content release\SHA256SUMS.txt
-      - uses: actions/upload-artifact@v4
+          # Both executables are mandatory for a stable tag (also enforced by the job condition above).
+          if ($env:PRERELEASE -ne 'true') {
+            foreach ($n in 'HCSInfer.exe', 'HCSInfer-vulkan.exe') { if (-not (Test-Path "release\$n")) { throw "stable release is missing $n" } }
+          }
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-files
           path: release/*
@@ -252,6 +244,37 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
         run: |
-          gh release create "${{ github.ref_name }}" release/* --draft --prerelease --title "HCSInfer ${{ github.ref_name }}" `
-            --notes "Draft. Hardware tests (Radeon 680M, real models) must be run on the target machine before publishing. See docs/release-notes-1.0.0-rc.1.md."
+          $notes = "docs/release-notes-$($env:VERSION).md"
+          if (-not (Test-Path $notes)) { throw "release notes file missing: $notes" }
+          # Explicit file list (no glob is handed to gh).
+          $files = @(Get-ChildItem release -File | Sort-Object Name | ForEach-Object { $_.FullName })
+          $title = "HCSInfer $($env:TAG)"
+          $isPre = ($env:PRERELEASE -eq 'true')
+
+          $existing = @(gh release list --limit 200 --json tagName,isDraft | ConvertFrom-Json | Where-Object { $_.tagName -eq $env:TAG })
+          if ($LASTEXITCODE -ne 0) { throw 'gh release list failed' }
+          if ($existing.Count -gt 0) {
+            if (-not $existing[0].isDraft) { throw "release $($env:TAG) is already PUBLISHED; refusing to modify it" }
+            "Updating existing draft $($env:TAG)" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+            gh release upload $env:TAG @files --clobber
+            if ($LASTEXITCODE -ne 0) { throw 'gh release upload failed' }
+            # Remove assets of an earlier run that this run no longer produces.
+            $keep = @($files | ForEach-Object { Split-Path $_ -Leaf })
+            $assets = (gh release view $env:TAG --json assets | ConvertFrom-Json).assets
+            foreach ($a in $assets) {
+              if ($keep -notcontains $a.name) {
+                gh release delete-asset $env:TAG $a.name --yes
+                if ($LASTEXITCODE -ne 0) { throw "could not delete stale asset $($a.name)" }
+              }
+            }
+            gh release edit $env:TAG --title $title --notes-file $notes --draft --prerelease=$($isPre.ToString().ToLowerInvariant())
+            if ($LASTEXITCODE -ne 0) { throw 'gh release edit failed' }
+          } else {
+            $createArgs = @($env:TAG) + $files + @('--draft', '--title', $title, '--notes-file', $notes)
+            if ($isPre) { $createArgs += '--prerelease' }
+            gh release create @createArgs
+            if ($LASTEXITCODE -ne 0) { throw 'gh release create failed' }
+          }

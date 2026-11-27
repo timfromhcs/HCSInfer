@@ -58,10 +58,11 @@ Nothing is uploaded to PyPI by any script in this repository.
 * `release.yml` (tag `v*` or manual): builds both static EXEs, checks their imports with `dumpbin`, runs the
   restricted-environment script, packages, builds sdist + wheel, installs the wheel in a fresh venv, builds the web dist,
   writes `SHA256SUMS.txt` + SBOM and, on a tag, creates a **draft** GitHub release. It never publishes, never pushes to
-  PyPI and never deploys. The Vulkan job is `continue-on-error`: a hosted runner has no GPU and the SDK install is the
-  least-proven step.
+  PyPI and never deploys. The Vulkan job is `continue-on-error` only for pre-release tags (`-rc`/`-beta`): a hosted
+  runner has no GPU and the SDK install is the least-proven step; a stable tag requires both executables. An existing
+  draft for the tag is updated in place; a published release is never modified. See `docs/ci.md`.
 * Hardware tests (Radeon 680M, real models) are `hardware.yml`, run on a self-hosted machine before a draft is published.
-* Workflow files are checked with actionlint v1.7.7 (`docs/test-evidence/wave-b/actionlint.txt`).
+* Workflow files are checked with actionlint (CI job `actionlint`, v1.7.12 with a pinned SHA-256; older evidence: v1.7.7, `docs/test-evidence/wave-b/actionlint.txt`).
 
 ## Not done
 
