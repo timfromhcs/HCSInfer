@@ -1,0 +1,3755 @@
+{
+  "baseline": "cpu_mt_autovec: row-parallel std::thread, float accumulation, compiler auto-vectorisation only; conversion of f16 inputs excluded from the CPU timing",
+  "build_type": "Release",
+  "cpu_threads": 16,
+  "decisive_time": "wall_ms_median of one dispatch (submit + fence, data resident on the device)",
+  "device": {
+    "api_version": "1.4.315",
+    "device_id": 5761,
+    "device_key": "vk:1002:1681:drv=0x00800161:api=1.4.315",
+    "device_type": "integrated_gpu",
+    "driver_info": "26.6.1 (AMD proprietary shader compiler)",
+    "driver_name": "AMD proprietary driver",
+    "driver_version_raw": "0x00800161",
+    "name": "AMD Radeon(TM) Graphics",
+    "subgroup_size": 64,
+    "vendor_id": 4098
+  },
+  "generator": "HCSInfer tune",
+  "git_commit": "540622875eb7",
+  "hcsinfer_version": "1.1.0-rc.1",
+  "memory_placement": "device_local (staged uploads)",
+  "profile_path": "D:\\HCSScratch\\w2\\tune-state-2\\kernel-profile.json",
+  "results": [
+    {
+      "baseline": {
+        "median_ms": 0.4178,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n128k128",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4194304.0,
+      "gflops_gpu": 663.6556962025317,
+      "gflops_wall": 68.08935064935064,
+      "gpu_ms_median": 0.00632,
+      "gpu_spread_p10_p90_over_median": 0.032911392405063265,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 1.9073486328125e-06,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.335 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.335 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 128,
+        "m": 128,
+        "n": 128
+      },
+      "speedup_vs_baseline": 6.782467532467533,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:23:12Z",
+      "tolerance": {
+        "abs": 1.1313708498984761e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0753,
+        "note": "fastest of: f32-act 0.075600 ms; f16-act 0.075300 ms;",
+        "ratio_upstream_over_hcs": 1.2224025974025974,
+        "spread_p10_p90_over_median": 0.046480743691899105,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 0.0616,
+      "wall_spread_p10_p90_over_median": 0.3350649350649348
+    },
+    {
+      "baseline": {
+        "median_ms": 4.6957,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k256",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 956.7844881665243,
+      "gflops_wall": 521.8418662519441,
+      "gpu_ms_median": 0.14028,
+      "gpu_spread_p10_p90_over_median": 0.018648417450812714,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 3.814697265625e-06,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.276 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.276 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 256,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 18.25699844479005,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:23:13Z",
+      "tolerance": {
+        "abs": 1.6e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.2098,
+        "note": "fastest of: f32-act 0.224400 ms; f16-act 0.209800 ms;",
+        "ratio_upstream_over_hcs": 0.8157076205287713,
+        "spread_p10_p90_over_median": 0.12249761677788358,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 0.2572,
+      "wall_spread_p10_p90_over_median": 0.27620528771384134
+    },
+    {
+      "baseline": {
+        "median_ms": 39.3233,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n2048k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1073741824.0,
+      "gflops_gpu": 643.2827434158498,
+      "gflops_wall": 518.1151437946343,
+      "gpu_ms_median": 1.66916,
+      "gpu_spread_p10_p90_over_median": 0.03296508423398593,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 9.5367431640625e-06,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.338 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.338 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 512,
+        "m": 512,
+        "n": 2048
+      },
+      "speedup_vs_baseline": 18.974763559158465,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:23:16Z",
+      "tolerance": {
+        "abs": 2.2627416997969522e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.7268,
+        "note": "fastest of: f32-act 0.726800 ms; f16-act 0.816900 ms;",
+        "ratio_upstream_over_hcs": 0.35070449720131247,
+        "spread_p10_p90_over_median": 0.142652724270776,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f32 activations"
+      },
+      "wall_ms_median": 2.0724,
+      "wall_spread_p10_p90_over_median": 0.33821656050955423
+    },
+    {
+      "baseline": {
+        "median_ms": 69.7806,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k1024",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 2147483648.0,
+      "gflops_gpu": 633.9846862379254,
+      "gflops_wall": 564.7260230888579,
+      "gpu_ms_median": 3.38728,
+      "gpu_spread_p10_p90_over_median": 0.04946978106327192,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 1.9073486328125e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 1024,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 18.35027743445447,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:23:22Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.9784,
+        "note": "fastest of: f32-act 0.978400 ms; f16-act 1.007200 ms;",
+        "ratio_upstream_over_hcs": 0.2572908722749625,
+        "spread_p10_p90_over_median": 0.1410261651676206,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f32 activations"
+      },
+      "wall_ms_median": 3.8027,
+      "wall_spread_p10_p90_over_median": 0.06430168038498951
+    },
+    {
+      "kernel": "gemm_coopmat_f16",
+      "reason": "kernel gemm_coopmat_f16 is not usable on this device: coopmat kernel needs m, n, k all multiples of 16",
+      "status": "NOT RUN on this hardware"
+    },
+    {
+      "kernel": "gemm_coopmat_f16",
+      "reason": "kernel gemm_coopmat_f16 is not usable on this device: coopmat kernel needs m, n, k all multiples of 16",
+      "status": "NOT RUN on this hardware"
+    },
+    {
+      "kernel": "gemm_coopmat_f16",
+      "reason": "kernel gemm_coopmat_f16 is not usable on this device: coopmat kernel needs m, n, k all multiples of 16",
+      "status": "NOT RUN on this hardware"
+    },
+    {
+      "baseline": {
+        "median_ms": 4.6643,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k64",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 1057.498644815632,
+      "gflops_wall": 605.6756678700361,
+      "gpu_ms_median": 0.12692,
+      "gpu_spread_p10_p90_over_median": 0.009328710999054449,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 1.9073486328125e-06,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 64,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 21.048285198555956,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:23:24Z",
+      "tolerance": {
+        "abs": 8e-06,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1801,
+        "note": "fastest of: f32-act 0.184200 ms; f16-act 0.180100 ms;",
+        "ratio_upstream_over_hcs": 0.8127256317689532,
+        "spread_p10_p90_over_median": 0.18445308162132149,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 0.2216,
+      "wall_spread_p10_p90_over_median": 0.13456678700361005
+    },
+    {
+      "baseline": {
+        "median_ms": 27.084,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 838860800.0,
+      "gflops_gpu": 952.6014081308198,
+      "gflops_wall": 739.0844052863437,
+      "gpu_ms_median": 0.8806,
+      "gpu_spread_p10_p90_over_median": 0.33461730638201215,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 5.7220458984375e-06,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 320,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 23.862555066079295,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:23:25Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.4353,
+        "note": "fastest of: f32-act 0.435300 ms; f16-act 0.483400 ms;",
+        "ratio_upstream_over_hcs": 0.38352422907488987,
+        "spread_p10_p90_over_median": 0.24833448196645985,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f32 activations"
+      },
+      "wall_ms_median": 1.135,
+      "wall_spread_p10_p90_over_median": 0.24336563876651984
+    },
+    {
+      "baseline": {
+        "median_ms": 62.2818,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n512k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1887436800.0,
+      "gflops_gpu": 816.3371509636345,
+      "gflops_wall": 755.004920196808,
+      "gpu_ms_median": 2.31208,
+      "gpu_spread_p10_p90_over_median": 0.12915470052939346,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 3.0517578125e-05,
+      "promoted": true,
+      "reason": "upstream timing too noisy (spread 0.282 > 0.250): not a result",
+      "reasons": [
+        "upstream timing too noisy (spread 0.282 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 2880,
+        "m": 1024,
+        "n": 320
+      },
+      "speedup_vs_baseline": 24.91371654866195,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:23:27Z",
+      "tolerance": {
+        "abs": 5.366563145999495e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.8728,
+        "note": "fastest of: f32-act 0.872800 ms; f16-act 0.995800 ms;",
+        "ratio_upstream_over_hcs": 0.3491339653586144,
+        "spread_p10_p90_over_median": 0.28247021081576534,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f32 activations"
+      },
+      "wall_ms_median": 2.4999,
+      "wall_spread_p10_p90_over_median": 0.1162766510660425
+    },
+    {
+      "baseline": {
+        "median_ms": 137.3003,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4294967296.0,
+      "gflops_gpu": 389.54923468184603,
+      "gflops_wall": 377.032638019576,
+      "gpu_ms_median": 11.02548,
+      "gpu_spread_p10_p90_over_median": 0.00410104594085699,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 3.4332275390625e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 128,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 12.052872756002282,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:24:17Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 2.4283,
+        "note": "fastest of: f32-act 2.640300 ms; f16-act 2.428300 ms;",
+        "ratio_upstream_over_hcs": 0.21316771276829213,
+        "spread_p10_p90_over_median": 0.05104805831239956,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 11.3915,
+      "wall_spread_p10_p90_over_median": 0.008616951235570228
+    },
+    {
+      "baseline": {
+        "median_ms": 569.1984,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 17179869184.0,
+      "gflops_gpu": 485.94398262128897,
+      "gflops_wall": 479.39316912550544,
+      "gpu_ms_median": 35.3536,
+      "gpu_spread_p10_p90_over_median": 0.013549737509051515,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 4.1961669921875e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 15.883114237639068,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:27:30Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 8.6605,
+        "note": "fastest of: f32-act 9.122700 ms; f16-act 8.660500 ms;",
+        "ratio_upstream_over_hcs": 0.24166566676061135,
+        "spread_p10_p90_over_median": 0.03789157669880497,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 35.8367,
+      "wall_spread_p10_p90_over_median": 0.017223684100377414
+    },
+    {
+      "baseline": {
+        "median_ms": 0.7749,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n128k128",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4194304.0,
+      "gflops_gpu": 384.09377289377295,
+      "gflops_wall": 56.29938255033557,
+      "gpu_ms_median": 0.01092,
+      "gpu_spread_p10_p90_over_median": 0.024908424908424723,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 6.67572021484375e-06,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 128,
+        "m": 128,
+        "n": 128
+      },
+      "speedup_vs_baseline": 10.401342281879195,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:27:36Z",
+      "tolerance": {
+        "abs": 1.1313708498984761e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0755,
+        "note": "fastest of: f32-act 0.077100 ms; f16-act 0.075500 ms;",
+        "ratio_upstream_over_hcs": 1.0134228187919463,
+        "spread_p10_p90_over_median": 0.0052980132450330805,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 0.0745,
+      "wall_spread_p10_p90_over_median": 0.01986577181208066
+    },
+    {
+      "baseline": {
+        "median_ms": 4.8355,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k256",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 597.0539501779359,
+      "gflops_wall": 361.67536513069257,
+      "gpu_ms_median": 0.2248,
+      "gpu_spread_p10_p90_over_median": 0.00790035587188612,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 1.71661376953125e-05,
+      "promoted": true,
+      "reason": "upstream timing too noisy (spread 0.305 > 0.250): not a result",
+      "reasons": [
+        "upstream timing too noisy (spread 0.305 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 256,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 13.030180544327674,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:27:37Z",
+      "tolerance": {
+        "abs": 1.6e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1956,
+        "note": "fastest of: f32-act 0.195600 ms; f16-act 0.195800 ms;",
+        "ratio_upstream_over_hcs": 0.5270816491511722,
+        "spread_p10_p90_over_median": 0.30541922290388557,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f32 activations"
+      },
+      "wall_ms_median": 0.3711,
+      "wall_spread_p10_p90_over_median": 0.2384801940177849
+    },
+    {
+      "baseline": {
+        "median_ms": 35.3832,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n2048k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1073741824.0,
+      "gflops_gpu": 471.1295013777489,
+      "gflops_wall": 402.4067098901923,
+      "gpu_ms_median": 2.27908,
+      "gpu_spread_p10_p90_over_median": 0.04418625059234424,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 3.24249267578125e-05,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.297 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.297 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 512,
+        "m": 512,
+        "n": 2048
+      },
+      "speedup_vs_baseline": 13.260577896038678,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:27:40Z",
+      "tolerance": {
+        "abs": 2.2627416997969522e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.7404,
+        "note": "fastest of: f32-act 0.794700 ms; f16-act 0.740400 ms;",
+        "ratio_upstream_over_hcs": 0.2774800434733726,
+        "spread_p10_p90_over_median": 0.16952998379254453,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 2.6683,
+      "wall_spread_p10_p90_over_median": 0.2971255106247423
+    },
+    {
+      "baseline": {
+        "median_ms": 68.4233,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k1024",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 2147483648.0,
+      "gflops_gpu": 490.2169635764311,
+      "gflops_wall": 452.5972955656719,
+      "gpu_ms_median": 4.38068,
+      "gpu_spread_p10_p90_over_median": 0.01899065898444999,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 7.2479248046875e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 1024,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 14.420692126117013,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:27:46Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 1.0491,
+        "note": "fastest of: f32-act 1.094300 ms; f16-act 1.049100 ms;",
+        "ratio_upstream_over_hcs": 0.2211052099140111,
+        "spread_p10_p90_over_median": 0.13527785721094265,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 4.7448,
+      "wall_spread_p10_p90_over_median": 0.02251306693643566
+    },
+    {
+      "baseline": {
+        "median_ms": 1.1447,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n1024k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 6291456.0,
+      "gflops_gpu": 17.808695652173917,
+      "gflops_wall": 14.009031396125584,
+      "gpu_ms_median": 0.35328,
+      "gpu_spread_p10_p90_over_median": 0.02090126811594219,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 4.57763671875e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 3072,
+        "m": 1,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 2.548875528835449,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:27:48Z",
+      "tolerance": {
+        "abs": 5.542562584220407e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1503,
+        "note": "fastest of: f32-act 0.150400 ms; f16-act 0.150300 ms;",
+        "ratio_upstream_over_hcs": 0.3346693386773547,
+        "spread_p10_p90_over_median": 0.10019960079840332,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 0.4491,
+      "wall_spread_p10_p90_over_median": 0.08679581384992198
+    },
+    {
+      "baseline": {
+        "median_ms": 7.3436,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 33554432.0,
+      "gflops_gpu": 27.677867229774314,
+      "gflops_wall": 22.409959260001337,
+      "gpu_ms_median": 1.21232,
+      "gpu_spread_p10_p90_over_median": 0.00896133034182411,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 7.43865966796875e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 4.904561544112736,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:27:49Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.5128,
+        "note": "fastest of: f32-act 0.512800 ms; f16-act 0.515100 ms;",
+        "ratio_upstream_over_hcs": 0.3424831363120283,
+        "spread_p10_p90_over_median": 0.053978159126365124,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f32 activations"
+      },
+      "wall_ms_median": 1.4973,
+      "wall_spread_p10_p90_over_median": 0.02193281239564548
+    },
+    {
+      "baseline": {
+        "median_ms": 25.5255,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n16384k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 117440512.0,
+      "gflops_gpu": 20.815256892896898,
+      "gflops_wall": 19.463772746859355,
+      "gpu_ms_median": 5.64204,
+      "gpu_spread_p10_p90_over_median": 0.007625610594749408,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 0.0001087188720703125,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 4.230418641652027,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:27:51Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 1.7,
+        "note": "fastest of: f32-act 1.700000 ms; f16-act 1.704600 ms;",
+        "ratio_upstream_over_hcs": 0.28174616328018826,
+        "spread_p10_p90_over_median": 0.035600000000000076,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f32 activations"
+      },
+      "wall_ms_median": 6.0338,
+      "wall_spread_p10_p90_over_median": 0.053250024859955565
+    },
+    {
+      "baseline": {
+        "median_ms": 5.344,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k64",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 570.3626041135475,
+      "gflops_wall": 369.4404844481145,
+      "gpu_ms_median": 0.23532,
+      "gpu_spread_p10_p90_over_median": 0.007479177290498094,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 3.814697265625e-06,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.251 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.251 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 64,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 14.709606385906964,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:27:53Z",
+      "tolerance": {
+        "abs": 8e-06,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.18,
+        "note": "fastest of: f32-act 0.180000 ms; f16-act 0.180200 ms;",
+        "ratio_upstream_over_hcs": 0.495458298926507,
+        "spread_p10_p90_over_median": 0.14844444444444427,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f32 activations"
+      },
+      "wall_ms_median": 0.3633,
+      "wall_spread_p10_p90_over_median": 0.2507569501789155
+    },
+    {
+      "baseline": {
+        "median_ms": 27.5367,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 838860800.0,
+      "gflops_gpu": 533.9117594643449,
+      "gflops_wall": 443.231956039311,
+      "gpu_ms_median": 1.57116,
+      "gpu_spread_p10_p90_over_median": 0.12202958323786242,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 2.288818359375e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 320,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 14.54966712459051,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:27:54Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.4415,
+        "note": "fastest of: f32-act 0.483400 ms; f16-act 0.441500 ms;",
+        "ratio_upstream_over_hcs": 0.23327697347564197,
+        "spread_p10_p90_over_median": 0.22740656851642138,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 1.8926,
+      "wall_spread_p10_p90_over_median": 0.1214625383070907
+    },
+    {
+      "baseline": {
+        "median_ms": 67.3622,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n512k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1887436800.0,
+      "gflops_gpu": 481.53320202875767,
+      "gflops_wall": 457.13931408641736,
+      "gpu_ms_median": 3.91964,
+      "gpu_spread_p10_p90_over_median": 0.04615730016021879,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 0.000118255615234375,
+      "promoted": true,
+      "reason": "upstream timing too noisy (spread 0.286 > 0.250): not a result",
+      "reasons": [
+        "upstream timing too noisy (spread 0.286 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 2880,
+        "m": 1024,
+        "n": 320
+      },
+      "speedup_vs_baseline": 16.31520054253052,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:27:56Z",
+      "tolerance": {
+        "abs": 5.366563145999495e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.886,
+        "note": "fastest of: f32-act 0.886000 ms; f16-act 0.951500 ms;",
+        "ratio_upstream_over_hcs": 0.21459019569850804,
+        "spread_p10_p90_over_median": 0.2861851015801352,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f32 activations"
+      },
+      "wall_ms_median": 4.1288,
+      "wall_spread_p10_p90_over_median": 0.04125169540786654
+    },
+    {
+      "baseline": {
+        "median_ms": 140.3728,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4294967296.0,
+      "gflops_gpu": 425.3605238659277,
+      "gflops_wall": 410.11079244129974,
+      "gpu_ms_median": 10.09724,
+      "gpu_spread_p10_p90_over_median": 0.023770456085029243,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 0.000164031982421875,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 128,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 13.403687683214454,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:28:46Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 2.535,
+        "note": "fastest of: f32-act 2.541300 ms; f16-act 2.535000 ms;",
+        "ratio_upstream_over_hcs": 0.24205792202583862,
+        "spread_p10_p90_over_median": 0.15565285996055242,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 10.4727,
+      "wall_spread_p10_p90_over_median": 0.0382174606357482
+    },
+    {
+      "baseline": {
+        "median_ms": 589.9762,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 17179869184.0,
+      "gflops_gpu": 418.19785982329427,
+      "gflops_wall": 413.9278676769989,
+      "gpu_ms_median": 41.08072,
+      "gpu_spread_p10_p90_over_median": 0.03004796410578994,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 0.0001678466796875,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 14.214752617186088,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:31:59Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 8.6864,
+        "note": "fastest of: f32-act 9.177600 ms; f16-act 8.686400 ms;",
+        "ratio_upstream_over_hcs": 0.2092881494777675,
+        "spread_p10_p90_over_median": 0.02193083440780992,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 41.5045,
+      "wall_spread_p10_p90_over_median": 0.02953607440157083
+    },
+    {
+      "baseline": {
+        "median_ms": 1.1117,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n128k128",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4194304.0,
+      "gflops_gpu": 519.0970297029703,
+      "gflops_wall": 46.448549280177176,
+      "gpu_ms_median": 0.00808,
+      "gpu_spread_p10_p90_over_median": 0.034653465346534525,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.339 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.339 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 128,
+        "m": 128,
+        "n": 128
+      },
+      "speedup_vs_baseline": 12.311184939091914,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:32:06Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0903,
+      "wall_spread_p10_p90_over_median": 0.33909191583610165
+    },
+    {
+      "baseline": {
+        "median_ms": 7.7215,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k256",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 716.9750427350427,
+      "gflops_wall": 474.6029985855729,
+      "gpu_ms_median": 0.1872,
+      "gpu_spread_p10_p90_over_median": 0.007948717948717892,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 256,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 27.303748231966054,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:32:06Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 0.2828,
+      "wall_spread_p10_p90_over_median": 0.14059405940594066
+    },
+    {
+      "baseline": {
+        "median_ms": 62.39,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n2048k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1073741824.0,
+      "gflops_gpu": 731.3919023486458,
+      "gflops_wall": 612.9712987383684,
+      "gpu_ms_median": 1.46808,
+      "gpu_spread_p10_p90_over_median": 0.0010626123916952794,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 512,
+        "m": 512,
+        "n": 2048
+      },
+      "speedup_vs_baseline": 35.616829365758974,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:32:07Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 1.7517,
+      "wall_spread_p10_p90_over_median": 0.0825712165325112
+    },
+    {
+      "baseline": {
+        "median_ms": 123.6302,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k1024",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 2147483648.0,
+      "gflops_gpu": 728.8104257167681,
+      "gflops_wall": 649.9647845036319,
+      "gpu_ms_median": 2.94656,
+      "gpu_spread_p10_p90_over_median": 0.00138466550825357,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 1024,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 37.41834140435836,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:32:10Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 3.304,
+      "wall_spread_p10_p90_over_median": 0.05198547215496366
+    },
+    {
+      "baseline": {
+        "median_ms": 2.4635,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n1024k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 6291456.0,
+      "gflops_gpu": 35.91013698630137,
+      "gflops_wall": 23.867435508345977,
+      "gpu_ms_median": 0.1752,
+      "gpu_spread_p10_p90_over_median": 0.018493150684931466,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 3072,
+        "m": 1,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 9.345599393019725,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:32:12Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 0.2636,
+      "wall_spread_p10_p90_over_median": 0.125113808801214
+    },
+    {
+      "baseline": {
+        "median_ms": 13.1297,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 33554432.0,
+      "gflops_gpu": 42.257861064933756,
+      "gflops_wall": 35.07676353752875,
+      "gpu_ms_median": 0.79404,
+      "gpu_spread_p10_p90_over_median": 0.003999798498816126,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 13.72538155969057,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:32:12Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 0.9566,
+      "wall_spread_p10_p90_over_median": 0.08628475851975742
+    },
+    {
+      "baseline": {
+        "median_ms": 45.2711,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n16384k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 117440512.0,
+      "gflops_gpu": 44.312492264968235,
+      "gflops_wall": 39.36069712102424,
+      "gpu_ms_median": 2.65028,
+      "gpu_spread_p10_p90_over_median": 0.0028646029853448773,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 15.172805576968194,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:32:14Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 2.9837,
+      "wall_spread_p10_p90_over_median": 0.0408083922646379
+    },
+    {
+      "baseline": {
+        "median_ms": 7.7944,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k64",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 721.7559044955905,
+      "gflops_wall": 464.4212041522491,
+      "gpu_ms_median": 0.18596,
+      "gpu_spread_p10_p90_over_median": 0.0048182404818239415,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 64,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 26.970242214532874,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:32:15Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 0.289,
+      "wall_spread_p10_p90_over_median": 0.11439446366782
+    },
+    {
+      "baseline": {
+        "median_ms": 52.0446,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 838860800.0,
+      "gflops_gpu": 730.4604667363287,
+      "gflops_wall": 590.6638501619491,
+      "gpu_ms_median": 1.1484,
+      "gpu_spread_p10_p90_over_median": 0.0017345872518286256,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 320,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 36.64596535699198,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:32:15Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 1.4202,
+      "wall_spread_p10_p90_over_median": 0.054231798338262124
+    },
+    {
+      "baseline": {
+        "median_ms": 109.2398,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n512k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1887436800.0,
+      "gflops_gpu": 727.1230005855704,
+      "gflops_wall": 668.8531840249477,
+      "gpu_ms_median": 2.59576,
+      "gpu_spread_p10_p90_over_median": 0.0021943477054889218,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 2880,
+        "m": 1024,
+        "n": 320
+      },
+      "speedup_vs_baseline": 38.71143555760304,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:32:17Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 2.8219,
+      "wall_spread_p10_p90_over_median": 0.028881250221481868
+    },
+    {
+      "baseline": {
+        "median_ms": 252.6494,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4294967296.0,
+      "gflops_gpu": 705.7544146548267,
+      "gflops_wall": 667.0861232604374,
+      "gpu_ms_median": 6.08564,
+      "gpu_spread_p10_p90_over_median": 0.0060812009911856875,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 128,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 39.24102261431412,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:32:29Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 6.4384,
+      "wall_spread_p10_p90_over_median": 0.03489065606361828
+    },
+    {
+      "baseline": {
+        "median_ms": 1028.9001,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 17179869184.0,
+      "gflops_gpu": 710.150231565302,
+      "gflops_wall": 699.8793812660662,
+      "gpu_ms_median": 24.19188,
+      "gpu_spread_p10_p90_over_median": 0.0013664088942240938,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 41.91568385417303,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:33:15Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 24.5469,
+      "wall_spread_p10_p90_over_median": 0.006822042701929709
+    },
+    {
+      "baseline": {
+        "median_ms": 0.5892,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n128k128",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4194304.0,
+      "gflops_gpu": 364.08888888888885,
+      "gflops_wall": 57.93237569060773,
+      "gpu_ms_median": 0.01152,
+      "gpu_spread_p10_p90_over_median": 0.047222222222222165,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 7.152557373046875e-06,
+      "promoted": true,
+      "reason": "upstream timing too noisy (spread 0.266 > 0.250): not a result",
+      "reasons": [
+        "upstream timing too noisy (spread 0.266 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 128,
+        "m": 128,
+        "n": 128
+      },
+      "speedup_vs_baseline": 8.138121546961324,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:33:24Z",
+      "tolerance": {
+        "abs": 1.1313708498984761e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0768,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.0607734806629832,
+        "spread_p10_p90_over_median": 0.26614583333333336,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 0.0724,
+      "wall_spread_p10_p90_over_median": 0.10165745856353578
+    },
+    {
+      "baseline": {
+        "median_ms": 5.0733,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k256",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 604.4754458656099,
+      "gflops_wall": 413.23192118226603,
+      "gpu_ms_median": 0.22204,
+      "gpu_spread_p10_p90_over_median": 0.007241938389479366,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 1.52587890625e-05,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.269 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.269 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 256,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 15.619766009852217,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:33:25Z",
+      "tolerance": {
+        "abs": 1.6e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.2097,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.645628078817734,
+        "spread_p10_p90_over_median": 0.11549833094897469,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 0.3248,
+      "wall_spread_p10_p90_over_median": 0.2687807881773401
+    },
+    {
+      "baseline": {
+        "median_ms": 35.1586,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n2048k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1073741824.0,
+      "gflops_gpu": 405.473250456928,
+      "gflops_wall": 356.55901706847317,
+      "gpu_ms_median": 2.64812,
+      "gpu_spread_p10_p90_over_median": 0.020920502092050253,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 3.24249267578125e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 512,
+        "m": 512,
+        "n": 2048
+      },
+      "speedup_vs_baseline": 11.675167696088199,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:33:28Z",
+      "tolerance": {
+        "abs": 2.2627416997969522e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.9046,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.3003918443248987,
+        "spread_p10_p90_over_median": 0.0925049745743975,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 3.0114,
+      "wall_spread_p10_p90_over_median": 0.15659825994554025
+    },
+    {
+      "baseline": {
+        "median_ms": 69.0161,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k1024",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 2147483648.0,
+      "gflops_gpu": 388.42891705735946,
+      "gflops_wall": 370.2430343781249,
+      "gpu_ms_median": 5.52864,
+      "gpu_spread_p10_p90_over_median": 0.018021068472535852,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 7.2479248046875e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 1024,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 11.898917278714526,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:33:34Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 1.3554,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.2336815971863039,
+        "spread_p10_p90_over_median": 0.14729231223255115,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 5.8002,
+      "wall_spread_p10_p90_over_median": 0.020975138788317547
+    },
+    {
+      "baseline": {
+        "median_ms": 2.0418,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n1024k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 6291456.0,
+      "gflops_gpu": 17.156020942408375,
+      "gflops_wall": 13.65926183239253,
+      "gpu_ms_median": 0.36672,
+      "gpu_spread_p10_p90_over_median": 0.018499127399650993,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 5.53131103515625e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 3072,
+        "m": 1,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 4.432913590968302,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:33:35Z",
+      "tolerance": {
+        "abs": 5.542562584220407e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.2583,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.5607902735562309,
+        "spread_p10_p90_over_median": 0.1631436314363144,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 0.4606,
+      "wall_spread_p10_p90_over_median": 0.06152844116369947
+    },
+    {
+      "baseline": {
+        "median_ms": 7.7565,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 33554432.0,
+      "gflops_gpu": 21.040955152001604,
+      "gflops_wall": 18.025480526457162,
+      "gpu_ms_median": 1.59472,
+      "gpu_spread_p10_p90_over_median": 0.02086886726196461,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 9.1552734375e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 4.1668009669621275,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:33:36Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.9426,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.5063658340048348,
+        "spread_p10_p90_over_median": 0.04555484829195839,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 1.8615,
+      "wall_spread_p10_p90_over_median": 0.06615095353209778
+    },
+    {
+      "baseline": {
+        "median_ms": 25.7458,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n16384k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 117440512.0,
+      "gflops_gpu": 22.32200106439596,
+      "gflops_wall": 21.193292669722453,
+      "gpu_ms_median": 5.2612,
+      "gpu_spread_p10_p90_over_median": 0.08540713145290064,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 9.5367431640625e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 4.646082217490164,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:33:38Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 3.1648,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.5711192117515429,
+        "spread_p10_p90_over_median": 0.018598331648129466,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 5.5414,
+      "wall_spread_p10_p90_over_median": 0.0965026888511929
+    },
+    {
+      "baseline": {
+        "median_ms": 5.0603,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k64",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 578.2256074444252,
+      "gflops_wall": 389.03689275362325,
+      "gpu_ms_median": 0.23212,
+      "gpu_spread_p10_p90_over_median": 0.008340513527485754,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 4.76837158203125e-06,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 64,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 14.667536231884059,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:33:39Z",
+      "tolerance": {
+        "abs": 8e-06,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: upstream operator result failed the spot check (error 0.000101 > 0.000100)]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.345,
+      "wall_spread_p10_p90_over_median": 0.15449275362318846
+    },
+    {
+      "baseline": {
+        "median_ms": 26.9669,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 838860800.0,
+      "gflops_gpu": 548.0028221275707,
+      "gflops_wall": 451.3401484988701,
+      "gpu_ms_median": 1.53076,
+      "gpu_spread_p10_p90_over_median": 0.10985915492957739,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 2.288818359375e-05,
+      "promoted": true,
+      "reason": "upstream timing too noisy (spread 0.263 > 0.250): not a result",
+      "reasons": [
+        "upstream timing too noisy (spread 0.263 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 320,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 14.509254277413106,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:33:40Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.397,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.21360163563972884,
+        "spread_p10_p90_over_median": 0.2632241813602014,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 1.8586,
+      "wall_spread_p10_p90_over_median": 0.05674163348757135
+    },
+    {
+      "baseline": {
+        "median_ms": 62.193,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n512k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1887436800.0,
+      "gflops_gpu": 444.85641557462054,
+      "gflops_wall": 413.22287415710656,
+      "gpu_ms_median": 4.2428,
+      "gpu_spread_p10_p90_over_median": 0.03777882530404439,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 0.000118255615234375,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 2880,
+        "m": 1024,
+        "n": 320
+      },
+      "speedup_vs_baseline": 13.616122252386374,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:33:42Z",
+      "tolerance": {
+        "abs": 5.366563145999495e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.8416,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.18425431298712674,
+        "spread_p10_p90_over_median": 0.10917300380228132,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 4.5676,
+      "wall_spread_p10_p90_over_median": 0.045117786145897204
+    },
+    {
+      "baseline": {
+        "median_ms": 138.282,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4294967296.0,
+      "gflops_gpu": 329.38785512039044,
+      "gflops_wall": 317.18243083967207,
+      "gpu_ms_median": 13.03924,
+      "gpu_spread_p10_p90_over_median": 0.019259404689230323,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 0.0001373291015625,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 128,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 10.212096595524704,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:34:31Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 3.7657,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.2780961524259656,
+        "spread_p10_p90_over_median": 0.050588204052367455,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 13.541,
+      "wall_spread_p10_p90_over_median": 0.029132264973044806
+    },
+    {
+      "baseline": {
+        "median_ms": 616.2361,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 17179869184.0,
+      "gflops_gpu": 330.4047197077338,
+      "gflops_wall": 327.2106731677586,
+      "gpu_ms_median": 51.99644,
+      "gpu_spread_p10_p90_over_median": 0.024593683721424037,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 0.000225067138671875,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 11.736936233429834,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:44Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 13.3915,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.2550567575803748,
+        "spread_p10_p90_over_median": 0.02449912257775454,
+        "status": "measured",
+        "variant": "mul_mat f32 weights x f32 activations"
+      },
+      "wall_ms_median": 52.504,
+      "wall_spread_p10_p90_over_median": 0.025251028493067228
+    },
+    {
+      "baseline": {
+        "median_ms": 0.3682,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m32n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 655360.0,
+      "gflops_gpu": 49.799392097264445,
+      "gflops_wall": 7.829868578255676,
+      "gpu_ms_median": 0.01316,
+      "gpu_spread_p10_p90_over_median": 0.06382978723404245,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 6.984919309616089e-10,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 32,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 4.3990442054958185,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:51Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0754,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.9008363201911589,
+        "spread_p10_p90_over_median": 0.18090185676392573,
+        "status": "measured",
+        "variant": "soft_max (scale 1, no mask)"
+      },
+      "wall_ms_median": 0.0837,
+      "wall_spread_p10_p90_over_median": 0.023416965352449266
+    },
+    {
+      "baseline": {
+        "median_ms": 0.7109,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1310720.0,
+      "gflops_gpu": 45.447988904299585,
+      "gflops_wall": 12.447483380816713,
+      "gpu_ms_median": 0.02884,
+      "gpu_spread_p10_p90_over_median": 0.021636615811373078,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 3.725290298461914e-09,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.252 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.252 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 6.751187084520417,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:51Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1057,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.0037986704653372,
+        "spread_p10_p90_over_median": 0.03178807947019869,
+        "status": "measured",
+        "variant": "soft_max (scale 1, no mask)"
+      },
+      "wall_ms_median": 0.1053,
+      "wall_spread_p10_p90_over_median": 0.2518518518518519
+    },
+    {
+      "baseline": {
+        "median_ms": 0.6185,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4n32768k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 640000.0,
+      "gflops_gpu": 9.24321201617562,
+      "gflops_wall": 4.0480708412397215,
+      "gpu_ms_median": 0.06924,
+      "gpu_spread_p10_p90_over_median": 0.053379549393414084,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 5.820766091346741e-11,
+      "promoted": true,
+      "reason": "upstream timing too noisy (spread 0.263 > 0.250): not a result",
+      "reasons": [
+        "upstream timing too noisy (spread 0.263 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4,
+        "n": 32000
+      },
+      "speedup_vs_baseline": 3.9120809614168253,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:51Z",
+      "tolerance": {
+        "abs": 0.00017888543819998318,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1214,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.7678684376976597,
+        "spread_p10_p90_over_median": 0.2626029654036242,
+        "status": "measured",
+        "variant": "soft_max (scale 1, no mask)"
+      },
+      "wall_ms_median": 0.1581,
+      "wall_spread_p10_p90_over_median": 0.164326375711575
+    },
+    {
+      "baseline": {
+        "median_ms": 1.7258,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 5242880.0,
+      "gflops_gpu": 40.07092632222562,
+      "gflops_wall": 23.353585746102446,
+      "gpu_ms_median": 0.13084,
+      "gpu_spread_p10_p90_over_median": 0.01644756955059626,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 3.725290298461914e-09,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 7.687305122494432,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:51Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.211,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.9398663697104677,
+        "spread_p10_p90_over_median": 0.07383886255924176,
+        "status": "measured",
+        "variant": "soft_max (scale 1, no mask)"
+      },
+      "wall_ms_median": 0.2245,
+      "wall_spread_p10_p90_over_median": 0.11804008908685967
+    },
+    {
+      "baseline": {
+        "median_ms": 2.0143,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m64n16384k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4587520.0,
+      "gflops_gpu": 23.235008103727715,
+      "gflops_wall": 15.36342933690556,
+      "gpu_ms_median": 0.19744,
+      "gpu_spread_p10_p90_over_median": 0.008954619124797366,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 2.3283064365386963e-10,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 64,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 6.745813797722707,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:51Z",
+      "tolerance": {
+        "abs": 0.00011973303637676612,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.2306,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.7722705961152043,
+        "spread_p10_p90_over_median": 0.08143972246313971,
+        "status": "measured",
+        "variant": "soft_max (scale 1, no mask)"
+      },
+      "wall_ms_median": 0.2986,
+      "wall_spread_p10_p90_over_median": 0.1371064969859343
+    },
+    {
+      "baseline": {
+        "median_ms": 0.012,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 20480.0,
+      "gflops_gpu": 2.306306306306306,
+      "gflops_wall": 0.3190031152647976,
+      "gpu_ms_median": 0.00888,
+      "gpu_spread_p10_p90_over_median": 0.03243243243243224,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 4.656612873077393e-10,
+      "promoted": false,
+      "reason": "speedup 0.187x vs cpu_mt_autovec (16 threads) is below the required 1.05x",
+      "reasons": [
+        "speedup 0.187x vs cpu_mt_autovec (16 threads) is below the required 1.05x"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 0.1869158878504673,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:52Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0602,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.9376947040498442,
+        "spread_p10_p90_over_median": 0.16810631229235876,
+        "status": "measured",
+        "variant": "soft_max (scale 1, no mask)"
+      },
+      "wall_ms_median": 0.0642,
+      "wall_spread_p10_p90_over_median": 0.01214953271028042
+    },
+    {
+      "baseline": {
+        "median_ms": 2.0423,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 10485760.0,
+      "gflops_gpu": 38.448811968319156,
+      "gflops_wall": 28.066809421841544,
+      "gpu_ms_median": 0.27272,
+      "gpu_spread_p10_p90_over_median": 0.011557641537107612,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 9.313225746154785e-10,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 5.4665417558886515,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:52Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.3445,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.9221092077087794,
+        "spread_p10_p90_over_median": 0.06409288824383161,
+        "status": "measured",
+        "variant": "soft_max (scale 1, no mask)"
+      },
+      "wall_ms_median": 0.3736,
+      "wall_spread_p10_p90_over_median": 0.08501070663811551
+    },
+    {
+      "baseline": {
+        "median_ms": 0.1604,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 295680.0,
+      "gflops_gpu": 40.17391304347826,
+      "gflops_wall": 4.419730941704036,
+      "gpu_ms_median": 0.00736,
+      "gpu_spread_p10_p90_over_median": 0.0413043478260869,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 3.725290298461914e-09,
+      "promoted": true,
+      "reason": "upstream timing too noisy (spread 0.308 > 0.250): not a result",
+      "reasons": [
+        "upstream timing too noisy (spread 0.308 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 77,
+        "n": 768
+      },
+      "speedup_vs_baseline": 2.397608370702541,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:52Z",
+      "tolerance": {
+        "abs": 2.7712812921102034e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0601,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.898355754857997,
+        "spread_p10_p90_over_median": 0.3081530782029948,
+        "status": "measured",
+        "variant": "soft_max (scale 1, no mask)"
+      },
+      "wall_ms_median": 0.0669,
+      "wall_spread_p10_p90_over_median": 0.012556053811659303
+    },
+    {
+      "baseline": {
+        "median_ms": 1.4474,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n2048k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4199040.0,
+      "gflops_gpu": 39.3906191369606,
+      "gflops_wall": 20.84925521350546,
+      "gpu_ms_median": 0.1066,
+      "gpu_spread_p10_p90_over_median": 0.014033771106941813,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 2.7939677238464355e-09,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 729,
+        "n": 1152
+      },
+      "speedup_vs_baseline": 7.186693147964251,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:52Z",
+      "tolerance": {
+        "abs": 3.394112549695428e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.2101,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.0431976166832175,
+        "spread_p10_p90_over_median": 0.017420276059019496,
+        "status": "measured",
+        "variant": "soft_max (scale 1, no mask)"
+      },
+      "wall_ms_median": 0.2014,
+      "wall_spread_p10_p90_over_median": 0.13277060575968216
+    },
+    {
+      "baseline": {
+        "median_ms": 1.9112,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 6553600.0,
+      "gflops_gpu": 27.531507309695847,
+      "gflops_wall": 19.76953242835596,
+      "gpu_ms_median": 0.23804,
+      "gpu_spread_p10_p90_over_median": 0.009914300117627294,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 1.1175870895385742e-08,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 5.765309200603318,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:53Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.2333,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.7037707390648567,
+        "spread_p10_p90_over_median": 0.07441063009001292,
+        "status": "measured",
+        "variant": "soft_max (scale 1, no mask)"
+      },
+      "wall_ms_median": 0.3315,
+      "wall_spread_p10_p90_over_median": 0.07999999999999996
+    },
+    {
+      "baseline": {
+        "median_ms": 0.3219,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m32n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 917504.0,
+      "gflops_gpu": 54.74367541766109,
+      "gflops_wall": 9.833912111468383,
+      "gpu_ms_median": 0.01676,
+      "gpu_spread_p10_p90_over_median": 0.05966587112171822,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.253 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.253 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 32,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 3.4501607717041805,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:53Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1379,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.4780278670953912,
+        "spread_p10_p90_over_median": 0.006671501087744773,
+        "status": "measured",
+        "variant": "norm + mul(gamma) + add(beta)"
+      },
+      "wall_ms_median": 0.0933,
+      "wall_spread_p10_p90_over_median": 0.2525187566988211
+    },
+    {
+      "baseline": {
+        "median_ms": 0.6089,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k0",
+      "correct": true,
+      "default_enabled": true,
+      "flops": 1835008.0,
+      "gflops_gpu": 75.45263157894738,
+      "gflops_wall": 18.62952284263959,
+      "gpu_ms_median": 0.02432,
+      "gpu_spread_p10_p90_over_median": 0.022368421052631694,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "",
+      "reasons": [],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 6.1817258883248725,
+      "status": "PASS (default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:53Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1978,
+        "note": "",
+        "ratio_upstream_over_hcs": 2.0081218274111676,
+        "spread_p10_p90_over_median": 0.022042467138523914,
+        "status": "measured",
+        "variant": "norm + mul(gamma) + add(beta)"
+      },
+      "wall_ms_median": 0.0985,
+      "wall_spread_p10_p90_over_median": 0.1417258883248731
+    },
+    {
+      "baseline": {
+        "median_ms": 0.2971,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4n32768k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 896000.0,
+      "gflops_gpu": 10.205011389521639,
+      "gflops_wall": 5.203252032520326,
+      "gpu_ms_median": 0.0878,
+      "gpu_spread_p10_p90_over_median": 0.06095671981776776,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4,
+        "n": 32000
+      },
+      "speedup_vs_baseline": 1.7253193960511033,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:53Z",
+      "tolerance": {
+        "abs": 0.00017888543819998318,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1527,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.8867595818815331,
+        "spread_p10_p90_over_median": 0.007465618860511001,
+        "status": "measured",
+        "variant": "norm + mul(gamma) + add(beta)"
+      },
+      "wall_ms_median": 0.1722,
+      "wall_spread_p10_p90_over_median": 0.1508710801393727
+    },
+    {
+      "baseline": {
+        "median_ms": 1.2538,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k0",
+      "correct": true,
+      "default_enabled": true,
+      "flops": 7340032.0,
+      "gflops_gpu": 61.269048414023366,
+      "gflops_wall": 32.82661896243292,
+      "gpu_ms_median": 0.1198,
+      "gpu_spread_p10_p90_over_median": 0.014891485809682754,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "",
+      "reasons": [],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 5.607334525939177,
+      "status": "PASS (default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:54Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.4799,
+        "note": "",
+        "ratio_upstream_over_hcs": 2.146243291592129,
+        "spread_p10_p90_over_median": 0.05134403000625129,
+        "status": "measured",
+        "variant": "norm + mul(gamma) + add(beta)"
+      },
+      "wall_ms_median": 0.2236,
+      "wall_spread_p10_p90_over_median": 0.043738819320214596
+    },
+    {
+      "baseline": {
+        "median_ms": 0.9872,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m64n16384k0",
+      "correct": true,
+      "default_enabled": true,
+      "flops": 6422528.0,
+      "gflops_gpu": 29.967002612915262,
+      "gflops_wall": 20.26034069400631,
+      "gpu_ms_median": 0.21432,
+      "gpu_spread_p10_p90_over_median": 0.06215005599104155,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "",
+      "reasons": [],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 64,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 3.1141955835962145,
+      "status": "PASS (default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:54Z",
+      "tolerance": {
+        "abs": 0.00011973303637676612,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.4608,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.453627760252366,
+        "spread_p10_p90_over_median": 0.09782986111111101,
+        "status": "measured",
+        "variant": "norm + mul(gamma) + add(beta)"
+      },
+      "wall_ms_median": 0.317,
+      "wall_spread_p10_p90_over_median": 0.15059936908517352
+    },
+    {
+      "baseline": {
+        "median_ms": 0.0106,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 28672.0,
+      "gflops_gpu": 2.304823151125402,
+      "gflops_wall": 0.3874594594594595,
+      "gpu_ms_median": 0.01244,
+      "gpu_spread_p10_p90_over_median": 0.09903536977491952,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 2.384185791015625e-07,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.297 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.297 > 0.250): not a result",
+        "speedup 0.143x vs cpu_mt_autovec (16 threads) is below the required 1.05x"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 0.14324324324324325,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:54Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.063,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.8513513513513514,
+        "spread_p10_p90_over_median": 0.1434920634920636,
+        "status": "measured",
+        "variant": "norm + mul(gamma) + add(beta)"
+      },
+      "wall_ms_median": 0.074,
+      "wall_spread_p10_p90_over_median": 0.2970270270270268
+    },
+    {
+      "baseline": {
+        "median_ms": 2.2171,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k0",
+      "correct": true,
+      "default_enabled": true,
+      "flops": 14680064.0,
+      "gflops_gpu": 41.91429876656007,
+      "gflops_wall": 32.270969443833806,
+      "gpu_ms_median": 0.35024,
+      "gpu_spread_p10_p90_over_median": 0.019483782549109173,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "",
+      "reasons": [],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 4.873818421631127,
+      "status": "PASS (default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:55Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.8884,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.9529566937788523,
+        "spread_p10_p90_over_median": 0.1014633048176497,
+        "status": "measured",
+        "variant": "norm + mul(gamma) + add(beta)"
+      },
+      "wall_ms_median": 0.4549,
+      "wall_spread_p10_p90_over_median": 0.059133875577049855
+    },
+    {
+      "baseline": {
+        "median_ms": 0.1587,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 413952.0,
+      "gflops_gpu": 69.92432432432433,
+      "gflops_wall": 5.990622286541244,
+      "gpu_ms_median": 0.00592,
+      "gpu_spread_p10_p90_over_median": 0.08513513513513515,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.345 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.345 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 77,
+        "n": 768
+      },
+      "speedup_vs_baseline": 2.296671490593343,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:55Z",
+      "tolerance": {
+        "abs": 2.7712812921102034e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1187,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.7178002894356008,
+        "spread_p10_p90_over_median": 0.22830665543386688,
+        "status": "measured",
+        "variant": "norm + mul(gamma) + add(beta)"
+      },
+      "wall_ms_median": 0.0691,
+      "wall_spread_p10_p90_over_median": 0.34529667149059345
+    },
+    {
+      "baseline": {
+        "median_ms": 1.2758,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n2048k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 5878656.0,
+      "gflops_gpu": 61.517957304311416,
+      "gflops_wall": 31.639698600645858,
+      "gpu_ms_median": 0.09556,
+      "gpu_spread_p10_p90_over_median": 0.014985349518627069,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.265 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.265 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 729,
+        "n": 1152
+      },
+      "speedup_vs_baseline": 6.866523143164693,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:55Z",
+      "tolerance": {
+        "abs": 3.394112549695428e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.4474,
+        "note": "",
+        "ratio_upstream_over_hcs": 2.4079655543595266,
+        "spread_p10_p90_over_median": 0.21041573535985694,
+        "status": "measured",
+        "variant": "norm + mul(gamma) + add(beta)"
+      },
+      "wall_ms_median": 0.1858,
+      "wall_spread_p10_p90_over_median": 0.2654467168998924
+    },
+    {
+      "baseline": {
+        "median_ms": 1.2823,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k0",
+      "correct": true,
+      "default_enabled": true,
+      "flops": 9175040.0,
+      "gflops_gpu": 56.94538232373386,
+      "gflops_wall": 35.139946380697054,
+      "gpu_ms_median": 0.16112,
+      "gpu_spread_p10_p90_over_median": 0.013108242303872905,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "",
+      "reasons": [],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 4.911145155112983,
+      "status": "PASS (default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:56Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.7228,
+        "note": "",
+        "ratio_upstream_over_hcs": 2.768288012255841,
+        "spread_p10_p90_over_median": 0.07847260653016047,
+        "status": "measured",
+        "variant": "norm + mul(gamma) + add(beta)"
+      },
+      "wall_ms_median": 0.2611,
+      "wall_spread_p10_p90_over_median": 0.07445423209498271
+    },
+    {
+      "baseline": {
+        "median_ms": 0.2031,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m32n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 524288.0,
+      "gflops_gpu": 37.130878186968836,
+      "gflops_wall": 5.723668122270743,
+      "gpu_ms_median": 0.01412,
+      "gpu_spread_p10_p90_over_median": 0.09518413597733721,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.398 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.398 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 32,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 2.217248908296943,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:56Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0755,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.824235807860262,
+        "spread_p10_p90_over_median": 0.005562913907284818,
+        "status": "measured",
+        "variant": "rms_norm + mul(gamma)"
+      },
+      "wall_ms_median": 0.0916,
+      "wall_spread_p10_p90_over_median": 0.39825327510917014
+    },
+    {
+      "baseline": {
+        "median_ms": 0.4223,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1048576.0,
+      "gflops_gpu": 40.14456355283308,
+      "gflops_wall": 9.039448275862068,
+      "gpu_ms_median": 0.02612,
+      "gpu_spread_p10_p90_over_median": 0.08055130168453285,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.317 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.317 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 3.6405172413793103,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:56Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0909,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.7836206896551723,
+        "spread_p10_p90_over_median": 0.007920792079207904,
+        "status": "measured",
+        "variant": "rms_norm + mul(gamma)"
+      },
+      "wall_ms_median": 0.116,
+      "wall_spread_p10_p90_over_median": 0.31689655172413783
+    },
+    {
+      "baseline": {
+        "median_ms": 0.1993,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4n32768k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 512000.0,
+      "gflops_gpu": 6.826666666666667,
+      "gflops_wall": 3.2262129804662885,
+      "gpu_ms_median": 0.075,
+      "gpu_spread_p10_p90_over_median": 0.02869333333333335,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 2.384185791015625e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4,
+        "n": 32000
+      },
+      "speedup_vs_baseline": 1.2558286074354128,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:57Z",
+      "tolerance": {
+        "abs": 0.00017888543819998318,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1055,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.6647763074984246,
+        "spread_p10_p90_over_median": 0.1486255924170616,
+        "status": "measured",
+        "variant": "rms_norm + mul(gamma)"
+      },
+      "wall_ms_median": 0.1587,
+      "wall_spread_p10_p90_over_median": 0.08241965973534959
+    },
+    {
+      "baseline": {
+        "median_ms": 1.2601,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4194304.0,
+      "gflops_gpu": 35.23440860215054,
+      "gflops_wall": 19.400111008325627,
+      "gpu_ms_median": 0.11904,
+      "gpu_spread_p10_p90_over_median": 0.02338709677419362,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 5.828399629972248,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:57Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1948,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.9010175763182239,
+        "spread_p10_p90_over_median": 0.1989733059548254,
+        "status": "measured",
+        "variant": "rms_norm + mul(gamma)"
+      },
+      "wall_ms_median": 0.2162,
+      "wall_spread_p10_p90_over_median": 0.1925994449583718
+    },
+    {
+      "baseline": {
+        "median_ms": 0.7297,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m64n16384k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 3670016.0,
+      "gflops_gpu": 21.8089850249584,
+      "gflops_wall": 14.082947045280124,
+      "gpu_ms_median": 0.16828,
+      "gpu_spread_p10_p90_over_median": 0.01487996196814836,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 64,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 2.8000767459708364,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:57Z",
+      "tolerance": {
+        "abs": 0.00011973303637676612,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.2262,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.8679969301611666,
+        "spread_p10_p90_over_median": 0.1441202475685235,
+        "status": "measured",
+        "variant": "rms_norm + mul(gamma)"
+      },
+      "wall_ms_median": 0.2606,
+      "wall_spread_p10_p90_over_median": 0.15947812739831155
+    },
+    {
+      "baseline": {
+        "median_ms": 0.007,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 16384.0,
+      "gflops_gpu": 1.6253968253968254,
+      "gflops_wall": 0.2427259259259259,
+      "gpu_ms_median": 0.01008,
+      "gpu_spread_p10_p90_over_median": 0.034126984126984006,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 2.384185791015625e-07,
+      "promoted": false,
+      "reason": "speedup 0.104x vs cpu_mt_autovec (16 threads) is below the required 1.05x",
+      "reasons": [
+        "speedup 0.104x vs cpu_mt_autovec (16 threads) is below the required 1.05x"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 0.1037037037037037,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:57Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0606,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.8977777777777778,
+        "spread_p10_p90_over_median": 0.15445544554455445,
+        "status": "measured",
+        "variant": "rms_norm + mul(gamma)"
+      },
+      "wall_ms_median": 0.0675,
+      "wall_spread_p10_p90_over_median": 0.1377777777777778
+    },
+    {
+      "baseline": {
+        "median_ms": 1.2971,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 8388608.0,
+      "gflops_gpu": 31.65512452830188,
+      "gflops_wall": 23.224274640088588,
+      "gpu_ms_median": 0.265,
+      "gpu_spread_p10_p90_over_median": 0.0079094339622641,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 3.591085271317829,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:58Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.3448,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.954595791805094,
+        "spread_p10_p90_over_median": 0.04611368909512768,
+        "status": "measured",
+        "variant": "rms_norm + mul(gamma)"
+      },
+      "wall_ms_median": 0.3612,
+      "wall_spread_p10_p90_over_median": 0.07552602436323373
+    },
+    {
+      "baseline": {
+        "median_ms": 0.0918,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 236544.0,
+      "gflops_gpu": 39.68859060402684,
+      "gflops_wall": 3.6503703703703705,
+      "gpu_ms_median": 0.00596,
+      "gpu_spread_p10_p90_over_median": 0.0375838926174497,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 77,
+        "n": 768
+      },
+      "speedup_vs_baseline": 1.4166666666666667,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:58Z",
+      "tolerance": {
+        "abs": 2.7712812921102034e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0603,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.9305555555555556,
+        "spread_p10_p90_over_median": 0.007628524046434528,
+        "status": "measured",
+        "variant": "rms_norm + mul(gamma)"
+      },
+      "wall_ms_median": 0.0648,
+      "wall_spread_p10_p90_over_median": 0.2070987654320988
+    },
+    {
+      "baseline": {
+        "median_ms": 0.6487,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n2048k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 3359232.0,
+      "gflops_gpu": 35.05041736227045,
+      "gflops_wall": 19.22857469948483,
+      "gpu_ms_median": 0.09584,
+      "gpu_spread_p10_p90_over_median": 0.01552587646076798,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 729,
+        "n": 1152
+      },
+      "speedup_vs_baseline": 3.7132226674298803,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:58Z",
+      "tolerance": {
+        "abs": 3.394112549695428e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1801,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.0309101316542646,
+        "spread_p10_p90_over_median": 0.0972792892837313,
+        "status": "measured",
+        "variant": "rms_norm + mul(gamma)"
+      },
+      "wall_ms_median": 0.1747,
+      "wall_spread_p10_p90_over_median": 0.0889524899828277
+    },
+    {
+      "baseline": {
+        "median_ms": 1.2515,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 5242880.0,
+      "gflops_gpu": 28.927830500993156,
+      "gflops_wall": 18.784951630240055,
+      "gpu_ms_median": 0.18124,
+      "gpu_spread_p10_p90_over_median": 0.010946810858530047,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 4.484055893944823,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:58Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.2597,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.9304908634897885,
+        "spread_p10_p90_over_median": 0.11744320369657286,
+        "status": "measured",
+        "variant": "rms_norm + mul(gamma)"
+      },
+      "wall_ms_median": 0.2791,
+      "wall_spread_p10_p90_over_median": 0.028735220351128722
+    },
+    {
+      "baseline": {
+        "median_ms": 0.2991,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n128k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 196608.0,
+      "gflops_gpu": 49.64848484848485,
+      "gflops_wall": 2.9300745156482857,
+      "gpu_ms_median": 0.00396,
+      "gpu_spread_p10_p90_over_median": 0.05454545454545456,
+      "identical_runs": 3,
+      "kernel": "rope_rows",
+      "kernel_hash": "a56a07a1b946baf0",
+      "max_abs_error": 4.044175148010254e-05,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.278 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.278 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 512,
+        "n": 128
+      },
+      "speedup_vs_baseline": 4.4575260804768995,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:59Z",
+      "tolerance": {
+        "abs": 0.001,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0665,
+        "note": "",
+        "ratio_upstream_over_hcs": 0.9910581222056631,
+        "spread_p10_p90_over_median": 0.25593984962406024,
+        "status": "measured",
+        "variant": "rope_ext (NEOX split-half, base 10000)"
+      },
+      "wall_ms_median": 0.0671,
+      "wall_spread_p10_p90_over_median": 0.2780923994038747
+    },
+    {
+      "baseline": {
+        "median_ms": 0.7587,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m2048n128k0",
+      "correct": true,
+      "default_enabled": true,
+      "flops": 786432.0,
+      "gflops_gpu": 39.40040080160321,
+      "gflops_wall": 8.64210989010989,
+      "gpu_ms_median": 0.01996,
+      "gpu_spread_p10_p90_over_median": 0.02204408817635268,
+      "identical_runs": 3,
+      "kernel": "rope_rows",
+      "kernel_hash": "a56a07a1b946baf0",
+      "max_abs_error": 0.00020348525140434504,
+      "promoted": true,
+      "reason": "",
+      "reasons": [],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 2048,
+        "n": 128
+      },
+      "speedup_vs_baseline": 8.337362637362638,
+      "status": "PASS (default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:59Z",
+      "tolerance": {
+        "abs": 0.001,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0984,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.0813186813186813,
+        "spread_p10_p90_over_median": 0.11747967479674798,
+        "status": "measured",
+        "variant": "rope_ext (NEOX split-half, base 10000)"
+      },
+      "wall_ms_median": 0.091,
+      "wall_spread_p10_p90_over_median": 0.19692307692307684
+    },
+    {
+      "baseline": {
+        "median_ms": 0.002,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n128k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 384.0,
+      "gflops_gpu": 0.39999999999999997,
+      "gflops_wall": 0.006104928457869635,
+      "gpu_ms_median": 0.00096,
+      "gpu_spread_p10_p90_over_median": 0.23333333333333336,
+      "identical_runs": 3,
+      "kernel": "rope_rows",
+      "kernel_hash": "a56a07a1b946baf0",
+      "max_abs_error": 0.0,
+      "promoted": false,
+      "reason": "speedup 0.032x vs cpu_mt_autovec (16 threads) is below the required 1.05x",
+      "reasons": [
+        "speedup 0.032x vs cpu_mt_autovec (16 threads) is below the required 1.05x"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1,
+        "n": 128
+      },
+      "speedup_vs_baseline": 0.031796502384737683,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:37:59Z",
+      "tolerance": {
+        "abs": 0.001,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0665,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.057233704292528,
+        "spread_p10_p90_over_median": 0.05654135338345843,
+        "status": "measured",
+        "variant": "rope_ext (NEOX split-half, base 10000)"
+      },
+      "wall_ms_median": 0.0629,
+      "wall_spread_p10_p90_over_median": 0.15166931637519873
+    },
+    {
+      "baseline": {
+        "median_ms": 1.2461,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n128k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1572864.0,
+      "gflops_gpu": 30.696018735362994,
+      "gflops_wall": 11.565176470588234,
+      "gpu_ms_median": 0.05124,
+      "gpu_spread_p10_p90_over_median": 0.008274785323965667,
+      "identical_runs": 3,
+      "kernel": "rope_rows",
+      "kernel_hash": "a56a07a1b946baf0",
+      "max_abs_error": 0.00042042508721351624,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4096,
+        "n": 128
+      },
+      "speedup_vs_baseline": 9.1625,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:37:59Z",
+      "tolerance": {
+        "abs": 0.001,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.136,
+        "note": "",
+        "ratio_upstream_over_hcs": 1.0,
+        "spread_p10_p90_over_median": 0.025147058823529456,
+        "status": "measured",
+        "variant": "rope_ext (NEOX split-half, base 10000)"
+      },
+      "wall_ms_median": 0.136,
+      "wall_spread_p10_p90_over_median": 0.09808823529411757
+    }
+  ],
+  "samples": 15,
+  "schema_version": 1,
+  "suite": "llm",
+  "timestamps": true,
+  "upstream_ggml_vulkan_baseline": "measured in-process with the pinned ggml Vulkan backend on 'AMD Radeon(TM) Graphics'",
+  "upstream_method": "ggml_backend_graph_compute (submit + wait) of a one-node graph per operation, inputs device resident, warm-up then N timed samples; the same wall-clock method as the HCS number (one submit + fence)",
+  "validation": {
+    "active": false,
+    "first_messages": [],
+    "note": "",
+    "requested": false,
+    "warning_and_error_messages": 0
+  }
+}

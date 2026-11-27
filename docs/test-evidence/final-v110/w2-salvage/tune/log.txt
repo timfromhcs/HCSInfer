@@ -1,0 +1,7 @@
+run 1 start 2026-11-27T16:08:21.7576973+01:00 free_ram_gib=10.2
+run 1 exit=0 end 2026-11-27T16:23:12.2821020+01:00 free_ram_gib=10.18
+run 2 start 2026-11-27T16:23:12.3872504+01:00 free_ram_gib=10.18
+run 2 exit=0 end 2026-11-27T16:38:00.0645462+01:00 free_ram_gib=10.17
+run 3 start 2026-11-27T16:38:00.1661411+01:00 free_ram_gib=10.17
+run 3 exit=4 end 2026-11-27T16:52:23.7864735+01:00 free_ram_gib=10.02
+DONE
