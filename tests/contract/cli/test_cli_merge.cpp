@@ -55,7 +55,7 @@ TEST(CliMerge, HelpIsListedAndDocumentsTheLimits) {
 }
 
 TEST(CliMerge, RejectsBadArguments) {
-    test::TempDir td;
+    test::TempDir td{test::safe_temp_base()};
     test::write_file(td / "a.safetensors", model_file({1, 2, 3, 4}));
     test::write_file(td / "b.safetensors", model_file({3, 2, 1, 0}));
     const std::string a = (td / "a.safetensors").string(), b = (td / "b.safetensors").string();
@@ -86,7 +86,7 @@ TEST(CliMerge, RejectsBadArguments) {
 }
 
 TEST(CliMerge, LinearMergeWritesTheAverageAndAManifestAndRefusesToOverwrite) {
-    test::TempDir td;
+    test::TempDir td{test::safe_temp_base()};
     test::write_file(td / "a.safetensors", model_file({1, 2, 3, 4}));
     test::write_file(td / "b.safetensors", model_file({3, 2, 1, 0}));
     const std::string out = (td / "merged.safetensors").string();
