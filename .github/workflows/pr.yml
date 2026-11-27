@@ -425,6 +425,8 @@ jobs:
     env:
       CCACHE_DIR: ${{ github.workspace }}/.ccache
       CCACHE_MAXSIZE: 500M
+      VULKAN_SDK_VERSION: "1.4.363.1"
+      VULKAN_SDK_SHA256: "b7867d8ca658563813af666f34b93db87f1b1c7d9d69d97e924c210c7ba33eb8"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -434,7 +436,28 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ninja-build ccache \
-            libvulkan-dev vulkan-tools mesa-vulkan-drivers glslc spirv-tools spirv-headers
+            libvulkan-dev vulkan-tools mesa-vulkan-drivers spirv-headers
+      # Ubuntu 24.04 glslc/spirv-tools are too old for GL_EXT_integer_dot_product (run 46003458128). Use the LunarG
+      # SDK compiler, pinned to an exact version and verified against the SHA-256 LunarG publishes for it; only
+      # glslc + spirv-val are kept (build-time tools, never shipped).
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: vktools
+        with:
+          path: ~/vk-tools
+          key: lunarg-vk-tools-${{ env.VULKAN_SDK_VERSION }}
+      - name: Install LunarG glslc + spirv-val (checksum verified)
+        if: steps.vktools.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          curl -fsSL -o vksdk.tar.xz "https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkan_sdk.tar.xz"
+          echo "${VULKAN_SDK_SHA256}  vksdk.tar.xz" | sha256sum -c -
+          mkdir -p "$HOME/vk-tools"
+          tar -xJf vksdk.tar.xz --wildcards --transform 's,.*/,,' -C "$HOME/vk-tools" \
+            '*/x86_64/bin/glslc' '*/x86_64/bin/spirv-val'
+          rm -f vksdk.tar.xz
+          ls -l "$HOME/vk-tools"; test -x "$HOME/vk-tools/glslc"; test -x "$HOME/vk-tools/spirv-val"
+      - name: Put LunarG tools first on PATH
+        run: echo "$HOME/vk-tools" >> "$GITHUB_PATH"
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .ccache
@@ -445,11 +468,11 @@ jobs:
           mkdir -p artifacts
           icd="$(find /usr/share/vulkan/icd.d -name 'lvp_icd*.json' | sort | head -1)"
           echo "VK_ICD_FILENAMES=$icd" >> "$GITHUB_ENV"
-          { echo "icd: $icd"; glslc --version | head -2; spirv-val --version | head -1; } | tee artifacts/vulkan-tools.txt
+          { echo "icd: $icd"; "$HOME/vk-tools/glslc" --version | head -2; "$HOME/vk-tools/spirv-val" --version | head -1; } | tee artifacts/vulkan-tools.txt
           VK_ICD_FILENAMES="$icd" vulkaninfo --summary | tee artifacts/vulkaninfo.txt
       - name: Configure (linux-release-vulkan)
         run: |
-          cmake --preset linux-release-vulkan \
+          cmake --preset linux-release-vulkan -DVulkan_GLSLC_EXECUTABLE="$HOME/vk-tools/glslc" \
             -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
       - name: Build
         run: cmake --build --preset linux-release-vulkan -j4
