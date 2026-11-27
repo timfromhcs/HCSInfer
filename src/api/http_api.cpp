@@ -1024,7 +1024,6 @@ bool parse_size(const std::string& t, std::uint32_t& w, std::uint32_t& h) {
 
 HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
                                 const std::shared_ptr<Inflight>& guard, bool edit) {
-    using clock = std::chrono::steady_clock;
     (void)guard;  // holds the in-flight slot for the whole (blocking) request
     if (!cp_.has_image_stream_engine())
         return error(501, "server_error", "unsupported",
