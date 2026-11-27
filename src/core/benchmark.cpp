@@ -13,6 +13,8 @@
 #endif
 #include <windows.h>
 #include <psapi.h>
+#else
+#include <sys/resource.h>
 #endif
 
 namespace hcs::bench {
@@ -60,6 +62,7 @@ std::string compiler_string() {
 struct ProcessMemory {
     std::uint64_t peak_working_set = 0;
     std::uint64_t peak_commit = 0;
+    bool commit_known = false;  // false on POSIX (no portable peak-commit counter)
     bool known = false;
 };
 
@@ -71,6 +74,19 @@ ProcessMemory process_memory() {
     if (GetProcessMemoryInfo(GetCurrentProcess(), &c, sizeof c)) {
         m.peak_working_set = c.PeakWorkingSetSize;
         m.peak_commit = c.PeakPagefileUsage;
+        m.commit_known = true;
+        m.known = true;
+    }
+#else
+    // POSIX: peak resident set (ru_maxrss: KiB on Linux, bytes on macOS). Peak commit has no portable
+    // equivalent (VmPeak is address space, not commit), so it stays 0 and `known` still reports the RSS.
+    struct rusage ru{};
+    if (getrusage(RUSAGE_SELF, &ru) == 0 && ru.ru_maxrss > 0) {
+#if defined(__APPLE__)
+        m.peak_working_set = static_cast<std::uint64_t>(ru.ru_maxrss);
+#else
+        m.peak_working_set = static_cast<std::uint64_t>(ru.ru_maxrss) * 1024ull;
+#endif
         m.known = true;
     }
 #endif
@@ -450,7 +466,8 @@ Result<json> run_suite(IBenchTarget& target, const LoadRequest& load, const Plan
     cold_rec["decode_tokens_per_second_median"] = c.decode_tps;
     if (mem_after_cold.known) {
         cold_rec["peak_ram_bytes"] = mem_after_cold.peak_working_set;
-        cold_rec["peak_commit_bytes"] = mem_after_cold.peak_commit;
+        cold_rec["peak_commit_bytes"] =
+            mem_after_cold.commit_known ? json(mem_after_cold.peak_commit) : json("unknown");
     } else {
         cold_rec["peak_ram_bytes"] = "unknown";
     }
@@ -475,7 +492,7 @@ Result<json> run_suite(IBenchTarget& target, const LoadRequest& load, const Plan
     rec["wall_ms_median"] = median(w.wall);
     if (mem_end.known) {
         rec["peak_ram_bytes"] = mem_end.peak_working_set;
-        rec["peak_commit_bytes"] = mem_end.peak_commit;
+        rec["peak_commit_bytes"] = mem_end.commit_known ? json(mem_end.peak_commit) : json("unknown");
     } else {
         rec["peak_ram_bytes"] = "unknown";
     }

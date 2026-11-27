@@ -87,8 +87,9 @@ TEST(AgentConfig, ProviderRejectsUnsafeFields) {
     auto bad = [](ProviderConfig p) {
         auto r = provider_config_json(p);
         EXPECT_FALSE(r) << "expected rejection";
-        if (!r)
+        if (!r) {
             EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument);
+        }
     };
     {
         ProviderConfig p = valid_provider();

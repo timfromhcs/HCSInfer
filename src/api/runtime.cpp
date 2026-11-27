@@ -435,6 +435,10 @@ int run_serve(const std::vector<std::string>& args, const std::filesystem::path&
     }
     std::signal(SIGINT, on_signal);
     std::signal(SIGTERM, on_signal);
+#ifdef SIGPIPE
+    // A client that disconnects mid-response must surface as a failed send(), not kill the server.
+    std::signal(SIGPIPE, SIG_IGN);
+#endif
 #ifdef SIGBREAK
     std::signal(SIGBREAK, on_signal);  // Windows: Ctrl+Break and console close
 #endif

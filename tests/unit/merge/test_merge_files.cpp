@@ -401,8 +401,9 @@ TEST(MergeFiles, ParameterValidation) {
         tweak(r.params);
         auto rep = run_merge(r, e.guard);
         EXPECT_FALSE(rep.ok());
-        if (!rep.ok())
+        if (!rep.ok()) {
             EXPECT_EQ(rep.error().code, ErrorCode::InvalidArgument) << rep.error().message;
+        }
         EXPECT_FALSE(std::filesystem::exists(e.p("o.safetensors")));
     };
     const auto none = [](Params&) {};

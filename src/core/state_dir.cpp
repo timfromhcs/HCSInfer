@@ -20,6 +20,16 @@ fs::path resolve_state_dir(const std::string& override_dir, const EnvLookup& env
         return fs::path(s);
     if (auto l = env("LOCALAPPDATA"); !l.empty())
         return fs::path(l) / "HCSInfer";
+#if defined(__APPLE__)
+    if (auto h = env("HOME"); !h.empty())
+        return fs::path(h) / "Library" / "Application Support" / "HCSInfer";
+#elif !defined(_WIN32)
+    // XDG Base Directory spec: $XDG_STATE_HOME (only an absolute path is valid), else ~/.local/state.
+    if (auto x = env("XDG_STATE_HOME"); !x.empty() && fs::path(x).is_absolute())
+        return fs::path(x) / "hcsinfer";
+    if (auto h = env("HOME"); !h.empty())
+        return fs::path(h) / ".local" / "state" / "hcsinfer";
+#endif
     if (auto h = env("HOME"); !h.empty())
         return fs::path(h) / ".hcsinfer";
     return fs::path(".hcsinfer");

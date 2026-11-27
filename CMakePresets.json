@@ -8,33 +8,40 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "cl",
         "HCS_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "windows-base",
+      "hidden": true,
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl"
       }
     },
     {
       "name": "windows-msvc-debug",
       "displayName": "Windows MSVC x64 Debug",
-      "inherits": "base",
+      "inherits": "windows-base",
       "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
     },
     {
       "name": "windows-msvc-release",
       "displayName": "Windows MSVC x64 Release",
-      "inherits": "base",
+      "inherits": "windows-base",
       "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
     },
     {
       "name": "windows-msvc-release-vulkan",
       "displayName": "Windows MSVC x64 Release + Vulkan modules",
-      "inherits": "base",
+      "inherits": "windows-base",
       "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "HCS_ENABLE_VULKAN": "ON", "HCS_ENABLE_VULKAN_KERNELS": "ON" }
     },
     {
       "name": "windows-msvc-release-static",
       "displayName": "Windows MSVC x64 Release, static CRT (/MT) + single-EXE experiment",
       "description": "Static CRT (/MT) for every target plus GGML_OPENMP=OFF so the linked EXE depends on system DLLs only (ADR-008). Experimental; CPU kernels then use ggml's own thread pool.",
-      "inherits": "base",
+      "inherits": "windows-base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded",
@@ -45,7 +52,7 @@
       "name": "windows-msvc-release-static-vulkan",
       "displayName": "Windows MSVC x64 Release, static CRT (/MT) + Vulkan backend (single-EXE, wave B)",
       "description": "Static CRT (/MT), GGML_OPENMP=OFF and the GGML/SD Vulkan backends linked in. The EXE imports only system DLLs plus the system Vulkan loader vulkan-1.dll (installed by GPU drivers, not by Windows itself).",
-      "inherits": "base",
+      "inherits": "windows-base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded",
@@ -58,8 +65,74 @@
       "name": "windows-msvc-release-kernels",
       "displayName": "Windows MSVC x64 Release + experimental HCS Vulkan kernels (M8)",
       "description": "Builds the feature-flagged HCS Vulkan kernels and their CPU reference/benchmark (needs the Vulkan SDK's glslc + spirv-val at build time). The engines stay CPU.",
-      "inherits": "base",
+      "inherits": "windows-base",
       "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "HCS_ENABLE_VULKAN_KERNELS": "ON" }
+    }
+,
+    {
+      "name": "posix-cpu-base",
+      "hidden": true,
+      "inherits": "base",
+      "description": "Portable CPU build: no -march=native, no OpenMP (ggml's own thread pool), static libstdc++/libgcc.",
+      "cacheVariables": {
+        "GGML_NATIVE": "OFF",
+        "GGML_OPENMP": "OFF"
+      }
+    },
+    {
+      "name": "linux-x86-base",
+      "hidden": true,
+      "inherits": "posix-cpu-base",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" },
+      "description": "x86-64-v3 baseline (AVX2/FMA/F16C/BMI2) for ggml CPU kernels; runtime CPU is not assumed beyond that.",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "GGML_AVX": "ON",
+        "GGML_AVX2": "ON",
+        "GGML_FMA": "ON",
+        "GGML_F16C": "ON",
+        "GGML_BMI2": "ON",
+        "GGML_AVX512": "OFF",
+        "CMAKE_EXE_LINKER_FLAGS": "-static-libstdc++ -static-libgcc"
+      }
+    },
+    {
+      "name": "linux-gcc-release",
+      "displayName": "Linux x86-64 GCC Release (CPU)",
+      "inherits": "linux-x86-base",
+      "cacheVariables": { "CMAKE_C_COMPILER": "gcc", "CMAKE_CXX_COMPILER": "g++" }
+    },
+    {
+      "name": "linux-clang-release",
+      "displayName": "Linux x86-64 Clang Release (CPU)",
+      "inherits": "linux-x86-base",
+      "cacheVariables": { "CMAKE_C_COMPILER": "clang", "CMAKE_CXX_COMPILER": "clang++" }
+    },
+    {
+      "name": "linux-release-vulkan",
+      "displayName": "Linux x86-64 GCC Release + Vulkan backend",
+      "description": "Needs the Vulkan headers + glslc at build time; the exe loads libvulkan.so.1 at runtime (RADV/ICD from the distro).",
+      "inherits": "linux-x86-base",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "HCS_ENABLE_VULKAN": "ON",
+        "HCS_ENABLE_VULKAN_KERNELS": "ON"
+      }
+    },
+    {
+      "name": "macos-arm64-release",
+      "displayName": "macOS arm64 Release (CPU, best effort)",
+      "description": "Apple Clang, CPU only (no Metal/Accelerate in V1.1). Not built in CI of this repo yet.",
+      "inherits": "posix-cpu-base",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Darwin" },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_OSX_ARCHITECTURES": "arm64",
+        "GGML_METAL": "OFF",
+        "GGML_ACCELERATE": "OFF",
+        "GGML_BLAS": "OFF"
+      }
     }
   ],
   "buildPresets": [
@@ -68,7 +141,11 @@
     { "name": "windows-msvc-release-vulkan", "configurePreset": "windows-msvc-release-vulkan" },
     { "name": "windows-msvc-release-static", "configurePreset": "windows-msvc-release-static" },
     { "name": "windows-msvc-release-static-vulkan", "configurePreset": "windows-msvc-release-static-vulkan" },
-    { "name": "windows-msvc-release-kernels", "configurePreset": "windows-msvc-release-kernels" }
+    { "name": "windows-msvc-release-kernels", "configurePreset": "windows-msvc-release-kernels" },
+    { "name": "linux-gcc-release", "configurePreset": "linux-gcc-release" },
+    { "name": "linux-clang-release", "configurePreset": "linux-clang-release" },
+    { "name": "linux-release-vulkan", "configurePreset": "linux-release-vulkan" },
+    { "name": "macos-arm64-release", "configurePreset": "macos-arm64-release" }
   ],
   "testPresets": [
     { "name": "windows-msvc-debug", "configurePreset": "windows-msvc-debug", "output": { "outputOnFailure": true } },
@@ -76,6 +153,10 @@
     { "name": "windows-msvc-release-vulkan", "configurePreset": "windows-msvc-release-vulkan", "output": { "outputOnFailure": true } },
     { "name": "windows-msvc-release-static", "configurePreset": "windows-msvc-release-static", "output": { "outputOnFailure": true } },
     { "name": "windows-msvc-release-static-vulkan", "configurePreset": "windows-msvc-release-static-vulkan", "output": { "outputOnFailure": true } },
-    { "name": "windows-msvc-release-kernels", "configurePreset": "windows-msvc-release-kernels", "output": { "outputOnFailure": true } }
+    { "name": "windows-msvc-release-kernels", "configurePreset": "windows-msvc-release-kernels", "output": { "outputOnFailure": true } },
+    { "name": "linux-gcc-release", "configurePreset": "linux-gcc-release", "output": { "outputOnFailure": true }, "filter": { "include": { "label": "^(unit|contract|parser|kernel-cpu)$" } } },
+    { "name": "linux-clang-release", "configurePreset": "linux-clang-release", "output": { "outputOnFailure": true }, "filter": { "include": { "label": "^(unit|contract|parser|kernel-cpu)$" } } },
+    { "name": "linux-release-vulkan", "configurePreset": "linux-release-vulkan", "output": { "outputOnFailure": true }, "filter": { "include": { "label": "^(unit|contract|parser|kernel-cpu)$" } } },
+    { "name": "macos-arm64-release", "configurePreset": "macos-arm64-release", "output": { "outputOnFailure": true }, "filter": { "include": { "label": "^(unit|contract|parser|kernel-cpu)$" } } }
   ]
 }

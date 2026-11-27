@@ -38,6 +38,7 @@ TEST(SystemProbe, LiveSampleIsPlausible) {
         EXPECT_GT(*s.commit_limit_bytes, 0u);
         EXPECT_GT(*s.commit_used_bytes, 0u);
     }
-    if (s.process_working_set_bytes)
+    if (s.process_working_set_bytes) {
         EXPECT_GT(*s.process_working_set_bytes, 0u);
+    }
 }

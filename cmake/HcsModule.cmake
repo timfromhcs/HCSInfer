@@ -31,10 +31,21 @@ function(hcs_add_library name)
     PRIVATE hcs_warnings ${A_PRIVATE_LINK})
 endfunction()
 
-# hcs_add_gtest(<name> SOURCES ... [LINK ...] [LABELS unit|contract|...] [DEFINES ...])
+# hcs_add_gtest(<name> SOURCES ... [LINK ...] [LABELS unit|contract|...] [DEFINES ...] [WINDOWS_ONLY])
 #   Creates executable hcs_test_<name>; every TEST is registered with CTest + labels.
+#   The "portable" test set (must pass on Linux/macOS) is the label regex ^(unit|contract|parser|kernel-cpu)$:
+#   `ctest -L "^(unit|contract|parser|kernel-cpu)$"`; the posix test presets filter on it. Tests that need real
+#   models, a GPU or a service carry other labels (integration, e2e, soak, kernel-vulkan, ...). One label per
+#   test on purpose: list-valued LABELS are escaped differently by gtest_discover_tests across CMake versions.
+#   WINDOWS_ONLY: the test exercises a Win32-only feature (Job Objects, CloseHandle on a FileSource handle, ...).
+#   On other platforms it is excluded at CMake level (not built, not registered) and a STATUS line says so; it is
+#   never deleted or weakened, and Windows still builds and runs it.
 function(hcs_add_gtest name)
-  cmake_parse_arguments(A "" "" "SOURCES;LINK;LABELS;DEFINES" ${ARGN})
+  cmake_parse_arguments(A "WINDOWS_ONLY" "" "SOURCES;LINK;LABELS;DEFINES" ${ARGN})
+  if(A_WINDOWS_ONLY AND NOT WIN32)
+    message(STATUS "hcs_test_${name}: Windows-only test excluded on ${CMAKE_SYSTEM_NAME}")
+    return()
+  endif()
   if(NOT A_LABELS)
     set(A_LABELS unit)
   endif()
@@ -45,7 +56,10 @@ function(hcs_add_gtest name)
     target_compile_definitions(hcs_test_${name} PRIVATE ${A_DEFINES})
   endif()
   include(GoogleTest)
+  # DISCOVERY_TIMEOUT: the 5 s default is too short for a cold first run of a large test binary on a slow
+  # filesystem (WSL /mnt/d, network drives, antivirus scans); a real hang still fails after 120 s.
   gtest_discover_tests(hcs_test_${name}
     DISCOVERY_MODE PRE_TEST
+    DISCOVERY_TIMEOUT 120
     PROPERTIES LABELS "${A_LABELS}")
 endfunction()

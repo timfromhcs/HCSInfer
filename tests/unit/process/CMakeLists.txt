@@ -8,6 +8,9 @@ hcs_add_gtest(process
   SOURCES test_child_process.cpp test_child_process_stream.cpp
   LINK hcs_process hcs_core
   LABELS unit
+  WINDOWS_ONLY   # Job Objects / kill-on-close: the POSIX sidecar launcher is Planned (module returns Unsupported)
   DEFINES HCS_CHILD_PROBE="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
-add_dependencies(hcs_test_process hcs_child_probe)
+if(TARGET hcs_test_process)
+  add_dependencies(hcs_test_process hcs_child_probe)
+endif()

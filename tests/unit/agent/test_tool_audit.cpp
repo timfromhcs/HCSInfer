@@ -37,8 +37,9 @@ struct AuditFixture : ::testing::Test {
     void expect_denied(const std::string& code, const std::string& rule) const {
         const AuditVerdict v = py(code);
         EXPECT_FALSE(v.allowed) << "should be denied: " << code;
-        if (!rule.empty())
+        if (!rule.empty()) {
             EXPECT_EQ(v.rule, rule) << code;
+        }
         EXPECT_LE(v.detail.size(), 300u) << "verdict detail must stay short (never the whole code)";
     }
     void expect_allowed(const std::string& code) const {

@@ -53,6 +53,29 @@ TEST(StateDir, LegacyDefaultsUnchangedWhenDataDirUnset) {
               std::filesystem::path("D:\\Old"));
     EXPECT_EQ(resolve_state_dir("", fake_env({{"LOCALAPPDATA", "C:\\L"}})),
               std::filesystem::path("C:\\L") / "HCSInfer");
-    EXPECT_EQ(resolve_state_dir("", fake_env({{"HOME", "/h"}})), std::filesystem::path("/h") / ".hcsinfer");
     EXPECT_EQ(resolve_state_dir("", fake_env({})), std::filesystem::path(".hcsinfer"));
 }
+
+TEST(StateDir, HomeDefaultIsPlatformSpecific) {
+    const auto got = resolve_state_dir("", fake_env({{"HOME", "/h"}}));
+#if defined(__APPLE__)
+    EXPECT_EQ(got, std::filesystem::path("/h") / "Library" / "Application Support" / "HCSInfer");
+#elif defined(_WIN32)
+    EXPECT_EQ(got, std::filesystem::path("/h") / ".hcsinfer");
+#else
+    EXPECT_EQ(got, std::filesystem::path("/h") / ".local" / "state" / "hcsinfer");
+#endif
+}
+
+#if !defined(_WIN32) && !defined(__APPLE__)
+TEST(StateDir, XdgStateHomeUsedOnLinuxWhenAbsolute) {
+    EXPECT_EQ(resolve_state_dir("", fake_env({{"XDG_STATE_HOME", "/x/state"}, {"HOME", "/h"}})),
+              std::filesystem::path("/x/state") / "hcsinfer");
+    // A relative XDG_STATE_HOME is invalid per the XDG spec and must be ignored.
+    EXPECT_EQ(resolve_state_dir("", fake_env({{"XDG_STATE_HOME", "rel"}, {"HOME", "/h"}})),
+              std::filesystem::path("/h") / ".local" / "state" / "hcsinfer");
+    // HCS_DATA_DIR still beats XDG.
+    EXPECT_EQ(resolve_state_dir("", fake_env({{"HCS_DATA_DIR", "/data"}, {"XDG_STATE_HOME", "/x"}})),
+              std::filesystem::path("/data"));
+}
+#endif

@@ -264,8 +264,12 @@ Result<ApprovedCommand> ToolSandbox::authorize_command(const CommandRequest& req
                                   "network access is disabled: URL argument rejected");
             if (looks_absolute(cand) || has_dotdot_component(cand)) {
                 // PathGuard rejects '..', device prefixes and anything outside the approved roots.
-                const fs::path p = looks_absolute(cand) ? fs::path(std::string(cand))
-                                                        : cwd.value() / fs::path(std::string(cand));
+                // Backslash is a separator on Windows only; treating it as one everywhere keeps a backslash
+                // traversal (dot-dot, backslash, name) an escape attempt on POSIX too instead of a
+                // harmless-looking file name.
+                std::string norm(cand);
+                std::replace(norm.begin(), norm.end(), '\\', '/');
+                const fs::path p = looks_absolute(cand) ? fs::path(norm) : cwd.value() / fs::path(norm);
                 auto r = guard_.resolve(p);
                 if (!r)
                     return make_error(r.error().code, "argument path is outside the approved roots: " + arg);

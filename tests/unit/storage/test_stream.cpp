@@ -259,7 +259,8 @@ TEST(Stream, RepeatedStartStopIsStable) {
                 return {};
             },
             so);
-        if (!st.ok())
+        if (!st.ok()) {
             EXPECT_EQ(st.error().code, ErrorCode::Cancelled);
+        }
     }
 }

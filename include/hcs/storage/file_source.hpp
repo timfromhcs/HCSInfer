@@ -1,6 +1,7 @@
 #pragma once
-// Read-only random-access byte sources. FileSource uses Win32 overlapped I/O (the handle is
-// opened with FILE_FLAG_OVERLAPPED so the streaming pipeline can attach an I/O completion port).
+// Read-only random-access byte sources. FileSource uses Win32 overlapped I/O on Windows (the handle is
+// opened with FILE_FLAG_OVERLAPPED so the streaming pipeline can attach an I/O completion port) and
+// open + pread (+ posix_fadvise / F_RDAHEAD sequential hints) on Linux/macOS.
 #include <cstddef>
 #include <cstdint>
 #include <filesystem>

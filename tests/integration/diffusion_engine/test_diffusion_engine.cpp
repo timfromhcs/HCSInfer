@@ -122,8 +122,9 @@ TEST(DiffusionBlocking, CancellationStopsTheRender) {
     t.join();
     const auto secs = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
     EXPECT_FALSE(r) << "a cancelled render must not return an image";
-    if (!r)
+    if (!r) {
         EXPECT_EQ(r.error().code, ErrorCode::Cancelled) << r.error().message;
+    }
     EXPECT_LT(secs, 120.0) << "cancellation must stop the render promptly";
 }
 

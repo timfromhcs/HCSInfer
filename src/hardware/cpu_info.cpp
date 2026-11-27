@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <bit>
+#include <cstdlib>
 #include <cstring>
 #include <initializer_list>
 #include <vector>
@@ -8,6 +9,15 @@
 
 #if defined(_WIN32)
 #include <windows.h>
+#elif defined(__APPLE__)
+#include <sys/sysctl.h>
+#include <sys/types.h>
+#elif defined(__linux__)
+#include <cstdio>
+#include <fstream>
+#include <set>
+#include <sstream>
+#include <utility>
 #endif
 #if defined(_MSC_VER)
 #include <intrin.h>
@@ -50,6 +60,15 @@ std::string trim(std::string s) {
         return {};
     const auto e = s.find_last_not_of(' ');
     return s.substr(b, e - b + 1);
+}
+#endif
+
+#if defined(__linux__)
+std::string trim_ws(const std::string& s) {
+    const auto b = s.find_first_not_of(" \t\r\n");
+    if (b == std::string::npos)
+        return {};
+    return s.substr(b, s.find_last_not_of(" \t\r\n") - b + 1);
 }
 #endif
 }  // namespace
@@ -192,6 +211,72 @@ json cpu_report() {
     if (RegGetValueW(HKEY_LOCAL_MACHINE, L"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0", L"~MHz",
                      RRF_RT_REG_DWORD, nullptr, &mhz, &sz) == ERROR_SUCCESS)
         j["nominal_mhz"] = static_cast<std::uint32_t>(mhz);
+#elif defined(__linux__)
+    // /proc/cpuinfo: one block per logical processor. Physical cores = distinct (physical id, core id) pairs
+    // (kernel-reported topology); when the kernel does not expose them (many ARM/VM kernels) the core count
+    // stays "unknown" rather than being guessed from the logical count.
+    {
+        std::ifstream in("/proc/cpuinfo");
+        std::string line, model_name;
+        std::uint32_t logical = 0;
+        std::set<std::pair<std::string, std::string>> cores;
+        std::string phys = "0", core;
+        bool have_core = false;
+        double mhz = 0;
+        auto flush_block = [&] {
+            if (have_core)
+                cores.insert({phys, core});
+            phys = "0";
+            core.clear();
+            have_core = false;
+        };
+        while (std::getline(in, line)) {
+            if (line.empty()) {
+                flush_block();
+                continue;
+            }
+            const auto c = line.find(':');
+            if (c == std::string::npos)
+                continue;
+            const std::string k = trim_ws(line.substr(0, c)), v = trim_ws(line.substr(c + 1));
+            if (k == "processor")
+                ++logical;
+            else if (k == "model name" || k == "Model Name")
+                model_name = model_name.empty() ? v : model_name;
+            else if (k == "physical id")
+                phys = v;
+            else if (k == "core id") {
+                core = v;
+                have_core = true;
+            } else if (k == "cpu MHz" && mhz == 0)
+                mhz = std::strtod(v.c_str(), nullptr);
+        }
+        flush_block();
+        if (logical > 0)
+            j["logical_processors"] = logical;
+        if (!cores.empty())
+            j["physical_cores"] = static_cast<std::uint32_t>(cores.size());
+        if (mhz > 0)
+            j["nominal_mhz"] = static_cast<std::uint32_t>(mhz);
+        if (j["name"] == "unknown" && !model_name.empty())
+            j["name"] = model_name;
+    }
+#elif defined(__APPLE__)
+    {
+        auto sysctl_u32 = [](const char* name) -> std::uint32_t {
+            std::uint32_t v = 0;
+            std::size_t len = sizeof(v);
+            return sysctlbyname(name, &v, &len, nullptr, 0) == 0 ? v : 0u;
+        };
+        if (const auto p = sysctl_u32("hw.physicalcpu"))
+            j["physical_cores"] = p;
+        if (const auto l = sysctl_u32("hw.logicalcpu"))
+            j["logical_processors"] = l;
+        char brand[256]{};
+        std::size_t len = sizeof(brand);
+        if (j["name"] == "unknown" && sysctlbyname("machdep.cpu.brand_string", brand, &len, nullptr, 0) == 0)
+            j["name"] = std::string(brand);
+    }
 #endif
     return j;
 }

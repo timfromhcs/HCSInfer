@@ -28,6 +28,25 @@ if(NOT TARGET llama)
   set(LLAMA_CURL           OFF CACHE BOOL "" FORCE)
   set(GGML_BUILD_TESTS     OFF CACHE BOOL "" FORCE)
   set(GGML_BUILD_EXAMPLES  OFF CACHE BOOL "" FORCE)
+  if(NOT MSVC)
+    # POSIX portability pins (R1). A release binary must run on any CPU of its baseline, never only on the
+    # build machine, so -march=native is forced off. OpenMP is off so the exe needs no libgomp/libomp
+    # (ggml uses its own thread pool). Apple builds are CPU only in V1.1 (no Metal/Accelerate/BLAS).
+    set(GGML_NATIVE  OFF CACHE BOOL "" FORCE)
+    set(GGML_OPENMP  OFF CACHE BOOL "" FORCE)
+    set(GGML_METAL      OFF CACHE BOOL "" FORCE)
+    set(GGML_ACCELERATE OFF CACHE BOOL "" FORCE)
+    set(GGML_BLAS       OFF CACHE BOOL "" FORCE)
+    # x86-64-v3 baseline (AVX2 + FMA + F16C + BMI2). Presets also set these; repeated here as defaults so a
+    # plain `cmake -S . -B build` on Linux x86 gets the same portable kernels instead of SSE-only ones.
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|AMD64|amd64)$")
+      set(GGML_AVX  ON CACHE BOOL "" )
+      set(GGML_AVX2 ON CACHE BOOL "" )
+      set(GGML_FMA  ON CACHE BOOL "" )
+      set(GGML_F16C ON CACHE BOOL "" )
+      set(GGML_BMI2 ON CACHE BOOL "" )
+    endif()
+  endif()
   if(HCS_ENABLE_VULKAN)
     set(GGML_VULKAN ON CACHE BOOL "" FORCE)
   else()

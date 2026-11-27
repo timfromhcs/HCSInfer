@@ -2,13 +2,19 @@
 
 #include <algorithm>
 #include <cstring>
-#include <fstream>
-#include <mutex>
+#include <string>
 
 #include "hcs/checked_math.hpp"
 
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include <cerrno>
 #endif
 
 namespace hcs::storage {
@@ -108,41 +114,84 @@ Result<void> FileSource::read_at(std::uint64_t offset, void* dst, std::size_t n)
     return {};
 }
 
-#else  // portable fallback (not the target platform; kept compilable)
+#else  // POSIX: open + pread (offset-addressed, thread-safe without a lock)
 
 struct FileSource::Impl {
-    mutable std::mutex m;
-    mutable std::ifstream in;
+    int fd = -1;
+    ~Impl() {
+        if (fd >= 0)
+            ::close(fd);
+    }
 };
+
+namespace {
+std::string errno_text(const char* what, int e) {
+    return std::string(what) + " (errno " + std::to_string(e) + ": " + std::strerror(e) + ")";
+}
+}  // namespace
 
 Result<std::unique_ptr<FileSource>> FileSource::open(const std::filesystem::path& path,
                                                      bool sequential_hint) {
+    int flags = O_RDONLY;
+#ifdef O_CLOEXEC
+    flags |= O_CLOEXEC;
+#endif
+    int fd = -1;
+    do {
+        fd = ::open(path.c_str(), flags);
+    } while (fd < 0 && errno == EINTR);
+    if (fd < 0) {
+        const int e = errno;
+        const auto code = (e == ENOENT || e == ENOTDIR) ? ErrorCode::NotFound : ErrorCode::IoError;
+        return Error(code, errno_text("cannot open model file", e));
+    }
     auto fs = std::unique_ptr<FileSource>(new FileSource());
     fs->impl_ = std::make_unique<Impl>();
-    fs->impl_->in.open(path, std::ios::binary);
-    if (!fs->impl_->in)
-        return Error(ErrorCode::NotFound, "cannot open model file");
-    std::error_code ec;
-    fs->size_ = std::filesystem::file_size(path, ec);
-    if (ec)
-        return Error(ErrorCode::IoError, "cannot stat model file");
+    fs->impl_->fd = fd;
+    struct stat st{};
+    if (::fstat(fd, &st) != 0)
+        return Error(ErrorCode::IoError, errno_text("cannot stat model file", errno));
+    if (!S_ISREG(st.st_mode))
+        return Error(ErrorCode::IoError, "not a regular disk file");
+    fs->size_ = static_cast<std::uint64_t>(st.st_size);
     fs->path_ = path;
     fs->sequential_ = sequential_hint;
+    if (sequential_hint) {
+        // Advisory only: a failure of the hint never fails the open.
+#if defined(__linux__)
+        (void)::posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
+#elif defined(__APPLE__)
+        (void)::fcntl(fd, F_RDAHEAD, 1);
+#endif
+    }
     return fs;
 }
+
 FileSource::~FileSource() = default;
+
 void* FileSource::native_handle() const noexcept {
-    return nullptr;
+    return nullptr;  // POSIX has no overlapped-I/O handle; the streaming pipeline uses read_at().
 }
+
 Result<void> FileSource::read_at(std::uint64_t offset, void* dst, std::size_t n) const {
     if (!range_within(offset, n, size_))
         return Error(ErrorCode::IoError, "read past end of file (truncated)");
-    std::lock_guard lk(impl_->m);
-    impl_->in.clear();
-    impl_->in.seekg(static_cast<std::streamoff>(offset));
-    impl_->in.read(static_cast<char*>(dst), static_cast<std::streamsize>(n));
-    if (static_cast<std::size_t>(impl_->in.gcount()) != n)
-        return Error(ErrorCode::IoError, "short read");
+    auto* p = static_cast<std::uint8_t*>(dst);
+    constexpr std::size_t kMaxPiece = 1u << 30;  // below the 2 GiB-ish per-call cap of some kernels
+    while (n) {
+        const std::size_t piece = std::min<std::size_t>(n, kMaxPiece);
+        const ssize_t got = ::pread(impl_->fd, p, piece, static_cast<off_t>(offset));
+        if (got < 0) {
+            if (errno == EINTR)
+                continue;
+            return Error(ErrorCode::IoError, errno_text("read failed", errno));
+        }
+        if (got == 0)
+            return Error(ErrorCode::IoError, "short read (truncated file or device removed)");
+        p += got;
+        offset += static_cast<std::uint64_t>(got);
+        n -= static_cast<std::size_t>(got);
+    }
     return {};
 }
 

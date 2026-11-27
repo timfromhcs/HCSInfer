@@ -15,13 +15,10 @@
 #include <string>
 #include <vector>
 
+#include "hcs/hardware/dynlib.hpp"
 #include "hcs/kernels/cpu.hpp"
 #include "hcs/shaders/GemvQ8_0.hpp"
 #include "hcs/shaders/GemvQ8_0Tiled.hpp"
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 namespace hcs::kernels::vulkan {
 
@@ -57,7 +54,6 @@ bool contains_ci(const std::string& hay, const std::string& needle) {
 
 // --- dynamic loader -----------------------------------------------------------------------------
 struct VkApi {
-    HMODULE lib = nullptr;
     PFN_vkGetInstanceProcAddr gipa = nullptr;
     PFN_vkCreateInstance create_instance = nullptr;
     PFN_vkEnumeratePhysicalDevices enum_devices = nullptr;
@@ -118,13 +114,8 @@ VkApi& api() {
     static VkApi a;
     static std::once_flag once;
     std::call_once(once, [&] {
-#ifdef _WIN32
-        a.lib = LoadLibraryExW(L"vulkan-1.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-        if (!a.lib)
-            return;
-        a.gipa = reinterpret_cast<PFN_vkGetInstanceProcAddr>(
-            reinterpret_cast<void*>(GetProcAddress(a.lib, "vkGetInstanceProcAddr")));
-#endif
+        a.gipa =
+            reinterpret_cast<PFN_vkGetInstanceProcAddr>(hardware::vulkan_loader().get_instance_proc_addr);
         if (!a.gipa)
             return;
         a.create_instance = load_inst<PFN_vkCreateInstance>(a, nullptr, "vkCreateInstance");
@@ -273,7 +264,8 @@ void destroy_context(Ctx& c) {
 Result<Ctx*> create_context(const std::string& substr) {
     VkApi& a = api();
     if (!a.gipa || !a.create_instance)
-        return make_error(ErrorCode::Unsupported, "vulkan-1.dll or vkGetInstanceProcAddr is not available");
+        return make_error(ErrorCode::Unsupported, std::string(hardware::vulkan_loader_name()) +
+                                                      " or vkGetInstanceProcAddr is not available");
 
     VkApplicationInfo app{};
     app.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
