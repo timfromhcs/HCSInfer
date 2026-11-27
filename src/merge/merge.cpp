@@ -464,7 +464,8 @@ Result<Report> run_merge(const Request& req, const PathGuard& guard) {
         if (bt.rel_offset > cursor)
             if (auto r = copy_range(base.data_offset() + cursor, bt.rel_offset - cursor); !r)
                 return r.error();
-        cursor = bt.rel_offset;
+        // cursor advances to the tensor END at the bottom of this loop; the value at its start is only
+        // needed for the gap check above, so no intermediate assignment belongs here.
         if (req.progress)
             req.progress(
                 total_bytes ? static_cast<double>(done_bytes) / static_cast<double>(total_bytes) : 0.0,

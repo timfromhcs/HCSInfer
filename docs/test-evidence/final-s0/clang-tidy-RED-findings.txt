@@ -1,0 +1,24 @@
+clang-tidy: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-tidy.exe (LLVM version 19.1.5)
+checks: -*,clang-analyzer-*,bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-casting-through-void,-bugprone-exception-escape,-clang-analyzer-optin.core.EnumCastOutOfRange
+MSVC environment: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
+compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64 [C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\cl.exe]
+translation units: 92 (src)
+PowerShell 5.1.26100.9818: running sequentially.
+
+== src/cli/models_remote_cmd.cpp
+D:\HCSInfer\src\cli\models_remote_cmd.cpp:186:66: warning: casting (double + 0.5) to integer leads to incorrect rounding; consider using lround (#include <cmath>) instead [bugprone-incorrect-roundings]
+
+== src/engines/upscale/tiling.cpp
+D:\HCSInfer\src\engines\upscale\tiling.cpp:218:24: warning: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions]
+D:\HCSInfer\src\engines\upscale\tiling.cpp:219:24: warning: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions]
+D:\HCSInfer\src\engines\upscale\tiling.cpp:220:24: warning: narrowing conversion from 'int' to 'float' [bugprone-narrowing-conversions]
+
+== src/kernels/cpu/cpu_baseline.cpp
+D:\HCSInfer\src\kernels\cpu\cpu_baseline.cpp:68:54: warning: 'signed char' to 'const std::int32_t' (aka 'const int') conversion; consider casting to 'unsigned char' first. [bugprone-signed-char-misuse]
+D:\HCSInfer\src\kernels\cpu\cpu_baseline.cpp:148:55: warning: Division by zero [clang-analyzer-core.DivideZero]
+
+== src/merge/merge.cpp
+D:\HCSInfer\src\merge\merge.cpp:467:9: warning: Value stored to 'cursor' is never read [clang-analyzer-deadcode.DeadStores]
+
+STATIC ANALYSIS: 7 diagnostic(s) in 92 translation units.
+TIDY_RERUN_EXIT=1

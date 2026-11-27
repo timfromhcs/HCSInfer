@@ -1,7 +1,33 @@
 # HCSInfer status
 
-Last updated: 2026-11-26 (wave A a4 baseline; earlier: 2026-11-20 wave R final verification of 1.0.0-rc.1 on top of waves F, G, K; wave G hardening gaps on top of wave F; earlier: 2026-11-18 V1-stable waves W1-W4 plus the MCP benchmark tool and the D-S5/D-S6 fixes; CI status: see the Wave A baseline section; the older "unknown" note is superseded). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
+Last updated: 2026-11-27 (S0 in progress, release/v1.1-stable; earlier: 2026-11-26 wave A a4 baseline). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
 inspected source file; items with no evidence are NOT RUN or BLOCKED.
+
+## S0 (2026-11-27, in progress): verify the 41 unpushed commits before merging anything
+
+Branch `release/v1.1-stable` = local `main` `1469638` + the S0 work; GitHub `origin/main` is still `0853143`.
+Diff inventory: `docs/test-evidence/final-s0/repo-diff.txt` (41 commits, 365 files, +47,134/-427 lines). Plan and
+branch/push policy: `docs/roadmap/PLAN_FINAL_STABLE.md`, `AGENTS.md` §27. Evidence: `docs/test-evidence/final-s0/`.
+
+| Gate | Status | Evidence / reason |
+|---|---|---|
+| `scripts/build.ps1 windows-msvc-release` (clean configure, -j4, `/W4 /WX` on HCS code) | PASS | `build-cpu-verify.txt`: BUILD OK, exit 0; MSVC 19.44.35228; the upstream-only warnings (C4068, D9025 for `/EHc`, and the deliberately relaxed `/W3 /WX-` on the two httplib-facing files in `src/api/CMakeLists.txt`) are documented, not HCS warnings |
+| `scripts/format.ps1` (clang-format 19.1.5) | PASS (red->green) | `format.txt` found `src/api/control_plane_image.cpp` unformatted; `-Fix` + recheck `format-GREEN.txt`: 298 files OK |
+| `web/` `npm test` | PASS | `web-npm-test.txt`: 46/46 |
+| Python `pytest` + `mypy --strict` | PARTIAL for this wave | `python-pytest.txt` 5 passed / 4 skipped (the real-EXE tests ran before the binary existed; they will be re-run), `python-mypy.txt` 0 issues in 8 files |
+| `scripts/static-analysis.ps1 -Scope src -FailOnFindings` | 7 findings fixed; final re-run in progress | red logs `clang-tidy.txt`, `clang-tidy-RED-ps51.txt`, `clang-tidy-RED-stderr.txt`, `clang-tidy-RED-findings.txt` (rounding in `models_remote_cmd.cpp`, three int→float narrowings in `tiling.cpp`, signed-char and divide-by-zero in `cpu_baseline.cpp`, a dead store in `merge.cpp`); each fixed at root cause, targeted re-check clean, full re-run in `clang-tidy-FINAL.txt` |
+| Full CPU CTest with real models (`HCS_TEST_*`, serial, lock) | **PASS** | `ctest-cpu.txt`: **1054 registered, 100% passed, 0 failed**, 9 skipped (4 Vulkan-only real tests, 3 ORT real-runtime tests without env, `e2e_gui_xss` Python 3.14 without `websockets`, and the agentic eval - see below); 1392.61 s. Real LFM3 text, SmolVLM2 vision, SD1.5 and FLUX.3 Klein renders all ran and passed. Free RAM logged before the run. |
+| `e2e_llama_agentic_real` with `HCS_TEST_LFM3` set | **PASS** | `ctest-agentic-real.txt`: 1/1 in 179.84 s (the full CTest skip was only because this separate env var was missing; no defect) |
+| Targeted CTest after the static-analysis fixes | **PASS** | `ctest-targeted-after-tidy-fixes.txt`: 133/133, incl. `CpuBaseline.GemmI8IsBitEqualToOracle` (the int64 conversion preserves bit-exact oracle agreement), all CLI, upscale and merge tests |
+| Vulkan build + CTest, packaging, final STATUS/README reconciliation | in progress / NOT RUN | `build-vulkan.txt` compiling (876 steps); CTest and package queued behind it (RAM discipline: 21 GB shared with the iGPU) |
+
+**Defects fixed in S0 so far (root cause, not assertion weakening):** (1) `scripts/common.ps1` printed the MSVC banner via
+`cl 2>&1`, which PowerShell treats as a terminating `WriteError` under `$ErrorActionPreference='Stop'` - the build
+aborted before configure (`build-cpu-RED.txt`); now the banner is read through `cmd.exe`. (2) `scripts/static-analysis.ps1`
+piped `ConvertFrom-Json`'s array directly, which Windows PowerShell 5.1 passes as one `Object[]` - `Select-Object
+-ExpandProperty file` failed; the parsed entries are materialised first. (3) The same script aborted on clang-tidy's
+`N warnings generated.` stderr line under `-ErrorActionPreference='Stop'`; the native call now temporarily uses
+`Continue` and still captures the full text for the findings filter.
 
 ## Wave B b3 (2026-11-26): image LoRA library, 4K upscaler pipeline, model merge (code side; no downloads)
 

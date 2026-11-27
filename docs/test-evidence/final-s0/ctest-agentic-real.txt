@@ -1,0 +1,11 @@
+Test project D:/HCSInfer/build/windows-msvc-release
+    Start 1053: e2e_llama_agentic_real
+1/1 Test #1053: e2e_llama_agentic_real ...........   Passed  179.84 sec
+
+100% tests passed out of 1
+
+Label Time Summary:
+e2e    = 179.84 sec*proc (1 test)
+
+Total Test time (real) = 186.25 sec
+AGENTIC_EXIT=0

@@ -1,0 +1,5 @@
+{
+  "cpu": {
+    "family": 25,
+    "features": {
+      "aes": true,

@@ -87,7 +87,11 @@ $scopes = switch ($Scope) {
 }
 $prefixes = $scopes | ForEach-Object { (Join-Path $root $_).Replace('\', '/') + '/*' }
 # CMake writes forward slashes into compile_commands.json, including on Windows - match on that form.
-$tu = @(Get-Content -LiteralPath $db -Raw | ConvertFrom-Json |
+# Windows PowerShell 5.1 pipes ConvertFrom-Json's array as ONE System.Object[] into the next cmdlet;
+# $_.file then yields an array and Select-Object -ExpandProperty file fails. Materialise the parsed
+# entries first so both Windows PowerShell 5.1 and PowerShell 7 enumerate the same 445 entries.
+$compileDb = Get-Content -LiteralPath $db -Raw | ConvertFrom-Json
+$tu = @($compileDb |
     Where-Object { $f = $_.file; $prefixes | Where-Object { $f -like $_ } } |
     Select-Object -ExpandProperty file -Unique | Sort-Object)
 if ($tu.Count -eq 0) { throw "No translation units found for scope '$Scope' in $db." }
@@ -98,8 +102,15 @@ function Invoke-TidyOne([string]$File) {
     # -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH: a Windows runner can carry a Visual Studio newer than the
     # clang-tidy that analyses it (e.g. VS 18's MSVC 14.52 STL hard-errors STL1000 under Clang < 22). The macro
     # is the MSVC STL's own documented escape hatch; without it the gate fails on the STL banner, not on HCS code.
-    $out = & $exe -p $buildDir --checks=$Checks --header-filter=$headerFilter `
-        --extra-arg=-Wno-error --extra-arg=-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH $File 2>&1 | Out-String
+    # clang-tidy writes "N warnings generated." to stderr. Under Windows PowerShell 5.1 with
+    # $ErrorActionPreference='Stop' that native stderr becomes a terminating RemoteException, so
+    # pause Stop only around the native call; the full text is still captured for the findings filter.
+    $oldEap = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        $out = & $exe -p $buildDir --checks=$Checks --header-filter=$headerFilter `
+            --extra-arg=-Wno-error --extra-arg=-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH $File 2>&1 | Out-String
+    } finally { $ErrorActionPreference = $oldEap }
     [pscustomobject]@{ file = $File; text = $out }
 }
 if ($PSVersionTable.PSVersion.Major -ge 7) {
@@ -108,8 +119,12 @@ if ($PSVersionTable.PSVersion.Major -ge 7) {
             $dbDir = $using:buildDir
             $checks = $using:Checks
             $hf = $using:headerFilter
-            $out = & $ct -p $dbDir --checks=$checks --header-filter=$hf --extra-arg=-Wno-error `
-                --extra-arg=-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH $_ 2>&1 | Out-String
+            $oldEap = $ErrorActionPreference
+            $ErrorActionPreference = 'Continue'  # native stderr must not abort the parallel worker
+            try {
+                $out = & $ct -p $dbDir --checks=$checks --header-filter=$hf --extra-arg=-Wno-error `
+                    --extra-arg=-D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH $_ 2>&1 | Out-String
+            } finally { $ErrorActionPreference = $oldEap }
             [pscustomobject]@{ file = $_; text = $out }
         } -ThrottleLimit $Parallel)
 } else {

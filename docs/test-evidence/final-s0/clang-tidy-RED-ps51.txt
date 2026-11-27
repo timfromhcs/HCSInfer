@@ -1,0 +1,13 @@
+clang-tidy: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-tidy.exe (LLVM version 19.1.5)
+checks: -*,clang-analyzer-*,bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-casting-through-void,-bugprone-exception-escape,-clang-analyzer-optin.core.EnumCastOutOfRange
+MSVC environment: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
+compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64 [C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\cl.exe]
+Select-Object : Die file-Eigenschaft kann nicht gefunden werden.
+In D:\HCSInfer\scripts\static-analysis.ps1:92 Zeichen:5
++     Select-Object -ExpandProperty file -Unique | Sort-Object)
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (               ...               :PSObject) [Select-Object], PSArgumen 
+   tException
+    + FullyQualifiedErrorId : ExpandPropertyNotFound,Microsoft.PowerShell.Commands.SelectObjectCommand
+ 
+TIDY_RERUN_EXIT=1
