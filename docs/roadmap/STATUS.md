@@ -123,6 +123,17 @@ README, install/security/support docs, CHANGELOG, release notes). Evidence: `doc
 | Licences | PARTIAL | prime-agent submodule not initialised -> its LICENSE file is missing from the package; reported by the script |
 | Docs reconciled with the binary | **PASS** | README/CHANGELOG/install/security/support/benchmarks/release notes and LoRA/Upscale/Merge docs updated in this wave; final gate in S5 |
 
+## S5 (2026-11-27, in progress): final gate, merge and tag
+
+Evidence: `docs/test-evidence/final-s5/`. Working tree clean at `3c7680f` before the final builds.
+
+| Item | Status | Evidence / reason |
+|---|---|---|
+| Fresh static CPU + Vulkan builds from the final commit | in progress | `build-static-{cpu,vulkan}.txt`; intended to embed the final commit SHA |
+| Full CTest on both static presets with real models | NOT RUN | queued after the builds; serial, `realmodel.lock`, `HCS_TEST_*` set |
+| Format / clang-tidy / web / wheel / SHA-256 final re-check | NOT RUN | queued |
+| Merge `release/v1.1-stable` into `main`, push, tag `v1.1.0-rc.1` | NOT RUN | only after all gates are green; no force-push |
+
 ## Audit fixes (2026-11-21, after wave R)
 
 A release audit found overstated or stale claims in README/ADR-008/STATUS/benchmarks (single-file wording, benchmark binary
