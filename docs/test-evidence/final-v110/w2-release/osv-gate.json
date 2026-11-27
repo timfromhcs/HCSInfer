@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "tool": "scripts/osv-gate.ps1",
+  "timestamp_utc": "2026-11-27T13:01:49Z",
+  "policy": "fail on HIGH, CRITICAL and UNKNOWN severity unless justified in osv-allowlist.json",
+  "commit_queries": [
+    {
+      "name": "llama.cpp",
+      "commit": "d3c3e242c16b8cbf51400fad410cd69b22d64f35",
+      "vulnerability_ids": [
+        "CVE-2026-133710",
+        "CVE-2026-137057",
+        "CVE-2026-137567"
+      ]
+    },
+    {
+      "name": "stable-diffusion.cpp",
+      "commit": "532d2c15c430a785a712b2d94281f04e733008a4",
+      "vulnerability_ids": []
+    },
+    {
+      "name": "stable-diffusion.cpp bundled patched GGML",
+      "commit": "eeda9ec48fc84a3df0bb9dcc19ae9053075a2539",
+      "vulnerability_ids": []
+    },
+    {
+      "name": "libwebp",
+      "commit": "0c9546f7efc61eac7f79ae115c3f99c91c21c443",
+      "vulnerability_ids": []
+    },
+    {
+      "name": "libwebm",
+      "commit": "5bf12267eea773a32fcf4949de52b0add158a8d5",
+      "vulnerability_ids": []
+    },
+    {
+      "name": "GoogleTest",
+      "commit": "52eb8108c5bdec04579160ae17225d66034bd723",
+      "vulnerability_ids": []
+    },
+    {
+      "name": "nlohmann/json",
+      "commit": "55f93686c01528224f448c19128836e7df245f72",
+      "vulnerability_ids": []
+    },
+    {
+      "name": "cpp-httplib",
+      "commit": "811dd0b6f2382f50f801f3cfdb5ba349d08bb575",
+      "vulnerability_ids": [
+        "CVE-2026-102944",
+        "CVE-2026-103930",
+        "CVE-2026-54919",
+        "CVE-2026-77358"
+      ]
+    },
+    {
+      "name": "LZ4",
+      "commit": "ebb370ca83af193212df4dcbadcc5d87bc0de2f0",
+      "vulnerability_ids": []
+    },
+    {
+      "name": "Zstandard",
+      "commit": "f8745da6ff1ad1e7bab384bd1f9d742439278e99",
+      "vulnerability_ids": []
+    },
+    {
+      "name": "prime-agent",
+      "commit": "8980e66f2f07762d62a6c1d73b347a4cac5275cc",
+      "vulnerability_ids": []
+    }
+  ],
+  "scanner_results": [
+    "osv-sbom.json"
+  ],
+  "findings": [
+    {
+      "source": "osv-commit-query",
+      "package": "llama.cpp",
+      "id": "CVE-2026-133710",
+      "aliases": [
+        null
+      ],
+      "severity": "UNKNOWN"
+    },
+    {
+      "source": "osv-commit-query",
+      "package": "llama.cpp",
+      "id": "CVE-2026-137057",
+      "aliases": [
+        null
+      ],
+      "severity": "UNKNOWN"
+    },
+    {
+      "source": "osv-commit-query",
+      "package": "llama.cpp",
+      "id": "CVE-2026-137567",
+      "aliases": [
+        null
+      ],
+      "severity": "UNKNOWN"
+    },
+    {
+      "source": "osv-commit-query",
+      "package": "cpp-httplib",
+      "id": "CVE-2026-102944",
+      "aliases": [
+        "GHSA-22mf-w2v3-r2jv"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "source": "osv-commit-query",
+      "package": "cpp-httplib",
+      "id": "CVE-2026-103930",
+      "aliases": [
+        "GHSA-vq69-f637-8fhr"
+      ],
+      "severity": "LOW"
+    },
+    {
+      "source": "osv-commit-query",
+      "package": "cpp-httplib",
+      "id": "CVE-2026-54919",
+      "aliases": [
+        "GHSA-8ffh-4p95-g3p2"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "source": "osv-commit-query",
+      "package": "cpp-httplib",
+      "id": "CVE-2026-77358",
+      "aliases": [
+        "GHSA-w7p7-f35j-mw7q"
+      ],
+      "severity": "UNKNOWN"
+    }
+  ],
+  "waived": [
+    {
+      "source": "osv-commit-query",
+      "package": "llama.cpp",
+      "id": "CVE-2026-137057",
+      "aliases": [
+        null
+      ],
+      "severity": "UNKNOWN"
+    },
+    {
+      "source": "osv-commit-query",
+      "package": "llama.cpp",
+      "id": "CVE-2026-137567",
+      "aliases": [
+        null
+      ],
+      "severity": "UNKNOWN"
+    },
+    {
+      "source": "osv-commit-query",
+      "package": "cpp-httplib",
+      "id": "CVE-2026-102944",
+      "aliases": [
+        "GHSA-22mf-w2v3-r2jv"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "source": "osv-commit-query",
+      "package": "cpp-httplib",
+      "id": "CVE-2026-54919",
+      "aliases": [
+        "GHSA-8ffh-4p95-g3p2"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "source": "osv-commit-query",
+      "package": "cpp-httplib",
+      "id": "CVE-2026-77358",
+      "aliases": [
+        "GHSA-w7p7-f35j-mw7q"
+      ],
+      "severity": "UNKNOWN"
+    }
+  ],
+  "blocking": [
+    {
+      "source": "osv-commit-query",
+      "package": "llama.cpp",
+      "id": "CVE-2026-133710",
+      "aliases": [
+        null
+      ],
+      "severity": "UNKNOWN"
+    }
+  ],
+  "unused_allowlist_entries": [],
+  "result": "FAIL"
+}

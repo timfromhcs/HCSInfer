@@ -103,9 +103,19 @@ foreach ($d in $all) {
     }
     $desc = Get-Prop $d 'role'
     if ($desc) { $comp['description'] = [string]$desc }
-    if ($url -and $url -match '^https://github\.com/([^/]+)/([^/ ]+)') {
-        $ref = if ($commit) { $commit } elseif ($ver) { $ver } else { $null }
-        if ($ref) { $comp['purl'] = "pkg:github/$($Matches[1])/$($Matches[2])@$ref" }
+    # Every component carries a purl (CycloneDX consumers such as osv-scanner key on it). A pinned GitHub commit or
+    # tag becomes pkg:github/...; anything else (vendored trees, non-GitHub hosts, free-text versions) becomes a
+    # pkg:generic purl whose full vcs location is kept in the vcs_url qualifier.
+    $ref = if ($commit) { [string]$commit } elseif ($ver) { [string]$ver } else { $null }
+    $refIsToken = ($ref -and $ref -match '^[A-Za-z0-9][A-Za-z0-9._+-]*$')
+    if ($url -and $refIsToken -and $url -match '^https://github\.com/([^/]+)/([^/ ]+)') {
+        $comp['purl'] = "pkg:github/$($Matches[1].ToLowerInvariant())/$($Matches[2].ToLowerInvariant())@$ref"
+    } else {
+        $pname = ($name -replace '[^A-Za-z0-9._-]+', '-').Trim('-')
+        $pver = if ($refIsToken) { $ref } else { 'unspecified' }
+        $purl = "pkg:generic/$pname@$pver"
+        if ($url) { $purl += '?vcs_url=' + [Uri]::EscapeDataString([string]$url) }
+        $comp['purl'] = $purl
     }
     if ($url) { $comp['externalReferences'] = @(@{ type = 'vcs'; url = [string]$url }) }
     $props = @()
@@ -122,7 +132,7 @@ foreach ($d in $all) {
     $lf = Get-Prop $d 'licence_file'
     if ($lf) {
         $props += @{ name = 'hcs:licence_file'; value = [string]$lf }
-        $lfAbs = Join-Path $root ($lf -replace '/', '\')
+        $lfAbs = Join-Path $root $lf
         if (Test-Path -LiteralPath $lfAbs -PathType Leaf) {
             $props += @{ name = 'hcs:licence_file_sha256'; value = Get-Sha256 $lfAbs }
         } else {
@@ -133,8 +143,11 @@ foreach ($d in $all) {
     $components.Add($comp)
 }
 
+$missingPurl = @($components | Where-Object { -not $_['purl'] } | ForEach-Object { $_['name'] })
+if ($missingPurl.Count -gt 0) { throw "SBOM components without a purl: $($missingPurl -join ', ')" }
+
 $bom = [ordered]@{
-    bomFormat    = 'CycloneDX'
+    bomFormat   = 'CycloneDX'
     specVersion  = '1.5'
     serialNumber = 'urn:uuid:' + [guid]::NewGuid().ToString()
     version      = 1

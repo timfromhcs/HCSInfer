@@ -1,6 +1,6 @@
 # Support matrix (tested hardware, OS and models)
 
-Version 1.1.0-rc.1. Status: **one machine, one OS** — exactly what the evidence files show. This is not a compatibility guarantee; it is
+Version 1.1.0 line (1.1.0-rc.1 verified on the machine below; see the platform table for the other OSes). Status: **one machine, one OS verified end to end** — exactly what the evidence files show. This is not a compatibility guarantee; it is
 the list of configurations HCSInfer has actually been built and run on, with the status of each. AGENTS.md 20:
 general RDNA/Radeon or Windows claims are **not** made from one device.
 
@@ -15,6 +15,28 @@ Test machine (target hardware, AGENTS.md 1.3):
 | Vulkan device features | UMA `1`, fp16 `1`, subgroup/warp size `32` | `M0/vulkaninfo-summary.txt` |
 | OS | Windows 11, build `10.0.26200.9974` | `doctor.json` |
 | Toolchain | MSVC 19.44.35228 (VS 2022), CMake 4.4.0, Ninja 1.13.2, Vulkan SDK 1.4.357.0 (build time only) | `docs/build.md` |
+
+## Per-platform support level (what ships, what is proven)
+
+Levels: **Supported** = built by the release pipeline, required for a stable tag and exercised on real hardware by the
+project. **CI-built** = built and portable-tested on a hosted runner, no real-hardware run by the project.
+**Experimental** = built when the runner allows it, never blocks a release, no support promise. Hosted CI results only count
+once a `release` run has actually executed on GitHub; until then the CI column is `NOT RUN`.
+
+| Platform | Artifact | Level | What is proven | What is NOT proven |
+|---|---|---|---|---|
+| Windows 11 x64, CPU | `HCSInfer.exe`, portable ZIP, `win_amd64` wheel | **Supported** | full CTest with real models, real text / vision / SD1.5 / FLUX.3 runs, restricted-environment run (`final-s*`, `wave-b`, `wave-g`) | clean-machine run, code signing |
+| Windows 11 x64, Vulkan | `HCSInfer-vulkan.exe` (needs the system `vulkan-1.dll`) | **Supported**, tested on Radeon 680M only | Vulkan CTest, benchmarks B0/B1, real models on the 680M | any other GPU or driver |
+| Windows arm64 | none | not built | | everything |
+| Linux x86_64, CPU | `HCSInfer-<ver>-linux-x86_64.tar.gz`, `manylinux_2_28_x86_64` wheel | **CI-built** | gcc 15 / clang 21 builds, portable ctest set and one real CPU generation in WSL2 (`final-v110/w1-posix`); release pipeline builds it in the manylinux_2_28 image with a glibc <= 2.28, NEEDED-library and no-RPATH gate | the hosted run (NOT RUN until executed), a native (non-WSL) Linux host, other distributions |
+| Linux x86_64, Vulkan | `HCSInfer-vulkan` in the same archive when built | **Experimental** | the Vulkan loader seam was exercised by `doctor` against Mesa llvmpipe only | any GGML Vulkan inference on Linux, any real GPU (Mesa RADV or vendor), the SDK-built shader compiler inside the old-glibc image |
+| Linux aarch64, CPU | `HCSInfer-<ver>-linux-aarch64.tar.gz`, `manylinux_2_28_aarch64` wheel | **Experimental** | nothing yet (hosted build NOT RUN) | everything |
+| macOS arm64, CPU | `HCSInfer-<ver>-macos-arm64.tar.gz`, `macosx_11_0_arm64` wheel | **Experimental** | nothing yet (hosted build NOT RUN) | everything; no Metal backend exists |
+| macOS x86_64 | none (the `macosx_10_15_x86_64` wheel tag exists in the wheel code, no binary is built) | not built | | everything |
+| Any OS, pure `py3-none-any` wheel / sdist | Python client + launcher only | Supported as a client | `twine check`, install smoke | it contains no engine: needs `HCSINFER_EXE` |
+
+Cross-platform feature limits: the coding-agent sidecar (`prime-agent` supervision) is **Windows only** (returns `Unsupported`
+on Linux/macOS); all binaries are **unsigned**; PyPI upload is owner-gated and has not happened (`docs/pypi-publishing.md`).
 
 ## Backends
 

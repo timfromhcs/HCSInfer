@@ -1,0 +1,10 @@
+preset      : (verify-only)
+kind        : cpu
+host        : Linux x86_64
+compiler    : c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+commit      : unknown
+size_bytes  : 54813408
+sha256      : 5676cbcd941d859cad4e162b46f6084ba05324cb6a86764d9ecc356f62b24be3
+NEEDED      : ld-linux-x86-64.so.2 libc.so.6 libm.so.6 
+max GLIBC   : 2.43 (limit 2.28)
+max GLIBCXX : none (libstdc++ is linked statically; any dynamic GLIBCXX need is a failure)
