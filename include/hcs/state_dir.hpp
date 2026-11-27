@@ -20,9 +20,11 @@ std::string process_env(const char* name);
 //   2. $HCS_DATA_DIR         (the "nothing on C:" switch: when set it is used verbatim and the per-user
 //                             %LOCALAPPDATA% / $HOME defaults are NEVER consulted, not even as a fallback)
 //   3. $HCS_STATE_DIR        (older name, kept for compatibility)
-//   4. %LOCALAPPDATA%\HCSInfer
-//   5. $HOME/.hcsinfer
-//   6. ./.hcsinfer
+//   4. %LOCALAPPDATA%\HCSInfer                         (Windows; when set on any OS it wins here)
+//   5. macOS:  $HOME/Library/Application Support/HCSInfer
+//      Linux:  $XDG_STATE_HOME/hcsinfer (absolute path only), else $HOME/.local/state/hcsinfer
+//   6. $HOME/.hcsinfer
+//   7. ./.hcsinfer
 std::filesystem::path resolve_state_dir(const std::string& override_dir, const EnvLookup& env);
 std::filesystem::path resolve_state_dir(const std::string& override_dir);
 

@@ -9,8 +9,46 @@ Known-good environment (verified 2026-11-17 on the target machine): Windows 11 1
 `HCS_ENABLE_VULKAN=OFF`), `windows-msvc-release-vulkan` (needs the LunarG Vulkan SDK at build time) and
 `windows-msvc-release-static` (static CRT `/MT` plus `GGML_OPENMP=OFF` for the single-EXE experiment, ADR-008) and
 `windows-msvc-release-kernels` (the experimental HCS Vulkan kernels + CPU reference, M8; needs the Vulkan SDK's
-`glslc`/`spirv-val` at build time). All use Ninja and `cl`. There are no Linux or ASan presets yet. Local test builds of
-this project also used ad-hoc build directories (for example `build/img-api`); those are not presets.
+`glslc`/`spirv-val` at build time). The Windows presets inherit a hidden `windows-base` (Ninja + `cl`); the shared
+`base` is compiler-agnostic. POSIX CPU presets (see "Linux and macOS" below): `linux-gcc-release`,
+`linux-clang-release`, `linux-release-vulkan`, `macos-arm64-release`. There are no ASan presets yet. Local test
+builds of this project also used ad-hoc build directories (for example `build/img-api`); those are not presets.
+
+## Linux and macOS (CPU build; Vulkan on Linux)
+
+Status: Linux x86-64 builds with gcc and clang and passes the `portable` ctest set (unit, contract, parser and
+`kernel-cpu` tests; see `docs/test-evidence/final-v110/w1-posix/`). macOS arm64 is **best effort and NOT RUN**: the
+code paths exist (sysctl/mach probes, `F_RDAHEAD`, Application Support state dir) but no macOS build was run.
+
+```bash
+# prerequisites (Debian/Ubuntu): g++ or clang++, cmake >= 3.25, ninja-build, python3, git
+git submodule update --init --recursive
+cmake --preset linux-gcc-release            # or linux-clang-release / macos-arm64-release
+cmake --build --preset linux-gcc-release -j4
+ctest --preset linux-gcc-release            # runs the portable labels: unit|contract|parser|kernel-cpu
+```
+
+* The presets set `GGML_NATIVE=OFF` and `GGML_OPENMP=OFF` so the binary never depends on the build machine's CPU
+  or on libgomp. On x86 Linux the ggml CPU kernels are built for the x86-64-v3 baseline (AVX2, FMA, F16C, BMI2); a
+  CPU without AVX2 is not supported by these presets. The executable links libstdc++/libgcc statically; glibc
+  stays dynamic (a fully static glibc binary is not supported by `dlopen`).
+* `linux-release-vulkan` additionally needs the Vulkan headers (fetched, pinned) and `glslc` + `spirv-val` at build
+  time and loads `libvulkan.so.1` at run time (`src/hardware/dynlib.cpp`; no import library). Mesa RADV or a vendor
+  ICD must be installed. Real-GPU Linux runs are **NOT RUN**.
+* Model files are read with `open` + `pread` (`FileSource`); the sequential hint is `posix_fadvise` on Linux and
+  `F_RDAHEAD` on macOS. The Windows overlapped-I/O path is unchanged.
+* State directory on POSIX: `--state-dir`, `$HCS_DATA_DIR`, `$HCS_STATE_DIR`, then `$XDG_STATE_HOME/hcsinfer` (absolute
+  paths only) or `~/.local/state/hcsinfer` on Linux, `~/Library/Application Support/HCSInfer` on macOS.
+* `doctor` on Linux reads `/proc/cpuinfo`, `/proc/meminfo`, `uname`, `/etc/os-release`, `statvfs`, `/proc/self/mountinfo`
+  and `/sys/dev/block/*`; anything it cannot read stays `unknown` (installed RAM, channel configuration and UMA
+  reservation need DMI/root and are never guessed).
+* WSL2 caveats seen while testing (environment, not product): on `/mnt/<drive>` (drvfs/9p) `FsUtil.ConcurrentWritersNeverProduceMixedContent`
+  fails about 1 run in 5 because 9p does not give an atomic replace under concurrent readers (25/25 pass with `TMPDIR=/dev/shm`);
+  and `CliRemote.NoServerRunningIsAClearIoErrorNotAStub` fails when WSL's localhost relay still accepts a just-closed port
+  (a never-bound port correctly gives exit 8, "no HCSInfer server reachable"). A native Linux host (not WSL2 relay) is expected not to show these; not yet verified.
+* The coding-agent sidecar (child-process supervision) is **Planned** on Linux/macOS: the process module returns
+  `Unsupported` there and its unit tests are Windows-only (excluded at CMake level, see `WINDOWS_ONLY` in
+  `cmake/HcsModule.cmake`).
 
 ## Commands
 
@@ -143,7 +181,8 @@ The system drive has little free space, so builds, tests and tools must not writ
   D: drive can set `HCS_SKIP_SCRATCH_ENV=1` to skip the redirection; do not set it locally.
 - **`HCS_DATA_DIR`** (new): directory for ALL HCS-owned state (`settings.json`, `registry.json`, logs, cache stats,
   sessions, train adapters). Resolution order: `--state-dir`, `HCS_DATA_DIR`, `HCS_STATE_DIR` (older name),
-  `%LOCALAPPDATA%\HCSInfer`, `~/.hcsinfer`. When `HCS_DATA_DIR` is set, the per-user profile is never consulted, not
+  `%LOCALAPPDATA%\HCSInfer` (Windows), `~/Library/Application Support/HCSInfer` (macOS),
+  `$XDG_STATE_HOME/hcsinfer` or `~/.local/state/hcsinfer` (Linux), `~/.hcsinfer`. When `HCS_DATA_DIR` is set, the per-user profile is never consulted, not
   even as a fallback. One implementation (`hcs::resolve_state_dir`, `include/hcs/state_dir.hpp`) serves every
   command; unit tests: `StateDir.*` (`hcs_test_core`).
 - **`scripts/check-no-c-writes.ps1 -Exe <exe> -ArgString '<args>'`** records the free space of C: and the size of the

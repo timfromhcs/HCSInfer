@@ -59,7 +59,12 @@ TEST(OrtBackend, MissingRuntimeIsAStructuredUnsupportedError) {
     auto r = e.ready();
     ASSERT_FALSE(r.ok());
     EXPECT_EQ(r.error().code, ErrorCode::Unsupported);
+#ifdef _WIN32
     EXPECT_NE(r.error().message.find("onnxruntime.dll"), std::string::npos);
+#else
+    // The ONNX Runtime upscaler backend is Windows-only for now (documented Planned on Linux/macOS).
+    EXPECT_NE(r.error().message.find("Windows only"), std::string::npos) << r.error().message;
+#endif
     // Cached: the second call reports the same error without retrying.
     EXPECT_EQ(e.ready().error().message, r.error().message);
     std::vector<float> in(3 * 4 * 4), out(3 * 16 * 16);

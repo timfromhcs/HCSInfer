@@ -85,8 +85,9 @@ TEST(DataUri, RejectsEverythingThatIsNotAStrictImageDataUri) {
     auto bad = [&](const std::string& u) {
         auto r = decode_image_data_uri(u, cap);
         EXPECT_FALSE(r.ok()) << u;
-        if (!r.ok())
+        if (!r.ok()) {
             EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument) << u;
+        }
     };
     bad("");
     bad("http://example.com/a.png");

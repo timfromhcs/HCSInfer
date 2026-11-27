@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include "hcs/hardware/dynlib.hpp"
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -93,23 +95,10 @@ struct Api {
     PFN_vkDestroyDebugUtilsMessengerEXT DestroyDebugUtilsMessengerEXT = nullptr;
 };
 
-#ifdef _WIN32
-// The loader library is process-lifetime: driver threads may still be shutting down, so it is never unloaded.
+// The loader library is process-lifetime (see hcs/hardware/dynlib.hpp): it is never unloaded.
 PFN_vkGetInstanceProcAddr load_gipa() {
-    static PFN_vkGetInstanceProcAddr gipa = [] {
-        HMODULE lib = LoadLibraryExW(L"vulkan-1.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-        if (!lib)
-            return static_cast<PFN_vkGetInstanceProcAddr>(nullptr);
-        return reinterpret_cast<PFN_vkGetInstanceProcAddr>(
-            reinterpret_cast<void*>(GetProcAddress(lib, "vkGetInstanceProcAddr")));
-    }();
-    return gipa;
+    return reinterpret_cast<PFN_vkGetInstanceProcAddr>(hardware::vulkan_loader().get_instance_proc_addr);
 }
-#else
-PFN_vkGetInstanceProcAddr load_gipa() {
-    return nullptr;
-}
-#endif
 
 template <class H>
 std::uint64_t to_u64(H h) {
@@ -263,7 +252,8 @@ Result<void> Impl::init() {
 
     const PFN_vkGetInstanceProcAddr gipa = load_gipa();
     if (!gipa)
-        return make_error(ErrorCode::Unsupported, "Vulkan loader (vulkan-1.dll) not available");
+        return make_error(ErrorCode::Unsupported, std::string("Vulkan loader (") +
+                                                      hardware::vulkan_loader_name() + ") not available");
     api.gipa = gipa;
     api.CreateInstance =
         reinterpret_cast<PFN_vkCreateInstance>(reinterpret_cast<void*>(gipa(nullptr, "vkCreateInstance")));

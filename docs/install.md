@@ -66,5 +66,5 @@ See [build.md](build.md) (presets `windows-msvc-release`, `...-static`, `...-sta
 
 * A run on a clean Windows machine (no redistributable, no SDK) is NOT RUN: Windows Sandbox is not installed here and
   enabling it needs elevation. A restricted-environment run (empty directory, empty PATH, only system DLLs loaded) PASSED.
-* Only one GPU (Radeon 680M) and one OS build were tested. Other GPUs and Linux are NOT RUN.
+* Only one GPU (Radeon 680M) and one OS build were tested. Other GPUs are NOT RUN; Linux has a CPU-only build proven in WSL2 (no Linux GPU run, no Linux package).
 * PyPI, GitHub Releases and Vercel: nothing has been uploaded or deployed.

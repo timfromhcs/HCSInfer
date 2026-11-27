@@ -218,6 +218,11 @@ struct ChildProcess::Impl {
     }
 };
 
+#else
+// POSIX: spawning is Planned; the type stays complete so the move/destroy members compile (impl_ is always
+// null).
+struct ChildProcess::Impl {};
+
 #endif  // _WIN32
 
 ChildProcess::ChildProcess() noexcept = default;
@@ -440,7 +445,9 @@ Result<ChildProcess> ChildProcess::spawn(const std::filesystem::path& program, c
 #else
     (void)program;
     (void)options;
-    return make_error(ErrorCode::Unsupported, "child processes are implemented on Windows only");
+    return make_error(ErrorCode::Unsupported,
+                      "child processes (the coding-agent sidecar) are implemented on Windows only; "
+                      "Linux/macOS support is Planned");
 #endif
 }
 
@@ -484,7 +491,9 @@ Result<WaitResult> ChildProcess::wait_for(std::uint64_t timeout_ms) {
     return WaitResult{WaitState::Exited, impl_->exit_code, impl_->pid};
 #else
     (void)timeout_ms;
-    return make_error(ErrorCode::Unsupported, "child processes are implemented on Windows only");
+    return make_error(ErrorCode::Unsupported,
+                      "child processes (the coding-agent sidecar) are implemented on Windows only; "
+                      "Linux/macOS support is Planned");
 #endif
 }
 
@@ -497,7 +506,9 @@ Result<void> ChildProcess::terminate() {
     impl_->finish_reader();
     return {};
 #else
-    return make_error(ErrorCode::Unsupported, "child processes are implemented on Windows only");
+    return make_error(ErrorCode::Unsupported,
+                      "child processes (the coding-agent sidecar) are implemented on Windows only; "
+                      "Linux/macOS support is Planned");
 #endif
 }
 

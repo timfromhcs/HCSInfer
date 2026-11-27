@@ -84,8 +84,8 @@ TEST(CliRemote, NoServerRunningIsAClearIoErrorNotAStub) {
         dead_port = s.port;
     }  // stopped: nothing listens there any more
     auto r = run({"models", "status", "--port", std::to_string(dead_port)});
-    EXPECT_EQ(r.code, exit_code(ErrorCode::IoError));
-    EXPECT_TRUE(contains(r.err, "no HCSInfer server reachable"));
+    EXPECT_EQ(r.code, exit_code(ErrorCode::IoError)) << r.err;
+    EXPECT_TRUE(contains(r.err, "no HCSInfer server reachable")) << r.err;
     EXPECT_TRUE(contains(r.err, "HCSInfer serve"));
     auto l = run({"models", "load", "tiny", "--port", std::to_string(dead_port), "--token", kToken});
     EXPECT_EQ(l.code, 8);

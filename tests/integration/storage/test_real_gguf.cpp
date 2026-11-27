@@ -29,8 +29,9 @@ TEST(RealGguf, HeaderParsesAndTensorsLieInsideTheFile) {
     EXPECT_EQ(g.tensors.size(), g.tensor_count);
     EXPECT_FALSE(g.architecture.empty());
     for (const auto& t : g.tensors) {
-        if (t.size_known)
+        if (t.size_known) {
             EXPECT_LE(g.data_offset + t.offset + t.byte_size, g.file_size) << t.name;
+        }
     }
 }
 

@@ -45,10 +45,12 @@ TEST(MemoryProbe, SystemSampleIsConsistentWhenTheOsAnswers) {
         GTEST_SKIP() << "OS memory query unavailable (figures stay unknown)";
     EXPECT_GT(*s.total_physical_bytes, 0u);
     EXPECT_LE(*s.available_physical_bytes, *s.total_physical_bytes);
-    if (s.commit_used_bytes && s.commit_limit_bytes)
+    if (s.commit_used_bytes && s.commit_limit_bytes) {
         EXPECT_GT(*s.commit_limit_bytes, 0u);
-    if (s.process_working_set_bytes)
+    }
+    if (s.process_working_set_bytes) {
         EXPECT_GT(*s.process_working_set_bytes, 0u);  // this very test process has a working set
+    }
 }
 
 TEST(MemoryProbe, GpuHeapHeadroomIsEitherUnknownOrAFiniteNumber) {

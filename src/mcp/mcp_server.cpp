@@ -546,10 +546,10 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
         if (has_prompt == has_msgs)
             return tool_err("provide exactly one of 'prompt' or 'messages'", "invalid_argument");
         if (has_prompt)
-            p.messages.push_back({"user", args["prompt"].get<std::string>()});
+            p.messages.push_back({"user", args["prompt"].get<std::string>(), {}});
         else
             for (const auto& m : args["messages"])
-                p.messages.push_back({m["role"].get<std::string>(), m["content"].get<std::string>()});
+                p.messages.push_back({m["role"].get<std::string>(), m["content"].get<std::string>(), {}});
         if (args.contains("max_tokens"))
             p.max_tokens = args["max_tokens"].get<std::uint32_t>();
         if (args.contains("temperature"))

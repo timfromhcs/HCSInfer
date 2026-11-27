@@ -9,6 +9,22 @@
 
 #ifdef _WIN32
 #include <winioctl.h>
+#else
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/statvfs.h>
+#include <unistd.h>
+
+#include <cctype>
+#include <cerrno>
+#include <cstdlib>
+#include <cstring>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#if defined(__linux__)
+#include <sys/sysmacros.h>
+#endif
 #endif
 
 namespace hcs::hardware {
@@ -111,6 +127,171 @@ json describe_root(const std::wstring& root) {
 }  // namespace
 #endif
 
+#if !defined(_WIN32)
+namespace {
+
+#if defined(__linux__)
+std::string trim_ascii(std::string s) {
+    const auto b = s.find_first_not_of(" \t\r\n");
+    if (b == std::string::npos)
+        return {};
+    const auto e = s.find_last_not_of(" \t\r\n");
+    return s.substr(b, e - b + 1);
+}
+
+std::string read_small_file(const std::filesystem::path& p) {
+    std::ifstream in(p);
+    std::string line;
+    if (in && std::getline(in, line))
+        return trim_ascii(line);
+    return {};
+}
+
+struct MountEntry {
+    std::string mount_point, fs_type, source;
+};
+
+// Mount points in mountinfo escape space, tab, newline and backslash as octal (\040 \011 \012 \134).
+std::string unescape_mount(const std::string& s) {
+    std::string o;
+    for (std::size_t i = 0; i < s.size(); ++i) {
+        if (s[i] == '\\' && i + 3 < s.size() && std::isdigit(static_cast<unsigned char>(s[i + 1]))) {
+            o.push_back(static_cast<char>(std::strtol(s.substr(i + 1, 3).c_str(), nullptr, 8)));
+            i += 3;
+        } else {
+            o.push_back(s[i]);
+        }
+    }
+    return o;
+}
+
+// "<id> <parent> <maj:min> <root> <mount point> <opts> [optional...] - <fstype> <source> <super opts>"
+std::vector<MountEntry> read_mounts() {
+    std::vector<MountEntry> v;
+    std::ifstream in("/proc/self/mountinfo");
+    std::string line;
+    while (std::getline(in, line)) {
+        const auto dash = line.find(" - ");
+        if (dash == std::string::npos)
+            continue;
+        std::istringstream pre(line.substr(0, dash)), post(line.substr(dash + 3));
+        std::string id, parent, mm, root, mp;
+        pre >> id >> parent >> mm >> root >> mp;
+        MountEntry e;
+        post >> e.fs_type >> e.source;
+        e.mount_point = unescape_mount(mp);
+        if (!e.mount_point.empty())
+            v.push_back(std::move(e));
+    }
+    return v;
+}
+
+// Longest mount point that is a path prefix of `path` (whole components, not substrings).
+const MountEntry* mount_for(const std::vector<MountEntry>& mounts, const std::string& path) {
+    const MountEntry* best = nullptr;
+    for (const auto& m : mounts) {
+        const std::string& mp = m.mount_point;
+        const bool prefix = path.compare(0, mp.size(), mp) == 0 &&
+                            (mp == "/" || path.size() == mp.size() || path[mp.size()] == '/');
+        if (prefix && (!best || mp.size() >= best->mount_point.size()))
+            best = &m;
+    }
+    return best;
+}
+
+bool is_host_share(const std::string& fs_type) {
+    static const char* const kShare[] = {"drvfs", "9p", "nfs", "nfs4", "cifs", "virtiofs"};
+    for (const char* t : kShare)
+        if (fs_type == t)
+            return true;
+    return false;
+}
+
+bool is_data_filesystem(const MountEntry& m) {
+    if (m.source.rfind("/dev/", 0) == 0)
+        return m.fs_type != "squashfs";
+    return is_host_share(m.fs_type) || m.fs_type == "fuseblk" || m.fs_type == "ntfs3" || m.fs_type == "exfat";
+}
+
+// Block-device facts from sysfs for st_dev of a path (read-only; nothing is opened under /dev).
+void query_block_device(dev_t dev, json& out) {
+    namespace fsys = std::filesystem;
+    if (major(dev) == 0)
+        return;  // anonymous device (network / virtual filesystem): no block device behind it
+    std::error_code ec;
+    const fsys::path link =
+        fsys::path("/sys/dev/block") / (std::to_string(major(dev)) + ":" + std::to_string(minor(dev)));
+    const fsys::path real = fsys::canonical(link, ec);
+    if (ec)
+        return;
+    fsys::path disk = real;
+    if (fsys::exists(real / "partition", ec))
+        disk = real.parent_path();  // a partition: queue/ and device/ live on the whole disk
+    const std::string rs = disk.string();
+    if (rs.find("/usb") != std::string::npos)
+        out["bus_type"] = "USB";
+    else if (rs.find("/nvme") != std::string::npos)
+        out["bus_type"] = "NVMe";
+    else if (rs.find("/virtio") != std::string::npos)
+        out["bus_type"] = "Virtual";
+    else if (rs.find("/ata") != std::string::npos)
+        out["bus_type"] = "SATA/ATA";
+    else if (rs.find("/mmc") != std::string::npos)
+        out["bus_type"] = "SD/MMC";
+    const std::string rot = read_small_file(disk / "queue" / "rotational");
+    if (rot == "0" || rot == "1")
+        out["rotational"] = rot == "1";
+    const std::string rem = read_small_file(disk / "removable");
+    if (rem == "0" || rem == "1")
+        out["removable_media"] = rem == "1";
+    if (const auto v = read_small_file(disk / "device" / "vendor"); !v.empty())
+        out["device_vendor"] = v;
+    if (const auto m = read_small_file(disk / "device" / "model"); !m.empty())
+        out["device_product"] = m;  // model string only; serial is never read
+}
+#endif
+
+json describe_path(const std::string& path) {
+    json j;
+    j["root"] = path;
+    j["drive_type"] = unknown();
+    j["filesystem"] = unknown();
+    j["total_bytes"] = unknown();
+    j["free_bytes"] = unknown();
+    j["bus_type"] = unknown();
+    j["removable_media"] = unknown();
+    j["rotational"] = unknown();
+    j["device_vendor"] = unknown();
+    j["device_product"] = unknown();
+    struct statvfs sv{};
+    if (::statvfs(path.c_str(), &sv) == 0) {
+        j["total_bytes"] = static_cast<std::uint64_t>(sv.f_blocks) * sv.f_frsize;
+        j["free_bytes"] = static_cast<std::uint64_t>(sv.f_bavail) * sv.f_frsize;
+    }
+#if defined(__linux__)
+    std::error_code ec;
+    const std::string canon = std::filesystem::canonical(path, ec).string();
+    if (!ec) {
+        const auto mounts = read_mounts();
+        if (const MountEntry* m = mount_for(mounts, canon)) {
+            j["filesystem"] = m->fs_type;
+            j["mount_point"] = m->mount_point;
+            j["drive_type"] = is_host_share(m->fs_type) ? "network/host-share" : "fixed";
+        }
+    }
+    struct stat st{};
+    if (::stat(path.c_str(), &st) == 0) {
+        query_block_device(st.st_dev, j);
+        if (j["removable_media"] == true)
+            j["drive_type"] = "removable";
+    }
+#endif
+    return j;
+}
+
+}  // namespace
+#endif
+
 json storage_report(const std::string& storage_root, bool list_volumes) {
     json r;
     r["requested_path"] = storage_root.empty() ? unknown() : json(storage_root);
@@ -143,7 +324,22 @@ json storage_report(const std::string& storage_root, bool list_volumes) {
     }
     SetErrorMode(old_mode);
 #else
+    if (!storage_root.empty()) {
+        std::error_code ec;
+        if (!std::filesystem::exists(storage_root, ec))
+            r["requested_volume"] = {{"error", "path does not exist or cannot be resolved"}};
+        else
+            r["requested_volume"] = describe_path(storage_root);
+    }
+#if defined(__linux__)
+    if (list_volumes) {
+        for (const auto& m : read_mounts())
+            if (is_data_filesystem(m))
+                r["volumes"].push_back(describe_path(m.mount_point));
+    }
+#else
     (void)list_volumes;
+#endif
 #endif
     return r;
 }
@@ -160,7 +356,77 @@ json read_benchmark(const std::string& file, const ReadBenchOptions& opt) {
     r["mib_s_min"] = unknown();
     r["mib_s_max"] = unknown();
 #ifndef _WIN32
-    r["status"] = "unsupported";
+    const int fd = ::open(file.c_str(), O_RDONLY | O_CLOEXEC);
+    if (fd < 0) {
+        r["status"] = "error";
+        r["error"] = "cannot open file for reading (errno " + std::to_string(errno) + ")";
+        return r;
+    }
+    struct stat st{};
+    if (::fstat(fd, &st) != 0 || !S_ISREG(st.st_mode) || st.st_size <= 0) {
+        ::close(fd);
+        r["status"] = "error";
+        r["error"] = "not a readable, non-empty regular file";
+        return r;
+    }
+    const std::uint64_t file_size = static_cast<std::uint64_t>(st.st_size);
+    const std::uint64_t target = std::min<std::uint64_t>(file_size, opt.max_bytes);
+    r["file_size_bytes"] = file_size;
+#if defined(__linux__)
+    (void)::posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
+#elif defined(__APPLE__)
+    (void)::fcntl(fd, F_RDAHEAD, 1);
+#endif
+    std::vector<char> buf(opt.buffer_bytes);
+    std::vector<double> rates;
+    for (std::uint32_t s = 0; s < opt.repeats; ++s) {
+        std::uint64_t total = 0;
+        const auto t0 = std::chrono::steady_clock::now();
+        bool failed = false;
+        int fail_errno = 0;
+        while (total < target) {
+            const std::size_t want =
+                static_cast<std::size_t>(std::min<std::uint64_t>(buf.size(), target - total));
+            const ssize_t got = ::pread(fd, buf.data(), want, static_cast<off_t>(total));
+            if (got < 0) {
+                if (errno == EINTR)
+                    continue;
+                failed = true;
+                fail_errno = errno;
+                break;
+            }
+            if (got == 0)
+                break;
+            total += static_cast<std::uint64_t>(got);
+        }
+        const double secs = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
+        json sample = {{"bytes_read", total}, {"elapsed_ms", secs * 1000.0}};
+        if (failed) {
+            sample["error"] = "read failed (errno " + std::to_string(fail_errno) + ")";
+        } else if (secs > 0 && total > 0) {
+            const double mibs = (static_cast<double>(total) / (1024.0 * 1024.0)) / secs;
+            sample["mib_s"] = mibs;
+            rates.push_back(mibs);
+        }
+        r["samples"].push_back(std::move(sample));
+        if (failed)
+            break;
+    }
+    ::close(fd);
+    if (rates.empty()) {
+        r["status"] = "error";
+        r["error"] = "no successful sample";
+        return r;
+    }
+    std::vector<double> sorted = rates;
+    std::sort(sorted.begin(), sorted.end());
+    const size_t n = sorted.size();
+    r["mib_s_median"] = n % 2 ? sorted[n / 2] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2.0;
+    r["mib_s_min"] = sorted.front();
+    r["mib_s_max"] = sorted.back();
+    r["status"] = "ok";
+    r["note"] =
+        "The OS page cache can inflate repeated samples; cold/warm state is not controlled (unknown).";
     return r;
 #else
     const std::wstring w = win::widen(file);

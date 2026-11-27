@@ -1,0 +1,203 @@
+{
+  "cpu": {
+    "family": 25,
+    "features": {
+      "aes": true,
+      "avx": true,
+      "avx2": true,
+      "avx512_vnni": false,
+      "avx512bw": false,
+      "avx512f": false,
+      "avx512vl": false,
+      "avx_vnni": false,
+      "bmi1": true,
+      "bmi2": true,
+      "f16c": true,
+      "fma3": true,
+      "os_ymm_state_enabled": true,
+      "os_zmm_state_enabled": false,
+      "popcnt": true,
+      "sha": true,
+      "sse4_2": true
+    },
+    "logical_processors": 6,
+    "model": 68,
+    "name": "AMD Ryzen 7 7735HS with Radeon Graphics",
+    "nominal_mhz": 3193,
+    "physical_cores": 3,
+    "stepping": 1,
+    "vendor": "AuthenticAMD"
+  },
+  "gpu": {
+    "adapters": [],
+    "display_driver_registry": [],
+    "dxgi_available": false
+  },
+  "hcsinfer_version": "1.1.0-rc.1",
+  "memory": {
+    "available_physical_bytes": 11962306560,
+    "bios_uma_reservation": "unknown",
+    "channel_configuration": "unknown",
+    "commit_available_bytes": 14261575680,
+    "commit_limit_bytes": 14862565376,
+    "installed_physical_bytes": "unknown",
+    "memory_load_percent": 5,
+    "total_physical_bytes": 12545265664
+  },
+  "options": {
+    "no_vulkan": true
+  },
+  "os": {
+    "architecture": "x64",
+    "build": "#1 SMP PREEMPT_DYNAMIC Tue Oct 27 00:24:11 UTC 2026",
+    "display_version": "26.04",
+    "name": "linux",
+    "product_name_registry": "Ubuntu 26.04.1 LTS",
+    "ubr": "unknown",
+    "version": "6.18.58.1-microsoft-standard-WSL2"
+  },
+  "planner": {
+    "devices": [],
+    "kernel_hashes": "unknown (HCS Vulkan kernels are not built into this binary)",
+    "policy": {
+      "allow_unbaselined": false,
+      "max_spread": 0.25,
+      "min_identical_runs": 3,
+      "min_speedup": 1.05
+    },
+    "profile": {
+      "entries": 0,
+      "path": "<scratch>/data/kernel-profile.json",
+      "status": "missing (run `HCSInfer tune`)"
+    },
+    "rule": "unknown = CPU; a kernel is promoted only after correctness vs the CPU oracle AND 3 identical runs AND >= 1.05x vs the baseline; default-enabled additionally needs a MEASURED upstream GGML Vulkan baseline >= 1.05x"
+  },
+  "schema_version": 1,
+  "storage": {
+    "requested_path": "unknown",
+    "requested_volume": "unknown",
+    "volumes": [
+      {
+        "bus_type": "unknown",
+        "device_product": "Virtual Disk",
+        "device_vendor": "Msft",
+        "drive_type": "fixed",
+        "filesystem": "ext4",
+        "free_bytes": 0,
+        "mount_point": "/usr/src/linux-headers-6.18.58.1-microsoft-standard-WSL2",
+        "removable_media": false,
+        "root": "/usr/src/linux-headers-6.18.58.1-microsoft-standard-WSL2",
+        "rotational": true,
+        "total_bytes": 101527552
+      },
+      {
+        "bus_type": "unknown",
+        "device_product": "unknown",
+        "device_vendor": "unknown",
+        "drive_type": "network/host-share",
+        "filesystem": "9p",
+        "free_bytes": 65212604416,
+        "mount_point": "/usr/lib/wsl/drivers",
+        "removable_media": "unknown",
+        "root": "/usr/lib/wsl/drivers",
+        "rotational": "unknown",
+        "total_bytes": 998823161856
+      },
+      {
+        "bus_type": "unknown",
+        "device_product": "Virtual Disk",
+        "device_vendor": "Msft",
+        "drive_type": "fixed",
+        "filesystem": "ext4",
+        "free_bytes": 762792845312,
+        "mount_point": "/",
+        "removable_media": false,
+        "root": "/",
+        "rotational": true,
+        "total_bytes": 1081101176832
+      },
+      {
+        "bus_type": "unknown",
+        "device_product": "Virtual Disk",
+        "device_vendor": "Msft",
+        "drive_type": "fixed",
+        "filesystem": "ext4",
+        "free_bytes": 762792845312,
+        "mount_point": "/mnt/wslg/distro",
+        "removable_media": false,
+        "root": "/mnt/wslg/distro",
+        "rotational": true,
+        "total_bytes": 1081101176832
+      },
+      {
+        "bus_type": "unknown",
+        "device_product": "unknown",
+        "device_vendor": "unknown",
+        "drive_type": "network/host-share",
+        "filesystem": "9p",
+        "free_bytes": 65212604416,
+        "mount_point": "/mnt/c",
+        "removable_media": "unknown",
+        "root": "/mnt/c",
+        "rotational": "unknown",
+        "total_bytes": 998823161856
+      },
+      {
+        "bus_type": "unknown",
+        "device_product": "unknown",
+        "device_vendor": "unknown",
+        "drive_type": "network/host-share",
+        "filesystem": "9p",
+        "free_bytes": 218530226176,
+        "mount_point": "/mnt/d",
+        "removable_media": "unknown",
+        "root": "/mnt/d",
+        "rotational": "unknown",
+        "total_bytes": 500105736192
+      },
+      {
+        "bus_type": "unknown",
+        "device_product": "unknown",
+        "device_vendor": "unknown",
+        "drive_type": "network/host-share",
+        "filesystem": "9p",
+        "free_bytes": 95278120960,
+        "mount_point": "/mnt/e",
+        "removable_media": "unknown",
+        "root": "/mnt/e",
+        "rotational": "unknown",
+        "total_bytes": 500105736192
+      }
+    ]
+  },
+  "summary": {
+    "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+    "cpu_features": [
+      "aes",
+      "avx",
+      "avx2",
+      "bmi1",
+      "bmi2",
+      "f16c",
+      "fma3",
+      "popcnt",
+      "sha",
+      "sse4_2"
+    ],
+    "driver_version": "unknown",
+    "gpu": "unknown",
+    "gpu_device_id": "unknown",
+    "gpu_vendor_id": "unknown",
+    "os_build": "linux 6.18.58.1-microsoft-standard-WSL2",
+    "ram_bytes": 12545265664,
+    "uma_reservation_bytes": "unknown",
+    "vulkan_api_version": "unknown",
+    "vulkan_status": "skipped"
+  },
+  "timestamp_utc": "2026-11-27T09:48:30Z",
+  "vulkan": {
+    "devices": [],
+    "reason": "--no-vulkan (CPU-only mode; the Vulkan loader was not loaded)",
+    "status": "skipped"
+  }
+}

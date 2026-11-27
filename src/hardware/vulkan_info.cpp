@@ -1,4 +1,4 @@
-// Vulkan capability report. vulkan-1.dll is loaded dynamically; nothing links against a Vulkan
+// Vulkan capability report. The Vulkan loader is opened dynamically; nothing links against a Vulkan
 // import library, so the doctor works (and reports "unavailable") on machines without Vulkan.
 #include <vulkan/vulkan_core.h>
 
@@ -9,13 +9,8 @@
 #include <string>
 #include <vector>
 
+#include "hcs/hardware/dynlib.hpp"
 #include "hw.hpp"
-
-#ifdef _WIN32
-#include <windows.h>
-
-#include "win_util.hpp"
-#endif
 
 namespace hcs::hardware {
 
@@ -443,33 +438,25 @@ json vulkan_report(bool skip) {
     json r;
     if (skip) {
         r["status"] = "skipped";
-        r["reason"] = "--no-vulkan (CPU-only mode; vulkan-1.dll was not loaded)";
+        r["reason"] = "--no-vulkan (CPU-only mode; the Vulkan loader was not loaded)";
         r["devices"] = json::array();
         return r;
     }
     r["devices"] = json::array();
-#ifndef _WIN32
-    r["status"] = "unavailable";
-    r["reason"] = "dynamic Vulkan loading is only implemented for Windows in this build";
-    return r;
-#else
-    HMODULE lib = LoadLibraryExW(L"vulkan-1.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-    if (!lib) {
+    const VulkanLoader& loader = vulkan_loader();
+    if (!loader.loaded()) {
         r["status"] = "unavailable";
-        r["reason"] = "vulkan-1.dll (Vulkan loader) not found; install/update the GPU driver";
+        r["reason"] = std::string(vulkan_loader_name()) +
+                      " (Vulkan loader) not found; install/update the GPU driver (tried: " + loader.tried +
+                      ")";
         return r;
     }
-    {
-        wchar_t path[MAX_PATH]{};
-        const DWORD n = GetModuleFileNameW(lib, path, MAX_PATH);
-        r["loader_path"] = n > 0 && n < MAX_PATH ? json(win::narrow(std::wstring(path, n))) : unknown();
-    }
+    r["loader_path"] = loader.path.empty() ? unknown() : json(loader.path);
     Api api;
-    api.gipa = reinterpret_cast<PFN_vkGetInstanceProcAddr>(
-        reinterpret_cast<void*>(GetProcAddress(lib, "vkGetInstanceProcAddr")));
+    api.gipa = reinterpret_cast<PFN_vkGetInstanceProcAddr>(loader.get_instance_proc_addr);
     if (!api.gipa) {
         r["status"] = "unavailable";
-        r["reason"] = "vkGetInstanceProcAddr not exported by vulkan-1.dll";
+        r["reason"] = std::string("vkGetInstanceProcAddr not exported by ") + vulkan_loader_name();
         return r;
     }
     api.create_instance = load<PFN_vkCreateInstance>(api, nullptr, "vkCreateInstance");
@@ -540,9 +527,8 @@ json vulkan_report(bool skip) {
         r["reason"] = "Vulkan loader works but reports no physical devices";
     if (api.destroy_instance)
         api.destroy_instance(inst, nullptr);
-    // vulkan-1.dll is intentionally not unloaded (driver threads may still be shutting down).
+    // The loader is intentionally never unloaded (driver threads may still be shutting down).
     return r;
-#endif
 }
 
 }  // namespace hcs::hardware

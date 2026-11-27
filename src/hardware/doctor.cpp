@@ -57,6 +57,10 @@ json build_summary(const json& r) {
         if (os["ubr"].is_number())
             b += "." + std::to_string(os["ubr"].get<std::uint32_t>());
         s["os_build"] = b;
+    } else if (os["build"].is_string() && os["build"].get<std::string>() != "unknown") {
+        // POSIX: kernel release (e.g. "6.8.0-45-generic"), the closest analogue of a Windows build number.
+        s["os_build"] =
+            os.value("name", std::string("unknown")) + " " + os.value("version", std::string("unknown"));
     } else {
         s["os_build"] = unknown();
     }

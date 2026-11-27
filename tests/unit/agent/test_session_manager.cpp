@@ -831,8 +831,9 @@ TEST(SessionPolicy, UnknownToolAndDynamicCodeAndPathEscapeAreAllViolations) {
         const std::string id = f.create_ok();
         EXPECT_EQ(f.wait_terminal(id).state, SessionState::PolicyKilled) << c.code;
         for (const auto& e : f.all_events(id))
-            if (e.kind == "policy_violation" && !c.rule.empty())
+            if (e.kind == "policy_violation" && !c.rule.empty()) {
                 EXPECT_EQ(e.data["rule"], c.rule) << c.code;
+            }
     }
 }
 
@@ -854,8 +855,9 @@ TEST(SessionPolicy, WithoutEnforcementViolationsAreRecordedButNothingIsKilled) {
     ASSERT_TRUE(child);
     EXPECT_EQ(child->terminate_calls.load(), 1) << "only the final reap, never a policy kill";
     for (const auto& e : f.all_events(id))
-        if (e.kind == "policy_violation")
+        if (e.kind == "policy_violation") {
             EXPECT_EQ(e.data["enforced"], false);
+        }
 }
 
 TEST(SessionPolicy, AllowedToolCallsAreNotViolations) {
@@ -894,8 +896,9 @@ TEST(SessionExit, OutcomeDependsOnExitCodeAndAgentEnd) {
         const std::string id = f.create_ok();
         const SessionInfo info = f.wait_terminal(id);
         EXPECT_EQ(info.state, c.state) << "code " << c.code << ", " << c.lines.size() << " lines";
-        if (c.state == SessionState::Failed)
+        if (c.state == SessionState::Failed) {
             EXPECT_FALSE(info.end_reason.empty());
+        }
     }
 }
 

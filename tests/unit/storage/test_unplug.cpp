@@ -72,7 +72,8 @@ TEST(Unplug, WriterSourceVanishesMidStreamAtEveryChunkBoundaryLeavesNoPartialFil
     // Source dies before, exactly at, and just past several chunk boundaries (batches of 2 threads => 128
     // KiB).
     for (std::uint64_t limit :
-         {0ull, 1ull, 65535ull, 65536ull, 65537ull, 131072ull, 200000ull, 400000ull, data.size() - 1}) {
+         std::initializer_list<std::uint64_t>{0ull, 1ull, 65535ull, 65536ull, 65537ull, 131072ull, 200000ull,
+                                              400000ull, static_cast<std::uint64_t>(data.size() - 1)}) {
         VanishingSource bad(mem, limit);
         Result<WriteStats> r = Error(ErrorCode::Internal, "unset");
         ASSERT_NO_THROW(r = write_hcsmodel(bad, "vanish", td / "out.hcsmodel", small_chunks())) << limit;

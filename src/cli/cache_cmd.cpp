@@ -70,7 +70,11 @@ int fail(std::ostream& err, ErrorCode c, const std::string& m) {
 }
 
 bool is_link(const fs::file_status& st) {
+#ifdef _WIN32
     return st.type() == fs::file_type::symlink || st.type() == fs::file_type::junction;
+#else
+    return st.type() == fs::file_type::symlink;  // file_type::junction is an MSVC STL extension
+#endif
 }
 
 // "<name>.tmp.<digits>" with a non-empty <name>: the exact shape atomic_write_file leaves behind.
@@ -83,6 +87,8 @@ bool is_orphaned_temp_name(const std::string& name) {
 }
 
 struct Group {
+    Group() = default;
+    explicit Group(std::string n) : name(std::move(n)) {}
     std::string name;
     bool exists = false;
     std::uint64_t entries = 0;

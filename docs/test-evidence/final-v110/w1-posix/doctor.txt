@@ -1,0 +1,46 @@
+HCSInfer doctor  (schema 1, hcsinfer 1.1.0-rc.1, 2026-11-27T09:48:30Z)
+Values reported as 'unknown' could not be detected; nothing is guessed.
+
+System
+  os:                        linux 6.18.58.1-microsoft-standard-WSL2 build linux 6.18.58.1-microsoft-standard-WSL2 (26.04)
+  cpu:                       AMD Ryzen 7 7735HS with Radeon Graphics
+  cpu vendor/family/model:   AuthenticAMD / 25 / 68 (stepping 1)
+  cores / threads:           3 / 6
+  nominal clock:             3193 MHz
+  cpu features (usable):     aes, avx, avx2, bmi1, bmi2, f16c, fma3, popcnt, sha, sse4_2
+  ram total:                 11.68 GiB
+  ram installed:             unknown
+  ram available:             11.14 GiB
+  commit limit:              13.84 GiB
+  channels / BIOS UMA:       unknown / unknown
+
+Graphics (DXGI / driver registry)
+  adapters:                  unknown (DXGI unavailable)
+
+Vulkan
+  status:                    ok
+  instance version:          1.4.341
+  device 0:                  llvmpipe (LLVM 21.1.8, 256 bits) [0x10005:0x0000, cpu]
+    api version:               1.4.335
+    driver:                    llvmpipe Mesa 26.0.8-1ubuntu0.3 (LLVM 21.1.8) (id other_or_unknown)
+    subgroup size:             8 (min 8, max 8)
+    subgroup ops:              basic, vote, arithmetic, ballot, shuffle, shuffle_relative, clustered, quad, rotate, rotate_clustered
+    fp16 / int8 / int16:       yes / yes / yes
+    16bit / 8bit storage:      yes / yes
+    int dot product:           yes
+    cooperative matrix:        yes
+    memory budget ext:         yes
+    shared mem / invocations:  32768 B / 1024
+    max alloc size:            2.00 GiB
+    heap 0:                    11.68 GiB device-local, budget 11.68 GiB, usage 568.18 MiB
+    queue family 0:            x1 graphics, compute, transfer, sparse_binding
+
+Storage
+  requested volume:          none (use --storage-root <path> or --read-file <file>)
+  /usr/src/linux-headers-6.18.58.1-microsoft-standard-WSL2 fixed, ext4, bus unknown, rotational yes, 96.82 MiB total
+  /usr/lib/wsl/drivers       network/host-share, 9p, bus unknown, rotational unknown, 930.23 GiB total
+  /                          fixed, ext4, bus unknown, rotational yes, 1006.85 GiB total
+  /mnt/wslg/distro           fixed, ext4, bus unknown, rotational yes, 1006.85 GiB total
+  /mnt/c                     network/host-share, 9p, bus unknown, rotational unknown, 930.23 GiB total
+  /mnt/d                     network/host-share, 9p, bus unknown, rotational unknown, 465.76 GiB total
+  /mnt/e                     network/host-share, 9p, bus unknown, rotational unknown, 465.76 GiB total

@@ -1,0 +1,23 @@
+{
+  "backend": "cpu",
+  "device": "CPU",
+  "model": "/mnt/d/HCSModels/llm/LFM3-Omni-2B/LFM3-Omni-2B-Q8_0.gguf",
+  "offloaded_layers": 0,
+  "results": [
+    {
+      "metrics": {
+        "decode_tokens": 7,
+        "decode_tokens_per_second": 9.871267600567082,
+        "load_ms": 16492.729067,
+        "prompt_tokens": 23,
+        "prompt_tokens_per_second": 39.53442337874658,
+        "ttft_ms": 598.63353
+      },
+      "prompt_chars": 47,
+      "state": "succeeded",
+      "text": "HCSInfer smoke test passed."
+    }
+  ],
+  "schema_version": 1,
+  "total_layers": 24
+}

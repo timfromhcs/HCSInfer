@@ -1,12 +1,18 @@
-// Negative tests of the socket transport (HttpServer over cpp-httplib) with a raw Winsock client: oversized
-// headers, malformed request lines, bad Content-Length, pipelining and slowloris. FakeTextEngine = plumbing
-// only. Windows-only helper (the product target); other platforms skip.
+// Negative tests of the socket transport (HttpServer over cpp-httplib) with a raw TCP client (Winsock on
+// Windows, BSD sockets elsewhere): oversized headers, malformed request lines, bad Content-Length, pipelining
+// and slowloris. FakeTextEngine = plumbing only.
 #include <gtest/gtest.h>
 #include <httplib.h>
 
 #include <chrono>
 #include <string>
 #include <thread>
+
+#ifndef _WIN32
+#include <sys/select.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#endif
 
 #include "api_fixture.hpp"
 #include "hcs/api/http_api.hpp"
@@ -18,6 +24,21 @@ using namespace std::chrono_literals;
 namespace {
 
 #ifdef _WIN32
+// Winsock comes in through <httplib.h>.
+inline int nfds_for(SOCKET) {
+    return 0;  // ignored by Winsock's select()
+}
+constexpr int kSendFlags = 0;
+#else
+using SOCKET = int;  // INVALID_SOCKET (-1) is defined by <httplib.h> on POSIX
+inline int closesocket(SOCKET s) {
+    return ::close(s);
+}
+inline int nfds_for(SOCKET s) {
+    return s + 1;
+}
+constexpr int kSendFlags = MSG_NOSIGNAL;  // a peer that closed must not raise SIGPIPE in the test process
+#endif
 
 const char* kTok = "negative-token-0123456789abcdef";
 
@@ -72,7 +93,7 @@ SOCKET connect_raw(int port) {
 bool send_all(SOCKET s, const std::string& d) {
     std::size_t off = 0;
     while (off < d.size()) {
-        const int n = ::send(s, d.data() + off, static_cast<int>(d.size() - off), 0);
+        const int n = ::send(s, d.data() + off, static_cast<int>(d.size() - off), kSendFlags);
         if (n <= 0)
             return false;
         off += static_cast<std::size_t>(n);
@@ -93,7 +114,7 @@ Reply read_reply(SOCKET s, int total_ms) {
         FD_ZERO(&rd);
         FD_SET(s, &rd);
         timeval tv{0, 50 * 1000};
-        if (::select(0, &rd, nullptr, nullptr, &tv) <= 0)
+        if (::select(nfds_for(s), &rd, nullptr, nullptr, &tv) <= 0)
             continue;
         char b[4096];
         const int n = ::recv(s, b, sizeof(b), 0);
@@ -143,14 +164,9 @@ void expect_alive(int port) {
 
 const std::string kHost = "Host: 127.0.0.1\r\n";
 
-#endif
-
 }  // namespace
 
 TEST(TransportNegative, OversizedHeaderIsRejectedAndServerSurvives) {
-#ifndef _WIN32
-    GTEST_SKIP() << "Windows-only raw socket helper";
-#else
     Srv s;
     const std::string huge(200 * 1024, 'A');
     const auto r =
@@ -172,13 +188,9 @@ TEST(TransportNegative, OversizedHeaderIsRejectedAndServerSurvives) {
     EXPECT_TRUE(st3 == 0 || st3 == 404 || st3 >= 400) << st3;
     EXPECT_NE(st3, 200);
     expect_alive(s.port);
-#endif
 }
 
 TEST(TransportNegative, MalformedRequestLinesAreNeverServedAsSuccess) {
-#ifndef _WIN32
-    GTEST_SKIP() << "Windows-only raw socket helper";
-#else
     Srv s;
     const std::string cases[] = {
         "GARBAGE\r\n\r\n",
@@ -196,17 +208,14 @@ TEST(TransportNegative, MalformedRequestLinesAreNeverServedAsSuccess) {
         // A tolerant parse of bare-LF / leading blank lines may legitimately answer 200 for the real health
         // request; what must never happen is a 5xx, a crash or a hang. Pure garbage must not be a 200.
         EXPECT_LT(st, 500) << "request: " << c.substr(0, 30);
-        if (c.rfind("GARBAGE", 0) == 0 || c == "GET\r\n\r\n")
+        if (c.rfind("GARBAGE", 0) == 0 || c == "GET\r\n\r\n") {
             EXPECT_NE(st, 200);
+        }
     }
     expect_alive(s.port);
-#endif
 }
 
 TEST(TransportNegative, BadContentLengthIsRejectedOrIgnoredSafely) {
-#ifndef _WIN32
-    GTEST_SKIP() << "Windows-only raw socket helper";
-#else
     Srv s;
     const std::string auth = std::string("Authorization: Bearer ") + kTok + "\r\n";
     const std::string base =
@@ -235,13 +244,9 @@ TEST(TransportNegative, BadContentLengthIsRejectedOrIgnoredSafely) {
     EXPECT_TRUE(lie.closed || status_of(lie.data) >= 400)
         << "a body that never completed kept the worker busy";
     expect_alive(s.port);
-#endif
 }
 
 TEST(TransportNegative, PipelinedRequestsAreAnsweredInOrderOrDroppedNeverReordered) {
-#ifndef _WIN32
-    GTEST_SKIP() << "Windows-only raw socket helper";
-#else
     // cpp-httplib serves the first pipelined request and does not read ahead; HTTP/1.1 clients are not
     // required to pipeline. The contract: the first request is answered, anything that IS answered afterwards
     // is in request order with the right auth outcome, and the server keeps serving.
@@ -253,18 +258,15 @@ TEST(TransportNegative, PipelinedRequestsAreAnsweredInOrderOrDroppedNeverReorder
     ASSERT_GE(count_status_lines(r.data), 1u) << "the first pipelined request was not answered";
     EXPECT_EQ(status_of(r.data), 200);
     const auto second = r.data.find("HTTP/1.1 ", 9);
-    if (second != std::string::npos)
+    if (second != std::string::npos) {
         EXPECT_EQ(std::atoi(r.data.c_str() + second + 9), 401)
             << "second answer is not the unauthenticated /v1/models";
+    }
     EXPECT_LE(count_status_lines(r.data), 3u);
     expect_alive(s.port);
-#endif
 }
 
 TEST(TransportNegative, RequestBodyIsNotReinterpretedAsAPipelinedRequest) {
-#ifndef _WIN32
-    GTEST_SKIP() << "Windows-only raw socket helper";
-#else
     Srv s;
     // The POST body looks like a second request; only the real Content-Length bytes belong to the body.
     const std::string smuggled = "GET /hcs/v1/runtime HTTP/1.1\r\n" + kHost + "\r\n";
@@ -277,13 +279,9 @@ TEST(TransportNegative, RequestBodyIsNotReinterpretedAsAPipelinedRequest) {
     const auto r = roundtrip(s.port, req, 3000);
     EXPECT_LE(count_status_lines(r.data), 1u) << "the bytes after the body were executed as a second request";
     expect_alive(s.port);
-#endif
 }
 
 TEST(TransportNegative, SlowlorisHeaderDripIsCutOffInBoundedTime) {
-#ifndef _WIN32
-    GTEST_SKIP() << "Windows-only raw socket helper";
-#else
     Srv s;
     SOCKET c = connect_raw(s.port);
     ASSERT_NE(c, INVALID_SOCKET);
@@ -303,7 +301,7 @@ TEST(TransportNegative, SlowlorisHeaderDripIsCutOffInBoundedTime) {
         FD_ZERO(&rd);
         FD_SET(c, &rd);
         timeval tv{0, 600 * 1000};
-        if (::select(0, &rd, nullptr, nullptr, &tv) > 0) {
+        if (::select(nfds_for(c), &rd, nullptr, nullptr, &tv) > 0) {
             char b[256];
             const int n = ::recv(c, b, sizeof(b), 0);
             if (n <= 0) {
@@ -318,7 +316,6 @@ TEST(TransportNegative, SlowlorisHeaderDripIsCutOffInBoundedTime) {
     EXPECT_TRUE(cut) << "a client dripping header bytes kept a worker for " << ms
                      << " ms (no overall header deadline)";
     expect_alive(s.port);
-#endif
 }
 
 // The request deadline covers only RECEIVING a request. A request that is complete may run (and stream) far

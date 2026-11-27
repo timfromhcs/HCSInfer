@@ -1,0 +1,17 @@
+Test project D:/HCSInfer/.claude/worktrees/wf_ffb59603-9ee-2/build/windows-msvc-release
+
+100% tests passed out of 1003
+
+Label Time Summary:
+contract      =  69.48 sec*proc (277 tests)
+kernel-cpu    =   0.80 sec*proc (19 tests)
+parser        =   2.19 sec*proc (3 tests)
+tools         =  21.17 sec*proc (1 test)
+unit          =  92.57 sec*proc (704 tests)
+
+Total Test time (real) =  46.12 sec
+
+The following tests did not run:
+	720 - OrtRealRuntime.DynamicSyntheticModelMatchesNearestNeighbour (Skipped)
+	721 - OrtRealRuntime.FixedSizeSyntheticModelIsDetectedAndPadded (Skipped)
+	722 - OrtRealRuntime.ExplicitDirectMlWithoutTheProviderIsAnErrorNotASilentFallback (Skipped)

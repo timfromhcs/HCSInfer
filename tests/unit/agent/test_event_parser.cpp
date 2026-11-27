@@ -103,8 +103,8 @@ TEST(EventParser, WrongFieldTypesNeverThrow) {
         R"({"type":"tool_execution_start","args":null})",
         R"({"type":"tool_execution_end","toolName":{},"toolCallId":1,"isError":"yes","result":[]})",
         R"({"type":"tool_execution_end","result":{"content":{"a":1},"details":"x"}})",
-        R"({"type":"tool_execution_end","result":{"content":[1,null,{"type":7,"text":"z"},{"type":"text","text":9}],)"
-        R"("details":{"durationMs":"slow"}}})",
+        (R"({"type":"tool_execution_end","result":{"content":[1,null,{"type":7,"text":"z"},{"type":"text","text":9}],)"
+         R"("details":{"durationMs":"slow"}}})"),
         R"({"type":"tool_execution_end","result":{"content":[],"details":{"durationMs":1e300}}})",
         R"({"type":"tool_execution_end","result":{"content":[],"details":{"durationMs":-5.5}}})",
         R"({"type":"turn_end","message":{"role":1,"content":2,"usage":{"input":"a","output":[]},"stopReason":{}}})",

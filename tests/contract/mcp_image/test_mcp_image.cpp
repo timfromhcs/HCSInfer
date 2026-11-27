@@ -197,8 +197,9 @@ TEST(McpImage, ToolTimeoutCancelsTheRender) {
 
 TEST(McpImage, SchemaAdvertisesAllowLowQualityAndFlagIsForwarded) {
     for (const auto& t : tool_list(256))
-        if (t["name"] == "hcs.image.generate" || t["name"] == "hcs.image.edit")
+        if (t["name"] == "hcs.image.generate" || t["name"] == "hcs.image.edit") {
             EXPECT_TRUE(t["inputSchema"]["properties"].contains("allow_low_quality"));
+        }
     Mcp m;
     const auto path = m.fx.root / "sd15-mcp.gguf";
     test::write_file(path, test::fake_gguf());

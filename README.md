@@ -113,7 +113,10 @@ purpose.
 | `tune` CLI command and 8 HCSUDA-ported Vulkan kernels (tiled f32/f16/int8-dot/coopmat GEMM, softmax, LayerNorm, RMSNorm, RoPE) | Experimental | opt-in build (`HCS_ENABLE_VULKAN_KERNELS`); correct on the 680M and 1.3-26x a CPU baseline, but **none is default-enabled** (no upstream GGML baseline measured), not in the engines; [`docs/vulkan-kernels.md`](docs/vulkan-kernels.md) |
 | Overload protection (`/hcs/v1/shed`, watchdog, admission control) and telemetry probe | Experimental | 429/503 + `Retry-After`, kill switch and watchdog verified with injected memory pressure; [overload docs](docs/overload-protection.md) |
 | Further custom kernels / adaptive per-op scheduling | Planned | only with measured benefit |
-| Linux, other GPUs, ROCm | Unsupported | not built or tested |
+| Linux x86-64 CPU build (`linux-gcc-release`, `linux-clang-release`): serve, chat, models, doctor, benchmark, MCP | Experimental | builds warning-free with gcc 15 and clang 21 (`-Werror`); portable unit/contract set 962/963 in WSL2 (1 environment-caused failure); one real CPU generation run; no Linux GPU run, no packaging yet; [`docs/build.md`](docs/build.md#linux-and-macos-cpu-build-vulkan-on-linux) |
+| macOS arm64 CPU build | Planned | code paths and `macos-arm64-release` preset exist, never built or run (NOT RUN) |
+| Coding-agent sidecar and ONNX Runtime upscaler on Linux/macOS | Planned | return `Unsupported` there |
+| Other GPUs, ROCm | Unsupported | not built or tested |
 
 ## Requirements
 
