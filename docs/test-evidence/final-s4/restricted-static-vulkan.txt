@@ -1,0 +1,2 @@
+wrote D:\HCSInfer\docs\test-evidence\final-s4\restricted-static-vulkan.json
+RESTRICTED_VK_EXIT=0

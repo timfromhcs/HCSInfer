@@ -1,6 +1,6 @@
 # Security policy
 
-HCSInfer 1.0.0-rc.1 is a release candidate (no release has been published). Report vulnerabilities privately to the
+HCSInfer 1.1.0-rc.1 is a release candidate (no 1.1.0 release has been published). Report vulnerabilities privately to the
 repository owner (do not open a public issue with exploit details). Include version, OS build and a minimal
 reproducer; redact personal paths and tokens. Expect an acknowledgement, not an SLA: this is a one-maintainer project.
 

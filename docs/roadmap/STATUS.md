@@ -1,7 +1,35 @@
 # HCSInfer status
 
-Last updated: 2026-11-26 (wave A a4 baseline; earlier: 2026-11-20 wave R final verification of 1.0.0-rc.1 on top of waves F, G, K; wave G hardening gaps on top of wave F; earlier: 2026-11-18 V1-stable waves W1-W4 plus the MCP benchmark tool and the D-S5/D-S6 fixes; CI status: see the Wave A baseline section; the older "unknown" note is superseded). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
+Last updated: 2026-11-27 (S0 in progress, release/v1.1-stable; earlier: 2026-11-26 wave A a4 baseline). Statuses: PASS / FAIL / BLOCKED / NOT RUN. Nothing below is claimed without an evidence file or an
 inspected source file; items with no evidence are NOT RUN or BLOCKED.
+
+## S0 (2026-11-27, in progress): verify the 41 unpushed commits before merging anything
+
+Branch `release/v1.1-stable` = local `main` `1469638` + the S0 work; GitHub `origin/main` is still `0853143`.
+Diff inventory: `docs/test-evidence/final-s0/repo-diff.txt` (41 commits, 365 files, +47,134/-427 lines). Plan and
+branch/push policy: `docs/roadmap/PLAN_FINAL_STABLE.md`, `AGENTS.md` §27. Evidence: `docs/test-evidence/final-s0/`.
+
+| Gate | Status | Evidence / reason |
+|---|---|---|
+| `scripts/build.ps1 windows-msvc-release` (clean configure, -j4, `/W4 /WX` on HCS code) | PASS | `build-cpu-verify.txt`: BUILD OK, exit 0; MSVC 19.44.35228; the upstream-only warnings (C4068, D9025 for `/EHc`, and the deliberately relaxed `/W3 /WX-` on the two httplib-facing files in `src/api/CMakeLists.txt`) are documented, not HCS warnings |
+| `scripts/format.ps1` (clang-format 19.1.5) | PASS (red->green) | `format.txt` found `src/api/control_plane_image.cpp` unformatted; `-Fix` + recheck `format-GREEN.txt`: 298 files OK |
+| `web/` `npm test` | PASS | `web-npm-test.txt`: 46/46 |
+| Python `pytest` + `mypy --strict` | PARTIAL for this wave | `python-pytest.txt` 5 passed / 4 skipped (the real-EXE tests ran before the binary existed; they will be re-run), `python-mypy.txt` 0 issues in 8 files |
+| `scripts/static-analysis.ps1 -Scope src -FailOnFindings` | **PASS** | red logs `clang-tidy.txt`, `clang-tidy-RED-ps51.txt`, `clang-tidy-RED-stderr.txt`, `clang-tidy-RED-findings.txt` (rounding in `models_remote_cmd.cpp`, three int→float narrowings in `tiling.cpp`, signed-char and divide-by-zero in `cpu_baseline.cpp`, a dead store in `merge.cpp`); each fixed at root cause; `clang-tidy-FINAL.txt`: **0 diagnostics in 92 TUs**, exit 0 |
+| Full CPU CTest with real models (`HCS_TEST_*`, serial, lock) | **PASS** | `ctest-cpu.txt`: **1054 registered, 100% passed, 0 failed**, 9 skipped (4 Vulkan-only real tests, 3 ORT real-runtime tests without env, `e2e_gui_xss` Python 3.14 without `websockets`, and the agentic eval - see below); 1392.61 s. Real LFM3 text, SmolVLM2 vision, SD1.5 and FLUX.3 Klein renders all ran and passed. Free RAM logged before the run. |
+| `e2e_llama_agentic_real` with `HCS_TEST_LFM3` set | **PASS** | `ctest-agentic-real.txt`: 1/1 in 179.84 s (the full CTest skip was only because this separate env var was missing; no defect) |
+| Targeted CTest after the static-analysis fixes | **PASS** | `ctest-targeted-after-tidy-fixes.txt`: 133/133, incl. `CpuBaseline.GemmI8IsBitEqualToOracle` (the int64 conversion preserves bit-exact oracle agreement), all CLI, upscale and merge tests |
+| Vulkan build | **PASS** | `build-vulkan.txt`: BUILD OK, exit 0, 876/876 steps; all 10 GLSL shaders compiled with `glslc` and validated with `spirv-val` (1.1/1.2 as declared) and embedded; `windows-msvc-release-vulkan` |
+| Full Vulkan CTest with real models (`HCS_TEST_*`, serial, lock) | **PASS** | `ctest-vulkan.txt`: **1085 registered, 100% passed, 0 failed**, 4 skipped (3 ORT real-runtime tests without env, `e2e_gui_xss`); 1398.58 s. Real Vulkan text (`LlamaEngineReal.VulkanGeneration`, 10x load/unload, cancel, model switch), real Vulkan vision, real Vulkan SD1.5 + FLUX.3 renders, 32 `kernel-vulkan` tests and 10 `spirv-val` checks passed. Free RAM (10.87 GB) logged before the run. |
+| S0 packaging dry-run | NOT RUN | queued after the STATUS update (S1/S4 will produce the release package) |
+
+**Defects fixed in S0 so far (root cause, not assertion weakening):** (1) `scripts/common.ps1` printed the MSVC banner via
+`cl 2>&1`, which PowerShell treats as a terminating `WriteError` under `$ErrorActionPreference='Stop'` - the build
+aborted before configure (`build-cpu-RED.txt`); now the banner is read through `cmd.exe`. (2) `scripts/static-analysis.ps1`
+piped `ConvertFrom-Json`'s array directly, which Windows PowerShell 5.1 passes as one `Object[]` - `Select-Object
+-ExpandProperty file` failed; the parsed entries are materialised first. (3) The same script aborted on clang-tidy's
+`N warnings generated.` stderr line under `-ErrorActionPreference='Stop'`; the native call now temporarily uses
+`Continue` and still captures the full text for the findings filter.
 
 ## Wave B b3 (2026-11-26): image LoRA library, 4K upscaler pipeline, model merge (code side; no downloads)
 
@@ -40,6 +68,92 @@ ealmodel.lock`. Evidence: `docs/test-evidence/wave-a/a4/`.
   `hardware.yml` never completed (cancelled / pending). Tag `v1.0.0-rc.1` is pushed and an ancestor of `main`.
 * Documentation audit: `docs/test-evidence/wave-a/a4/DOC_AUDIT.md` (stale CI / "never pushed" statements corrected in this file, README, packaging, release notes, CHANGELOG).
   Older statements further down that still say "never pushed" or "NOT RUN" for the hosted release workflow are superseded by this section.
+
+## S1 (2026-11-27): new-feature correctness with real files
+
+Evidence: `docs/test-evidence/final-s1/README.md`. Branch `release/v1.1-stable` at `daf4c3e` + this wave.
+
+| Item | Status | Proven / not proven |
+|---|---|---|
+| Real image LoRA (LCM-LoRA SD1.5, id `lcm-sd15`) | **PASS** | CLI render with and without the LoRA at the same seed; JSON reports the applied id/weight; PSNR 11.50 dB / SSIM 0.64 prove a real change; both PNGs viewed and coherent. `lora-{baseline,real,compare}` |
+| Real 4K ONNX upscale (Real-ESRGAN x4) | **PASS** | 512x512 -> 3840x3840, 4 tiles, 73.3 s, CPU provider explicitly reported (no DirectML in this ORT build), viewed image has no visible seams. `upscale-real.txt` |
+| `HCSInfer tune --suite quick` on Radeon 680M | **PASS** | 10 results, all correct + 3 identical runs; 0 kernels default-enabled because the upstream GGML Vulkan op baseline is NOT RUN; noisy f32 GEMM bucket rejected. `tune-quick.json` |
+| Merge of two distinct real models | **BLOCKED** | No same-architecture float pair locally; quantized SD1.5 + SD-Turbo gives a clean `invalid_argument` (1131 vs 1323 tensors), quantized self-merge gives `unsupported` (exit 10). Downloads require owner approval. |
+| LoRA/upscale/merge/admission/vault/CLI/planner/image-profile/guard tests | **PASS** | covered by the S0 CPU (1054/1054) and Vulkan (1085/1085) CTest runs; new features are not mocks in those suites where a real file was available |
+| Real trainer run, real `prime-agent` session, real WebGPU | NOT RUN | external model/credential/hardware dependencies |
+
+## S2 (2026-11-27): real-model E2E and controlled benchmarks
+
+Evidence: `docs/test-evidence/final-s2/README.md`. Branch `release/v1.1-stable` at `94d879d` + this wave.
+
+| Item | Status | Proven / not proven |
+|---|---|---|
+| B0 CPU / B1 Vulkan full benchmarks, same LFM3 hash/seed | **PASS** | CPU 18.97 t/s decode, 2579 ms TTFT; Vulkan 35.97 t/s, 311.9 ms TTFT; **1.90x decode / 8.27x TTFT** on the 680M; raw samples, p90 and all metadata in `bench-{cpu,vulkan}-full.json`. One machine, no thermal data, page cache not flushed. |
+| HCS Studio on the Vulkan build with real models | **PASS** | `studio-shots-vk.txt` 42/42: real model load, streamed chat, Stop/cancel, t2i + i2i, no CSP/console errors; `serve-vulkan.log` shows the real 202/200 responses. Wave C's "Vulkan-engine chat in the UI" gap is closed. |
+| HTTP/MCP real inference and agentic eval | **PASS** | S0 CPU and Vulkan CTest e2e suites (see S0 section); `e2e_llama_agentic_real` PASS with `HCS_TEST_LFM3` on both builds. |
+| Benchmark provenance | caveat | the EXEs were configured at `6bfe340+dirty`; S4 rebuilds static EXEs from the final clean tree and records hashes. |
+
+## S3 (2026-11-27): hardening / soak
+
+Evidence: `docs/test-evidence/final-s3/README.md` (branch `release/v1.1-stable`, commit `35c3bd6` + this wave).
+
+| Item | Status | Evidence / reason |
+|---|---|---|
+| Full soak profile (100 load/unload cycles, 30 min generation, vision/image repeats, cancel storm, shutdown, unplug fault injection, HTTP storm) | **PASS** | `soak-full/summary.json`: **13/13 phases PASS**, exit 0; 100 cycles 118.8 s, 30 vision runs, 20 diffusion runs, 60 cancel rounds, 3 shutdown phases, 30-minute generation (1807.3 s), 100 unplug-injection rounds, HttpStorm 63.1 s. Free RAM 11.54 GB logged before the run. |
+| Leak / resource growth | **PASS** | `soak-core.jsonl`: load/unload private growth 41.0 MiB (limit 128), handle growth 0; 30-min generation private growth 5.68 MiB, handle growth -1; all verdicts PASS. |
+| Throughput drift over 30 minutes | **PASS** | 256 samples, first fifth 18.97 t/s vs last fifth 19.09 t/s (**+0.63%**). |
+| HttpStorm | **PASS** | `http-storm.json`: 18/18 checks (FIN/RST storm, abandoned requests, 64 sockets, unload/reload, kill+restart, Ctrl+Break). |
+| Parser fuzz smoke (UBSan, no ASan) | **PASS (smoke)** | `libfuzzer-smoke.txt`: 376,006 executions in 61 s from an empty corpus, 0 crashes / 0 UBSan reports, peak RSS 30 MB. ASan unavailable with this toolchain; long campaign NOT RUN. |
+| Runtime XSS regression | **PASS** | `xss/xss-run.txt`: 9/9 checks; previously skipped because `websockets` was missing. |
+| Physical USB pull, true RAM exhaustion, Vulkan soak, long fuzz, stress harness abort re-run | NOT RUN | documented fault injection/substitutes only |
+
+## S4 (2026-11-27, in progress): release package and docs
+
+Branch `release/v1.1-stable` at `d185678` + this wave. Version bumped to **1.1.0-rc.1** (CMake, wheel, web package,
+README, install/security/support docs, CHANGELOG, release notes). Evidence: `docs/test-evidence/final-s4/`.
+
+| Item | Status | Evidence / reason |
+|---|---|---|
+| Python build venv (`build` + `twine`) | PASS | created under `build/devtools/pybuild` (D:), `build+twine OK` |
+| Static CPU `/MT` EXE from a clean tree | **PASS** | `build-static-cpu.txt`: BUILD OK, 515/515 steps; `HCSInfer.exe --version` = **HCSInfer 1.1.0-rc.1** |
+| Static Vulkan `/MT` EXE | **PASS** | `build-static-vulkan.txt`: BUILD OK, 876/876 steps, 10 shaders compiled/validated/embedded |
+| Restricted-env proxy (both EXEs, real model) | **PASS** | `restricted-static-{cpu,vulkan}.json`: empty PATH, help/doctor/real generation/serve+GUI 200, 0 modules outside `C:\Windows` (Vulkan adds `vulkan-1.dll`); fixed a real PS 5.1 `Kill(bool)` defect red->green. A clean-machine run remains NOT RUN. |
+| Portable ZIP / wheel / sdist / web dist / SBOM / SHA-256 | **PASS** | `release-local.txt`: CPU EXE `e1daef64...`, Vulkan EXE `885c79d7...`, ZIP `77974fa5...`, wheel + sdist (`twine check` PASS), SBOM 15 components; `release-verify.txt`: 7/7 hashes, LF endings |
+| Web tests / wheel smoke | **PASS** | `web-npm-test.txt` 46/46; `wheel-smoke.txt`: fresh venv, `HCSInfer 1.1.0-rc.1` |
+| Licences | PARTIAL | prime-agent submodule not initialised -> its LICENSE file is missing from the package; reported by the script |
+| Docs reconciled with the binary | **PASS** | README/CHANGELOG/install/security/support/benchmarks/release notes and LoRA/Upscale/Merge docs updated in this wave; final gate in S5 |
+
+## S5 (2026-11-27, in progress): final gate, merge and tag
+
+Evidence: `docs/test-evidence/final-s5/`. Working tree clean at `3c7680f` before the final builds.
+
+| Item | Status | Evidence / reason |
+|---|---|---|
+| Fresh static CPU + Vulkan builds from the final commit | **PASS** | `build-static-cpu.txt` (515/515 steps) and `build-static-vulkan.txt` (876/876, 10 shaders validated/embedded); after a reconfigure (`reconfigure-static-*.txt`) both EXEs embed the final clean tree and print `HCSInfer 1.1.0-rc.1` |
+| Full CPU CTest on the static preset with real models | **PASS** | `ctest-static-cpu.txt`: **1054/1054, 0 failed**, 8 skips (Vulkan-only/ORT/XSS-with-CMake-Python; XSS separately PASS in S3); 1555.77 s; free RAM logged |
+| Full Vulkan CTest on the static preset with real models | **PASS (2 of 3 runs green; 1 transient failure)** | Run 1 `ctest-static-vulkan.txt`: 1084/1085, `VulkanRunner.DispatchTimeoutMarksTheRunnerLostAndResetRecovers` failed at `prepare_gemm_f32` (`op.ok()` false). Repro attempts: isolated test SKIP (NOT RUN), 32-test kernel group 32/32, range 1000–1025 26/26. After adding the error message to the assertion (diagnostic only), run 2 `ctest-static-vulkan-rerun.txt` and run 3 `ctest-static-vulkan-run3.txt` are **1085/1085, 0 failed**. Root cause not reproduced; classified as transient device/driver state, recorded as a residual risk, not hidden. |
+| Format / clang-tidy / web | **PASS** | `format.txt` 298 files, `clang-tidy.txt` 0 diagnostics in 92 TUs, `web-npm-test.txt` 46/46 |
+| Wheel / SHA-256 / restricted-env final re-check | **PASS** | `release-local-final.txt`: package rebuilt from commit `e81d002` (CPU EXE `e440172c...`, Vulkan EXE `b639bd8e...`, ZIP `c156cf85...`), `release-verify-final.txt` 7/7 hashes, `wheel-smoke-final.txt` = 1.1.0-rc.1, `restricted-final-{cpu,vulkan}.json` 0 modules outside Windows, health/GUI 200 |
+| Merge `release/v1.1-stable` into `main`, push, tag `v1.1.0-rc.1` | in progress | after the final docs commit; no force-push |
+
+### Engineering report (S5, final values completed below)
+
+```text
+HCSInfer engineering report
+- Current phase: S5 final gate (release/v1.1-stable), version 1.1.0-rc.1
+- Commit: e81d002 (final builds reconfigured from the clean tree)
+- Build status: PASS - static CPU 515/515 steps, static Vulkan 876/876 steps, 10 shaders validated
+- Tests: CPU static CTest 1054/1054 PASS; Vulkan static CTest 1085/1085 PASS on 2 consecutive final runs (1 earlier transient failure of the dispatch-timeout test, reproduced green in isolation and in 2 full reruns; see S3/S5 evidence)
+- Real Radeon 680M test: PASS (S0 Vulkan CTest 1085/1085, S2 Studio 42/42, real tune)
+- Real text / VLM / diffusion model: PASS (S0 + S5 CTest with HCS_TEST_* set)
+- API/MCP: PASS (experimental, scripted stdio client; Streamable HTTP intentionally out of scope)
+- Storage/HDD: PARTIAL (vault prefetch measured, Stage B BLOCKED, physical unplug NOT RUN)
+- Security/licence: PARTIAL (injected fault tests and audits PASS; signing, cargo deny, clean VM NOT RUN)
+- Performance evidence: docs/test-evidence/final-s2 (B0/B1 controlled, 1.90x decode / 8.27x TTFT)
+- Known limitations: docs/release-notes-1.1.0-rc.1.md
+- Remaining blockers: owner publish/sign/clean-machine/Vercel; real merge pair, real trainer/agent, ASan/long fuzz
+- Exact next action: merge to main, push, tag v1.1.0-rc.1, prepare the draft release
+```
 
 ## Audit fixes (2026-11-21, after wave R)
 

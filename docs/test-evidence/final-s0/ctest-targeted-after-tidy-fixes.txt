@@ -1,0 +1,277 @@
+Test project D:/HCSInfer/build/windows-msvc-release
+        Start 942: CliRemote.TimeoutWhileLoadingIsExit14AndTheJobKeepsRunning
+        Start 934: CliRemote.NoServerRunningIsAClearIoErrorNotAStub
+        Start 879: ApiUpscale.FourKProducesA3840LongEdgeImage
+        Start 712: UpscalePng.UpscalePngEndToEndAndSkipKeepsBytes
+  1/133 Test #712: UpscalePng.UpscalePngEndToEndAndSkipKeepsBytes ..................................   Passed    0.60 sec
+        Start 941: CliRemote.NoWaitReturnsTheJobIdWhileTheLoadRuns
+  2/133 Test #879: ApiUpscale.FourKProducesA3840LongEdgeImage ......................................   Passed    0.95 sec
+        Start 701: UpscalePipeline.TiledResultEqualsSingleTileResultForAPositionIndependentModel
+  3/133 Test #941: CliRemote.NoWaitReturnsTheJobIdWhileTheLoadRuns .................................   Passed    0.36 sec
+        Start 825: ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob
+  4/133 Test #825: ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob ........................   Passed    0.25 sec
+        Start 853: ApiImages.ClientDisconnectCancelsTheRender
+  5/133 Test #701: UpscalePipeline.TiledResultEqualsSingleTileResultForAPositionIndependentModel ...   Passed    0.30 sec
+        Start 822: ApiSocket.ClientAbortMidStreamCancelsGeneration
+  6/133 Test #822: ApiSocket.ClientAbortMidStreamCancelsGeneration .................................   Passed    0.19 sec
+        Start 702: UpscalePipeline.ConstantImageStaysConstantAfterBlendAndResample
+  7/133 Test #853: ApiImages.ClientDisconnectCancelsTheRender ......................................   Passed    0.22 sec
+        Start 704: UpscalePipeline.FixedTileModelWithPaddingGivesTheSameImage
+  8/133 Test #702: UpscalePipeline.ConstantImageStaysConstantAfterBlendAndResample .................   Passed    0.17 sec
+        Start 915: Cli.DoctorJsonIsValidAndNeverGuesses
+  9/133 Test #704: UpscalePipeline.FixedTileModelWithPaddingGivesTheSameImage ......................   Passed    0.15 sec
+        Start 935: CliRemote.LoadStatusUnloadRoundTrip
+ 10/133 Test #935: CliRemote.LoadStatusUnloadRoundTrip .............................................   Passed    0.07 sec
+        Start 916: Cli.DoctorTextWorks
+ 11/133 Test #915: Cli.DoctorJsonIsValidAndNeverGuesses ............................................   Passed    0.15 sec
+        Start 412: MergeFiles.ChunkSizeNeverChangesTheResult
+ 12/133 Test #916: Cli.DoctorTextWorks .............................................................   Passed    0.12 sec
+        Start 749: ApiChat.SseClientDisconnectCancelsTheRealWork
+ 13/133 Test #412: MergeFiles.ChunkSizeNeverChangesTheResult .......................................   Passed    0.11 sec
+        Start 844: ShutdownGenerating.StreamingClientIsEndedAndShutdownIsPrompt
+ 14/133 Test #749: ApiChat.SseClientDisconnectCancelsTheRealWork ...................................   Passed    0.11 sec
+        Start 840: ShutdownIdle.LoadedModelAndAKeepAliveClientDoNotBlockShutdown
+ 15/133 Test #844: ShutdownGenerating.StreamingClientIsEndedAndShutdownIsPrompt ....................   Passed    0.12 sec
+        Start 707: UpscalePipeline.ProgressIsMonotonicAndEndsAtOne
+ 16/133 Test #840: ShutdownIdle.LoadedModelAndAKeepAliveClientDoNotBlockShutdown ...................   Passed    0.11 sec
+        Start 932: CliCache.ClearNeverFollowsLinksOutOfTheStateDirectory
+ 17/133 Test #934: CliRemote.NoServerRunningIsAClearIoErrorNotAStub ................................   Passed    2.09 sec
+        Start 936: CliRemote.ExplicitUnloadOfTheWrongModelIsInvalidState
+ 18/133 Test #707: UpscalePipeline.ProgressIsMonotonicAndEndsAtOne .................................   Passed    0.10 sec
+        Start 937: CliRemote.UnknownModelIsNotFoundAndMalformedIdNeverReachesTheWire
+ 19/133 Test #932: CliCache.ClearNeverFollowsLinksOutOfTheStateDirectory ...........................   Passed    0.11 sec
+        Start 939: CliRemote.StatusWithoutTokenReportsHealthOnly
+ 20/133 Test #936: CliRemote.ExplicitUnloadOfTheWrongModelIsInvalidState ...........................   Passed    0.08 sec
+        Start 455: ChildProcess.CapturesMergedStdoutAndStderr
+ 21/133 Test #937: CliRemote.UnknownModelIsNotFoundAndMalformedIdNeverReachesTheWire ...............   Passed    0.08 sec
+        Start 408: MergeFiles.LinearSlerpTiesDareMatchNumpyGoldens
+ 22/133 Test #939: CliRemote.StatusWithoutTokenReportsHealthOnly ...................................   Passed    0.06 sec
+        Start 930: CliCache.ClearRemovesCachesAndTempFilesButNeverStateOrModels
+ 23/133 Test #455: ChildProcess.CapturesMergedStdoutAndStderr ......................................   Passed    0.08 sec
+        Start 940: CliRemote.EngineFailureExitCodeIsTheApisErrorCode
+ 24/133 Test #408: MergeFiles.LinearSlerpTiesDareMatchNumpyGoldens .................................   Passed    0.06 sec
+        Start 880: ApiUpscale.MissingUpscalerOrRuntimeIsUnsupportedBeforeTheRender
+ 25/133 Test #930: CliCache.ClearRemovesCachesAndTempFilesButNeverStateOrModels ....................   Passed    0.07 sec
+        Start 938: CliRemote.TokenIsRequiredAndCheckedAndNeverEchoed
+ 26/133 Test #940: CliRemote.EngineFailureExitCodeIsTheApisErrorCode ...............................   Passed    0.07 sec
+        Start 924: Cli.TrainPipelinePromotesOnKeepAndRollsBack
+ 27/133 Test #880: ApiUpscale.MissingUpscalerOrRuntimeIsUnsupportedBeforeTheRender .................   Passed    0.08 sec
+        Start 929: CliCache.ClearRequiresYesAndRemovesNothingWithout
+ 28/133 Test #938: CliRemote.TokenIsRequiredAndCheckedAndNeverEchoed ...............................   Passed    0.07 sec
+        Start 928: CliCache.StatsCountsOnlyHcsOwnedCacheEntries
+ 29/133 Test #924: Cli.TrainPipelinePromotesOnKeepAndRollsBack .....................................   Passed    0.06 sec
+        Start 416: MergeFiles.LoraIntoGgufBaseKeepsQuantizedUntouchedTensors
+ 30/133 Test #929: CliCache.ClearRequiresYesAndRemovesNothingWithout ...............................   Passed    0.07 sec
+        Start 918: Cli.ModelsHashRecordsVerifiesAndRefusesAChangedFile
+ 31/133 Test #928: CliCache.StatsCountsOnlyHcsOwnedCacheEntries ....................................   Passed    0.06 sec
+        Start 421: MergeFiles.MemoryLimitFailsClosedAndCancellationLeavesNothing
+ 32/133 Test #416: MergeFiles.LoraIntoGgufBaseKeepsQuantizedUntouchedTensors .......................   Passed    0.05 sec
+        Start 419: MergeFiles.OutputRules
+ 33/133 Test #918: Cli.ModelsHashRecordsVerifiesAndRefusesAChangedFile .............................   Passed    0.06 sec
+        Start 417: MergeFiles.StructuralMismatchesFailBeforeAnyOutput
+ 34/133 Test #421: MergeFiles.MemoryLimitFailsClosedAndCancellationLeavesNothing ...................   Passed    0.05 sec
+        Start 878: ApiUpscale.OffIsTheDefaultAndNeverTouchesTheUpscaler
+ 35/133 Test #419: MergeFiles.OutputRules ..........................................................   Passed    0.06 sec
+        Start 410: MergeFiles.LoraAlphaTensorAndKohyaAndLlamaNaming
+ 36/133 Test #417: MergeFiles.StructuralMismatchesFailBeforeAnyOutput ..............................   Passed    0.06 sec
+        Start 917: Cli.ModelsScanListInspectRoundTrip
+ 37/133 Test #878: ApiUpscale.OffIsTheDefaultAndNeverTouchesTheUpscaler ............................   Passed    0.06 sec
+        Start 946: CliMerge.LinearMergeWritesTheAverageAndAManifestAndRefusesToOverwrite
+ 38/133 Test #410: MergeFiles.LoraAlphaTensorAndKohyaAndLlamaNaming ................................   Passed    0.06 sec
+        Start 882: ApiUpscale.TileFailureKeepsTheRenderAndSaysWhy
+ 39/133 Test #917: Cli.ModelsScanListInspectRoundTrip ..............................................   Passed    0.06 sec
+        Start 923: Cli.TrainGateKeepsRollsBackAndRejectsIncomparableSets
+ 40/133 Test #946: CliMerge.LinearMergeWritesTheAverageAndAManifestAndRefusesToOverwrite ...........   Passed    0.05 sec
+        Start 409: MergeFiles.LoraIntoBaseMatchesNumpyAndCopiesUntouchedTensors
+ 41/133 Test #882: ApiUpscale.TileFailureKeepsTheRenderAndSaysWhy ..................................   Passed    0.05 sec
+        Start 914: Cli.VisionHelpAndArgumentValidationBeforeLoadingAnything
+ 42/133 Test #942: CliRemote.TimeoutWhileLoadingIsExit14AndTheJobKeepsRunning ......................   Passed    2.63 sec
+        Start 881: ApiUpscale.InvalidValueIsRejected
+ 43/133 Test #923: Cli.TrainGateKeepsRollsBackAndRejectsIncomparableSets ...........................   Passed    0.05 sec
+        Start 411: MergeFiles.LoraFailsClosed
+ 44/133 Test #409: MergeFiles.LoraIntoBaseMatchesNumpyAndCopiesUntouchedTensors ....................   Passed    0.04 sec
+        Start 922: Cli.TrainValidateReportsAcceptedAndRejected
+ 45/133 Test #914: Cli.VisionHelpAndArgumentValidationBeforeLoadingAnything ........................   Passed    0.05 sec
+        Start 927: CliCache.StatsOnMissingOrEmptyStateReportsZeroHonestly
+ 46/133 Test #881: ApiUpscale.InvalidValueIsRejected ...............................................   Passed    0.06 sec
+        Start 920: Cli.CorruptRegistryIsReportedNotCrashed
+ 47/133 Test #411: MergeFiles.LoraFailsClosed ......................................................   Passed    0.06 sec
+ 48/133 Test #922: Cli.TrainValidateReportsAcceptedAndRejected .....................................   Passed    0.05 sec
+        Start 413: MergeFiles.MixedDtypesAndBf16RoundToTheBaseDtype
+        Start 422: MergeFiles.ManifestRecordsTheOutputHashAndProgressIsReported
+ 49/133 Test #927: CliCache.StatsOnMissingOrEmptyStateReportsZeroHonestly ..........................   Passed    0.04 sec
+        Start 418: MergeFiles.ParameterValidation
+ 50/133 Test #920: Cli.CorruptRegistryIsReportedNotCrashed .........................................   Passed    0.04 sec
+        Start 931: CliCache.ClearOnMissingStateDirectoryIsANoOp
+ 51/133 Test #413: MergeFiles.MixedDtypesAndBf16RoundToTheBaseDtype ................................   Passed    0.05 sec
+        Start 945: CliMerge.RejectsBadArguments
+ 52/133 Test #422: MergeFiles.ManifestRecordsTheOutputHashAndProgressIsReported ....................   Passed    0.05 sec
+        Start 414: MergeFiles.GgufOutputKeepsHeaderAndPaddingAndMergesFloatData
+ 53/133 Test #418: MergeFiles.ParameterValidation ..................................................   Passed    0.04 sec
+        Start 919: Cli.ScanErrors
+ 54/133 Test #931: CliCache.ClearOnMissingStateDirectoryIsANoOp ....................................   Passed    0.04 sec
+        Start 415: MergeFiles.QuantizedGgufIsRejectedNotSilentlyCopied
+ 55/133 Test #945: CliMerge.RejectsBadArguments ....................................................   Passed    0.05 sec
+        Start 925: Cli.TrainPipelineRejectsIncomparableInputWithoutWriting
+ 56/133 Test #414: MergeFiles.GgufOutputKeepsHeaderAndPaddingAndMergesFloatData ....................   Passed    0.05 sec
+        Start 911: Cli.BenchmarkHelpAndArgumentValidationBeforeLoadingAnything
+ 57/133 Test #919: Cli.ScanErrors ..................................................................   Passed    0.05 sec
+        Start 913: Cli.ChatValidatesArgumentsBeforeLoadingAnything
+ 58/133 Test #415: MergeFiles.QuantizedGgufIsRejectedNotSilentlyCopied .............................   Passed    0.04 sec
+        Start 921: Cli.TrainHelpAndArgumentValidation
+ 59/133 Test #925: Cli.TrainPipelineRejectsIncomparableInputWithoutWriting .........................   Passed    0.04 sec
+        Start 944: CliMerge.HelpIsListedAndDocumentsTheLimits
+ 60/133 Test #913: Cli.ChatValidatesArgumentsBeforeLoadingAnything .................................   Passed    0.04 sec
+        Start 906: Cli.HelpWorksAtEveryLevel
+ 61/133 Test #911: Cli.BenchmarkHelpAndArgumentValidationBeforeLoadingAnything .....................   Passed    0.05 sec
+        Start 912: Cli.ImplementedTransportsHaveHelpAndValidateArguments
+ 62/133 Test #921: Cli.TrainHelpAndArgumentValidation ..............................................   Passed    0.04 sec
+        Start 995: McpImage.LoraAndUpscaleFieldsAreInTheSchemaAndLoraListNeverLeaksPaths
+ 63/133 Test #944: CliMerge.HelpIsListedAndDocumentsTheLimits ......................................   Passed    0.04 sec
+        Start 908: Cli.UnknownCommandIsInvalidArgument
+ 64/133 Test #906: Cli.HelpWorksAtEveryLevel .......................................................   Passed    0.04 sec
+        Start 439: Planner.Int8UsesDotKernelOnlyWhenVerifiedAndSupported
+ 65/133 Test #912: Cli.ImplementedTransportsHaveHelpAndValidateArguments ...........................   Passed    0.04 sec
+        Start 933: CliRemote.HelpWorksAndNamesTheServer
+ 66/133 Test #995: McpImage.LoraAndUpscaleFieldsAreInTheSchemaAndLoraListNeverLeaksPaths ...........   Passed    0.04 sec
+        Start 943: CliRemote.OptionValidation
+ 67/133 Test #908: Cli.UnknownCommandIsInvalidArgument .............................................   Passed    0.04 sec
+        Start 996: McpImage.LoraRequestWithoutLibraryIsUnsupportedAndUpscaleWithoutRuntimeToo
+ 68/133 Test #933: CliRemote.HelpWorksAndNamesTheServer ............................................   Passed    0.06 sec
+ 69/133 Test #943: CliRemote.OptionValidation ......................................................   Passed    0.04 sec
+        Start 909: Cli.TuneIsARealCommandWhenTheKernelsAreBuiltAndHonestlyUnsupportedOtherwise
+        Start 452: KernelProfile.FileRoundTripMissingFileIsEmptyAndCorruptFileIsNotReplaced
+ 70/133 Test #439: Planner.Int8UsesDotKernelOnlyWhenVerifiedAndSupported ...........................   Passed    0.07 sec
+        Start 907: Cli.VersionAndNoArgs
+ 71/133 Test #996: McpImage.LoraRequestWithoutLibraryIsUnsupportedAndUpscaleWithoutRuntimeToo ......   Passed    0.04 sec
+        Start 910: Cli.ModelsCommandsAreRealClientsNotStubs
+ 72/133 Test #909: Cli.TuneIsARealCommandWhenTheKernelsAreBuiltAndHonestlyUnsupportedOtherwise .....   Passed    0.04 sec
+ 73/133 Test #452: KernelProfile.FileRoundTripMissingFileIsEmptyAndCorruptFileIsNotReplaced ........   Passed    0.04 sec
+        Start 926: CliCache.HelpListsSubcommandsAndIsNotPlanned
+        Start 454: KernelProfile.Fnv1aIsStableAndSensitive
+ 74/133 Test #907: Cli.VersionAndNoArgs ............................................................   Passed    0.04 sec
+        Start 406: MergeMath.ParseMethodAndNames
+ 75/133 Test #910: Cli.ModelsCommandsAreRealClientsNotStubs ........................................   Passed    0.04 sec
+        Start 450: KernelProfile.JsonRoundTripPreservesEveryField
+ 76/133 Test #454: KernelProfile.Fnv1aIsStableAndSensitive .........................................   Passed    0.03 sec
+        Start 402: MergeMath.TiesDensityOneKeepsEverythingAndSignElectionDropsMinority
+ 77/133 Test #926: CliCache.HelpListsSubcommandsAndIsNotPlanned ....................................   Passed    0.04 sec
+        Start 453: KernelProfile.ResetAndPruneStale
+ 78/133 Test #406: MergeMath.ParseMethodAndNames ...................................................   Passed    0.04 sec
+        Start 386: CpuBaseline.RowOpsAgreeWithOracle
+ 79/133 Test #450: KernelProfile.JsonRoundTripPreservesEveryField ..................................   Passed    0.04 sec
+        Start 441: Planner.OpsWithoutAKernelStayOnTheCpu
+ 80/133 Test #402: MergeMath.TiesDensityOneKeepsEverythingAndSignElectionDropsMinority .............   Passed    0.04 sec
+        Start 370: KernelCpuSizing.RowAndTotalBytes
+ 81/133 Test #453: KernelProfile.ResetAndPruneStale ................................................   Passed    0.04 sec
+        Start 706: UpscalePipeline.CancellationBetweenTilesAndStructuredErrors
+ 82/133 Test #386: CpuBaseline.RowOpsAgreeWithOracle ...............................................   Passed    0.04 sec
+        Start 447: PlannerReport.DoctorSectionShowsUnknownWhenKernelsAreNotBuiltIn
+ 83/133 Test #441: Planner.OpsWithoutAKernelStayOnTheCpu ...........................................   Passed    0.03 sec
+        Start 693: UpscaleTiles.SingleTileWhenImageFits
+ 84/133 Test #370: KernelCpuSizing.RowAndTotalBytes ................................................   Passed    0.03 sec
+        Start 378: OracleSoftmax.SumsToOneIsStableAndUniformOnDegenerateRows
+ 85/133 Test #706: UpscalePipeline.CancellationBetweenTilesAndStructuredErrors .....................   Passed    0.04 sec
+        Start 375: OracleGemm.NonSquareAndDegenerateShapes
+ 86/133 Test #447: PlannerReport.DoctorSectionShowsUnknownWhenKernelsAreNotBuiltIn .................   Passed    0.04 sec
+        Start 398: MergeMath.LinearMatchesNumpy
+ 87/133 Test #693: UpscaleTiles.SingleTileWhenImageFits ............................................   Passed    0.04 sec
+        Start 382: OracleTolerance.ScalesWithReductionLengthAndHandlesNanInf
+ 88/133 Test #378: OracleSoftmax.SumsToOneIsStableAndUniformOnDegenerateRows .......................   Passed    0.04 sec
+        Start 400: MergeMath.SlerpEdgeCases
+ 89/133 Test #375: OracleGemm.NonSquareAndDegenerateShapes .........................................   Passed    0.04 sec
+        Start 368: KernelCpuFp16.RoundTripsRepresentableValuesExactly
+ 90/133 Test #398: MergeMath.LinearMatchesNumpy ....................................................   Passed    0.04 sec
+        Start 407: MergeDtypes.HalfAndBf16MatchNumpy
+ 91/133 Test #382: OracleTolerance.ScalesWithReductionLengthAndHandlesNanInf .......................   Passed    0.04 sec
+ 92/133 Test #400: MergeMath.SlerpEdgeCases ........................................................   Passed    0.04 sec
+        Start 384: CpuBaseline.GemmF32AgreesWithOracle
+        Start 451: KernelProfile.CorruptWrongSchemaAndFailingEntriesAreErrors
+ 93/133 Test #368: KernelCpuFp16.RoundTripsRepresentableValuesExactly ..............................   Passed    0.04 sec
+        Start 710: UpscaleResample.MatchesNumpyGolden
+ 94/133 Test #407: MergeDtypes.HalfAndBf16MatchNumpy ...............................................   Passed    0.04 sec
+        Start 374: OracleGemm.MatchesHandComputation
+ 95/133 Test #384: CpuBaseline.GemmF32AgreesWithOracle .............................................   Passed    0.04 sec
+        Start 381: OracleRope.PositionZeroIsIdentityAndRotationPreservesNorm
+ 96/133 Test #710: UpscaleResample.MatchesNumpyGolden ..............................................   Passed    0.07 sec
+        Start 695: UpscaleTiles.DegenerateInputs
+ 97/133 Test #374: OracleGemm.MatchesHandComputation ...............................................   Passed    0.07 sec
+        Start 373: KernelCpuGemv.NonPowerOfTwoRowsAndColumns
+ 98/133 Test #451: KernelProfile.CorruptWrongSchemaAndFailingEntriesAreErrors ......................   Passed    0.09 sec
+        Start 432: Planner.UnknownKernelHashMeansCpu
+ 99/133 Test #381: OracleRope.PositionZeroIsIdentityAndRotationPreservesNorm .......................   Passed    0.04 sec
+        Start 436: Planner.OptInSeamUsesPromotedKernelsButStillRequiresPromotion
+100/133 Test #695: UpscaleTiles.DegenerateInputs ...................................................   Passed    0.04 sec
+        Start 434: Planner.PromotedKernelWithoutMeasuredUpstreamBaselineIsOnlyACandidate
+101/133 Test #373: KernelCpuGemv.NonPowerOfTwoRowsAndColumns .......................................   Passed    0.04 sec
+        Start 399: MergeMath.SlerpMatchesNumpyAcrossChunks
+102/133 Test #432: Planner.UnknownKernelHashMeansCpu ...............................................   Passed    0.04 sec
+        Start 420: MergeFiles.DriveCIsNeverAnOutputEvenInsideAnApprovedRoot
+103/133 Test #436: Planner.OptInSeamUsesPromotedKernelsButStillRequiresPromotion ...................   Passed    0.04 sec
+        Start 383: OracleCompare.ReportsWorstIndexAndMismatchCount
+104/133 Test #434: Planner.PromotedKernelWithoutMeasuredUpstreamBaselineIsOnlyACandidate ...........   Passed    0.04 sec
+        Start 404: MergeMath.DareDropRateIsRespectedAndReproducible
+105/133 Test #399: MergeMath.SlerpMatchesNumpyAcrossChunks .........................................   Passed    0.04 sec
+        Start 385: CpuBaseline.GemmI8IsBitEqualToOracle
+106/133 Test #420: MergeFiles.DriveCIsNeverAnOutputEvenInsideAnApprovedRoot ........................   Passed    0.04 sec
+        Start 377: OracleGemm.F16WidensExactlyThenAccumulatesInF32
+107/133 Test #383: OracleCompare.ReportsWorstIndexAndMismatchCount .................................   Passed    0.04 sec
+        Start 711: UpscalePng.RoundTripAndRejectGarbage
+108/133 Test #404: MergeMath.DareDropRateIsRespectedAndReproducible ................................   Passed    0.04 sec
+        Start 379: OracleNorm.LayerNormHasZeroMeanUnitVariance
+109/133 Test #385: CpuBaseline.GemmI8IsBitEqualToOracle ............................................   Passed    0.04 sec
+        Start 699: UpscalePlan.FixedTileModelsAndExplicitTile
+110/133 Test #377: OracleGemm.F16WidensExactlyThenAccumulatesInF32 .................................   Passed    0.04 sec
+        Start 403: MergeMath.DareMatchesNumpyAndIsChunkIndependent
+111/133 Test #711: UpscalePng.RoundTripAndRejectGarbage ............................................   Passed    0.04 sec
+        Start 705: UpscalePipeline.SkipsAtTheCapWithoutCallingTheModel
+112/133 Test #379: OracleNorm.LayerNormHasZeroMeanUnitVariance .....................................   Passed    0.04 sec
+        Start 449: KernelProfile.UpsertReplacesTheSameKeyAndFindIsExact
+113/133 Test #699: UpscalePlan.FixedTileModelsAndExplicitTile ......................................   Passed    0.04 sec
+        Start 448: KernelProfile.UpsertRejectsEntriesThatFailedCorrectness
+114/133 Test #403: MergeMath.DareMatchesNumpyAndIsChunkIndependent .................................   Passed    0.04 sec
+        Start 697: UpscalePlan.NeverUpscalesBeyondTheCap
+115/133 Test #705: UpscalePipeline.SkipsAtTheCapWithoutCallingTheModel .............................   Passed    0.03 sec
+        Start 405: MergeMath.LoraRowsMatchNumpyAndAreRowBlockIndependent
+116/133 Test #449: KernelProfile.UpsertReplacesTheSameKeyAndFindIsExact ............................   Passed    0.04 sec
+        Start 401: MergeMath.TiesMatchesNumpy
+117/133 Test #448: KernelProfile.UpsertRejectsEntriesThatFailedCorrectness .........................   Passed    0.04 sec
+        Start 708: UpscaleResample.IdentityAndConstant
+118/133 Test #697: UpscalePlan.NeverUpscalesBeyondTheCap ...........................................   Passed    0.04 sec
+        Start 313: DiffusionRuntime.GpuPinsKernelChoiceSoNoTimingProbeRuns
+119/133 Test #405: MergeMath.LoraRowsMatchNumpyAndAreRowBlockIndependent ...........................   Passed    0.04 sec
+        Start 372: KernelCpuGemv.SingleRowSingleBlockAndZeroWeights
+120/133 Test #401: MergeMath.TiesMatchesNumpy ......................................................   Passed    0.04 sec
+        Start 700: UpscaleFeather.MonotonicPositiveAndSumsToOneAcrossAnOverlap
+121/133 Test #708: UpscaleResample.IdentityAndConstant .............................................   Passed    0.04 sec
+        Start 694: UpscaleTiles.CoversEveryPixelWithOverlapAndAlignedLastTile
+122/133 Test #372: KernelCpuGemv.SingleRowSingleBlockAndZeroWeights ................................   Passed    0.04 sec
+        Start 703: UpscalePipeline.SeamBlendIsSmoothWhenTilesDisagree
+123/133 Test #700: UpscaleFeather.MonotonicPositiveAndSumsToOneAcrossAnOverlap .....................   Passed    0.05 sec
+124/133 Test #694: UpscaleTiles.CoversEveryPixelWithOverlapAndAlignedLastTile ......................   Passed    0.05 sec
+        Start 376: OracleGemm.I8IsExactAndHandlesExtremes
+        Start 380: OracleNorm.RmsNormPreservesDirection
+125/133 Test #313: DiffusionRuntime.GpuPinsKernelChoiceSoNoTimingProbeRuns .........................   Passed    0.09 sec
+        Start 369: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns
+126/133 Test #703: UpscalePipeline.SeamBlendIsSmoothWhenTilesDisagree ..............................   Passed    0.04 sec
+        Start 696: UpscaleTarget.LongEdgeExactAspectPreserved
+127/133 Test #376: OracleGemm.I8IsExactAndHandlesExtremes ..........................................   Passed    0.04 sec
+        Start 371: KernelCpuGemv.MatchesADirectDequantisedDotProduct
+128/133 Test #380: OracleNorm.RmsNormPreservesDirection ............................................   Passed    0.04 sec
+        Start 698: UpscalePlan.TileSizeShrinksWithTheBudgetAndFailsClosed
+129/133 Test #369: KernelCpuFp16.HandlesSubnormalZeroInfAndKnownBitPatterns ........................   Passed    0.04 sec
+        Start 709: UpscaleResample.LinearRampSurvivesDownscale
+130/133 Test #696: UpscaleTarget.LongEdgeExactAspectPreserved ......................................   Passed    0.04 sec
+131/133 Test #371: KernelCpuGemv.MatchesADirectDequantisedDotProduct ...............................   Passed    0.04 sec
+132/133 Test #698: UpscalePlan.TileSizeShrinksWithTheBudgetAndFailsClosed ..........................   Passed    0.04 sec
+133/133 Test #709: UpscaleResample.LinearRampSurvivesDownscale .....................................   Passed    0.04 sec
+
+100% tests passed out of 133
+
+Label Time Summary:
+contract      =   9.54 sec*proc (54 tests)
+kernel-cpu    =   0.77 sec*proc (19 tests)
+unit          =   3.91 sec*proc (60 tests)
+
+Total Test time (real) =   7.78 sec
+TARGETED_CTEST_EXIT=0

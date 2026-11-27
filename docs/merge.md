@@ -3,7 +3,9 @@
 Status: **Experimental**. Linear, SLERP, TIES, DARE and LoRA-into-base are implemented as a streaming, tensor-wise merge on
 safetensors and GGUF files with float tensors, unit-tested against NumPy-computed golden values and exercised end to end on a
 real 320 MB safetensors file (see "Evidence and its limits"). Loading a merged model into an engine and generating from it is
-**NOT RUN** (no pair of distinct compatible models is available locally).
+**BLOCKED** (2026-11-27): the local diffusion GGUFs are quantized / have different tensor sets - SD1.5 + SD-Turbo fails
+with `invalid_argument` (1131 vs 1323 tensors), and a quantized self-merge is refused with `unsupported` (exit 10),
+proving the float-only guard. Evidence: `docs/test-evidence/final-s1/merge-quantized-*.txt`. A download needs owner approval.
 
 ```
 HCSInfer merge --method linear|slerp|ties|dare|lora --base <file> --model <file> [--model <file> ...] --out <file> [options]

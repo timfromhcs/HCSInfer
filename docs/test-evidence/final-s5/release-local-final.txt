@@ -1,0 +1,15 @@
+Checking 
+D:\HCSInfer\artifacts\release\_py\hcsinfer-1.1.0rc1-py3-none-win_amd64.whl: PASSED
+Checking D:\HCSInfer\artifacts\release\_py\hcsinfer-1.1.0rc1.tar.gz: PASSED
+web/dist ready: 12 files, 86798 bytes
+WARNUNG: licence file for 'prime-agent' not found: external/prime-agent/LICENSE
+SBOM written: D:\HCSInfer\artifacts\release\hcsinfer.cdx.json (15 components, HCSInfer 1.1.0-rc.1, commit e81d0023b7937e75da6cdf8286d8ab90821c6888)
+b8369db7220366755ae15cdce43e3221a510c87b6c2f6cf8c3a0b538c2e3774a  hcsinfer.cdx.json
+e440172c77572eb0270116aa9631b3fdc23939383949fe53253adbf15d2362cf  HCSInfer.exe
+c156cf857275c4cdf4bae226b412949a747ec72f0b53569b4b2a835c328c3d00  HCSInfer-1.1.0-rc.1-windows-msvc-release-static-portable.zip
+7891dc05dc5f77df3fb6dab3fe610723da3533e176003ca09543a7af77a9fbe1  hcsinfer-1.1.0rc1.tar.gz
+9e02acfd52d2ce25d64df40484eb299db45e56c4b3456cd8279c1098d762aac6  hcsinfer-1.1.0rc1-py3-none-win_amd64.whl
+b639bd8e26c853e1068c179dd2c1b8da2c4c07b0882fb9286c83edaccd9f5cc7  HCSInfer-vulkan.exe
+79d7b341507b3bf9c3232a5d618e33d1aa3af122ecfcf8a25712dc3518418e50  hcs-studio-web-dist.zip
+Release files: D:\HCSInfer\artifacts\release
+RELEASE_FINAL_EXIT=0

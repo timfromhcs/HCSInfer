@@ -1,0 +1,1339 @@
+[env-d-e] scratch root : D:\HCSScratch
+[env-d-e] HCS_DATA_DIR : D:\HCSScratch\hcsdata
+[env-d-e] redirected   : TEMP, TMP, TMPDIR, PIP_CACHE_DIR, npm_config_cache, CARGO_HOME, RUSTUP_HOME, HF_HOME, TORCH_HOME, XDG_CACHE_HOME, PYTHONPYCACHEPREFIX, NUGET_PACKAGES
+MSVC environment: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
+compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64 [C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\cl.exe]
+-- The C compiler identification is MSVC 19.44.35228.0
+-- The CXX compiler identification is MSVC 19.44.35228.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Using the multi-header code from D:/HCSInfer/build/windows-msvc-release-static-vulkan/_deps/nlohmann_json-src/include/
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Found Threads: TRUE
+CMake Warning (deprecated) at build/windows-msvc-release-static-vulkan/_deps/lz4-src/build/cmake/CMakeLists.txt:11 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+This warning is for project developers.  Use -Wno-author or -Wno-deprecated
+to suppress it.
+
+-- Creating build script for LZ4 version: 1.10.0
+-- The ASM compiler identification is MSVC
+CMake Warning (policy) at C:/Program Files/Python314/Lib/site-packages/cmake/data/share/cmake-4.4/Modules/CMakeDetermineASMCompiler.cmake:237 (cmake_policy):
+  Policy CMP0194 is not set: MSVC is not an assembler for language ASM.  Run
+  "cmake --help-policy CMP0194" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+Call Stack (most recent call first):
+  build/windows-msvc-release-static-vulkan/_deps/zstd-src/build/cmake/CMakeLists.txt:36 (project)
+This warning is for project developers.  Use -Wno-author or -Wno-policy to
+suppress it.
+
+-- Found assembler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+-- ZSTD VERSION: 1.5.7
+-- Performing Test C_FLAG_D_UNICODE
+-- Performing Test C_FLAG_D_UNICODE - Success
+-- Performing Test CXX_FLAG_D_UNICODE
+-- Performing Test CXX_FLAG_D_UNICODE - Success
+-- Performing Test C_FLAG_DUNICODE
+-- Performing Test C_FLAG_DUNICODE - Success
+-- Performing Test CXX_FLAG_DUNICODE
+-- Performing Test CXX_FLAG_DUNICODE - Success
+-- CMAKE_INSTALL_PREFIX: C:/Program Files (x86)/HCSInfer
+-- CMAKE_INSTALL_LIBDIR: lib
+-- ZSTD_LEGACY_SUPPORT not defined!
+-- ZSTD_MULTITHREAD_SUPPORT is enabled
+-- llama.cpp version: 1.0.0-dev
+CMAKE_BUILD_TYPE=Release
+-- Found Git: C:/Program Files/Git/cmd/git.exe (found version "2.54.0.windows.1")
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: AMD64
+-- CMAKE_GENERATOR_PLATFORM: 
+-- GGML_SYSTEM_ARCH: x86
+-- Including CPU backend
+-- x86 detected
+-- Performing Test HAS_AVX_1
+-- Performing Test HAS_AVX_1 - Success
+-- Performing Test HAS_AVX2_1
+-- Performing Test HAS_AVX2_1 - Success
+-- Performing Test HAS_FMA_1
+-- Performing Test HAS_FMA_1 - Success
+-- Performing Test HAS_AVX512_1
+-- Performing Test HAS_AVX512_1 - Failed
+-- Performing Test HAS_AVX512_2
+-- Performing Test HAS_AVX512_2 - Failed
+-- Adding CPU backend variant ggml-cpu: /arch:AVX2 GGML_AVX2;GGML_FMA;GGML_F16C
+-- Found Vulkan: C:/VulkanSDK/1.4.357.0/Lib/vulkan-1.lib (found version "1.4.357") found components: glslc glslangValidator
+-- Vulkan found
+-- GL_KHR_cooperative_matrix supported by glslc
+-- GL_NV_cooperative_matrix2 supported by glslc
+-- GL_NV_cooperative_matrix_decode_vector supported by glslc
+-- GL_EXT_integer_dot_product supported by glslc
+-- GL_EXT_bfloat16 supported by glslc
+-- GL_EXT_float_e2m1 supported by glslc
+-- GL_EXT_float_e4m3 supported by glslc
+-- Including Vulkan backend
+-- ggml version: 1.0.0
+-- ggml commit:  d3c3e24
+-- Use Vulkan as backend stable-diffusion
+-- stable-diffusion.cpp version master-1106-532d2c1
+-- stable-diffusion.cpp commit 532d2c1
+-- Build static library
+CMake Warning at external/stable-diffusion.cpp/cmake/ggml.cmake:28 (message):
+  Using upstream GGML: INT8 tensorwise/convrot is disabled and FP8 weights
+  are converted to F16 at load time.  Some operators may be unsupported and
+  performance may be lower than with patched GGML.
+Call Stack (most recent call first):
+  external/stable-diffusion.cpp/CMakeLists.txt:357 (include)
+
+
+-- Looking for include file alloca.h
+-- Looking for include file alloca.h - not found
+-- Looking for include file stdint.h
+-- Looking for include file stdint.h - found
+-- Looking for include file sys/times.h
+-- Looking for include file sys/times.h - not found
+-- Looking for include file sys/time.h
+-- Looking for include file sys/time.h - not found
+-- Looking for include file sys/types.h
+-- Looking for include file sys/types.h - found
+-- Looking for include file unistd.h
+-- Looking for include file unistd.h - not found
+-- Looking for include file inttypes.h
+-- Looking for include file inttypes.h - found
+-- Looking for stddef.h
+-- Looking for stddef.h - found
+-- Check size of int
+-- Check size of int - done
+-- Check size of long
+-- Check size of long - done
+-- Check size of long long
+-- Check size of long long - done
+-- Check size of void*
+-- Check size of void* - done
+-- Looking for alloca
+-- Looking for alloca - found
+-- Configuring done (95.8s)
+-- Generating done (1.2s)
+-- Build files have been written to: D:/HCSInfer/build/windows-msvc-release-static-vulkan
+[0/2] Re-checking globbed directories...
+[1/876] Creating directories for 'vulkan-shaders-gen'
+[2/876] No download step for 'vulkan-shaders-gen'
+[3/876] No update step for 'vulkan-shaders-gen'
+[4/876] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-alloc.c.obj
+[5/876] No patch step for 'vulkan-shaders-gen'
+[6/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml.cpp.obj
+[7/876] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml.c.obj
+[8/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-opt.cpp.obj
+[9/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-backend.cpp.obj
+[10/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-threading.cpp.obj
+[11/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-backend-meta.cpp.obj
+[12/876] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ggml-cpu.c.obj
+[13/876] Performing configure step for 'vulkan-shaders-gen'
+-- The C compiler identification is MSVC 19.44.35228.0
+-- The CXX compiler identification is MSVC 19.44.35228.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Found Threads: TRUE
+-- Enabling coopmat glslc support
+-- Enabling coopmat2 glslc support
+-- Enabling coopmat2 decode_vector glslc support
+-- Enabling dot glslc support
+-- Enabling bfloat16 glslc support
+-- Enabling E2M1 glslc support
+-- Enabling E4M3 glslc support
+-- Configuring done (3.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: D:/HCSInfer/build/windows-msvc-release-static-vulkan/external/llama.cpp/ggml/src/ggml-vulkan/vulkan-shaders-gen-prefix/src/vulkan-shaders-gen-build
+[14/876] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\ggml-quants.c.obj
+[15/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ggml-cpu.cpp.obj
+[16/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\hbm.cpp.obj
+[17/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-base.dir\gguf.cpp.obj
+[18/876] Linking CXX static library lib\ggml-base.lib
+[19/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\repack.cpp.obj
+[20/876] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\quants.c.obj
+[21/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\traits.cpp.obj
+[22/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\amx\amx.cpp.obj
+[23/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\amx\mmq.cpp.obj
+[24/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\tiled\tiled-kernel.cpp.obj
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(280): warning C4068: unknown pragma 'GCC'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(289): warning C4068: unknown pragma 'GCC'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(297): warning C4068: unknown pragma 'GCC'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(320): warning C4068: unknown pragma 'GCC'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(329): warning C4068: unknown pragma 'GCC'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-cpu\tiled\tiled-kernel.cpp(337): warning C4068: unknown pragma 'GCC'
+[25/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\binary-ops.cpp.obj
+[26/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\tiled\tiled.cpp.obj
+[27/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\unary-ops.cpp.obj
+[28/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\vec.cpp.obj
+[29/876] Building C object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\arch\x86\quants.c.obj
+[30/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\llamafile\sgemm.cpp.obj
+[31/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\arch\x86\repack.cpp.obj
+[32/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ops.cpp.obj
+[33/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\logger.cpp.obj
+[34/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\lifecycle.cpp.obj
+[35/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\memory_budget.cpp.obj
+[36/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\fs_util.cpp.obj
+[37/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\path_guard.cpp.obj
+[38/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\job_queue.cpp.obj
+[39/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\settings.cpp.obj
+[40/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\gguf_probe.cpp.obj
+[41/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\model_registry.cpp.obj
+[42/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\state_dir.cpp.obj
+[43/876] Building C object _deps\lz4-build\CMakeFiles\lz4_static.dir\__\__\lib\lz4.c.obj
+[44/876] Building C object _deps\lz4-build\CMakeFiles\lz4_static.dir\__\__\lib\lz4file.c.obj
+[45/876] Building C object _deps\lz4-build\CMakeFiles\lz4_static.dir\__\__\lib\lz4frame.c.obj
+[46/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\benchmark.cpp.obj
+[47/876] Building C object _deps\lz4-build\CMakeFiles\lz4_static.dir\__\__\lib\xxhash.c.obj
+[48/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\debug.c.obj
+[49/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\entropy_common.c.obj
+[50/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\error_private.c.obj
+[51/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\fse_decompress.c.obj
+[52/876] Building CXX object src\core\CMakeFiles\hcs_core.dir\safetensors_probe.cpp.obj
+[53/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\pool.c.obj
+[54/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\threading.c.obj
+[55/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\xxhash.c.obj
+[56/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\common\zstd_common.c.obj
+[57/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\hist.c.obj
+[58/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\fse_compress.c.obj
+[59/876] Building C object _deps\lz4-build\CMakeFiles\lz4_static.dir\__\__\lib\lz4hc.c.obj
+[60/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_compress.c.obj
+[61/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_compress_literals.c.obj
+[62/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_compress_sequences.c.obj
+[63/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_compress_superblock.c.obj
+[64/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\huf_compress.c.obj
+[65/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_double_fast.c.obj
+[66/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_fast.c.obj
+[67/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_ldm.c.obj
+[68/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_preSplit.c.obj
+[69/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstdmt_compress.c.obj
+[70/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_opt.c.obj
+[71/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\decompress\zstd_ddict.c.obj
+[72/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\compress\zstd_lazy.c.obj
+[73/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\decompress\huf_decompress.c.obj
+[74/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\decompress\zstd_decompress.c.obj
+[75/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\dictBuilder\cover.c.obj
+[76/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\dictBuilder\divsufsort.c.obj
+[77/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\dictBuilder\fastcover.c.obj
+[78/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\dictBuilder\zdict.c.obj
+[79/876] Building C object _deps\zstd-build\lib\CMakeFiles\libzstd_static.dir\__\__\__\lib\decompress\zstd_decompress_block.c.obj
+[80/876] Linking CXX static library lib\ggml-cpu.lib
+[81/876] Linking CXX static library lib\hcs_core.lib
+[82/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\cpu_info.cpp.obj
+[83/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\system_info.cpp.obj
+[84/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\doctor.cpp.obj
+[85/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\gpu_info.cpp.obj
+[86/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\storage_info.cpp.obj
+[87/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\memory_probe.cpp.obj
+[88/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\vulkan_info.cpp.obj
+[89/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\caps.cpp.obj
+[90/876] Performing build step for 'vulkan-shaders-gen'
+[1/2] Building CXX object CMakeFiles\vulkan-shaders-gen.dir\vulkan-shaders-gen.cpp.obj
+[2/2] Linking CXX executable vulkan-shaders-gen.exe
+[91/876] Performing install step for 'vulkan-shaders-gen'
+-- Installing: D:/HCSInfer/build/windows-msvc-release-static-vulkan/Release/vulkan-shaders-gen.exe
+[92/876] Completed 'vulkan-shaders-gen'
+[93/876] Generate vulkan shaders header
+[94/876] Generate vulkan shaders for acc.comp
+[95/876] Generate vulkan shaders for add.comp
+[96/876] Generate vulkan shaders for add1.comp
+[97/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\report_format.cpp.obj
+[98/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\planner.cpp.obj
+[99/876] Generate vulkan shaders for add_id.comp
+[100/876] Generate vulkan shaders for arange.comp
+[101/876] Generate vulkan shaders for argmax.comp
+[102/876] Generate vulkan shaders for argsort.comp
+[103/876] Generate vulkan shaders for argsort_large.comp
+[104/876] Generate vulkan shaders for col2im_1d.comp
+[105/876] Generate vulkan shaders for concat.comp
+[106/876] Generate vulkan shaders for concat_transpose.comp
+[107/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\caps_json.cpp.obj
+[108/876] Generate vulkan shaders for contig_copy.comp
+[109/876] Generate vulkan shaders for conv2d_dw.comp
+[110/876] Generate vulkan shaders for conv2d_mm.comp
+[111/876] Generate vulkan shaders for conv_transpose_1d.comp
+[112/876] Generate vulkan shaders for conv3d_mm.comp
+[113/876] Generate vulkan shaders for copy.comp
+[114/876] Generate vulkan shaders for copy_from_quant.comp
+[115/876] Generate vulkan shaders for copy_transpose.comp
+[116/876] Generate vulkan shaders for copy_transpose_02.comp
+[117/876] Generate vulkan shaders for count_equal.comp
+[118/876] Generate vulkan shaders for count_experts.comp
+[119/876] Generate vulkan shaders for cross_entropy_loss.comp
+[120/876] Generate vulkan shaders for cross_entropy_loss_back.comp
+[121/876] Generate vulkan shaders for cumsum.comp
+[122/876] Generate vulkan shaders for cumsum_multipass1.comp
+[123/876] Generate vulkan shaders for cumsum_multipass2.comp
+[124/876] Generate vulkan shaders for dequant_f32.comp
+[125/876] Generate vulkan shaders for dequant_iq1_m.comp
+[126/876] Generate vulkan shaders for dequant_iq1_s.comp
+[127/876] Generate vulkan shaders for dequant_iq2_s.comp
+[128/876] Generate vulkan shaders for dequant_iq2_xs.comp
+[129/876] Generate vulkan shaders for copy_to_quant.comp
+[130/876] Generate vulkan shaders for dequant_iq2_xxs.comp
+[131/876] Generate vulkan shaders for dequant_iq3_s.comp
+[132/876] Generate vulkan shaders for dequant_iq3_xxs.comp
+[133/876] Generate vulkan shaders for dequant_iq4_nl.comp
+[134/876] Generate vulkan shaders for dequant_iq4_xs.comp
+[135/876] Generate vulkan shaders for dequant_mxfp4.comp
+[136/876] Generate vulkan shaders for dequant_q1_0.comp
+[137/876] Generate vulkan shaders for dequant_nvfp4.comp
+[138/876] Generate vulkan shaders for dequant_q2_0.comp
+[139/876] Generate vulkan shaders for dequant_q2_k.comp
+[140/876] Generate vulkan shaders for dequant_q3_k.comp
+[141/876] Generate vulkan shaders for dequant_q4_1.comp
+[142/876] Generate vulkan shaders for dequant_q4_0.comp
+[143/876] Generate vulkan shaders for dequant_q4_k.comp
+[144/876] Generate vulkan shaders for dequant_q5_0.comp
+[145/876] Generate vulkan shaders for dequant_q5_k.comp
+[146/876] Generate vulkan shaders for dequant_q5_1.comp
+[147/876] Generate vulkan shaders for dequant_q6_k.comp
+[148/876] Generate vulkan shaders for dequant_q8_0.comp
+[149/876] Generate vulkan shaders for dequant_tq1_0.comp
+[150/876] Generate vulkan shaders for dequant_tq2_0.comp
+[151/876] Generate vulkan shaders for diag.comp
+[152/876] Generate vulkan shaders for dsv4_hc_post.comp
+[153/876] Generate vulkan shaders for dsv4_hc_comb.comp
+[154/876] Generate vulkan shaders for div.comp
+[155/876] Generate vulkan shaders for dsv4_hc_pre.comp
+[156/876] Generate vulkan shaders for fill.comp
+[157/876] Generate vulkan shaders for flash_attn_cm1.comp
+[158/876] Generate vulkan shaders for flash_attn_cm1_flip.comp
+[159/876] Generate vulkan shaders for flash_attn_decode_phase_1.comp
+[160/876] Generate vulkan shaders for flash_attn_cm2.comp
+[161/876] Generate vulkan shaders for flash_attn_decode_phase_2.comp
+[162/876] Generate vulkan shaders for flash_attn_mask_opt.comp
+[163/876] Generate vulkan shaders for flash_attn.comp
+[164/876] Generate vulkan shaders for flash_attn_sparse_compact.comp
+[165/876] Generate vulkan shaders for flash_attn_prefill.comp
+[166/876] Generate vulkan shaders for flash_attn_split_k_reduce.comp
+[167/876] Generate vulkan shaders for fwht.comp
+[168/876] Generate vulkan shaders for geglu.comp
+[169/876] Generate vulkan shaders for gated_delta_net.comp
+[170/876] Generate vulkan shaders for geglu_erf.comp
+[171/876] Generate vulkan shaders for geglu_quick.comp
+[172/876] Generate vulkan shaders for get_rows_back.comp
+[173/876] Generate vulkan shaders for get_rows.comp
+[174/876] Generate vulkan shaders for group_norm.comp
+[175/876] Generate vulkan shaders for im2col.comp
+[176/876] Generate vulkan shaders for gla.comp
+[177/876] Generate vulkan shaders for im2col_3d.comp
+[178/876] Generate vulkan shaders for l2_norm.comp
+[179/876] Generate vulkan shaders for get_rows_quant.comp
+[180/876] Generate vulkan shaders for log.comp
+[181/876] Generate vulkan shaders for lightning_indexer.comp
+[182/876] Generate vulkan shaders for mul.comp
+[183/876] Generate vulkan shaders for mul_mat_split_k_reduce.comp
+[184/876] Generate vulkan shaders for mul_mat_vec_iq1_m.comp
+[185/876] Generate vulkan shaders for mul_mat_vec_iq1_s.comp
+[186/876] Generate vulkan shaders for mul_mat_vec_iq2_s.comp
+[187/876] Generate vulkan shaders for mul_mat_vec_iq2_xs.comp
+[188/876] Generate vulkan shaders for mul_mat_vec_iq2_xxs.comp
+[189/876] Generate vulkan shaders for mul_mat_vec_iq3_s.comp
+[190/876] Generate vulkan shaders for mul_mat_vec_iq3_xxs.comp
+[191/876] Generate vulkan shaders for mul_mat_vec_iq4_xs.comp
+[192/876] Generate vulkan shaders for mul_mat_vec_nc.comp
+[193/876] Generate vulkan shaders for mul_mat_vec_p021.comp
+[194/876] Generate vulkan shaders for mul_mat_vec_q2_k.comp
+[195/876] Generate vulkan shaders for mul_mat_vec_q3_k.comp
+[196/876] Generate vulkan shaders for mul_mat_vec_q4_k.comp
+[197/876] Generate vulkan shaders for mul_mat_vec_q5_k.comp
+[198/876] Generate vulkan shaders for mul_mat_vec_q6_k.comp
+[199/876] Generate vulkan shaders for mul_mat_vec.comp
+[200/876] Generate vulkan shaders for mul_mat_vec_tq1_0.comp
+[201/876] Generate vulkan shaders for mul_mat_vec_tq2_0.comp
+[202/876] Generate vulkan shaders for mul_mmq.comp
+[203/876] Generate vulkan shaders for mul_mm_cm2.comp
+[204/876] Generate vulkan shaders for mul_mat_vecq.comp
+[205/876] Generate vulkan shaders for multi_add.comp
+[206/876] Generate vulkan shaders for mul_mmq_cm1.comp
+[207/876] Generate vulkan shaders for norm.comp
+[208/876] Generate vulkan shaders for opt_step_sgd.comp
+[209/876] Generate vulkan shaders for opt_step_adamw.comp
+[210/876] Generate vulkan shaders for out_prod.comp
+[211/876] Generate vulkan shaders for pad_reflect_1d.comp
+[212/876] Generate vulkan shaders for pad.comp
+[213/876] Generate vulkan shaders for pool1d.comp
+[214/876] Generate vulkan shaders for pool2d.comp
+[215/876] Generate vulkan shaders for quantize_q8_1.comp
+[216/876] Generate vulkan shaders for reglu.comp
+[217/876] Generate vulkan shaders for repeat.comp
+[218/876] Generate vulkan shaders for repeat_back.comp
+[219/876] Generate vulkan shaders for rms_norm_back.comp
+[220/876] Generate vulkan shaders for rms_norm_partials.comp
+[221/876] Generate vulkan shaders for rms_norm.comp
+[222/876] Generate vulkan shaders for roll.comp
+[223/876] Generate vulkan shaders for rope_multi.comp
+[224/876] Generate vulkan shaders for rope_neox.comp
+[225/876] Generate vulkan shaders for rope_norm.comp
+[226/876] Generate vulkan shaders for scale.comp
+[227/876] Generate vulkan shaders for rope_vision.comp
+[228/876] Generate vulkan shaders for silu_back.comp
+[229/876] Generate vulkan shaders for snake.comp
+[230/876] Generate vulkan shaders for soft_max.comp
+[231/876] Generate vulkan shaders for soft_max_back.comp
+[232/876] Generate vulkan shaders for soft_max_large1.comp
+[233/876] Generate vulkan shaders for soft_max_large2.comp
+[234/876] Generate vulkan shaders for soft_max_large3.comp
+[235/876] Generate vulkan shaders for solve_tri.comp
+[236/876] Generate vulkan shaders for ssm_conv.comp
+[237/876] Generate vulkan shaders for ssm_scan.comp
+[238/876] Generate vulkan shaders for sub.comp
+[239/876] Generate vulkan shaders for sum_rows.comp
+[240/876] Generate vulkan shaders for swiglu.comp
+[241/876] Generate vulkan shaders for swiglu_clamp.comp
+[242/876] Generate vulkan shaders for timestep_embedding.comp
+[243/876] Generate vulkan shaders for swiglu_oai.comp
+[244/876] Generate vulkan shaders for top_k_mask.comp
+[245/876] Generate vulkan shaders for topk_argsort.comp
+[246/876] Generate vulkan shaders for topk_moe.comp
+[247/876] Generate vulkan shaders for topk_nary_search.comp
+[248/876] Generate vulkan shaders for tri.comp
+[249/876] Generate vulkan shaders for topk_radix_select.comp
+[250/876] Generate vulkan shaders for upscale.comp
+[251/876] Generate vulkan shaders for wkv6.comp
+[252/876] Generate vulkan shaders for wkv7.comp
+[253/876] Generate vulkan shaders for unary.comp
+[254/876] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\sha256.cpp.obj
+[255/876] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\codec.cpp.obj
+[256/876] Generate vulkan shaders for mul_mm.comp
+[257/876] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\file_source.cpp.obj
+[258/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\kernel_profile.cpp.obj
+[259/876] Building CXX object src\hardware\CMakeFiles\hcs_hardware.dir\planner_json.cpp.obj
+[260/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ggml-vulkan-comm.cpp.obj
+[261/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\acc.comp.cpp.obj
+[262/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\add.comp.cpp.obj
+[263/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\add1.comp.cpp.obj
+[264/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\add_id.comp.cpp.obj
+[265/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ggml-vulkan-debug.cpp.obj
+[266/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ggml-vulkan-buffers.cpp.obj
+[267/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\arange.comp.cpp.obj
+[268/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\argmax.comp.cpp.obj
+[269/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\argsort.comp.cpp.obj
+[270/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\argsort_large.comp.cpp.obj
+[271/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\col2im_1d.comp.cpp.obj
+[272/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\concat.comp.cpp.obj
+[273/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\concat_transpose.comp.cpp.obj
+[274/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\contig_copy.comp.cpp.obj
+[275/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\conv2d_dw.comp.cpp.obj
+[276/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\conv_transpose_1d.comp.cpp.obj
+[277/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\conv3d_mm.comp.cpp.obj
+[278/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\conv2d_mm.comp.cpp.obj
+[279/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\copy.comp.cpp.obj
+[280/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\copy_transpose.comp.cpp.obj
+[281/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\copy_from_quant.comp.cpp.obj
+[282/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\copy_transpose_02.comp.cpp.obj
+[283/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\count_equal.comp.cpp.obj
+[284/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\count_experts.comp.cpp.obj
+[285/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\cross_entropy_loss.comp.cpp.obj
+[286/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\cross_entropy_loss_back.comp.cpp.obj
+[287/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\cumsum.comp.cpp.obj
+[288/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\cumsum_multipass1.comp.cpp.obj
+[289/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\cumsum_multipass2.comp.cpp.obj
+[290/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_f32.comp.cpp.obj
+[291/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq1_m.comp.cpp.obj
+[292/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq1_s.comp.cpp.obj
+[293/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq2_s.comp.cpp.obj
+[294/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\copy_to_quant.comp.cpp.obj
+[295/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq2_xs.comp.cpp.obj
+[296/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq2_xxs.comp.cpp.obj
+[297/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq3_s.comp.cpp.obj
+[298/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq3_xxs.comp.cpp.obj
+[299/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq4_nl.comp.cpp.obj
+[300/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_iq4_xs.comp.cpp.obj
+[301/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_mxfp4.comp.cpp.obj
+[302/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_nvfp4.comp.cpp.obj
+[303/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q1_0.comp.cpp.obj
+[304/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q2_0.comp.cpp.obj
+[305/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q2_k.comp.cpp.obj
+[306/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q4_0.comp.cpp.obj
+[307/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q3_k.comp.cpp.obj
+[308/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q4_1.comp.cpp.obj
+[309/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q4_k.comp.cpp.obj
+[310/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q5_0.comp.cpp.obj
+[311/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q5_1.comp.cpp.obj
+[312/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q5_k.comp.cpp.obj
+[313/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q6_k.comp.cpp.obj
+[314/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_q8_0.comp.cpp.obj
+[315/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_tq2_0.comp.cpp.obj
+[316/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dequant_tq1_0.comp.cpp.obj
+[317/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\diag.comp.cpp.obj
+[318/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dsv4_hc_comb.comp.cpp.obj
+[319/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\div.comp.cpp.obj
+[320/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dsv4_hc_post.comp.cpp.obj
+[321/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\dsv4_hc_pre.comp.cpp.obj
+[322/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\fill.comp.cpp.obj
+[323/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_cm1_flip.comp.cpp.obj
+[324/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_cm1.comp.cpp.obj
+[325/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_decode_phase_1.comp.cpp.obj
+[326/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_cm2.comp.cpp.obj
+[327/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_mask_opt.comp.cpp.obj
+[328/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_decode_phase_2.comp.cpp.obj
+[329/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_sparse_compact.comp.cpp.obj
+[330/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_prefill.comp.cpp.obj
+[331/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn.comp.cpp.obj
+[332/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\flash_attn_split_k_reduce.comp.cpp.obj
+[333/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\fwht.comp.cpp.obj
+[334/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\gated_delta_net.comp.cpp.obj
+[335/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\geglu.comp.cpp.obj
+[336/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\geglu_erf.comp.cpp.obj
+[337/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\geglu_quick.comp.cpp.obj
+[338/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\get_rows.comp.cpp.obj
+[339/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\get_rows_back.comp.cpp.obj
+[340/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\group_norm.comp.cpp.obj
+[341/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\gla.comp.cpp.obj
+[342/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\im2col.comp.cpp.obj
+[343/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\im2col_3d.comp.cpp.obj
+[344/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\l2_norm.comp.cpp.obj
+[345/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\lightning_indexer.comp.cpp.obj
+[346/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\get_rows_quant.comp.cpp.obj
+[347/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\log.comp.cpp.obj
+[348/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul.comp.cpp.obj
+[349/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_split_k_reduce.comp.cpp.obj
+[350/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq1_s.comp.cpp.obj
+[351/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq1_m.comp.cpp.obj
+[352/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq2_s.comp.cpp.obj
+[353/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq2_xs.comp.cpp.obj
+[354/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq2_xxs.comp.cpp.obj
+[355/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq3_s.comp.cpp.obj
+[356/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq4_xs.comp.cpp.obj
+[357/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_iq3_xxs.comp.cpp.obj
+[358/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_nc.comp.cpp.obj
+[359/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_p021.comp.cpp.obj
+[360/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_q2_k.comp.cpp.obj
+[361/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_q3_k.comp.cpp.obj
+[362/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_q4_k.comp.cpp.obj
+[363/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_q5_k.comp.cpp.obj
+[364/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_q6_k.comp.cpp.obj
+[365/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_tq1_0.comp.cpp.obj
+[366/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec_tq2_0.comp.cpp.obj
+[367/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vec.comp.cpp.obj
+[368/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mm_cm2.comp.cpp.obj
+[369/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mat_vecq.comp.cpp.obj
+[370/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mmq_cm1.comp.cpp.obj
+[371/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\multi_add.comp.cpp.obj
+[372/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mmq.comp.cpp.obj
+[373/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\norm.comp.cpp.obj
+[374/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\opt_step_adamw.comp.cpp.obj
+[375/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\opt_step_sgd.comp.cpp.obj
+[376/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\out_prod.comp.cpp.obj
+[377/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\pad.comp.cpp.obj
+[378/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\pad_reflect_1d.comp.cpp.obj
+[379/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\pool1d.comp.cpp.obj
+[380/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\pool2d.comp.cpp.obj
+[381/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\quantize_q8_1.comp.cpp.obj
+[382/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\reglu.comp.cpp.obj
+[383/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\repeat.comp.cpp.obj
+[384/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\repeat_back.comp.cpp.obj
+[385/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rms_norm_back.comp.cpp.obj
+[386/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rms_norm_partials.comp.cpp.obj
+[387/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\roll.comp.cpp.obj
+[388/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rope_multi.comp.cpp.obj
+[389/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rope_neox.comp.cpp.obj
+[390/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rms_norm.comp.cpp.obj
+[391/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rope_norm.comp.cpp.obj
+[392/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\rope_vision.comp.cpp.obj
+[393/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\scale.comp.cpp.obj
+[394/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\silu_back.comp.cpp.obj
+[395/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\snake.comp.cpp.obj
+[396/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ggml-vulkan.cpp.obj
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(3994): warning C4003: not enough arguments for function-like macro invocation 'IM2COL'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(4271): warning C4003: not enough arguments for function-like macro invocation 'CREATE_CONVS'
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(6885): warning C4319: '~': zero extending '_Ty' to 'uint64_t' of greater size
+        with
+        [
+            _Ty=uint32_t
+        ]
+D:\HCSInfer\external\llama.cpp\ggml\src\ggml-vulkan\ggml-vulkan.cpp(11486): warning C4319: '~': zero extending 'uint32_t' to 'size_t' of greater size
+[397/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\soft_max_back.comp.cpp.obj
+[398/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\soft_max_large1.comp.cpp.obj
+[399/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\soft_max_large2.comp.cpp.obj
+[400/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\soft_max.comp.cpp.obj
+[401/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\soft_max_large3.comp.cpp.obj
+[402/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\solve_tri.comp.cpp.obj
+[403/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ssm_conv.comp.cpp.obj
+[404/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\ssm_scan.comp.cpp.obj
+[405/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\sum_rows.comp.cpp.obj
+[406/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\sub.comp.cpp.obj
+[407/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\swiglu.comp.cpp.obj
+[408/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\swiglu_clamp.comp.cpp.obj
+[409/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\swiglu_oai.comp.cpp.obj
+[410/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\timestep_embedding.comp.cpp.obj
+[411/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\top_k_mask.comp.cpp.obj
+[412/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\topk_argsort.comp.cpp.obj
+[413/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\topk_moe.comp.cpp.obj
+[414/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\topk_nary_search.comp.cpp.obj
+[415/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\topk_radix_select.comp.cpp.obj
+[416/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\tri.comp.cpp.obj
+[417/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\upscale.comp.cpp.obj
+[418/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\wkv6.comp.cpp.obj
+[419/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\wkv7.comp.cpp.obj
+[420/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\unary.comp.cpp.obj
+[421/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml.dir\ggml-backend-dl.cpp.obj
+[422/876] Building CXX object external\llama.cpp\ggml\src\CMakeFiles\ggml.dir\ggml-backend-reg.cpp.obj
+[423/876] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\hcsmodel.cpp.obj
+[424/876] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\model_reader.cpp.obj
+[425/876] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\gguf.cpp.obj
+[426/876] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\stream.cpp.obj
+[427/876] Linking C static library lib\lz4.lib
+[428/876] Linking C static library lib\zstd_static.lib
+[429/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_11_cxx.cxx.obj
+[430/876] Building CXX object external\llama.cpp\ggml\src\ggml-vulkan\CMakeFiles\ggml-vulkan.dir\mul_mm.comp.cpp.obj
+[431/876] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\vault_prefetch.cpp.obj
+[432/876] Building CXX object src\storage\CMakeFiles\hcs_storage.dir\writer.cpp.obj
+[433/876] Linking CXX static library lib\ggml-vulkan.lib
+[434/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_10_cxx.cxx.obj
+[435/876] Linking CXX static library lib\ggml.lib
+[436/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_8_cxx.cxx.obj
+[437/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_6_cxx.cxx.obj
+[438/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_7_cxx.cxx.obj
+[439/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_9_cxx.cxx.obj
+[440/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_5_cxx.cxx.obj
+[441/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_4_cxx.cxx.obj
+[442/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_3_cxx.cxx.obj
+[443/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_2_cxx.cxx.obj
+[444/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama.cpp.obj
+[445/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_0_cxx.cxx.obj
+[446/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\Unity\unity_1_cxx.cxx.obj
+[447/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-adapter.cpp.obj
+[448/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-arch.cpp.obj
+[449/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-cparams.cpp.obj
+[450/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-batch.cpp.obj
+[451/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-chat.cpp.obj
+[452/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-context.cpp.obj
+[453/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-hparams.cpp.obj
+[454/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-io.cpp.obj
+[455/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-impl.cpp.obj
+[456/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-grammar.cpp.obj
+[457/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache-iswa.cpp.obj
+[458/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-graph.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3630): warning C4244: 'argument': conversion from 'const int64_t' to 'uint32_t', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3630): note: the template instantiation context (the oldest one first) is
+D:\HCSInfer\external\llama.cpp\src\llama-graph.cpp(2896): note: see reference to function template instantiation 'std::unique_ptr<llm_graph_input_out_ids,std::default_delete<llm_graph_input_out_ids>> std::make_unique<llm_graph_input_out_ids,const llama_hparams&,const llama_cparams&,const int64_t&,0>(const llama_hparams &,const llama_cparams &,const int64_t &)' being compiled
+[459/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache-dsa.cpp.obj
+[460/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache-msa.cpp.obj
+[461/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache-dsa-iswa.cpp.obj
+[462/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache.cpp.obj
+[463/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-memory.cpp.obj
+[464/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-memory-hybrid.cpp.obj
+[465/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-moe-cache.cpp.obj
+[466/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-kv-cache-dsv4.cpp.obj
+[467/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-memory-hybrid-iswa.cpp.obj
+[468/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-mmap.cpp.obj
+[469/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-memory-hybrid-idx.cpp.obj
+[470/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-memory-recurrent.cpp.obj
+[471/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-model-saver.cpp.obj
+[472/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-model-loader.cpp.obj
+[473/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-sampler.cpp.obj
+[474/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-quant.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\type_traits(1680): warning C4244: 'argument': conversion from 'unsigned __int64' to 'int', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\type_traits(1680): note: the template instantiation context (the oldest one first) is
+D:\HCSInfer\external\llama.cpp\src\llama-quant.cpp(290): note: see reference to function template instantiation 'std::thread &std::vector<std::thread,std::allocator<std::thread>>::emplace_back<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const uint8_t*,float*,size_t&>(llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const uint8_t *&&,float *&&,size_t &)' being compiled
+D:\HCSInfer\external\llama.cpp\src\llama-quant.cpp(290): note: see the first reference to 'std::vector<std::thread,std::allocator<std::thread>>::emplace_back' in 'llama_tensor_dequantize_impl'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(924): note: see reference to function template instantiation '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_one_at_back<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const unsigned char*,float*,size_t&>(llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const unsigned char *&&,float *&&,size_t &)' being compiled
+        with
+        [
+            _Ty=std::thread
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(845): note: see reference to function template instantiation '_Ty &std::vector<_Ty,std::allocator<_Ty>>::_Emplace_back_with_unused_capacity<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const unsigned char*,float*,size_t&>(llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const unsigned char *&&,float *&&,size_t &)' being compiled
+        with
+        [
+            _Ty=std::thread
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(863): note: see reference to function template instantiation 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,const unsigned char*,float*,size_t&>(_Alloc &,_Objty *const ,llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &,ggml_type &,const unsigned char *&&,float *&&,size_t &)' being compiled
+        with
+        [
+            _Alloc=std::allocator<std::thread>,
+            _Ty=std::thread,
+            _Objty=std::thread
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xmemory(732): note: see reference to function template instantiation 'std::thread::thread<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,_T,float*,size_t&,0>(_Fn,ggml_type &,_T &&,float *&&,size_t &)' being compiled
+        with
+        [
+            _T=const uint8_t *,
+            _Fn=llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\thread(93): note: see reference to function template instantiation 'void std::thread::_Start<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>&,ggml_type&,_Ty,float*,size_t&>(_Fn,ggml_type &,_Ty &&,float *&&,size_t &)' being compiled
+        with
+        [
+            _Ty=const uint8_t *,
+            _Fn=llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f> &
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\thread(76): note: see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<std::thread::_Start::_Tuple,0,1,2,3,4>(std::integer_sequence<size_t,0,1,2,3,4>) noexcept)(void *) noexcept' being compiled
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\thread(67): note: see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3,4>(void *) noexcept' being compiled
+        with
+        [
+            _Tuple=std::thread::_Start::_Tuple
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\thread(60): note: see reference to function template instantiation 'void std::invoke<llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>,ggml_type,const uint8_t*,_Ty*,unsigned __int64>(_Callable &&,_Ty1 &&,const uint8_t *&&,_Ty *&&,unsigned __int64 &&) noexcept(false)' being compiled
+        with
+        [
+            _Ty=float,
+            _Callable=llama_tensor_dequantize_impl::<lambda_121cf0dbfedb4a0daa40ff737e80b57f>,
+            _Ty1=ggml_type
+        ]
+[475/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-model.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): warning C4244: 'initializing': conversion from '_Ty' to '_Ty2', possible loss of data
+        with
+        [
+            _Ty=int64_t
+        ]
+        and
+        [
+            _Ty2=uint32_t
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): note: the template instantiation context (the oldest one first) is
+D:\HCSInfer\external\llama.cpp\src\llama-model.cpp(727): note: see reference to function template instantiation 'std::pair<int64_t,uint32_t>::pair<const int64_t&,int64_t,0>(_Other1,_Other2 &&) noexcept' being compiled
+        with
+        [
+            _Other1=const int64_t &,
+            _Other2=int64_t
+        ]
+D:\HCSInfer\external\llama.cpp\src\llama-model.cpp(727): note: see the first reference to 'std::pair<int64_t,uint32_t>::pair' in 'llama_meta_device_get_split_state::<lambda_133962d96ca4afe921c058bf7f3983f8>::operator ()'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): warning C4244: 'initializing': conversion from 'const int64_t' to '_Ty2', possible loss of data
+        with
+        [
+            _Ty2=uint32_t
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility(274): note: the template instantiation context (the oldest one first) is
+D:\HCSInfer\external\llama.cpp\src\llama-model.cpp(738): note: see reference to function template instantiation 'std::pair<int64_t,uint32_t>::pair<const int64_t&,const int64_t&,0>(_Other1,_Other2) noexcept' being compiled
+        with
+        [
+            _Other1=const int64_t &,
+            _Other2=const int64_t &
+        ]
+D:\HCSInfer\external\llama.cpp\src\llama-model.cpp(738): note: see the first reference to 'std::pair<int64_t,uint32_t>::pair' in 'llama_meta_device_get_split_state::<lambda_133962d96ca4afe921c058bf7f3983f8>::operator ()'
+[476/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\unicode.cpp.obj
+[477/876] Building C object external\llama.cpp\vendor\hash\CMakeFiles\vendor-hash.dir\xxhash\xxhash.c.obj
+[478/876] Building CXX object external\llama.cpp\vendor\hash\CMakeFiles\vendor-hash.dir\hash.cpp.obj
+[479/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\llama-vocab.cpp.obj
+[480/876] Building CXX object src\kernels\cpu\CMakeFiles\hcs_kernels_cpu.dir\gemv_q8_0.cpp.obj
+[481/876] Building CXX object external\llama.cpp\vendor\hash\CMakeFiles\vendor-hash.dir\sha1\sha1.c.obj
+[482/876] Building C object external\llama.cpp\vendor\hash\CMakeFiles\vendor-hash.dir\sha256\sha256.c.obj
+[483/876] Building CXX object src\kernels\cpu\CMakeFiles\hcs_kernels_cpu.dir\oracle.cpp.obj
+[484/876] Linking CXX static library lib\hcs_hardware.lib
+[485/876] Linking CXX static library lib\hcs_storage.lib
+[486/876] Building CXX object src\kernels\cpu\CMakeFiles\hcs_kernels_cpu.dir\cpu_baseline.cpp.obj
+[487/876] Linking CXX static library lib\vendor-hash.lib
+[488/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\Unity\unity_4_cxx.cxx.obj
+[489/876] Building CXX object src\telemetry\CMakeFiles\hcs_telemetry.dir\resource_probe.cpp.obj
+[490/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\Unity\unity_3_cxx.cxx.obj
+[491/876] Building CXX object src\lora\CMakeFiles\hcs_lora.dir\lora_library.cpp.obj
+[492/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\Unity\unity_2_cxx.cxx.obj
+[493/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\Unity\unity_1_cxx.cxx.obj
+[494/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\Unity\unity_0_cxx.cxx.obj
+[495/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-audio.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(5310): warning C4244: '=': conversion from 'const _Ty' to 'float', possible loss of data
+        with
+        [
+            _Ty=int
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(5310): note: the template instantiation context (the oldest one first) is
+D:\HCSInfer\external\llama.cpp\tools\mtmd\mtmd-audio.cpp(378): note: see reference to function template instantiation 'void std::fill<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,int>(const _FwdIt,const _FwdIt,const int &)' being compiled
+        with
+        [
+            _Ty=float,
+            _FwdIt=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<float>>>
+        ]
+[496/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-image.cpp.obj
+[497/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd.cpp.obj
+[498/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-helper-gen.cpp.obj
+[499/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-helper.cpp.obj
+[500/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-graph.cpp.obj
+[501/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-subcontext.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(5310): warning C4244: '=': conversion from 'const _Ty' to 'float', possible loss of data
+        with
+        [
+            _Ty=double
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(5310): note: the template instantiation context (the oldest one first) is
+D:\HCSInfer\external\llama.cpp\tools\mtmd\mtmd-subcontext.cpp(1214): note: see reference to function template instantiation 'void std::fill<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,double>(const _FwdIt,const _FwdIt,const double &)' being compiled
+        with
+        [
+            _Ty=float,
+            _FwdIt=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<float>>>
+        ]
+[502/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\api\api.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[503/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\api\result.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[504/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\api\options.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[505/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\api\tensor.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[506/876] Building CXX object external\llama.cpp\tools\mtmd\CMakeFiles\mtmd.dir\mtmd-model.cpp.obj
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1461): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1461): note: the template instantiation context (the oldest one first) is
+D:\HCSInfer\external\llama.cpp\tools\mtmd\mtmd-model.cpp(3245): note: see reference to function template instantiation 'void std::vector<int,std::allocator<int>>::assign<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,0>(_Iter,_Iter)' being compiled
+        with
+        [
+            _Ty=float,
+            _Iter=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<float>>>
+        ]
+D:\HCSInfer\external\llama.cpp\tools\mtmd\mtmd-model.cpp(3245): note: see the first reference to 'std::vector<int,std::allocator<int>>::assign' in 'mtmd_model_loader::load_tensors'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1491): note: see reference to function template instantiation 'void std::vector<int,std::allocator<int>>::_Assign_counted_range<float*>(_Iter,const unsigned __int64)' being compiled
+        with
+        [
+            _Iter=float *
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813): note: the template instantiation context (the oldest one first) is
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1491): note: see reference to function template instantiation 'void std::vector<int,std::allocator<int>>::_Assign_counted_range<float*>(_Iter,const unsigned __int64)' being compiled
+        with
+        [
+            _Iter=float *
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1475): note: see reference to function template instantiation '_OutIt *std::_Copy_n_unchecked4<float*,unsigned __int64,int*>(_InIt,_SizeTy,_OutIt)' being compiled
+        with
+        [
+            _OutIt=int *,
+            _InIt=float *,
+            _SizeTy=unsigned __int64
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xmemory(732): warning C4244: 'initializing': conversion from 'float' to '_Objty', possible loss of data
+        with
+        [
+            _Objty=int
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xmemory(732): note: the template instantiation context (the oldest one first) is
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(1436): note: see reference to function template instantiation 'int *std::_Uninitialized_copy_n<float*,std::allocator<int>>(_InIt,size_t,int *,_Alloc &)' being compiled
+        with
+        [
+            _InIt=float *,
+            _Alloc=std::allocator<int>
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xmemory(1938): note: see reference to function template instantiation 'void std::_Uninitialized_backout_al<_Alloc>::_Emplace_back<float&>(float &)' being compiled
+        with
+        [
+            _Alloc=std::allocator<int>
+        ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xmemory(1844): note: see reference to function template instantiation 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,float&>(_Alloc &,_Objty *const ,float &)' being compiled
+        with
+        [
+            _Alloc=std::allocator<int>,
+            _Ty=int,
+            _Objty=int
+        ]
+[507/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\conditioning\wan_audio.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[508/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\config.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[509/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\conditioning\prompt_input.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[510/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\compute_workspace.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[511/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\cpu\int8.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[512/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\cpu\modulate.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[513/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\cpu\registration.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[514/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\cpu\rope.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[515/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\backend_fit.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[516/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\cpu\w4.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[517/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\convert.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[518/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_compat.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[519/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_extend.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[520/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_extensions.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[521/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_extend_backend.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[522/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\execution_engine.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[523/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_runner.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[524/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_tensor_utils.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[525/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\option_types.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[526/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\ggml_graph_cut.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[527/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\parallel.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[528/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\pe_cache.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[529/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\layer_split_partition.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[530/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\probe\backend_probe.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[531/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\probe\conv_direct.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[532/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\regex.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[533/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\probe\flash_attn.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[534/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\runner_cache.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[535/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\segment_graph_bindings.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[536/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\segment_weight_pipeline.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[537/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\core\util.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[538/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\extensions\photomaker_extension.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[539/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\detailer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[540/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\extensions\pulid_extension.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[541/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\adapter\lora_ops.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[542/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\generation_info.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[543/876] Building CXX object external\llama.cpp\src\CMakeFiles\llama.dir\unicode-data.cpp.obj
+[544/876] Linking CXX static library lib\llama.lib
+[545/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\anima.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[546/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\boogu_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[547/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\ernie_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[548/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\fibo2.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[549/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\flux.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[550/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\flux2.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[551/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\flux3.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[552/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\hidream_o1.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[553/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\hunyuan_video.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[554/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\ideogram4.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[555/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\iris.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[556/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\krea2.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[557/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\lens.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[558/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\lingbot_video.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[559/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\llada_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[560/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\longcat.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[561/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\ltxav.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[562/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\ming_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[563/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\minit2i.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[564/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\mage_flow.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[565/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\minimax_h3.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[566/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\pixart.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[567/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\moss_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[568/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\pid.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[569/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\qwen_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[570/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\sd.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[571/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\sd3.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[572/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\sensenova_u1.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[573/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_io\gguf_io.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[574/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_io\pickle_io.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[575/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\wan.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[576/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_io\torch_legacy_io.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[577/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_io\safetensors_io.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[578/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_io\torch_zip_io.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[579/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\z_image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[580/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_loader_files.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[581/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model\integrations\z_image_l2p.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[582/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_manager_files.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[583/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_loader.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[584/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_manager_prefetch.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[585/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_registry.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[586/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\model_manager.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[587/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\name_conversion.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[588/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\image_upscale.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[589/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\image.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[590/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\relay_vsr.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[591/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\diffusion_engine.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[592/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\seedvr2.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[593/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\model_builders.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[594/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\request.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[595/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\audio_processing.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[596/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\guidance.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[597/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\video_upscale.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[598/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\image_preprocess.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[599/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\imatrix.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[600/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\tiling.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[601/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\runtime\sample-cache.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[602/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\bpe_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[603/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\clip_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[604/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\stable-diffusion.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[605/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\pipeline\video.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[606/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\gemma_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[607/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\sensenova_u1_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[608/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\qwen2_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[609/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\tokenize_util.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[610/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\mistral_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[611/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[612/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\hf_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[613/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\tokenizer_config.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[614/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\version.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[615/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\zip.dir\zip.c.obj
+[616/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\ascii.c.obj
+[617/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\t5_unigram_tokenizer.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[618/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\regcomp.c.obj
+[619/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\regenc.c.obj
+[620/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\regerror.c.obj
+[621/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\regparse.c.obj
+[622/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\st.c.obj
+[623/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\unicode.c.obj
+[624/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\unicode_fold1_key.c.obj
+[625/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\unicode_fold2_key.c.obj
+[626/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\unicode_fold3_key.c.obj
+[627/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\unicode_unfold_key.c.obj
+[628/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\utf8.c.obj
+[629/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\onig.dir\oniguruma\regexec.c.obj
+[630/876] Linking CXX static library lib\hcs_kernels_cpu.lib
+[631/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\upscaler.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[632/876] Linking CXX static library lib\hcs_lora.lib
+[633/876] Building C object external\stable-diffusion.cpp\thirdparty\CMakeFiles\sd-utf8proc.dir\utf8proc\utf8proc.c.obj
+[634/876] Embedding GUI assets
+[635/876] Linking CXX static library lib\hcs_telemetry.lib
+[636/876] Linking CXX static library lib\mtmd.lib
+[637/876] Building CXX object src\scheduler\CMakeFiles\hcs_scheduler.dir\admission.cpp.obj
+[638/876] Building CXX object src\engines\llama\CMakeFiles\hcs_engine_llama.dir\llama_engine.cpp.obj
+[639/876] Building CXX object src\engines\upscale\CMakeFiles\hcs_upscale.dir\resample.cpp.obj
+[640/876] Building CXX object src\engines\diffusion\CMakeFiles\hcs_engine_diffusion.dir\diffusion_engine.cpp.obj
+[641/876] Building CXX object src\engines\upscale\CMakeFiles\hcs_upscale.dir\tiling.cpp.obj
+[642/876] Compiling + validating shader GemvQ8_0 (glslc compute, spirv-val vulkan1.1)
+[643/876] Compiling + validating shader GemvQ8_0Tiled (glslc compute, spirv-val vulkan1.1)
+[644/876] Compiling + validating shader GemmF32Tiled (glslc compute, spirv-val vulkan1.1)
+[645/876] Compiling + validating shader GemmF16Tiled (glslc compute, spirv-val vulkan1.1)
+[646/876] Compiling + validating shader GemmI8DotTiled (glslc compute, spirv-val vulkan1.2)
+[647/876] Compiling + validating shader GemmCoopMatF16 (glslc compute, spirv-val vulkan1.2)
+[648/876] Building CXX object src\engines\upscale\CMakeFiles\hcs_upscale.dir\png_codec.cpp.obj
+[649/876] Compiling + validating shader SoftmaxRows (glslc compute, spirv-val vulkan1.1)
+[650/876] Compiling + validating shader LayerNormRows (glslc compute, spirv-val vulkan1.1)
+[651/876] Compiling + validating shader RmsNormRows (glslc compute, spirv-val vulkan1.1)
+[652/876] Compiling + validating shader RopeRows (glslc compute, spirv-val vulkan1.1)
+[653/876] Building CXX object src\gui\CMakeFiles\hcs_gui.dir\__\__\generated\gui\gui_assets_data.cpp.obj
+[654/876] Linking CXX static library lib\hcs_scheduler.lib
+[655/876] Linking CXX static library lib\hcs_engine_llama.lib
+[656/876] Building CXX object src\gui\CMakeFiles\hcs_gui.dir\gui_assets.cpp.obj
+[657/876] Embedding SPIR-V GemvQ8_0
+[658/876] Embedding SPIR-V GemvQ8_0Tiled
+[659/876] Embedding SPIR-V GemmF32Tiled
+[660/876] Embedding SPIR-V GemmF16Tiled
+[661/876] Embedding SPIR-V GemmI8DotTiled
+[662/876] Embedding SPIR-V GemmCoopMatF16
+[663/876] Embedding SPIR-V SoftmaxRows
+[664/876] Embedding SPIR-V LayerNormRows
+[665/876] Embedding SPIR-V RmsNormRows
+[666/876] Embedding SPIR-V RopeRows
+[667/876] Linking CXX static library lib\hcs_gui.lib
+[668/876] Building CXX object src\engines\upscale\CMakeFiles\hcs_upscale.dir\ort_engine.cpp.obj
+[669/876] Linking CXX static library lib\hcs_upscale.lib
+[670/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\json_schema.cpp.obj
+[671/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane.cpp.obj
+[672/876] Building CXX object external\stable-diffusion.cpp\CMakeFiles\stable-diffusion.dir\src\tokenizers\vocab\vocab.cpp.obj
+cl : Command line warning D9025 : overriding '/EHc' with '/EHc-'
+[673/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\runtime.cpp.obj
+[674/876] Linking CXX static library lib\stable-diffusion.lib
+[675/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\http_api.cpp.obj
+[676/876] Linking CXX static library lib\hcs_engine_diffusion.lib
+[677/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\http_server.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[678/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\image_probe.cpp.obj
+[679/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\data_uri.cpp.obj
+[680/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane_vision.cpp.obj
+[681/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane_image.cpp.obj
+[682/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\control_plane_benchmark.cpp.obj
+[683/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\chat_tools.cpp.obj
+[684/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\diffusion_default_engine.cpp.obj
+[685/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\llama_stream_adapter.cpp.obj
+[686/876] Building CXX object src\merge\CMakeFiles\hcs_merge.dir\math.cpp.obj
+[687/876] Building CXX object src\merge\CMakeFiles\hcs_merge.dir\tensor_file.cpp.obj
+[688/876] Building CXX object src\api\CMakeFiles\hcs_api.dir\http_client.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[689/876] Building CXX object _deps\googletest-build\googletest\CMakeFiles\gtest.dir\src\gtest-all.cc.obj
+[690/876] Building CXX object src\process\CMakeFiles\hcs_process.dir\child_process.cpp.obj
+[691/876] Building CXX object src\process\CMakeFiles\hcs_process.dir\launcher.cpp.obj
+[692/876] Building CXX object src\train\CMakeFiles\hcs_train.dir\eval_gate.cpp.obj
+[693/876] Building CXX object src\merge\CMakeFiles\hcs_merge.dir\merge.cpp.obj
+[694/876] Building CXX object src\train\CMakeFiles\hcs_train.dir\dataset_validator.cpp.obj
+[695/876] Building CXX object src\train\CMakeFiles\hcs_train.dir\pipeline.cpp.obj
+[696/876] Building CXX object src\train\CMakeFiles\hcs_train.dir\eval_report.cpp.obj
+[697/876] Building CXX object src\train\CMakeFiles\hcs_train.dir\adapter_book.cpp.obj
+[698/876] Building CXX object src\train\CMakeFiles\hcs_train.dir\rsi_loop.cpp.obj
+[699/876] Building CXX object src\kernels\vulkan\CMakeFiles\hcs_kernels_vulkan.dir\gemv_q8_0.cpp.obj
+[700/876] Building CXX object src\train\CMakeFiles\hcs_train.dir\chat_template.cpp.obj
+[701/876] Building CXX object src\train\CMakeFiles\hcs_train.dir\dataset_prep.cpp.obj
+[702/876] Building CXX object src\kernels\vulkan\CMakeFiles\hcs_kernels_vulkan.dir\vk_runner.cpp.obj
+[703/876] Building CXX object src\kernels\vulkan\CMakeFiles\hcs_kernels_vulkan.dir\vk_ops.cpp.obj
+[704/876] Linking CXX static library lib\hcs_api.lib
+[705/876] Building CXX object tests\unit\process\CMakeFiles\hcs_child_probe.dir\child_probe.cpp.obj
+[706/876] Building CXX object src\mcp\CMakeFiles\hcs_mcp.dir\stdio.cpp.obj
+[707/876] Building CXX object src\kernels\vulkan\CMakeFiles\hcs_kernels_vulkan.dir\tune.cpp.obj
+[708/876] Linking CXX static library lib\gtest.lib
+[709/876] Building CXX object _deps\googletest-build\googletest\CMakeFiles\gtest_main.dir\src\gtest_main.cc.obj
+[710/876] Linking CXX static library lib\hcs_merge.lib
+[711/876] Linking CXX static library lib\hcs_process.lib
+[712/876] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock.dir\src\gmock-all.cc.obj
+[713/876] Building CXX object src\mcp\CMakeFiles\hcs_mcp.dir\mcp_server.cpp.obj
+[714/876] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock.dir\__\googletest\src\gtest-all.cc.obj
+[715/876] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\sandbox_policy.cpp.obj
+[716/876] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\agent_redact.cpp.obj
+[717/876] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\agent_config.cpp.obj
+[718/876] Linking CXX static library lib\hcs_train.lib
+[719/876] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\event_parser.cpp.obj
+[720/876] Linking CXX static library lib\hcs_kernels_vulkan.lib
+[721/876] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\tool_audit.cpp.obj
+[722/876] Linking CXX static library lib\hcs_mcp.lib
+[723/876] Building CXX object src\agent\CMakeFiles\hcs_agent.dir\session_manager.cpp.obj
+[724/876] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\chat_cmd.cpp.obj
+[725/876] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\cli.cpp.obj
+[726/876] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\cache_cmd.cpp.obj
+[727/876] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\image_cmd.cpp.obj
+[728/876] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\vision_cmd.cpp.obj
+[729/876] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\benchmark_cmd.cpp.obj
+[730/876] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\train_cmd.cpp.obj
+[731/876] Linking CXX static library lib\gmock.lib
+[732/876] Linking CXX executable bin\hcs_child_probe.exe
+[733/876] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\models_remote_cmd.cpp.obj
+[734/876] Building CXX object src\cli\CMakeFiles\hcs_cli.dir\merge_cmd.cpp.obj
+[735/876] Linking CXX static library lib\gtest_main.lib
+[736/876] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock_main.dir\src\gmock-all.cc.obj
+[737/876] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock_main.dir\src\gmock_main.cc.obj
+[738/876] Linking CXX static library lib\hcs_agent.lib
+[739/876] Linking CXX static library lib\hcs_cli.lib
+[740/876] Building CXX object _deps\googletest-build\googlemock\CMakeFiles\gmock_main.dir\__\googletest\src\gtest-all.cc.obj
+[741/876] Building CXX object src\app\CMakeFiles\hcsinfer.dir\main.cpp.obj
+[742/876] Building CXX object src\kernels\vulkan\CMakeFiles\hcs_kernel_bench.dir\__\__\__\tools\kernel-bench\kernel_bench.cpp.obj
+[743/876] Building CXX object src\storage\CMakeFiles\hcs_storage_bench.dir\__\__\tools\benchmark-runner\storage_bench.cpp.obj
+[744/876] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_sandbox_policy.cpp.obj
+[745/876] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_agent_redact.cpp.obj
+[746/876] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_agent_config.cpp.obj
+[747/876] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_event_parser.cpp.obj
+[748/876] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_tool_audit.cpp.obj
+[749/876] Building CXX object tests\unit\api_schema\CMakeFiles\hcs_test_api_schema.dir\test_json_guard_base64.cpp.obj
+[750/876] Building CXX object tests\unit\api_schema\CMakeFiles\hcs_test_api_schema.dir\test_json_schema.cpp.obj
+[751/876] Building CXX object tests\unit\api_vision\CMakeFiles\hcs_test_api_vision.dir\test_image_input.cpp.obj
+[752/876] Building CXX object tests\unit\api_chat_tools\CMakeFiles\hcs_test_api_chat_tools.dir\test_chat_tools.cpp.obj
+[753/876] Building CXX object tests\unit\agent\CMakeFiles\hcs_test_agent.dir\test_session_manager.cpp.obj
+[754/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_checked_math.cpp.obj
+[755/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_result.cpp.obj
+[756/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_memory_budget.cpp.obj
+[757/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_lifecycle.cpp.obj
+[758/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_path_guard.cpp.obj
+[759/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_job_queue.cpp.obj
+[760/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_model_registry.cpp.obj
+[761/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_engine_interface.cpp.obj
+[762/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_settings.cpp.obj
+[763/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_logger.cpp.obj
+[764/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_fs_util.cpp.obj
+[765/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_gguf_probe.cpp.obj
+[766/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_diffusion_runtime.cpp.obj
+[767/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_state_dir.cpp.obj
+[768/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_benchmark.cpp.obj
+[769/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_image_profiles.cpp.obj
+[770/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_job_queue_cancel_all.cpp.obj
+[771/876] Building CXX object tests\unit\gui\CMakeFiles\hcs_test_gui_assets.dir\test_gui_assets.cpp.obj
+[772/876] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_formatting.cpp.obj
+[773/876] Building CXX object tests\unit\core\CMakeFiles\hcs_test_core.dir\test_safetensors_probe.cpp.obj
+[774/876] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_memory_probe.cpp.obj
+[775/876] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_cpu_decode.cpp.obj
+[776/876] Building CXX object tests\unit\kernels\CMakeFiles\hcs_test_kernels.dir\test_gemv_q8_0.cpp.obj
+[777/876] Building CXX object tests\unit\hardware\CMakeFiles\hcs_test_hardware.dir\test_doctor_live.cpp.obj
+[778/876] Building CXX object tests\unit\kernels_oracle\CMakeFiles\hcs_test_kernels_oracle.dir\test_oracle.cpp.obj
+[779/876] Building CXX object tests\unit\merge\CMakeFiles\hcs_test_merge.dir\test_merge_math.cpp.obj
+[780/876] Building CXX object tests\unit\lora\CMakeFiles\hcs_test_lora.dir\test_lora_library.cpp.obj
+[781/876] Building CXX object tests\unit\planner\CMakeFiles\hcs_test_planner.dir\test_caps.cpp.obj
+[782/876] Building CXX object tests\unit\merge\CMakeFiles\hcs_test_merge.dir\test_merge_files.cpp.obj
+[783/876] Building CXX object tests\unit\planner\CMakeFiles\hcs_test_planner.dir\test_planner.cpp.obj
+[784/876] Building CXX object tests\unit\process\CMakeFiles\hcs_test_process.dir\test_child_process.cpp.obj
+[785/876] Building CXX object tests\unit\planner\CMakeFiles\hcs_test_planner.dir\test_kernel_profile.cpp.obj
+[786/876] Building CXX object tests\unit\process\CMakeFiles\hcs_test_process.dir\test_child_process_stream.cpp.obj
+[787/876] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_sha256.cpp.obj
+[788/876] Building CXX object tests\unit\scheduler\CMakeFiles\hcs_test_scheduler.dir\test_admission.cpp.obj
+[789/876] Building CXX object tests\unit\scheduler\CMakeFiles\hcs_test_scheduler.dir\test_resource_probe.cpp.obj
+[790/876] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_codec.cpp.obj
+[791/876] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_hcsmodel_parser.cpp.obj
+[792/876] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_stream.cpp.obj
+[793/876] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_roundtrip.cpp.obj
+[794/876] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_gguf.cpp.obj
+[795/876] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_source_faults.cpp.obj
+[796/876] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_vault_prefetch.cpp.obj
+[797/876] Building CXX object tests\unit\storage\CMakeFiles\hcs_test_storage.dir\test_unplug.cpp.obj
+[798/876] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_eval_gate.cpp.obj
+[799/876] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_dataset_validator.cpp.obj
+[800/876] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_adapter_book.cpp.obj
+[801/876] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_eval_report.cpp.obj
+[802/876] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_pipeline.cpp.obj
+[803/876] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_chat_template.cpp.obj
+[804/876] Building CXX object tests\unit\upscale\CMakeFiles\hcs_test_upscale.dir\test_upscale_pipeline.cpp.obj
+[805/876] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_dataset_prep.cpp.obj
+[806/876] Building CXX object tests\unit\upscale\CMakeFiles\hcs_test_upscale.dir\test_ort_backend.cpp.obj
+[807/876] Building CXX object tests\unit\train\CMakeFiles\hcs_test_train.dir\test_rsi_loop.cpp.obj
+[808/876] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_runtime_lifecycle.cpp.obj
+[809/876] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_oom_injection.cpp.obj
+[810/876] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_http_benchmarks.cpp.obj
+[811/876] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_http_handler.cpp.obj
+[812/876] Building CXX object tests\contract\api\CMakeFiles\hcs_test_api.dir\test_vault_load.cpp.obj
+[813/876] Building CXX object tests\contract\api_chat_tools\CMakeFiles\hcs_test_api_chat_tools_contract.dir\test_chat_tools_contract.cpp.obj
+[814/876] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_transport_negative.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[815/876] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_socket.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[816/876] Building CXX object tests\contract\api_http\CMakeFiles\hcs_test_api_http.dir\test_http_shutdown.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[817/876] Building CXX object tests\contract\api_image\CMakeFiles\hcs_test_api_image.dir\test_image_routes.cpp.obj
+[818/876] Building CXX object tests\contract\api_image\CMakeFiles\hcs_test_api_image_lora_upscale.dir\test_image_lora_upscale.cpp.obj
+[819/876] Building CXX object tests\contract\cli\CMakeFiles\hcs_test_cli.dir\test_cli.cpp.obj
+[820/876] Building CXX object tests\contract\api_overload\CMakeFiles\hcs_test_api_overload.dir\test_api_overload.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[821/876] Building CXX object tests\contract\api_vision\CMakeFiles\hcs_test_api_vision_contract.dir\test_vision_contract.cpp.obj
+[822/876] Building CXX object tests\contract\cli\CMakeFiles\hcs_test_cli.dir\test_cli_cache.cpp.obj
+[823/876] Building CXX object tests\contract\cli\CMakeFiles\hcs_test_cli.dir\test_cli_merge.cpp.obj
+[824/876] Building CXX object tests\contract\cli\CMakeFiles\hcs_test_cli.dir\test_cli_remote.cpp.obj
+[825/876] Building CXX object tests\contract\mcp_image\CMakeFiles\hcs_test_mcp_image.dir\test_mcp_image.cpp.obj
+[826/876] Building CXX object tests\parser-fuzz\storage\CMakeFiles\hcs_test_storage_mutation_fuzz.dir\test_mutation_fuzz.cpp.obj
+[827/876] Building CXX object tests\kernels\vulkan_ops\CMakeFiles\hcs_test_vulkan_ops.dir\test_vulkan_ops.cpp.obj
+[828/876] Building CXX object tests\contract\mcp\CMakeFiles\hcs_test_mcp.dir\test_mcp.cpp.obj
+[829/876] Building CXX object tests\integration\kernels_vulkan\CMakeFiles\hcs_test_kernels_vulkan.dir\test_gemv_q8_0_vk.cpp.obj
+[830/876] Building CXX object tests\integration\diffusion_engine\CMakeFiles\hcs_test_diffusion_engine.dir\test_diffusion_engine.cpp.obj
+[831/876] Building CXX object tests\integration\llama_vision\CMakeFiles\hcs_test_llama_vision.dir\test_llama_vision.cpp.obj
+[832/876] Building CXX object tests\integration\llama_engine\CMakeFiles\hcs_test_llama_engine.dir\test_llama_engine.cpp.obj
+[833/876] Linking CXX static library lib\gmock_main.lib
+[834/876] Linking CXX executable bin\hcs_storage_bench.exe
+[835/876] Linking CXX executable bin\hcs_kernel_bench.exe
+[836/876] Building CXX object tests\integration\storage\CMakeFiles\hcs_test_storage_real_model.dir\test_real_gguf.cpp.obj
+[837/876] Linking CXX executable bin\hcs_test_agent.exe
+[838/876] Linking CXX executable bin\hcs_test_api_chat_tools.exe
+[839/876] Linking CXX executable bin\hcs_test_api_schema.exe
+[840/876] Linking CXX executable bin\hcs_test_api_vision.exe
+[841/876] Linking CXX executable bin\hcs_test_core.exe
+[842/876] Linking CXX executable bin\hcs_test_gui_assets.exe
+[843/876] Linking CXX executable bin\hcs_test_hardware.exe
+[844/876] Linking CXX executable bin\HCSInfer.exe
+[845/876] Linking CXX executable bin\hcs_test_kernels.exe
+[846/876] Linking CXX executable bin\hcs_test_kernels_oracle.exe
+[847/876] Linking CXX executable bin\hcs_test_lora.exe
+[848/876] Linking CXX executable bin\hcs_test_merge.exe
+[849/876] Linking CXX executable bin\hcs_test_planner.exe
+[850/876] Linking CXX executable bin\hcs_test_process.exe
+[851/876] Linking CXX executable bin\hcs_test_scheduler.exe
+[852/876] Linking CXX executable bin\hcs_test_storage.exe
+[853/876] Linking CXX executable bin\hcs_test_upscale.exe
+[854/876] Building CXX object tests\integration\shutdown_real\CMakeFiles\hcs_test_shutdown_real.dir\test_shutdown_real.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[855/876] Linking CXX executable bin\hcs_test_train.exe
+[856/876] Linking CXX executable bin\hcs_test_api_chat_tools_contract.exe
+[857/876] Linking CXX executable bin\hcs_test_api_image.exe
+[858/876] Building CXX object tests\soak\soak_core\CMakeFiles\hcs_test_soak_core.dir\test_soak_core.cpp.obj
+[859/876] Linking CXX executable bin\hcs_test_api_image_lora_upscale.exe
+[860/876] Linking CXX executable bin\hcs_test_api_overload.exe
+[861/876] Linking CXX executable bin\hcs_test_api_vision_contract.exe
+[862/876] Linking CXX executable bin\hcs_test_mcp.exe
+[863/876] Linking CXX executable bin\hcs_test_api.exe
+[864/876] Linking CXX executable bin\hcs_test_api_http.exe
+[865/876] Linking CXX executable bin\hcs_test_mcp_image.exe
+[866/876] Linking CXX executable bin\hcs_test_storage_mutation_fuzz.exe
+[867/876] Linking CXX executable bin\hcs_test_vulkan_ops.exe
+[868/876] Linking CXX executable bin\hcs_test_kernels_vulkan.exe
+[869/876] Linking CXX executable bin\hcs_test_llama_engine.exe
+[870/876] Linking CXX executable bin\hcs_test_llama_vision.exe
+[871/876] Linking CXX executable bin\hcs_test_diffusion_engine.exe
+[872/876] Linking CXX executable bin\hcs_test_cli.exe
+[873/876] Linking CXX executable bin\hcs_test_storage_real_model.exe
+[874/876] Linking CXX executable bin\hcs_test_shutdown_real.exe
+[875/876] Linking CXX executable bin\hcs_test_soak_core.exe
+BUILD OK (windows-msvc-release-static-vulkan)
+BUILD_STATIC_VULKAN_EXIT=0

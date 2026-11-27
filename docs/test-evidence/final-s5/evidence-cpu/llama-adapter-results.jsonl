@@ -1,0 +1,4 @@
+{"test":"CpuGeneration","backend":"cpu","device":"CPU","offloaded_layers":0,"total_layers":24,"load_ms":21491.331500,"ttft_ms":666.038200,"prompt_tokens":23,"prompt_tps":38.407145,"decode_tokens":7,"decode_tps":16.302557,"output_chars":27}
+{"test":"CancelCpu","chunks_at_cancel":5,"chunks_final":5,"stop_latency_ms":0.753800}
+{"test":"Cycle10Cpu","cycles":10,"private_bytes_after_each_unload":[6377472,6381568,6635520,7081984,7315456,8077312,9039872,8577024,8503296,8626176],"working_set_after_each_unload":[11702272,12247040,12533760,12873728,13189120,13443072,13627392,13889536,14188544,14344192],"private_growth_after_cycle3":1990656,"working_set_growth_after_cycle3":1810432}
+{"test":"ModelSwitch","auto_backend":"cpu","second_model_distinct":false}

@@ -1,0 +1,442 @@
+Date: 2026-11-27T00:56:32.9535892+01:00
+CWD: D:\HCSInfer
+git status --short --branch
+## release/v1.1-stable
+ M AGENTS.md
+?? docs/roadmap/PLAN_FINAL_STABLE.md
+
+git log -5 --oneline --decorate
+1469638 (HEAD -> release/v1.1-stable, wave-c/x1, main) merge: wave-b/c1 into main
+8e18383 (wave-b/c1) feat(c1): measured HCSUDA kernels on Radeon 680M, tune evidence, docs, changelog, status
+613fc58 fix: duplicate 'lan' declaration from main merge in runtime.cpp; clang-format
+66164c6 merge: main into wave-b/c1
+81373d7 feat(cli,docs): tune command wiring, presets, ADR-014, port docs (WIP)
+
+git remote -v
+origin	https://github.com/timfromhcs/HCSInfer.git (fetch)
+origin	https://github.com/timfromhcs/HCSInfer.git (push)
+
+git log --oneline origin/main..main
+1469638 merge: wave-b/c1 into main
+8e18383 feat(c1): measured HCSUDA kernels on Radeon 680M, tune evidence, docs, changelog, status
+613fc58 fix: duplicate 'lan' declaration from main merge in runtime.cpp; clang-format
+66164c6 merge: main into wave-b/c1
+81373d7 feat(cli,docs): tune command wiring, presets, ADR-014, port docs (WIP)
+5acfa17 feat(kernels): Vulkan runner, 8 ported kernels, tune driver, vulkan_ops tests (WIP, unbuilt)
+bb35421 feat(hardware,kernels): caps/planner/oracle updates for hcsuda port
+94dd9bf merge: wave-b/b3 into main
+95cd09e merge: wave-b/e1 into main
+b8f1826 merge: wave-b/f1 into main
+b3a6eb8 docs(wave-b/b3): lora, upscale and merge docs, API/MCP reference, status and evidence
+560afa0 feat(cli,mcp,ui): --lora/--upscale, hcs.loras.list, HCSInfer merge command, Studio LoRA picker and upscale switch
+c4e9e8c feat(image): wire LoRA library and 4k upscale into control plane, API and runtime; clang-format
+44a81d8 perf(core): scan skips canonicalising non-model files; client loopback connect cap; evidence, docs and e2e fix for wave B e1
+4848327 feat(tools): stress/limit harness skeleton with abort conditions, overload docs, evidence
+b3a1958 feat(merge): streaming model merge (linear, SLERP, TIES, DARE, LoRA-into-base) for safetensors/GGUF
+ef29a7a test(e2e): client-disconnect, CLI and vault phases; vault load bench tooling; api docs
+c62a44f feat(cli): models load/unload/status as HTTP client of a running serve, models hash; exit-10 stubs removed
+da690a4 feat(api): opt-in vault stage in the model load path (serve --vault-prefetch), reported in /hcs/v1/runtime
+53d6e16 feat(storage): bounded sequential vault prefetch with SHA-256 verify; registry set_sha256 and stale-digest clearing
+3211cbc feat(upscale): tiled 4K upscaler pipeline, Lanczos finish, dynamic ONNX Runtime backend
+50a0403 feat(api): wire admission control, 503/429 Retry-After, kill switch route + MCP tool, watchdog
+863bd25 feat(scheduler): overload admission controller, telemetry probe, JobQueue::cancel_all (plan F1)
+3f08c5b feat(kernels): hcsuda port part 1 - typed Vulkan caps, conservative planner, promotion rule, profile cache, CPU oracle + baseline
+d727fa6 feat(lora): safetensors header reader, image LoRA library (manifest, scanner, compatibility)
+8751f66 merge: wave-a/a4 into main
+90c03a0 merge: wave-a/a3 into main
+8db837b merge: wave-a/a2 into main
+38ef9f0 merge: wave-a/a1 into main
+6f1a28f docs(a4): wave A baseline in STATUS, converted evidence logs, DOC_AUDIT counts and top-10 problems
+980e38f fix(diffusion): pin flash_attn/conv_direct off on GPU (no timing-probe kernel choice); a2 image equivalence evidence
+400a4ee docs(gallery): real SD1.5 and FLUX.3 Klein renders, smoke-test caveats, API docs for allow_low_quality
+4614483 docs+test(a4): doc audit fixes (CI/tag/release state, image preset/progress), e2e_lfm3 creates its evidence dir first
+8713f2a feat(image): per-family profiles and a quality envelope with allow_low_quality opt-in
+507fbe2 build(guard): robocopy-based size scan, harness dir exclusion, wave-a/a1 evidence
+bf5ce13 tools(imgqa): PSNR/SSIM compare + equivalence report writer with self-tests
+a9a509f build: nothing-on-C: guard (env-d-e.ps1, check-no-c-writes.ps1, CTest label guard)
+86551fa feat(core): HCS_DATA_DIR and one shared state-dir resolver
+966f7b0 docs(roadmap): HCSUDA licence no longer a blocker (owner decision), full port allowed
+52ea9e7 docs(roadmap): add image LoRA library and ONNX 4K upscaler to wave B
+e5d4e2c docs(roadmap): plan to the next stable version (waves A-G), repo audit findings
+
+git diff --stat origin/main..main
+ CHANGELOG.md                                       |   21 +-
+ CMakeLists.txt                                     |    4 +-
+ CMakePresets.json                                  |    5 +-
+ README.md                                          |   32 +-
+ THIRD_PARTY_NOTICES.md                             |    2 +-
+ cmake/HcsShaders.cmake                             |   19 +-
+ docs/api.md                                        |   46 +-
+ docs/architecture.md                               |   10 +-
+ docs/build.md                                      |   27 +
+ docs/decisions/ADR-014-hcsuda-port.md              |   67 +
+ docs/decisions/README.md                           |    1 +
+ docs/gallery/README.md                             |   57 +
+ docs/gallery/flux-apple.png                        |  Bin 0 -> 468983 bytes
+ docs/gallery/flux-fox.png                          |  Bin 0 -> 597812 bytes
+ docs/gallery/flux-lighthouse.png                   |  Bin 0 -> 713089 bytes
+ docs/gallery/sd15-apple.png                        |  Bin 0 -> 381041 bytes
+ docs/gallery/sd15-cabin.png                        |  Bin 0 -> 676110 bytes
+ docs/gallery/sd15-lighthouse.png                   |  Bin 0 -> 611136 bytes
+ docs/gui.md                                        |    2 +-
+ docs/hcsuda-port.md                                |   44 +
+ docs/lora.md                                       |   64 +
+ docs/mcp.md                                        |    4 +-
+ docs/merge.md                                      |   53 +
+ docs/model-vault.md                                |   59 +-
+ docs/overload-protection.md                        |  109 +
+ docs/packaging.md                                  |    2 +-
+ docs/release-notes-1.0.0-rc.1.md                   |    2 +-
+ docs/roadmap/PLAN_V1_STABLE_NEXT.md                |  154 ++
+ docs/roadmap/STATUS.md                             |   88 +-
+ docs/test-evidence/M2/image/README.md              |    2 +
+ docs/test-evidence/M3-image/README.md              |    2 +
+ docs/test-evidence/README.md                       |    7 +
+ docs/test-evidence/wave-a/a1/README.md             |   32 +
+ docs/test-evidence/wave-a/a1/c_leftovers.txt       |   20 +
+ docs/test-evidence/wave-a/a1/ctest-guard2.log      |   10 +
+ .../wave-a/a1/ctest-subset-summary.txt             |   26 +
+ docs/test-evidence/wave-a/a1/gtest-statedir.log    |   20 +
+ docs/test-evidence/wave-a/a1/guard-negative.json   |   56 +
+ docs/test-evidence/wave-a/a1/guard-positive.json   |   52 +
+ docs/test-evidence/wave-a/a1/red-build-excerpt.txt |    2 +
+ docs/test-evidence/wave-a/a2/README.md             |   89 +
+ .../wave-a/a2/diff_cpu_vs_vulkan0disk_x8.png       |  Bin 0 -> 78972 bytes
+ docs/test-evidence/wave-a/a2/equivalence.json      |  167 ++
+ docs/test-evidence/wave-a/a2/equivalence.md        |   21 +
+ docs/test-evidence/wave-a/a2/matrix/cpu_cpu_r1.log |   40 +
+ docs/test-evidence/wave-a/a2/matrix/cpu_cpu_r1.png |  Bin 0 -> 454677 bytes
+ docs/test-evidence/wave-a/a2/matrix/cpu_cpu_r2.log |   40 +
+ docs/test-evidence/wave-a/a2/matrix/cpu_cpu_r2.png |  Bin 0 -> 454677 bytes
+ docs/test-evidence/wave-a/a2/matrix/cpu_cpu_r3.log |   40 +
+ docs/test-evidence/wave-a/a2/matrix/cpu_cpu_r3.png |  Bin 0 -> 454677 bytes
+ .../test-evidence/wave-a/a2/matrix/cpu_disk_r1.log |   40 +
+ .../test-evidence/wave-a/a2/matrix/cpu_disk_r1.png |  Bin 0 -> 454677 bytes
+ .../test-evidence/wave-a/a2/matrix/cpu_disk_r2.log |   40 +
+ .../test-evidence/wave-a/a2/matrix/cpu_disk_r2.png |  Bin 0 -> 454677 bytes
+ .../test-evidence/wave-a/a2/matrix/cpu_disk_r3.log |   40 +
+ .../test-evidence/wave-a/a2/matrix/cpu_disk_r3.png |  Bin 0 -> 454677 bytes
+ docs/test-evidence/wave-a/a2/matrix/runs.jsonl     |   14 +
+ .../wave-a/a2/matrix/smoke_vulkan0_cpu_cold.png    |  Bin 0 -> 457717 bytes
+ .../wave-a/a2/matrix/vulkan0_cpu_r1.log            |   40 +
+ .../wave-a/a2/matrix/vulkan0_cpu_r1.png            |  Bin 0 -> 457175 bytes
+ .../wave-a/a2/matrix/vulkan0_cpu_r2.log            |   40 +
+ .../wave-a/a2/matrix/vulkan0_cpu_r2.png            |  Bin 0 -> 457727 bytes
+ .../wave-a/a2/matrix/vulkan0_cpu_r3.log            |   40 +
+ .../wave-a/a2/matrix/vulkan0_cpu_r3.png            |  Bin 0 -> 457727 bytes
+ .../wave-a/a2/matrix/vulkan0_cpu_r4.log            |   40 +
+ .../wave-a/a2/matrix/vulkan0_cpu_r4.png            |  Bin 0 -> 457727 bytes
+ .../wave-a/a2/matrix/vulkan0_cpu_r5.log            |   40 +
+ .../wave-a/a2/matrix/vulkan0_cpu_r5.png            |  Bin 0 -> 457727 bytes
+ .../wave-a/a2/matrix/vulkan0_disk_r1.log           |   40 +
+ .../wave-a/a2/matrix/vulkan0_disk_r1.png           |  Bin 0 -> 457727 bytes
+ .../wave-a/a2/matrix/vulkan0_disk_r2.log           |   40 +
+ .../wave-a/a2/matrix/vulkan0_disk_r2.png           |  Bin 0 -> 457727 bytes
+ .../wave-a/a2/matrix/vulkan0_disk_r3.log           |   40 +
+ .../wave-a/a2/matrix/vulkan0_disk_r3.png           |  Bin 0 -> 457727 bytes
+ .../wave-a/a2/stress_cpuload/runs.jsonl            |    2 +
+ .../a2/stress_cpuload/vulkan0_cpu_cpuload_r1.log   |   40 +
+ .../a2/stress_cpuload/vulkan0_cpu_cpuload_r1.png   |  Bin 0 -> 458047 bytes
+ .../a2/stress_cpuload/vulkan0_cpu_cpuload_r2.log   |   40 +
+ .../a2/stress_cpuload/vulkan0_cpu_cpuload_r2.png   |  Bin 0 -> 457727 bytes
+ .../a2/stress_cpuload/vulkan0_cpu_cpuload_r3.log   |   29 +
+ docs/test-evidence/wave-a/a3/build.log             |   49 +
+ docs/test-evidence/wave-a/a3/configure.log         |  131 ++
+ docs/test-evidence/wave-a/a3/ctest-full.txt        | 1715 +++++++++++++++
+ .../test-evidence/wave-a/a3/gallery/flux-apple.err |    2 +
+ .../wave-a/a3/gallery/flux-apple.json              |   16 +
+ docs/test-evidence/wave-a/a3/gallery/flux-fox.err  |    2 +
+ docs/test-evidence/wave-a/a3/gallery/flux-fox.json |   16 +
+ .../wave-a/a3/gallery/flux-lighthouse.err          |    2 +
+ .../wave-a/a3/gallery/flux-lighthouse.json         |   16 +
+ docs/test-evidence/wave-a/a3/gallery/lock-note.txt |    1 +
+ .../wave-a/a3/gallery/render-gallery.sh            |   30 +
+ docs/test-evidence/wave-a/a3/gallery/run.log       |   13 +
+ .../test-evidence/wave-a/a3/gallery/sd15-apple.err |    2 +
+ .../wave-a/a3/gallery/sd15-apple.json              |   16 +
+ .../test-evidence/wave-a/a3/gallery/sd15-cabin.err |    2 +
+ .../wave-a/a3/gallery/sd15-cabin.json              |   16 +
+ .../wave-a/a3/gallery/sd15-lighthouse.err          |    2 +
+ .../wave-a/a3/gallery/sd15-lighthouse.json         |   16 +
+ docs/test-evidence/wave-a/a3/model-hashes.txt      |   13 +
+ docs/test-evidence/wave-a/a4/DOC_AUDIT.md          |   82 +
+ docs/test-evidence/wave-a/a4/build-cpu.exit.txt    |    1 +
+ docs/test-evidence/wave-a/a4/build-cpu.log         |  741 +++++++
+ docs/test-evidence/wave-a/a4/build-vk.exit.txt     |    1 +
+ docs/test-evidence/wave-a/a4/build-vk.log          | 1111 ++++++++++
+ docs/test-evidence/wave-a/a4/c_free_gb_before.txt  |    1 +
+ docs/test-evidence/wave-a/a4/cli-exit-codes.txt    |    9 +
+ .../test-evidence/wave-a/a4/cli-help/benchmark.txt |   37 +
+ docs/test-evidence/wave-a/a4/cli-help/cache.txt    |   15 +
+ docs/test-evidence/wave-a/a4/cli-help/chat.txt     |   23 +
+ docs/test-evidence/wave-a/a4/cli-help/doctor.txt   |   12 +
+ docs/test-evidence/wave-a/a4/cli-help/image.txt    |   32 +
+ .../wave-a/a4/cli-help/image_edit.txt              |   32 +
+ .../wave-a/a4/cli-help/image_generate.txt          |   32 +
+ docs/test-evidence/wave-a/a4/cli-help/mcp.txt      |    3 +
+ docs/test-evidence/wave-a/a4/cli-help/models.txt   |    7 +
+ docs/test-evidence/wave-a/a4/cli-help/root.txt     |   33 +
+ docs/test-evidence/wave-a/a4/cli-help/serve.txt    |   20 +
+ docs/test-evidence/wave-a/a4/cli-help/train.txt    |   17 +
+ docs/test-evidence/wave-a/a4/cli-help/tune.txt     |    3 +
+ docs/test-evidence/wave-a/a4/cli-help/vision.txt   |   24 +
+ docs/test-evidence/wave-a/a4/configure-cpu.log     |   82 +
+ docs/test-evidence/wave-a/a4/configure-vk.exit.txt |    1 +
+ docs/test-evidence/wave-a/a4/configure-vk.log      |  131 ++
+ docs/test-evidence/wave-a/a4/ctest-agentic-fix.txt |   12 +
+ .../test-evidence/wave-a/a4/ctest-cpu-N-phaseA.txt |  767 +++++++
+ .../test-evidence/wave-a/a4/ctest-cpu-N-phaseB.txt |   55 +
+ docs/test-evidence/wave-a/a4/ctest-cpu-done.txt    |    1 +
+ docs/test-evidence/wave-a/a4/ctest-cpu-phaseA.txt  | 1541 +++++++++++++
+ docs/test-evidence/wave-a/a4/ctest-cpu-phaseB.txt  |  232 ++
+ .../wave-a/a4/ctest-cpu-registered.txt             |  819 +++++++
+ docs/test-evidence/wave-a/a4/ctest-vk-N-phaseA.txt |  767 +++++++
+ docs/test-evidence/wave-a/a4/ctest-vk-N-phaseB.txt |   54 +
+ docs/test-evidence/wave-a/a4/ctest-vk-done.txt     |    1 +
+ docs/test-evidence/wave-a/a4/ctest-vk-phaseA.txt   | 1541 +++++++++++++
+ docs/test-evidence/wave-a/a4/ctest-vk-phaseB.txt   |  117 +
+ .../wave-a/a4/ctest-vk-registered.txt              |  818 +++++++
+ docs/test-evidence/wave-a/a4/doctor-cpu-build.json |  851 ++++++++
+ docs/test-evidence/wave-a/a4/github-ci-state.txt   |   37 +
+ docs/test-evidence/wave-a/a4/xss-direct.txt        |   11 +
+ docs/test-evidence/wave-b/b3/README.md             |   29 +
+ docs/test-evidence/wave-b/b3/build-tail.txt        |   85 +
+ docs/test-evidence/wave-b/b3/ctest-full-cpu.txt    | 1914 +++++++++++++++++
+ docs/test-evidence/wave-b/b3/ort_real_runtime.txt  |   94 +
+ docs/test-evidence/wave-b/b3/real_merge.txt        |   35 +
+ docs/test-evidence/wave-b/b3/real_merge_verify.txt |   10 +
+ docs/test-evidence/wave-b/c1/README.md             |   16 +
+ .../test-evidence/wave-b/c1/ctest-full-summary.txt |   60 +
+ .../wave-b/c1/doctor-with-profile.json             | 2025 ++++++++++++++++++
+ docs/test-evidence/wave-b/c1/doctor.err            |    0
+ docs/test-evidence/wave-b/c1/doctor.json           | 1153 ++++++++++
+ docs/test-evidence/wave-b/c1/tune-evidence.json    | 1198 +++++++++++
+ docs/test-evidence/wave-b/c1/tune-show.txt         |   45 +
+ docs/test-evidence/wave-b/c1/tune-stderr.txt       |    0
+ docs/test-evidence/wave-b/c1/tune-stdout.txt       |   54 +
+ .../wave-b/c1/tune-validation-quick.json           |  381 ++++
+ .../wave-b/c1/tune-validation-stdout.txt           |   35 +
+ docs/test-evidence/wave-b/c1/vulkan_ops_run.txt    |  116 +
+ docs/test-evidence/wave-b/e1/README.md             |   37 +
+ docs/test-evidence/wave-b/e1/e2e/e2e-real.json     | 2253 ++++++++++++++++++++
+ docs/test-evidence/wave-b/e1/e2e/e2e-run.log       |   72 +
+ docs/test-evidence/wave-b/e1/vault-load-usb-d.json |  494 +++++
+ docs/test-evidence/wave-b/f1/README.md             |   14 +
+ docs/test-evidence/wave-b/f1/ctest-full.log        | 1833 ++++++++++++++++
+ docs/test-evidence/wave-b/f1/drive.ps1             |  106 +
+ docs/test-evidence/wave-b/f1/driver.log            |   18 +
+ docs/test-evidence/wave-b/f1/models-list.json      |   29 +
+ docs/test-evidence/wave-b/f1/models-scan.txt       |    1 +
+ docs/test-evidence/wave-b/f1/overload-A-after.json |   31 +
+ .../wave-b/f1/overload-D-after-hog.json            |   38 +
+ docs/test-evidence/wave-b/f1/server-A.err.log      |   44 +
+ docs/test-evidence/wave-b/f1/server-A.out.log      |    0
+ docs/test-evidence/wave-b/f1/server-B.err.log      |   22 +
+ docs/test-evidence/wave-b/f1/server-B.out.log      |    0
+ docs/test-evidence/wave-b/f1/server-C.err.log      |   13 +
+ docs/test-evidence/wave-b/f1/server-C.out.log      |    0
+ docs/test-evidence/wave-b/f1/server-D.err.log      |   18 +
+ docs/test-evidence/wave-b/f1/server-D.out.log      |    0
+ docs/test-evidence/wave-b/f1/server-D0.err.log     |    5 +
+ docs/test-evidence/wave-b/f1/server-D0.out.log     |    0
+ docs/test-evidence/wave-b/f1/server-E.err.log      |   27 +
+ docs/test-evidence/wave-b/f1/server-E.out.log      |    0
+ .../wave-b/f1/stress-A-clean-dry.json              |  453 ++++
+ .../wave-b/f1/stress-B1-floor-midrun.json          |  181 ++
+ .../wave-b/f1/stress-B2-floor-immediate.json       |  142 ++
+ .../wave-b/f1/stress-C-server-refuses.json         |  162 ++
+ .../wave-b/f1/stress-E-process-gone.json           |  295 +++
+ docs/upscale.md                                    |   62 +
+ docs/vulkan-kernels.md                             |   50 +
+ include/hcs/api/client.hpp                         |   34 +
+ include/hcs/api/control_plane.hpp                  |   70 +-
+ include/hcs/api/image_stream.hpp                   |   11 +
+ include/hcs/api/runtime.hpp                        |   16 +
+ include/hcs/engine.hpp                             |   16 +
+ include/hcs/engines/diffusion_runtime.hpp          |   27 +
+ include/hcs/hardware/caps.hpp                      |  110 +
+ include/hcs/hardware/doctor.hpp                    |    7 +
+ include/hcs/hardware/kernel_profile.hpp            |  124 ++
+ include/hcs/hardware/memory_probe.hpp              |   17 +
+ include/hcs/hardware/planner.hpp                   |   86 +
+ include/hcs/image_profiles.hpp                     |   85 +
+ include/hcs/job_queue.hpp                          |    6 +
+ include/hcs/kernels/cpu_baseline.hpp               |   28 +
+ include/hcs/kernels/oracle.hpp                     |   71 +
+ include/hcs/kernels/vk_ops.hpp                     |   89 +
+ include/hcs/kernels/vk_runner.hpp                  |  152 ++
+ include/hcs/kernels/vk_tune.hpp                    |   19 +
+ include/hcs/lora.hpp                               |  110 +
+ include/hcs/merge.hpp                              |  156 ++
+ include/hcs/model_registry.hpp                     |    5 +
+ include/hcs/result.hpp                             |    5 +-
+ include/hcs/safetensors.hpp                        |   50 +
+ include/hcs/scheduler/admission.hpp                |  146 ++
+ include/hcs/state_dir.hpp                          |   29 +
+ include/hcs/storage/vault_prefetch.hpp             |   44 +
+ include/hcs/telemetry/resource_probe.hpp           |   35 +
+ include/hcs/upscale.hpp                            |  135 ++
+ include/hcs/upscale_ort.hpp                        |   67 +
+ scripts/build.ps1                                  |    1 +
+ scripts/check-no-c-writes.ps1                      |  117 +
+ scripts/doctor.ps1                                 |    1 +
+ scripts/env-d-e.ps1                                |   78 +
+ scripts/test.ps1                                   |    1 +
+ shaders/llm/gemm_coopmat_f16.comp                  |   50 +
+ shaders/llm/gemm_f16_tiled.comp                    |   62 +
+ shaders/llm/gemm_f32_tiled.comp                    |   67 +
+ shaders/llm/gemm_i8dot_tiled.comp                  |   59 +
+ shaders/llm/layernorm_rows.comp                    |   66 +
+ shaders/llm/rmsnorm_rows.comp                      |   49 +
+ shaders/llm/rope_rows.comp                         |   38 +
+ shaders/llm/softmax_rows.comp                      |   64 +
+ src/api/CMakeLists.txt                             |   16 +-
+ src/api/control_plane.cpp                          |  296 ++-
+ src/api/control_plane_benchmark.cpp                |  138 +-
+ src/api/control_plane_image.cpp                    |  174 +-
+ src/api/control_plane_vision.cpp                   |  142 +-
+ src/api/http_api.cpp                               |   97 +-
+ src/api/http_client.cpp                            |   73 +
+ src/api/runtime.cpp                                |  139 +-
+ src/cli/CMakeLists.txt                             |   10 +-
+ src/cli/benchmark_cmd.cpp                          |   11 +-
+ src/cli/cache_cmd.cpp                              |    3 +-
+ src/cli/chat_cmd.cpp                               |   11 +-
+ src/cli/cli.cpp                                    |  149 +-
+ src/cli/image_cmd.cpp                              |  177 +-
+ src/cli/merge_cmd.cpp                              |  254 +++
+ src/cli/merge_cmd.hpp                              |   12 +
+ src/cli/models_remote_cmd.cpp                      |  298 +++
+ src/cli/models_remote_cmd.hpp                      |   15 +
+ src/cli/vision_cmd.cpp                             |   11 +-
+ src/core/CMakeLists.txt                            |    2 +-
+ src/core/job_queue.cpp                             |   40 +
+ src/core/model_registry.cpp                        |   32 +
+ src/core/safetensors_probe.cpp                     |  146 ++
+ src/core/state_dir.cpp                             |   32 +
+ src/engines/diffusion/CMakeLists.txt               |    2 +-
+ src/engines/diffusion/diffusion_engine.cpp         |   66 +
+ src/engines/upscale/CMakeLists.txt                 |   16 +
+ src/engines/upscale/ort_engine.cpp                 |  497 +++++
+ src/engines/upscale/png_codec.cpp                  |   87 +
+ src/engines/upscale/resample.cpp                   |  119 ++
+ src/engines/upscale/tiling.cpp                     |  282 +++
+ src/gui/assets/app.css                             |    3 +
+ src/gui/assets/app.js                              |   59 +-
+ src/gui/assets/index.html                          |   24 +-
+ src/hardware/CMakeLists.txt                        |    4 +-
+ src/hardware/caps.cpp                              |  178 ++
+ src/hardware/caps_json.cpp                         |  213 ++
+ src/hardware/caps_json.hpp                         |   25 +
+ src/hardware/doctor.cpp                            |    5 +
+ src/hardware/gpu_info.cpp                          |   38 +-
+ src/hardware/kernel_profile.cpp                    |  290 +++
+ src/hardware/memory_probe.cpp                      |   54 +-
+ src/hardware/planner.cpp                           |  265 +++
+ src/hardware/planner_json.cpp                      |  146 ++
+ src/hardware/vulkan_info.cpp                       |   10 +
+ src/kernels/cpu/CMakeLists.txt                     |    8 +-
+ src/kernels/cpu/cpu_baseline.cpp                   |  162 ++
+ src/kernels/cpu/oracle.cpp                         |  182 ++
+ src/kernels/vulkan/CMakeLists.txt                  |   19 +-
+ src/kernels/vulkan/tune.cpp                        |  848 ++++++++
+ src/kernels/vulkan/vk_ops.cpp                      |  326 +++
+ src/kernels/vulkan/vk_runner.cpp                   | 1169 ++++++++++
+ src/lora/CMakeLists.txt                            |    5 +
+ src/lora/lora_library.cpp                          |  364 ++++
+ src/mcp/mcp_server.cpp                             |   69 +-
+ src/merge/CMakeLists.txt                           |    6 +
+ src/merge/math.cpp                                 |  261 +++
+ src/merge/merge.cpp                                |  678 ++++++
+ src/merge/tensor_file.cpp                          |  162 ++
+ src/merge/tensor_file.hpp                          |   66 +
+ src/scheduler/CMakeLists.txt                       |    4 +
+ src/scheduler/admission.cpp                        |  426 ++++
+ src/storage/CMakeLists.txt                         |    2 +-
+ src/storage/vault_prefetch.cpp                     |   79 +
+ src/telemetry/CMakeLists.txt                       |    8 +
+ src/telemetry/resource_probe.cpp                   |   66 +
+ tests/contract/api/CMakeLists.txt                  |    4 +-
+ tests/contract/api/test_vault_load.cpp             |  188 ++
+ tests/contract/api_image/CMakeLists.txt            |    5 +
+ .../contract/api_image/test_image_lora_upscale.cpp |  322 +++
+ tests/contract/api_image/test_image_routes.cpp     |  102 +
+ tests/contract/api_overload/CMakeLists.txt         |   13 +
+ tests/contract/api_overload/test_api_overload.cpp  |  300 +++
+ tests/contract/cli/CMakeLists.txt                  |    4 +-
+ tests/contract/cli/test_cli.cpp                    |   78 +-
+ tests/contract/cli/test_cli_merge.cpp              |  116 +
+ tests/contract/cli/test_cli_remote.cpp             |  198 ++
+ tests/contract/mcp/CMakeLists.txt                  |    2 +-
+ tests/contract/mcp/test_mcp.cpp                    |   48 +-
+ tests/contract/mcp_image/test_mcp_image.cpp        |   64 +
+ tests/e2e/api_mcp_real/e2e_real.py                 |  139 +-
+ tests/e2e/gui_real/studio_shots.py                 |    2 +-
+ tests/e2e/image_real/e2e_image.py                  |   10 +-
+ tests/eval/agentic/e2e_lfm3.py                     |    2 +
+ .../diffusion_engine/test_diffusion_engine.cpp     |   18 +
+ tests/integration/storage_guard/CMakeLists.txt     |   18 +
+ tests/kernels/vulkan_ops/CMakeLists.txt            |    9 +
+ tests/kernels/vulkan_ops/test_vulkan_ops.cpp       |  439 ++++
+ tests/soak/soak_core/test_soak_core.cpp            |    2 +
+ tests/support/fake_probe.hpp                       |   49 +
+ tests/support/gguf_builder.hpp                     |   54 +
+ tests/support/safetensors_builder.hpp              |   53 +
+ tests/unit/core/CMakeLists.txt                     |    2 +
+ tests/unit/core/test_diffusion_runtime.cpp         |   17 +
+ tests/unit/core/test_image_profiles.cpp            |   59 +
+ tests/unit/core/test_job_queue_cancel_all.cpp      |   72 +
+ tests/unit/core/test_model_registry.cpp            |   51 +
+ tests/unit/core/test_result.cpp                    |   11 +-
+ tests/unit/core/test_safetensors_probe.cpp         |  104 +
+ tests/unit/core/test_state_dir.cpp                 |   58 +
+ tests/unit/gui/test_gui_assets.cpp                 |    6 +
+ tests/unit/hardware/test_memory_probe.cpp          |   19 +
+ tests/unit/kernels_oracle/CMakeLists.txt           |    5 +
+ tests/unit/kernels_oracle/test_oracle.cpp          |  216 ++
+ tests/unit/lora/CMakeLists.txt                     |    4 +
+ tests/unit/lora/test_lora_library.cpp              |  246 +++
+ tests/unit/merge/CMakeLists.txt                    |    6 +
+ tests/unit/merge/gen_merge_golden.py               |  127 ++
+ tests/unit/merge/merge_golden.inc                  |   21 +
+ tests/unit/merge/test_merge_files.cpp              |  509 +++++
+ tests/unit/merge/test_merge_math.cpp               |  171 ++
+ tests/unit/planner/CMakeLists.txt                  |    7 +
+ tests/unit/planner/planner_fixtures.hpp            |  140 ++
+ tests/unit/planner/test_caps.cpp                   |  135 ++
+ tests/unit/planner/test_kernel_profile.cpp         |  129 ++
+ tests/unit/planner/test_planner.cpp                |  276 +++
+ tests/unit/scheduler/CMakeLists.txt                |    5 +
+ tests/unit/scheduler/test_admission.cpp            |  422 ++++
+ tests/unit/scheduler/test_resource_probe.cpp       |   43 +
+ tests/unit/storage/CMakeLists.txt                  |    2 +-
+ tests/unit/storage/test_vault_prefetch.cpp         |  122 ++
+ tests/unit/stress_harness/CMakeLists.txt           |   11 +
+ tests/unit/upscale/CMakeLists.txt                  |    6 +
+ tests/unit/upscale/gen_nn_onnx.py                  |   31 +
+ tests/unit/upscale/gen_resample_golden.py          |   62 +
+ tests/unit/upscale/resample_golden.inc             |    5 +
+ tests/unit/upscale/test_ort_backend.cpp            |  180 ++
+ tests/unit/upscale/test_upscale_pipeline.cpp       |  436 ++++
+ tools/benchmark-runner/cache_evict.py              |   75 +
+ tools/benchmark-runner/vault_load_bench.py         |  277 +++
+ tools/imgqa/compare.py                             |  192 ++
+ tools/imgqa/report.py                              |  127 ++
+ tools/imgqa/test_imgqa.py                          |  119 ++
+ tools/stress/stress.py                             |  693 ++++++
+ tools/stress/test_stress.py                        |  302 +++
+ 365 files changed, 47134 insertions(+), 427 deletions(-)
+
+gh run list --limit 12
+queued		hardware-nightly-release	hardware-nightly-release	main	schedule	45808372076	12h44m38s	2026-11-26T11:11:55Z
+completed	cancelled	hardware-nightly-release	hardware-nightly-release	main	schedule	45605008101	25h13m35s	2026-11-25T11:30:07Z
+completed	cancelled	hardware-nightly-release	hardware-nightly-release	main	schedule	45396305795	24h0m2s	2026-11-24T12:43:39Z
+completed	cancelled	hardware-nightly-release	hardware-nightly-release	main	schedule	45160730432	24h0m2s	2026-11-23T10:57:17Z
+completed	cancelled	hardware-nightly-release	hardware-nightly-release	main	schedule	45010120204	24h34m14s	2026-11-22T09:58:35Z
+completed	cancelled	hardware-nightly-release	hardware-nightly-release	main	schedule	44892117514	24h33m44s	2026-11-21T09:59:04Z
+completed	success	ci(release): write SHA256SUMS.txt with LF endings	pr-quick-gate	main	push	44852149002	22m15s	2026-11-21T01:46:37Z
+completed	cancelled	ci(release): fix a stray tab in the mypy path of release.yml (python\ÔÇª	hardware-nightly-release	v1.0.0-rc.1	push	44849519823	8h39m18s	2026-11-21T01:19:48Z
+completed	success	ci(release): fix a stray tab in the mypy path of release.yml (python\ÔÇª	release	v1.0.0-rc.1	push	44849519815	25m34s	2026-11-21T01:19:48Z
+completed	success	ci(release): fix a stray tab in the mypy path of release.yml (python\ÔÇª	pr-quick-gate	main	push	44849513393	18m22s	2026-11-21T01:19:43Z
+completed	failure	fix(python): find_exe never returns the package's own hcsinfer entry ÔÇª	release	v1.0.0-rc.1	push	44847528343	17m51s	2026-11-21T01:00:47Z
+completed	cancelled	fix(python): find_exe never returns the package's own hcsinfer entry ÔÇª	hardware-nightly-release	v1.0.0-rc.1	push	44847528289	19m1s	2026-11-21T01:00:47Z

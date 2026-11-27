@@ -1,0 +1,41 @@
+RAM free GB before: 11.54
+=== Soak.UnplugGgufParseFaultInjection (final-cpu/full) ===
+    PASS  rc=0  10s
+=== Soak.UnplugTruncatedHcsModelStream (final-cpu/full) ===
+    PASS  rc=0  59s
+=== Soak.UnplugEngineLoadTruncatedAndVanishedFile (final-cpu/full) ===
+    PASS  rc=0  15s
+=== Soak.LoadUnloadCycles (final-cpu/full) ===
+    PASS  rc=0  119s
+=== Soak.ModelSwitchCycles (final-cpu/full) ===
+    PASS  rc=0  26s
+=== Soak.VisionRepeat (final-cpu/full) ===
+    PASS  rc=0  61s
+=== Soak.DiffusionRepeat (final-cpu/full) ===
+    PASS  rc=0  178s
+=== Soak.CancelStorm (final-cpu/full) ===
+    PASS  rc=0  20s
+=== Soak.ShutdownWhileLoading (final-cpu/full) ===
+    PASS  rc=0  8s
+=== Soak.ShutdownWhileGenerating (final-cpu/full) ===
+    PASS  rc=0  16s
+=== Soak.ShutdownWhileRenderingImage (final-cpu/full) ===
+    PASS  rc=0  35s
+=== Soak.ContinuousGeneration (final-cpu/full) ===
+    PASS  rc=0  1.807s
+=== HTTP storm (final-cpu/full) ===
+    PASS  rc=0
+Soak.UnplugGgufParseFaultInjection                   PASS           10s
+Soak.UnplugTruncatedHcsModelStream                   PASS         59,5s
+Soak.UnplugEngineLoadTruncatedAndVanishedFile        PASS         14,8s
+Soak.LoadUnloadCycles                                PASS        118,8s
+Soak.ModelSwitchCycles                               PASS         25,8s
+Soak.VisionRepeat                                    PASS         61,3s
+Soak.DiffusionRepeat                                 PASS        177,9s
+Soak.CancelStorm                                     PASS         19,8s
+Soak.ShutdownWhileLoading                            PASS          8,3s
+Soak.ShutdownWhileGenerating                         PASS         15,7s
+Soak.ShutdownWhileRenderingImage                     PASS         35,4s
+Soak.ContinuousGeneration                            PASS       1807,3s
+HttpStorm                                            PASS         63,1s
+SOAK_FULL_EXIT=0

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <cstdlib>
 #include <nlohmann/json.hpp>
 #include <ostream>
@@ -183,7 +184,7 @@ int cmd_load(Conn& c, const std::string& id, std::ostream& out, std::ostream& er
         if (c.as_json)
             out << json{{"id", id}, {"job_id", job}, {"state", "loaded"}, {"wall_s", secs}}.dump(2) << "\n";
         else
-            out << "loaded " << id << " in " << static_cast<int>(secs * 10 + 0.5) / 10.0 << " s\n";
+            out << "loaded " << id << " in " << std::lround(secs * 10) / 10.0 << " s\n";
         return 0;
     }
     if (state == "cancelled")

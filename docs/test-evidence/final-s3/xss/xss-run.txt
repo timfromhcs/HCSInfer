@@ -1,0 +1,10 @@
+PASS  connected
+PASS  reply finished
+PASS  precondition: hostile payload reached the UI intact
+PASS  no img/script/svg/iframe/object/embed/handler element created
+PASS  no javascript: href created
+PASS  page title unchanged (no payload ran)
+PASS  payload shown as text
+PASS  markdown still rendered (bold + code block)
+PASS  no console errors / CSP violations
+XSS_EXIT=0

@@ -1,0 +1,20 @@
+{
+  "submodules": {
+    "external/stable-diffusion.cpp": "532d2c15c430a785a712b2d94281f04e733008a4",
+    "external/llama.cpp": "d3c3e242c16b8cbf51400fad410cd69b22d64f35",
+    "external/prime-agent": "8980e66f2f07762d62a6c1d73b347a4cac5275cc (gitlink pin; submodule NOT initialised in this checkout)"
+  },
+  "ram_gb": 19.79,
+  "npm": "11.21.1",
+  "os_build": "26200",
+  "ninja": "1.13.2",
+  "node": "v22.23.1",
+  "cmake": "cmake version 4.4.0",
+  "date": "2026-11-27T01:03:50.8383745+01:00",
+  "git": "git version 2.54.0.windows.1",
+  "python": "Python 3.14.6",
+  "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics        ",
+  "git_head": "6bfe3408d052e59b6ffbeacccd6624b1d5733374",
+  "branch": "release/v1.1-stable",
+  "os": "Microsoft Windows 11 Pro"
+}

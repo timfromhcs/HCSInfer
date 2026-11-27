@@ -1,0 +1,31 @@
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2634294366
+INFO: Loaded 1 modules   (99382 inline 8-bit counters): 99382 [00007FF7A9E98008, 00007FF7A9EB043E), 
+INFO: Loaded 1 PC tables (99382 PCs): 99382 [00007FF7A9CC0740,00007FF7A9E44AA0), 
+INFO:        0 files found in D:\HCSScratch\fuzz-corpus
+INFO: A corpus is not provided, starting from an empty corpus
+#2	INITED cov: 53 ft: 53 corp: 1/1b exec/s: 0 rss: 28Mb
+	NEW_FUNC[1/13]: 0x7ff7a9841150  (D:\HCSInfer\build\storage-fuzz\hcsmodel_fuzz.exe+0x140001150)
+	NEW_FUNC[2/13]: 0x7ff7a9841b56  (D:\HCSInfer\build\storage-fuzz\hcsmodel_fuzz.exe+0x140001b56)
+#3	NEW    cov: 90 ft: 94 corp: 2/2b lim: 4 exec/s: 0 rss: 29Mb L: 1/1 MS: 1 ChangeBinInt-
+	NEW_FUNC[1/2]: 0x7ff7a9847580  (D:\HCSInfer\build\storage-fuzz\hcsmodel_fuzz.exe+0x140007580)
+	NEW_FUNC[2/2]: 0x7ff7a9857c48  (D:\HCSInfer\build\storage-fuzz\hcsmodel_fuzz.exe+0x140017c48)
+#2273	NEW    cov: 119 ft: 125 corp: 3/27b lim: 25 exec/s: 0 rss: 30Mb L: 25/25 MS: 5 InsertRepeatedBytes-ShuffleBytes-ChangeBit-ChangeBit-InsertByte-
+#8192	pulse  cov: 119 ft: 125 corp: 3/27b lim: 80 exec/s: 4096 rss: 30Mb
+#16384	pulse  cov: 119 ft: 125 corp: 3/27b lim: 163 exec/s: 5461 rss: 30Mb
+#32768	pulse  cov: 119 ft: 125 corp: 3/27b lim: 325 exec/s: 5461 rss: 30Mb
+#35467	NEW    cov: 126 ft: 134 corp: 4/353b lim: 349 exec/s: 5911 rss: 30Mb L: 326/326 MS: 4 InsertRepeatedBytes-InsertByte-CopyPart-CopyPart-
+#35637	REDUCE cov: 126 ft: 134 corp: 4/323b lim: 349 exec/s: 5939 rss: 30Mb L: 296/296 MS: 5 EraseBytes-ChangeASCIIInt-ChangeBit-CrossOver-CopyPart-
+#42783	REDUCE cov: 126 ft: 134 corp: 4/318b lim: 413 exec/s: 6111 rss: 30Mb L: 291/291 MS: 1 EraseBytes-
+#43351	REDUCE cov: 126 ft: 134 corp: 4/316b lim: 413 exec/s: 6193 rss: 30Mb L: 289/289 MS: 3 InsertByte-ShuffleBytes-EraseBytes-
+#65536	pulse  cov: 126 ft: 134 corp: 4/316b lim: 625 exec/s: 6553 rss: 30Mb
+#131072	pulse  cov: 126 ft: 134 corp: 4/316b lim: 1280 exec/s: 6898 rss: 30Mb
+#262144	pulse  cov: 126 ft: 134 corp: 4/316b lim: 2589 exec/s: 6393 rss: 30Mb
+#376006	DONE   cov: 126 ft: 134 corp: 4/316b lim: 3722 exec/s: 6164 rss: 30Mb
+Done 376006 runs in 61 second(s)
+stat::number_of_executed_units: 376006
+stat::average_exec_per_sec:     6164
+stat::new_units_added:          6
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              30
+FUZZ_EXIT=0

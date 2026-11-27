@@ -1,8 +1,22 @@
 # Changelog
 
-Derived from `git log`. No release has been tagged. The version is `1.0.0-rc.1` (CMake `project(VERSION 1.0.0)` plus
-`HCS_VERSION_SUFFIX "-rc.1"`; the wheel spells it `1.0.0rc1`, npm `1.0.0-rc.1`). Entries describe what the commits
-changed; PASS/NOT RUN state of each feature is in `docs/roadmap/STATUS.md`.
+Derived from `git log`. The current in-tree version is `1.1.0-rc.1` (CMake `project(VERSION 1.1.0)` plus
+`HCS_VERSION_SUFFIX "-rc.1"`; the wheel spells it `1.1.0rc1`, npm `1.1.0-rc.1`); it is not tagged or published yet.
+Entries describe what the commits changed; PASS/NOT RUN state of each feature is in `docs/roadmap/STATUS.md`.
+
+## 1.1.0-rc.1 (release candidate, 2026-11-27; not tagged)
+
+- Integrated and verified the 41 wave A/B/C commits that were still local: CPU CTest 1054/1054 and Vulkan CTest
+  1085/1085 with real models, clang-format clean, clang-tidy 0 findings in 92 TUs, web 46/46.
+- Fixed three PowerShell 5.1 build/analysis-script defects and seven clang-tidy findings in the new code (red->green).
+- Real-file checks: LCM-LoRA render (PSNR/SSIM + visual inspection), Real-ESRGAN 4K upscale, `tune` on the 680M;
+  distinct-model merge remains BLOCKED by quantized weights.
+- Controlled B0/B1 benchmark (same LFM3 hash): Vulkan 1.90x decode and 8.27x TTFT vs CPU; HCS Studio on the Vulkan
+  build 42/42 with real text and image workflows.
+- Full soak profile 13/13 (100 cycles, 30 min generation, HttpStorm 18/18), fuzz smoke 376k executions without a
+  crash, runtime XSS 9/9.
+- Honest blockers remain: no default-enabled HCS Vulkan kernel, real merge with float models, real trainer/agent runs,
+  clean-machine VM, physical USB pull, signing and publishing. See `docs/release-notes-1.1.0-rc.1.md`.
 
 ## Unreleased (wave B / c1)
 

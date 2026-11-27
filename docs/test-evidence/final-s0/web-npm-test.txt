@@ -1,0 +1,296 @@
+
+> hcs-studio-web@1.0.0-rc.1 test
+> node --test "tests/*.test.mjs"
+
+TAP version 13
+# Subtest: chooseBackend prefers WebGPU, then WASM, then none
+ok 1 - chooseBackend prefers WebGPU, then WASM, then none
+  ---
+  duration_ms: 2.2784
+  type: 'test'
+  ...
+# Subtest: describeBackend is explicit
+ok 2 - describeBackend is explicit
+  ---
+  duration_ms: 1.6556
+  type: 'test'
+  ...
+# Subtest: summariseAdapter never guesses missing fields
+ok 3 - summariseAdapter never guesses missing fields
+  ---
+  duration_ms: 1.8055
+  type: 'test'
+  ...
+# Subtest: prefersFp16 only for known 16-bit-friendly vendors
+ok 4 - prefersFp16 only for known 16-bit-friendly vendors
+  ---
+  duration_ms: 0.4921
+  type: 'test'
+  ...
+# Subtest: probeCapabilities reports none when nothing is available
+ok 5 - probeCapabilities reports none when nothing is available
+  ---
+  duration_ms: 0.7216
+  type: 'test'
+  ...
+# Subtest: probeCapabilities selects WASM when only WebAssembly exists
+ok 6 - probeCapabilities selects WASM when only WebAssembly exists
+  ---
+  duration_ms: 0.5247
+  type: 'test'
+  ...
+# Subtest: probeCapabilities reads a WebGPU adapter
+ok 7 - probeCapabilities reads a WebGPU adapter
+  ---
+  duration_ms: 1.2004
+  type: 'test'
+  ...
+# Subtest: probeCapabilities does not hang on a never-settling WebGPU adapter
+ok 8 - probeCapabilities does not hang on a never-settling WebGPU adapter
+  ---
+  duration_ms: 30.8872
+  type: 'test'
+  ...
+# Subtest: probeCapabilities captures a failing GPU probe instead of throwing
+ok 9 - probeCapabilities captures a failing GPU probe instead of throwing
+  ---
+  duration_ms: 1.3637
+  type: 'test'
+  ...
+# Subtest: the catalog is non-empty and every entry is well formed
+ok 10 - the catalog is non-empty and every entry is well formed
+  ---
+  duration_ms: 2.5018
+  type: 'test'
+  ...
+# Subtest: listModels filters by task
+ok 11 - listModels filters by task
+  ---
+  duration_ms: 0.5491
+  type: 'test'
+  ...
+# Subtest: findModel returns the entry or null
+ok 12 - findModel returns the entry or null
+  ---
+  duration_ms: 0.3579
+  type: 'test'
+  ...
+# Subtest: isModelId accepts org/name and rejects traversal and junk
+ok 13 - isModelId accepts org/name and rejects traversal and junk
+  ---
+  duration_ms: 1.7876
+  type: 'test'
+  ...
+# Subtest: estimatePeakBytes is above the weight size and null for bad input
+ok 14 - estimatePeakBytes is above the weight size and null for bad input
+  ---
+  duration_ms: 0.5004
+  type: 'test'
+  ...
+# Subtest: catalog is exported as a frozen array
+ok 15 - catalog is exported as a frozen array
+  ---
+  duration_ms: 0.2929
+  type: 'test'
+  ...
+# Subtest: formatBytes uses binary units and never lies about unknown input
+ok 16 - formatBytes uses binary units and never lies about unknown input
+  ---
+  duration_ms: 2.0677
+  type: 'test'
+  ...
+# Subtest: formatDuration is human readable across scales
+ok 17 - formatDuration is human readable across scales
+  ---
+  duration_ms: 0.3845
+  type: 'test'
+  ...
+# Subtest: tokensPerSecond and formatRate
+ok 18 - tokensPerSecond and formatRate
+  ---
+  duration_ms: 0.2757
+  type: 'test'
+  ...
+# Subtest: clamp stays in range and fails safe
+ok 19 - clamp stays in range and fails safe
+  ---
+  duration_ms: 0.2203
+  type: 'test'
+  ...
+# Subtest: formatPercent and asLabel handle bad input
+ok 20 - formatPercent and asLabel handle bad input
+  ---
+  duration_ms: 1.4075
+  type: 'test'
+  ...
+# Subtest: encodeModelId keeps the org/name slash but escapes segments
+ok 21 - encodeModelId keeps the org/name slash but escapes segments
+  ---
+  duration_ms: 1.7935
+  type: 'test'
+  ...
+# Subtest: URL builders are relative to the Hub API and bounded
+ok 22 - URL builders are relative to the Hub API and bounded
+  ---
+  duration_ms: 0.8749
+  type: 'test'
+  ...
+# Subtest: parseModelInfo sums sizes, detects ONNX and reads the licence
+ok 23 - parseModelInfo sums sizes, detects ONNX and reads the licence
+  ---
+  duration_ms: 1.9603
+  type: 'test'
+  ...
+# Subtest: parseModelInfo tolerates junk
+ok 24 - parseModelInfo tolerates junk
+  ---
+  duration_ms: 0.3337
+  type: 'test'
+  ...
+# Subtest: parseModelSearch maps entries and drops junk
+ok 25 - parseModelSearch maps entries and drops junk
+  ---
+  duration_ms: 0.5196
+  type: 'test'
+  ...
+# Subtest: licence and gating descriptions
+ok 26 - licence and gating descriptions
+  ---
+  duration_ms: 0.3934
+  type: 'test'
+  ...
+# Subtest: buildChatMessages orders system, history, then the new user turn
+ok 27 - buildChatMessages orders system, history, then the new user turn
+  ---
+  duration_ms: 2.0083
+  type: 'test'
+  ...
+# Subtest: buildChatMessages drops unknown roles and empty turns
+ok 28 - buildChatMessages drops unknown roles and empty turns
+  ---
+  duration_ms: 0.3034
+  type: 'test'
+  ...
+# Subtest: buildChatMessages omits an empty system prompt
+ok 29 - buildChatMessages omits an empty system prompt
+  ---
+  duration_ms: 1.7067
+  type: 'test'
+  ...
+# Subtest: trimHistory keeps system messages and the newest turns
+ok 30 - trimHistory keeps system messages and the newest turns
+  ---
+  duration_ms: 0.5264
+  type: 'test'
+  ...
+# Subtest: stripControlTokens removes special tokens and think blocks
+ok 31 - stripControlTokens removes special tokens and think blocks
+  ---
+  duration_ms: 0.573
+  type: 'test'
+  ...
+# Subtest: clampPrompt bounds the prompt length
+ok 32 - clampPrompt bounds the prompt length
+  ---
+  duration_ms: 0.2519
+  type: 'test'
+  ...
+# Subtest: endsWithPartialControlToken detects an unclosed control token
+ok 33 - endsWithPartialControlToken detects an unclosed control token
+  ---
+  duration_ms: 0.1811
+  type: 'test'
+  ...
+# Subtest: normaliseSettings fills defaults and rejects bad values
+ok 34 - normaliseSettings fills defaults and rejects bad values
+  ---
+  duration_ms: 2.0046
+  type: 'test'
+  ...
+# Subtest: normaliseSettings keeps valid values
+ok 35 - normaliseSettings keeps valid values
+  ---
+  duration_ms: 0.4083
+  type: 'test'
+  ...
+# Subtest: readSettings returns defaults when absent or corrupt
+ok 36 - readSettings returns defaults when absent or corrupt
+  ---
+  duration_ms: 2.2897
+  type: 'test'
+  ...
+# Subtest: writeSettings round-trips through normalisation
+ok 37 - writeSettings round-trips through normalisation
+  ---
+  duration_ms: 0.5738
+  type: 'test'
+  ...
+# Subtest: resetSettings restores defaults
+ok 38 - resetSettings restores defaults
+  ---
+  duration_ms: 0.7106
+  type: 'test'
+  ...
+# Subtest: there is JavaScript to check
+ok 39 - there is JavaScript to check
+  ---
+  duration_ms: 3.4463
+  type: 'test'
+  ...
+# Subtest: no HTML-injection or dynamic-code sinks in any module
+ok 40 - no HTML-injection or dynamic-code sinks in any module
+  ---
+  duration_ms: 44.0962
+  type: 'test'
+  ...
+# Subtest: no analytics or third-party tracker is referenced anywhere
+ok 41 - no analytics or third-party tracker is referenced anywhere
+  ---
+  duration_ms: 24.2841
+  type: 'test'
+  ...
+# Subtest: the import map pins exactly the configured runtime
+ok 42 - the import map pins exactly the configured runtime
+  ---
+  duration_ms: 0.5355
+  type: 'test'
+  ...
+# Subtest: the meta CSP is strict and matches the allowed hosts
+ok 43 - the meta CSP is strict and matches the allowed hosts
+  ---
+  duration_ms: 0.4453
+  type: 'test'
+  ...
+# Subtest: index.html has no inline event handlers
+ok 44 - index.html has no inline event handlers
+  ---
+  duration_ms: 0.509
+  type: 'test'
+  ...
+# Subtest: vercel.json sets the authoritative security headers
+ok 45 - vercel.json sets the authoritative security headers
+  ---
+  duration_ms: 14.9347
+  type: 'test'
+  ...
+# Subtest: the web package has no third-party dependencies
+ok 46 - the web package has no third-party dependencies
+  ---
+  duration_ms: 1.4248
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 341.8798
+npm notice
+npm notice New major version of npm available! 11.21.1 -> 12.2.3
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.3
+npm notice To update run: npm install -g npm@12.2.3
+npm notice
+WEB_NPM_EXIT=0

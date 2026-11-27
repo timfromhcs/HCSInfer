@@ -410,7 +410,7 @@ TEST(VulkanRunner, DispatchTimeoutMarksTheRunnerLostAndResetRecovers) {
     const std::uint32_t n = 1024;  // ~2.1 GFLOP: milliseconds even on a fast GPU
     const auto a = rand_f32(std::size_t{n} * n, 1), b = rand_f32(std::size_t{n} * n, 2);
     auto op = ks.prepare_gemm_f32(a.data(), b.data(), n, n, n);
-    ASSERT_TRUE(op.ok());
+    ASSERT_TRUE(op.ok()) << op.error().message;
     auto t = op.value().run();
     if (t.ok())
         GTEST_SKIP()

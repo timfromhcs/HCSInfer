@@ -1,0 +1,5 @@
+
+[notice] A new release of pip is available: 26.1.2 -> 26.3
+[notice] To update, run: D:\HCSScratch\s4-wheel-venv\Scripts\python.exe -m pip install --upgrade pip
+HCSInfer 1.1.0-rc.1
+WHEEL_SMOKE_EXIT=0

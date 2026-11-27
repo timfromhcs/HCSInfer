@@ -1,0 +1,23 @@
+{
+  "backend": "cpu",
+  "bytes": 247282,
+  "device": "AMD Ryzen 7 7735HS with Radeon Graphics         (CPU)",
+  "generation_ms": 149717.033,
+  "height": 512,
+  "load_ms": 275.0864,
+  "loras": [
+    {
+      "id": "lcm-sd15",
+      "weight": 1.0
+    }
+  ],
+  "mode": "generate",
+  "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf",
+  "output": "D:\\HCSScratch\\s1\\sd15-lcm-lora.png",
+  "preset": "",
+  "schema_version": 1,
+  "steps": 8,
+  "total_ms": 149719.6517,
+  "width": 512
+}
+LORA_EXIT=0

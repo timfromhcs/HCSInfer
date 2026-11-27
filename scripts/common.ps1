@@ -96,7 +96,12 @@ function Initialize-MsvcEnvironment {
     if (-not (Get-Command cl.exe -ErrorAction SilentlyContinue)) {
         throw "MSVC environment initialisation failed: '$vcvars' ran but cl.exe is still not on PATH."
     }
-    Write-Host "compiler: $((cl 2>&1 | Select-Object -First 1))"
+    # 'cl 2>&1' emits an ErrorRecord for the banner under $ErrorActionPreference='Stop' and aborts the build
+    # before configure starts (observed 2026-11-27). Run it through cmd.exe so the banner stays plain stdout.
+    $clPath = (Get-Command cl.exe).Source
+    $clBanner = (& cmd.exe /c 'cl 2>&1' | Select-Object -First 1)
+    if (-not $clBanner) { $clBanner = "version unavailable from cl.exe (file $clPath)" }
+    Write-Host "compiler: $clBanner [$clPath]"
 }
 
 # Locates a tool from the Visual Studio 2022 LLVM/Clang component ("C++ Clang tools"): clang-format, clang-tidy.

@@ -1,6 +1,6 @@
 # Install HCSInfer
 
-HCSInfer 1.0.0-rc.1 is a release candidate verified on one machine (Ryzen 7 7735HS, Radeon 680M, Windows 11).
+HCSInfer 1.1.0-rc.1 is a release candidate verified on one machine (Ryzen 7 7735HS, Radeon 680M, Windows 11).
 Nothing here is published yet: the files below are produced locally by `scripts/release-local.ps1` or by the draft
 release workflow (`.github/workflows/release.yml`). Models are not included; bring your own GGUF files and respect their
 licences. Details of every artefact: [packaging.md](packaging.md).
@@ -11,9 +11,9 @@ licences. Details of every artefact: [packaging.md](packaging.md).
 |---|---|---|
 | one file, runs anywhere on Windows x64 (CPU) | `HCSInfer.exe` | nothing else (no Visual C++ Redistributable) |
 | the same plus GPU acceleration (Vulkan) | `HCSInfer-vulkan.exe` | the Vulkan loader `vulkan-1.dll` that your GPU driver installs; it does not start without it |
-| everything in one folder with licences, SBOM, checksums | `HCSInfer-1.0.0-rc.1-windows-msvc-release-static-portable.zip` | unzip |
-| use it from Python | `pip install hcsinfer-1.0.0rc1-py3-none-win_amd64.whl` | Python >= 3.9 |
-| Python code only (bring your own exe) | `hcsinfer-1.0.0rc1.tar.gz` | `HCSINFER_EXE=<path to HCSInfer.exe>` |
+| everything in one folder with licences, SBOM, checksums | `HCSInfer-1.1.0-rc.1-windows-msvc-release-static-portable.zip` | unzip |
+| use it from Python | `pip install hcsinfer-1.1.0rc1-py3-none-win_amd64.whl` | Python >= 3.9 |
+| Python code only (bring your own exe) | `hcsinfer-1.1.0rc1.tar.gz` | `HCSINFER_EXE=<path to HCSInfer.exe>` |
 | the browser demo (WebGPU/WASM) | `hcs-studio-web-dist.zip` | any static web host; not deployed by this project yet |
 
 Check the download first:
@@ -44,7 +44,7 @@ silently falling back to the CPU.
 
 ```powershell
 python -m venv venv; .\venv\Scripts\Activate.ps1
-pip install .\hcsinfer-1.0.0rc1-py3-none-win_amd64.whl
+pip install .\hcsinfer-1.1.0rc1-py3-none-win_amd64.whl
 hcsinfer --help
 ```
 

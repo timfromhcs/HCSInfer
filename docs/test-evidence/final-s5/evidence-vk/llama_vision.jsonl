@@ -1,0 +1,3 @@
+{"test":"DescribesAGeneratedImageOnCpu","backend":"cpu","prompt_tokens":160,"decode_tokens":1,"ttft_ms":2168.720000,"decode_tps":34.682602,"mentions_red":true,"text":" Red."}
+{"test":"DescribesAGeneratedImageOnVulkan","backend":"vulkan","device":"AMD Radeon(TM) Graphics (Vulkan0)","prompt_tokens":160,"ttft_ms":2955.343400,"text":" Red."}
+{"test":"ProjectorThatDoesNotMatchTheTextModelIsRejected","code":"model_error","message":"could not initialise the vision projector (mmproj does not match this model, or the projector architecture is unsupported): mtmd_init_from_file: error: mismatch between text model (n_embd = 2048) and mmproj (n_embd = 960) | hint: you may be using wrong mmproj"}

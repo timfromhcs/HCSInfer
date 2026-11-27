@@ -1,0 +1,8 @@
+clang-tidy: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-tidy.exe (LLVM version 19.1.5)
+checks: -*,clang-analyzer-*,bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-casting-through-void,-bugprone-exception-escape,-clang-analyzer-optin.core.EnumCastOutOfRange
+MSVC environment: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
+compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64 [C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\cl.exe]
+translation units: 92 (src)
+PowerShell 5.1.26100.9818: running sequentially.
+STATIC ANALYSIS OK: no diagnostic in 92 translation units.
+TIDY_EXIT=0

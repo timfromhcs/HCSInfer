@@ -1,0 +1,118 @@
+﻿{
+    "meta":  {
+                 "schema_version":  1,
+                 "label":  "final-cpu",
+                 "profile":  "full",
+                 "timestamp_utc":  "2026-11-27T01:47:50.4874719Z",
+                 "git_commit":  "35c3bd629bc0",
+                 "git_dirty":  true,
+                 "os":  "Microsoft Windows 11 Pro 26200",
+                 "cpu":  "AMD Ryzen 7 7735HS with Radeon Graphics        ",
+                 "ram_bytes":  21245952000,
+                 "exe_test":  "D:\\HCSInfer\\build\\windows-msvc-release\\bin\\hcs_test_soak_core.exe",
+                 "knobs":  {
+                               "HCS_SOAK_SHUTDOWN_ROUNDS":  5,
+                               "HCS_SOAK_SWITCH_CYCLES":  20,
+                               "Storm":  40,
+                               "HCS_SOAK_IMAGE_RUNS":  20,
+                               "HCS_SOAK_UNPLUG_ROUNDS":  100,
+                               "HCS_SOAK_GEN_SECONDS":  1800,
+                               "HCS_SOAK_CYCLES":  100,
+                               "HCS_SOAK_VISION_RUNS":  30,
+                               "HCS_SOAK_CANCEL_ROUNDS":  60
+                           }
+             },
+    "results":  [
+                    {
+                        "test":  "Soak.UnplugGgufParseFaultInjection",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  10,
+                        "log":  "UnplugGgufParseFaultInjection.log"
+                    },
+                    {
+                        "test":  "Soak.UnplugTruncatedHcsModelStream",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  59.5,
+                        "log":  "UnplugTruncatedHcsModelStream.log"
+                    },
+                    {
+                        "test":  "Soak.UnplugEngineLoadTruncatedAndVanishedFile",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  14.8,
+                        "log":  "UnplugEngineLoadTruncatedAndVanishedFile.log"
+                    },
+                    {
+                        "test":  "Soak.LoadUnloadCycles",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  118.8,
+                        "log":  "LoadUnloadCycles.log"
+                    },
+                    {
+                        "test":  "Soak.ModelSwitchCycles",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  25.8,
+                        "log":  "ModelSwitchCycles.log"
+                    },
+                    {
+                        "test":  "Soak.VisionRepeat",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  61.3,
+                        "log":  "VisionRepeat.log"
+                    },
+                    {
+                        "test":  "Soak.DiffusionRepeat",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  177.9,
+                        "log":  "DiffusionRepeat.log"
+                    },
+                    {
+                        "test":  "Soak.CancelStorm",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  19.8,
+                        "log":  "CancelStorm.log"
+                    },
+                    {
+                        "test":  "Soak.ShutdownWhileLoading",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  8.3,
+                        "log":  "ShutdownWhileLoading.log"
+                    },
+                    {
+                        "test":  "Soak.ShutdownWhileGenerating",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  15.7,
+                        "log":  "ShutdownWhileGenerating.log"
+                    },
+                    {
+                        "test":  "Soak.ShutdownWhileRenderingImage",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  35.4,
+                        "log":  "ShutdownWhileRenderingImage.log"
+                    },
+                    {
+                        "test":  "Soak.ContinuousGeneration",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  1807.3,
+                        "log":  "ContinuousGeneration.log"
+                    },
+                    {
+                        "test":  "HttpStorm",
+                        "status":  "PASS",
+                        "exit_code":  0,
+                        "seconds":  63.1,
+                        "log":  "http-storm.log"
+                    }
+                ]
+}

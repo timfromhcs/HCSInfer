@@ -1,0 +1,2 @@
+error: tensor 'cond_stage_model.transformer.text_model.embeddings.position_embedding.weight' is ggml_type_8: quantized GGUF models cannot be merged in V1.1 (only F32/F16/BF16 tensors) [unsupported]
+MERGE_SELF_EXIT=10

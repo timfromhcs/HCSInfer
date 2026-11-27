@@ -65,10 +65,12 @@ void baseline_gemm_i8(const std::int8_t* a, const std::int8_t* b, std::int32_t* 
                          std::int32_t* cr = c + r * n;
                          std::fill(cr, cr + n, 0);
                          for (std::size_t i = 0; i < k; ++i) {
-                             const std::int32_t av = a[r * k + i];
+                             // int8 inputs are converted inline below, exactly as in cpu::oracle::gemm_i8
+                             // (signed semantics).
                              const std::int8_t* br = b + i * n;
                              for (std::size_t j = 0; j < n; ++j)
-                                 cr[j] += av * static_cast<std::int32_t>(br[j]);
+                                 cr[j] += static_cast<std::int32_t>(static_cast<std::int64_t>(a[r * k + i]) *
+                                                                    static_cast<std::int64_t>(br[j]));
                          }
                      }
                  });
@@ -142,6 +144,8 @@ void baseline_rope_rows(const float* x, float* y, std::size_t rows, std::size_t 
     if (dim < 2 || dim % 2 != 0)
         return;
     const std::size_t half = dim / 2;
+    if (half == 0)  // also makes the chunk-size division below provably non-zero
+        return;
     std::vector<float> inv_freq(half);  // computed once per call, as production RoPE code does
     for (std::size_t i = 0; i < half; ++i)
         inv_freq[i] = std::pow(base, -2.0f * static_cast<float>(i) / static_cast<float>(dim));

@@ -1,0 +1,26 @@
+      Start 1018: VulkanRmsNorm.MatchesTheOracleIncludingAllZeroRows
+19/26 Test #1018: VulkanRmsNorm.MatchesTheOracleIncludingAllZeroRows ...........................   Passed    0.25 sec
+      Start 1019: VulkanRope.MatchesTheOracleWithinTheDeclaredTrigTolerance
+20/26 Test #1019: VulkanRope.MatchesTheOracleWithinTheDeclaredTrigTolerance ....................   Passed    0.24 sec
+      Start 1020: VulkanOps.InvalidInputsAreRejectedBeforeAnyDeviceWork
+21/26 Test #1020: VulkanOps.InvalidInputsAreRejectedBeforeAnyDeviceWork ........................   Passed    0.21 sec
+      Start 1021: VulkanRunner.RejectsBadSpirvAndBadDispatchArguments
+22/26 Test #1021: VulkanRunner.RejectsBadSpirvAndBadDispatchArguments ..........................   Passed    0.21 sec
+      Start 1022: VulkanRunner.ManyBuffersCreateAndDestroyWithoutLeaking
+23/26 Test #1022: VulkanRunner.ManyBuffersCreateAndDestroyWithoutLeaking .......................   Passed    0.32 sec
+      Start 1023: VulkanRunner.InjectedDeviceLostIsReportedRefusesWorkAndRecoversAfterReset
+24/26 Test #1023: VulkanRunner.InjectedDeviceLostIsReportedRefusesWorkAndRecoversAfterReset ....   Passed    0.44 sec
+      Start 1024: VulkanRunner.DispatchTimeoutMarksTheRunnerLostAndResetRecovers
+25/26 Test #1024: VulkanRunner.DispatchTimeoutMarksTheRunnerLostAndResetRecovers ...............   Passed    0.46 sec
+      Start 1025: VulkanZzValidation.TheKhronosValidationLayerReportedNothing
+26/26 Test #1025: VulkanZzValidation.TheKhronosValidationLayerReportedNothing ..................   Passed    0.21 sec
+
+100% tests passed out of 26
+
+Label Time Summary:
+contract         =   0.66 sec*proc (7 tests)
+kernel-vulkan    =   4.25 sec*proc (16 tests)
+parser           =   2.33 sec*proc (3 tests)
+
+Total Test time (real) =   8.94 sec
+RANGE_EXIT=0

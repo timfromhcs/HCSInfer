@@ -2,7 +2,8 @@
 
 Status: **Experimental**. The manifest, scanner, compatibility rules, request plumbing (API, MCP, CLI, UI) and the engine
 hand-off to the pinned stable-diffusion.cpp (`sd_opt_set_loras`) are implemented and unit/contract tested with synthetic
-files. A real render with a real LoRA is **NOT RUN**: no LoRA file exists on this machine and nothing is downloaded by HCSInfer.
+files. A real render with the LCM-LoRA SD1.5 file is **PASS** (2026-11-27): same seed/model/prompt with and without the
+LoRA, PSNR 11.50 dB / SSIM 0.64, both images viewed (`docs/test-evidence/final-s1/`). HCSInfer never downloads a LoRA.
 
 ## Folder and manifest
 
@@ -59,6 +60,7 @@ are an independent plausibility check: a file whose names look like SDXL but who
 
 ## Limits and open items
 
-* Real LoRA render: NOT RUN (no LoRA available). Whether the pinned stable-diffusion.cpp applies a LoRA to a quantised
+* Real LoRA render: PASS with `lcm-sd15` on SD1.5 Q8_0 (applied weight reported by the CLI, images viewed and compared);
+  other LoRAs and base families remain untested. Whether the pinned stable-diffusion.cpp applies a LoRA to a quantised
   (Q8_0/Q4_K) base model correctly and how much it costs in time/RAM must be measured with a real file.
 * Only the base-family names above are known; LoRAs for other architectures are rejected as `invalid`.

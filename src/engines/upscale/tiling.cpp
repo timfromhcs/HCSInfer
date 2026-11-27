@@ -215,9 +215,9 @@ Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& src, const Option
                 const std::uint8_t* p =
                     src.pixels.data() + (static_cast<std::size_t>(sy) * src.width + sx) * 3;
                 float* d = in_buf.data() + (static_cast<std::size_t>(y) * iw + x) * 3;
-                d[0] = p[0] / 255.0f;
-                d[1] = p[1] / 255.0f;
-                d[2] = p[2] / 255.0f;
+                d[0] = static_cast<float>(p[0]) / 255.0f;
+                d[1] = static_cast<float>(p[1]) / 255.0f;
+                d[2] = static_cast<float>(p[2]) / 255.0f;
             }
         }
         out_buf.assign(static_cast<std::size_t>(iw) * s * ih * s * 3, 0.0f);

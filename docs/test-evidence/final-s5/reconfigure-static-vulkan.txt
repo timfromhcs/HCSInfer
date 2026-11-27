@@ -1,0 +1,13 @@
+[19/28] Building CXX object tests\contract\api_overload\CMakeFiles\hcs_test_api_overload.dir\test_api_overload.cpp.obj
+cl : Command line warning D9025 : overriding '/W4' with '/W3'
+cl : Command line warning D9025 : overriding '/WX' with '/WX-'
+[20/28] Linking CXX executable bin\hcs_test_api_vision_contract.exe
+[21/28] Linking CXX executable bin\hcs_test_api_http.exe
+[22/28] Linking CXX executable bin\hcs_test_mcp.exe
+[23/28] Linking CXX executable bin\hcs_test_mcp_image.exe
+[24/28] Linking CXX executable bin\hcs_test_api_overload.exe
+[25/28] Linking CXX executable bin\hcs_test_cli.exe
+[26/28] Linking CXX executable bin\hcs_test_soak_core.exe
+[27/28] Linking CXX executable bin\hcs_test_shutdown_real.exe
+BUILD OK (windows-msvc-release-static-vulkan)
+RECONFIG_VK_EXIT=0

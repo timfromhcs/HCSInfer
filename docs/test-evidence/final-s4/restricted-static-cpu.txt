@@ -1,0 +1,2 @@
+wrote D:\HCSInfer\docs\test-evidence\final-s4\restricted-static-cpu.json
+RESTRICTED_CPU_EXIT=0
