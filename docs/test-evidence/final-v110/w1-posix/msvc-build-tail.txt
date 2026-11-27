@@ -1,0 +1,3 @@
+[60/62] Linking CXX executable bin\hcs_test_shutdown_real.exe
+[61/62] Linking CXX executable bin\hcs_test_soak_core.exe
+BUILD OK (windows-msvc-release)

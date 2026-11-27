@@ -25,7 +25,7 @@ code paths exist (sysctl/mach probes, `F_RDAHEAD`, Application Support state dir
 git submodule update --init --recursive
 cmake --preset linux-gcc-release            # or linux-clang-release / macos-arm64-release
 cmake --build --preset linux-gcc-release -j4
-ctest --preset linux-gcc-release            # runs only tests labelled "portable"
+ctest --preset linux-gcc-release            # runs the portable labels: unit|contract|parser|kernel-cpu
 ```
 
 * The presets set `GGML_NATIVE=OFF` and `GGML_OPENMP=OFF` so the binary never depends on the build machine's CPU
@@ -42,6 +42,10 @@ ctest --preset linux-gcc-release            # runs only tests labelled "portable
 * `doctor` on Linux reads `/proc/cpuinfo`, `/proc/meminfo`, `uname`, `/etc/os-release`, `statvfs`, `/proc/self/mountinfo`
   and `/sys/dev/block/*`; anything it cannot read stays `unknown` (installed RAM, channel configuration and UMA
   reservation need DMI/root and are never guessed).
+* WSL2 caveats seen while testing (environment, not product): on `/mnt/<drive>` (drvfs/9p) `FsUtil.ConcurrentWritersNeverProduceMixedContent`
+  fails about 1 run in 5 because 9p does not give an atomic replace under concurrent readers (25/25 pass with `TMPDIR=/dev/shm`);
+  and `CliRemote.NoServerRunningIsAClearIoErrorNotAStub` fails when WSL's localhost relay still accepts a just-closed port
+  (a never-bound port correctly gives exit 8, "no HCSInfer server reachable"). A native Linux host (not WSL2 relay) is expected not to show these; not yet verified.
 * The coding-agent sidecar (child-process supervision) is **Planned** on Linux/macOS: the process module returns
   `Unsupported` there and its unit tests are Windows-only (excluded at CMake level, see `WINDOWS_ONLY` in
   `cmake/HcsModule.cmake`).

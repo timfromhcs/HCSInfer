@@ -1,0 +1,29 @@
+Test project <scratch>/linux-gcc-release
+
+99% tests passed, 1 tests failed out of 963
+
+Label Time Summary:
+contract      =  57.41 sec*proc (277 tests)
+kernel-cpu    =   0.71 sec*proc (19 tests)
+parser        =   0.29 sec*proc (3 tests)
+tools         =   8.49 sec*proc (1 test)
+unit          =  38.40 sec*proc (664 tests)
+
+Total Test time (real) =  29.33 sec
+
+The following tests did not run:
+	355 - MemoryProbe.GpuHeapHeadroomIsEitherUnknownOrAFiniteNumber (Skipped)
+	680 - OrtRealRuntime.DynamicSyntheticModelMatchesNearestNeighbour (Skipped)
+	681 - OrtRealRuntime.FixedSizeSyntheticModelIsDetectedAndPadded (Skipped)
+	682 - OrtRealRuntime.ExplicitDirectMlWithoutTheProviderIsAnErrorNotASilentFallback (Skipped)
+	788 - ApiSocketAudit.NonStreamingClientDisconnectCancelsTheJob (Skipped)
+	789 - ApiSocketAudit.IdleConnectionFloodDoesNotStarveHealthAndIsBounded (Skipped)
+	790 - ApiSocketAudit.SocketThatNeverSendsAnythingIsDroppedByTheReadTimeout (Skipped)
+	791 - ApiSocketAudit.HealthAnswersFirstTryWhileIdleAndHalfOpenConnectionsAreHeld (Skipped)
+	792 - ApiSocketAudit.ServeBudgetKeepsHealthAnsweringUnder64HeldConnections (Skipped)
+
+The following tests FAILED:
+	897 - CliRemote.NoServerRunningIsAClearIoErrorNotAStub (Failed) contract
+Errors while running CTest
+Output from these tests are in: <scratch>/linux-gcc-release/Testing/Temporary/LastTest.log
+Use "--rerun-failed --output-on-failure" to re-run the failed cases verbosely.

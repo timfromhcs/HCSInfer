@@ -26,7 +26,9 @@ Test machine (target hardware, AGENTS.md 1.3):
 | GGML Vulkan — diffusion (SD1.5) | PASS | `M3-image/` (Vulkan build), `B7-params/` |
 | HCS Vulkan kernel (Q8_0 GEMV, feature-flagged OFF) | PASS for correctness; not default-enabled | `vulkan-kernels/` |
 | CPU-only fallback (Vulkan unavailable) | PASS | `M0/doctor-no-vulkan.json`, CPU runs of text/vision/diffusion |
-| Linux / Mesa RADV | **NOT RUN** | no Linux build or run in the repository |
+| Linux x86-64 CPU build (gcc, clang) | PASS (WSL2 Ubuntu, one real LFM3 generation) | `final-v110/w1-posix/` |
+| Linux / Mesa RADV (real AMD GPU) | **NOT RUN** | the Vulkan loader seam was exercised against Mesa llvmpipe by `doctor` only; no GGML Vulkan build (no `glslc` in the WSL image) and no AMD GPU run |
+| macOS arm64 | **NOT RUN** | code paths exist, never built |
 | ROCm | **NOT RUN** (explicitly out of V1 scope, AGENTS.md 1.2) | — |
 | Other AMD GPUs / discrete GPUs / NVIDIA / Intel | **NOT RUN** | one device only |
 
