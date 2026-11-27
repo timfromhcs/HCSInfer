@@ -187,7 +187,7 @@ Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& orig, const Optio
         std::uint32_t pw = 0, ph = 0;
         target_size(orig.width, orig.height, opt.pre_resize_long_edge, pw, ph);
         std::vector<float> f(orig.pixels.size());
-        for (std::size_t i = 0; i < f.size(); ++i) f[i] = orig.pixels[i] / 255.0f;
+        for (std::size_t i = 0; i < f.size(); ++i) f[i] = static_cast<float>(orig.pixels[i]) / 255.0f;
         pre = resample_lanczos(f.data(), orig.width, orig.height, pw, ph);
         st.pre_resize_ms = ms_since(t_pre);
         use = &pre;
