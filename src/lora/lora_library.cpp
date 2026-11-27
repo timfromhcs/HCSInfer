@@ -8,6 +8,7 @@
 #include <set>
 
 #include "hcs/fs_util.hpp"
+#include "hcs/image_profiles.hpp"
 #include "hcs/safetensors.hpp"
 #include "hcs/storage/sha256.hpp"
 
@@ -79,7 +80,8 @@ LoraCompat lora_compatibility(std::string_view lora_family, std::string_view mod
         return LoraCompat::Unknown;
     // Exact family match: a FLUX.1 LoRA does not fit FLUX.3 Klein and an SD2 LoRA does not fit SD1.5, even
     // though both pairs share a tensor-naming group.
-    return lora_family == model_family ? LoraCompat::Compatible : LoraCompat::Incompatible;
+    // Turbo checkpoints are SD2 / SDXL derivatives: compare by the architecture the LoRA was trained for.
+    return lora_family == image_base_family(model_family) ? LoraCompat::Compatible : LoraCompat::Incompatible;
 }
 
 std::string sniff_lora_group(const std::vector<std::string>& names) {

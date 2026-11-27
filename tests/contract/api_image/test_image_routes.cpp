@@ -401,6 +401,47 @@ TEST(ApiImageQuality, FluxPresetPointIsAcceptedAndTinySizeIsNot) {
         400);
 }
 
+TEST(ApiImageQuality, SamplerAndSchedulerAreForwardedAndValidated) {
+    Api a;
+    add_image_model(a, "sd15-test");
+    auto r =
+        a.call("POST", "/v1/images/generations",
+               json{{"model", "sd15-test"}, {"prompt", "x"}, {"sampler", "lcm"}, {"scheduler", "karras"}});
+    ASSERT_EQ(r.status, 200) << r.body;
+    EXPECT_EQ(a.fx.image.last.sampler, "lcm");
+    EXPECT_EQ(a.fx.image.last.scheduler, "karras");
+    auto bad = a.call("POST", "/v1/images/generations",
+                      json{{"model", "sd15-test"}, {"prompt", "x"}, {"sampler", "euler;rm -rf"}});
+    EXPECT_EQ(bad.status, 400) << bad.body;
+    EXPECT_NE(err_of(bad)["message"].get<std::string>().find("sampler"), std::string::npos);
+    EXPECT_EQ(a.call("POST", "/v1/images/generations",
+                     json{{"model", "sd15-test"}, {"prompt", "x"}, {"scheduler", "nope"}})
+                  .status,
+              400);
+}
+
+TEST(ApiImageQuality, TurboEnvelopeIsEnforcedFromTheModelId) {
+    Api a;
+    add_image_model(a, "sd_turbo-test");
+    EXPECT_EQ(a.call("POST", "/v1/images/generations",
+                     json{{"model", "sd_turbo-test"}, {"prompt", "x"}, {"steps", 20}})
+                  .status,
+              400)
+        << "20 steps over-bakes a Turbo model";
+    EXPECT_EQ(a.call("POST", "/v1/images/generations",
+                     json{{"model", "sd_turbo-test"}, {"prompt", "x"}, {"steps", 2}})
+                  .status,
+              200);
+    EXPECT_EQ(a.call("POST", "/v1/images/generations",
+                     json{{"model", "sd_turbo-test"}, {"prompt", "x"}, {"preset", "fast"}})
+                  .status,
+              200);
+    EXPECT_EQ(a.call("POST", "/v1/images/generations",
+                     json{{"model", "sd_turbo-test"}, {"prompt", "x"}, {"size", "768x768"}, {"steps", 2}})
+                  .status,
+              400)
+        << "SD-Turbo is 512 only";
+}
 TEST(ApiImageQuality, FamilyThatCannotBeGuessedIsLeftToTheEngine) {
     Api a;  // "sdmodel" names no family: the control plane does not guess, the engine decides after load
     auto r = a.call("POST", "/v1/images/generations", a.gen_body());

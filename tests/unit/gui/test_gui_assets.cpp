@@ -86,7 +86,11 @@ TEST(GuiAssets, StudioStructure) {
     EXPECT_NE(js.find("tool_calls"), std::string::npos);
     EXPECT_NE(js.find("/hcs/v1/memory"), std::string::npos);
     // LoRA picker and upscale switch are wired to real routes/fields (never paths: ids and weights only).
-    for (const char* id : {"image-upscale", "image-lora-list"})
+    // "Upscale to 4K" button for the shown image: a real route, never a fake progress indicator.
+    EXPECT_NE(js.find("/hcs/v1/images/upscale"), std::string::npos);
+    EXPECT_EQ(js.find("UPSCALE_HINT_PLACEHOLDER"), std::string::npos)
+        << "the measured time hint must be filled in";
+    for (const char* id : {"image-upscale", "image-upscale-now", "image-lora-list"})
         EXPECT_NE(html.find(std::string("id=\"") + id + "\""), std::string::npos) << id;
     EXPECT_NE(js.find("/hcs/v1/loras"), std::string::npos);
     EXPECT_NE(js.find("body.loras"), std::string::npos);

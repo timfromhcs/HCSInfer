@@ -54,9 +54,16 @@ struct ProfileEntry {
     // Baseline the decision is made against (name + median wall ms of the CPU baseline implementation).
     std::string baseline_name;
     double baseline_ms = 0.0;
-    // Upstream GGML Vulkan op baseline: "not_run" or "measured" (then ratio = upstream_ms / wall_ms_median).
+    // Upstream GGML Vulkan op baseline (the pinned ggml backend driven in-process, same shape, same timing
+    // method: see hcs/kernels/ggml_vk_baseline.hpp). Status: "not_run" | "measured" | "not_comparable" (no
+    // upstream operator with the same semantics) | "error" (the upstream op failed or is unsupported).
+    // ratio = upstream_ms / wall_ms_median (> 1: the HCS kernel is faster than upstream).
     std::string upstream_status = "not_run";
     std::optional<double> upstream_ratio;
+    double upstream_ms = 0.0;      // median wall ms of the upstream op (0 = not measured)
+    double upstream_spread = 0.0;  // (p90 - p10) / median of the upstream samples
+    std::string upstream_variant;  // what upstream actually ran, e.g. "mul_mat f16 weights x f32 activations"
+    std::string upstream_note;     // reason for not_comparable / error, or which variant was fastest
 
     double speedup() const;  // baseline_ms / wall_ms_median, 0 when either is not positive
     std::optional<double> gflops_wall() const;

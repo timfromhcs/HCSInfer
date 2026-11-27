@@ -189,6 +189,22 @@ bool architecture_is_diffusion(std::string_view a) {
            low.rfind("sdxl", 0) == 0 || low.rfind("flux", 0) == 0;
 }
 
+bool ends_with(std::string_view s, std::string_view suffix) {
+    return s.size() >= suffix.size() && s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
+void note_diffusion_tensor(ImageModelSignature& sig, std::string_view name, const std::uint64_t* dims,
+                           std::uint32_t ndims) {
+    constexpr std::uint64_t kMaxContextWidth = 1u << 16;
+    if (sig.cross_attn_dim == 0 && ndims == 2 && name.rfind("model.diffusion_model.", 0) == 0 &&
+        ends_with(name, ".attn2.to_k.weight") && dims[0] > 0 && dims[0] <= kMaxContextWidth)
+        sig.cross_attn_dim = static_cast<std::uint32_t>(dims[0]);
+    if (name.rfind("model.diffusion_model.label_emb.", 0) == 0)
+        sig.has_label_emb = true;
+    if (name.find("double_blocks.") != std::string_view::npos)
+        sig.has_flux_blocks = true;
+}
+
 }  // namespace
 
 GgufProbeResult probe_gguf(std::span<const std::uint8_t> bytes, std::size_t max_tensor_names) {
@@ -275,10 +291,16 @@ GgufProbeResult probe_gguf(std::span<const std::uint8_t> bytes, std::size_t max_
             out.valid = false;
             return out;
         }
-        if (!r.skip(ndims * 8)) {
+        // Dimensions are read (not skipped) only for the one tensor family detection needs: the text
+        // cross-attention key projection, whose ne[0] is the text-context width (SD1.x 768, SD2.x 1024, SDXL
+        // 2048).
+        std::array<std::uint64_t, kMaxDims> dims{};
+        for (std::uint64_t d = 0; d < ndims; ++d) dims[d] = r.le(8);
+        if (!r.ok()) {
             out.reason = r.reason();
             return out;
         }
+        note_diffusion_tensor(out.diffusion, name, dims.data(), static_cast<std::uint32_t>(ndims));
         if (!r.skip(4)) {  // ggml tensor type: not interpreted here, only skipped
             out.reason = r.reason();
             return out;

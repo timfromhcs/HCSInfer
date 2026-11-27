@@ -161,19 +161,38 @@ float feather_weight(std::uint32_t i, std::uint32_t ramp) noexcept {
     return static_cast<float>(i + 1) / static_cast<float>(ramp + 1);
 }
 
-Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& src, const Options& opt,
+Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& orig, const Options& opt,
                            const CancellationToken& token, const ProgressFn& progress, Stats* stats) {
     Stats local;
     Stats& st = stats ? *stats : local;
     st = Stats{};
-    st.src_w = src.width;
-    st.src_h = src.height;
-    if (src.width == 0 || src.height == 0 ||
-        src.pixels.size() != static_cast<std::size_t>(src.width) * src.height * 3)
+    st.src_w = orig.width;
+    st.src_h = orig.height;
+    if (orig.width == 0 || orig.height == 0 ||
+        orig.pixels.size() != static_cast<std::size_t>(orig.width) * orig.height * 3)
         return make_error(ErrorCode::InvalidArgument,
                           "source image is empty or its buffer size is inconsistent");
+    if (opt.pre_resize_long_edge != 0 &&
+        (opt.pre_resize_long_edge < 16 || opt.pre_resize_long_edge > opt.target_long_edge))
+        return make_error(ErrorCode::InvalidArgument, "pre-resize long edge must be 0 or 16..target");
     if (auto r = engine.ready(); !r)
         return r.error();
+    // Optional pre-resize (Lanczos) so the model pass lands on the target without a final resample, e.g.
+    // 512 -> 960 -> x4 = 3840. Never applied to a source that is already at/above the target (skipped below).
+    Rgb8 pre;
+    const Rgb8* use = &orig;
+    if (const std::uint32_t le = std::max(orig.width, orig.height);
+        opt.pre_resize_long_edge != 0 && le < opt.target_long_edge && le != opt.pre_resize_long_edge) {
+        const auto t_pre = Clock::now();
+        std::uint32_t pw = 0, ph = 0;
+        target_size(orig.width, orig.height, opt.pre_resize_long_edge, pw, ph);
+        std::vector<float> f(orig.pixels.size());
+        for (std::size_t i = 0; i < f.size(); ++i) f[i] = static_cast<float>(orig.pixels[i]) / 255.0f;
+        pre = resample_lanczos(f.data(), orig.width, orig.height, pw, ph);
+        st.pre_resize_ms = ms_since(t_pre);
+        use = &pre;
+    }
+    const Rgb8& src = *use;
     const ModelInfo mi = engine.info();
     st.provider = mi.provider;
     st.model = mi.name;
@@ -186,7 +205,7 @@ Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& src, const Option
     if (plan.skip) {
         st.skipped = true;
         st.skip_reason = plan.skip_reason;
-        return src;
+        return orig;
     }
     st.tiles = static_cast<std::uint32_t>(plan.tiles.size());
     st.tile = plan.tile;
@@ -200,6 +219,9 @@ Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& src, const Option
 
     const auto t_model = Clock::now();
     std::vector<float> in_buf, out_buf;
+    std::vector<double> tile_ms;
+    tile_ms.reserve(plan.tiles.size());
+    double blend_ms = 0.0;
     const std::uint32_t overlap_px = plan.overlap * s;
     for (std::size_t ti = 0; ti < plan.tiles.size(); ++ti) {
         if (token.cancelled())
@@ -221,10 +243,13 @@ Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& src, const Option
             }
         }
         out_buf.assign(static_cast<std::size_t>(iw) * s * ih * s * 3, 0.0f);
+        const auto t_tile = Clock::now();
         if (auto rr = engine.run_tile(in_buf.data(), iw, ih, out_buf.data(), token); !rr)
             return rr.error();
+        tile_ms.push_back(ms_since(t_tile));
         if (token.cancelled())
             return make_error(ErrorCode::Cancelled, "upscaling was cancelled");
+        const auto t_blend = Clock::now();
         const std::size_t ostride = static_cast<std::size_t>(iw) * s;
         const bool left = r.x > 0, top = r.y > 0, right = r.x + r.w < src.width,
                    bottom = r.y + r.h < src.height;
@@ -257,10 +282,18 @@ Result<Rgb8> upscale_image(IUpscaleEngine& engine, const Rgb8& src, const Option
                 wsum[gi] += wt;
             }
         }
+        blend_ms += ms_since(t_blend);
         if (progress)
             progress(0.9 * static_cast<double>(ti + 1) / static_cast<double>(plan.tiles.size()));
     }
     st.model_ms = ms_since(t_model);
+    st.blend_ms = blend_ms;
+    if (!tile_ms.empty()) {
+        std::vector<double> sorted = tile_ms;
+        std::sort(sorted.begin(), sorted.end());
+        st.tile_ms_median = sorted[sorted.size() / 2];
+        st.tile_ms_max = sorted.back();
+    }
     for (std::size_t i = 0; i < mw * mh; ++i) {
         const float inv = wsum[i] > 0.0f ? 1.0f / wsum[i] : 0.0f;
         acc[i * 3 + 0] *= inv;

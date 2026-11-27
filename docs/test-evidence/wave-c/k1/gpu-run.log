@@ -1,0 +1,8 @@
+lock acquired 2026-11-26T21:14:07.6649484+01:00 freeRAM_GB=10.1682472229004
+baseline tests exit 0
+vulkan_ops tests exit 0
+bench exit 0
+free RAM GB before tune 1 : 9.97290802001953
+tune 1 exit 4 2026-11-26T21:31:31.5617670+01:00
+free RAM GB before tune 2 : 10.1645355224609
+released 2026-11-26T21:34:51.9031960+01:00 (killed to fix tune data scaling)

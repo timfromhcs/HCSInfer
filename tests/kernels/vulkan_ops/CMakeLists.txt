@@ -4,6 +4,6 @@ if(NOT TARGET hcs_kernels_vulkan)
   return()
 endif()
 hcs_add_gtest(vulkan_ops
-  SOURCES test_vulkan_ops.cpp
+  SOURCES test_vulkan_ops.cpp test_tune_cli.cpp
   LINK hcs_kernels_vulkan hcs_kernels_cpu hcs_hardware hcs_core
   LABELS "kernel-vulkan")

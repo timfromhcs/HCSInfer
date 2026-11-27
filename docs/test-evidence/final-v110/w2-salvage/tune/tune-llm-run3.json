@@ -1,0 +1,3726 @@
+{
+  "baseline": "cpu_mt_autovec: row-parallel std::thread, float accumulation, compiler auto-vectorisation only; conversion of f16 inputs excluded from the CPU timing",
+  "build_type": "Release",
+  "cpu_threads": 16,
+  "decisive_time": "wall_ms_median of one dispatch (submit + fence, data resident on the device)",
+  "device": {
+    "api_version": "1.4.315",
+    "device_id": 5761,
+    "device_key": "vk:1002:1681:drv=0x00800161:api=1.4.315",
+    "device_type": "integrated_gpu",
+    "driver_info": "26.6.1 (AMD proprietary shader compiler)",
+    "driver_name": "AMD proprietary driver",
+    "driver_version_raw": "0x00800161",
+    "name": "AMD Radeon(TM) Graphics",
+    "subgroup_size": 64,
+    "vendor_id": 4098
+  },
+  "generator": "HCSInfer tune",
+  "git_commit": "540622875eb7",
+  "hcsinfer_version": "1.1.0-rc.1",
+  "memory_placement": "device_local (staged uploads)",
+  "profile_path": "D:\\HCSScratch\\w2\\tune-state-3\\kernel-profile.json",
+  "results": [
+    {
+      "baseline": {
+        "median_ms": 0.4037,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n128k128",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4194304.0,
+      "gflops_gpu": 663.6556962025317,
+      "gflops_wall": 67.65006451612904,
+      "gpu_ms_median": 0.00632,
+      "gpu_spread_p10_p90_over_median": 0.06329113924050636,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 1.9073486328125e-06,
+      "promoted": true,
+      "reason": "upstream timing too noisy (spread 0.259 > 0.250): not a result",
+      "reasons": [
+        "upstream timing too noisy (spread 0.259 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 128,
+        "m": 128,
+        "n": 128
+      },
+      "speedup_vs_baseline": 6.5112903225806456,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:38:00Z",
+      "tolerance": {
+        "abs": 1.1313708498984761e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0755,
+        "note": "fastest of: f32-act 0.075600 ms; f16-act 0.075500 ms;",
+        "ratio_upstream_over_hcs": 1.217741935483871,
+        "spread_p10_p90_over_median": 0.2585430463576158,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 0.062,
+      "wall_spread_p10_p90_over_median": 0.1506451612903226
+    },
+    {
+      "baseline": {
+        "median_ms": 4.8514,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k256",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 960.8943871706759,
+      "gflops_wall": 539.6772336147968,
+      "gpu_ms_median": 0.13968,
+      "gpu_spread_p10_p90_over_median": 0.01282932416953027,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 3.814697265625e-06,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.406 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.406 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 256,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 19.5070365902694,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:38:00Z",
+      "tolerance": {
+        "abs": 1.6e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.1811,
+        "note": "fastest of: f32-act 0.186200 ms; f16-act 0.181100 ms;",
+        "ratio_upstream_over_hcs": 0.7281865701648573,
+        "spread_p10_p90_over_median": 0.15913859745996678,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 0.2487,
+      "wall_spread_p10_p90_over_median": 0.40635303578608756
+    },
+    {
+      "baseline": {
+        "median_ms": 34.5171,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n2048k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1073741824.0,
+      "gflops_gpu": 608.8352370151962,
+      "gflops_wall": 530.6883922305145,
+      "gpu_ms_median": 1.7636,
+      "gpu_spread_p10_p90_over_median": 0.08034474937627582,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 9.5367431640625e-06,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 512,
+        "m": 512,
+        "n": 2048
+      },
+      "speedup_vs_baseline": 17.05980329165225,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:38:04Z",
+      "tolerance": {
+        "abs": 2.2627416997969522e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.6856,
+        "note": "fastest of: f32-act 0.685600 ms; f16-act 0.728000 ms;",
+        "ratio_upstream_over_hcs": 0.3388523698907725,
+        "spread_p10_p90_over_median": 0.12193698949824956,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f32 activations"
+      },
+      "wall_ms_median": 2.0233,
+      "wall_spread_p10_p90_over_median": 0.08962585874561363
+    },
+    {
+      "baseline": {
+        "median_ms": 69.1485,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k1024",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 2147483648.0,
+      "gflops_gpu": 635.2674941723562,
+      "gflops_wall": 580.0874251755808,
+      "gpu_ms_median": 3.38044,
+      "gpu_spread_p10_p90_over_median": 0.05447338216326864,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 1.9073486328125e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline did not reach the required speedup",
+      "reasons": [
+        "upstream GGML Vulkan baseline did not reach the required speedup"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 1024,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 18.67868719611021,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:38:10Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 1.0657,
+        "note": "fastest of: f32-act 1.089700 ms; f16-act 1.065700 ms;",
+        "ratio_upstream_over_hcs": 0.2878714208535927,
+        "spread_p10_p90_over_median": 0.10316224078070745,
+        "status": "measured",
+        "variant": "mul_mat f16 weights x f16 activations"
+      },
+      "wall_ms_median": 3.702,
+      "wall_spread_p10_p90_over_median": 0.08002160994057268
+    },
+    {
+      "kernel": "gemm_coopmat_f16",
+      "reason": "kernel gemm_coopmat_f16 is not usable on this device: coopmat kernel needs m, n, k all multiples of 16",
+      "status": "NOT RUN on this hardware"
+    },
+    {
+      "kernel": "gemm_coopmat_f16",
+      "reason": "kernel gemm_coopmat_f16 is not usable on this device: coopmat kernel needs m, n, k all multiples of 16",
+      "status": "NOT RUN on this hardware"
+    },
+    {
+      "kernel": "gemm_coopmat_f16",
+      "reason": "kernel gemm_coopmat_f16 is not usable on this device: coopmat kernel needs m, n, k all multiples of 16",
+      "status": "NOT RUN on this hardware"
+    },
+    {
+      "kernel": "gemm_coopmat_f16",
+      "reason": "dispatch failed while timing: vkQueueSubmit failed (VkResult -4)",
+      "status": "ERROR"
+    },
+    {
+      "baseline": {
+        "median_ms": 31.9034,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 838860800.0,
+      "gflops_gpu": 545.8490369599167,
+      "gflops_wall": 471.8002249718785,
+      "gpu_ms_median": 1.5368,
+      "gpu_spread_p10_p90_over_median": 0.10534617386777709,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 5.7220458984375e-06,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 320,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 17.94341957255343,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:38:23Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 1.778,
+      "wall_spread_p10_p90_over_median": 0.11848143982002253
+    },
+    {
+      "baseline": {
+        "median_ms": 86.9166,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n512k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1887436800.0,
+      "gflops_gpu": 779.7521234755593,
+      "gflops_wall": 696.5739592559787,
+      "gpu_ms_median": 2.42056,
+      "gpu_spread_p10_p90_over_median": 0.12614932081832306,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 3.0517578125e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 2880,
+        "m": 1024,
+        "n": 320
+      },
+      "speedup_vs_baseline": 32.077280779450845,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:38:25Z",
+      "tolerance": {
+        "abs": 5.366563145999495e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 2.7096,
+      "wall_spread_p10_p90_over_median": 0.12194419840566863
+    },
+    {
+      "baseline": {
+        "median_ms": 158.7016,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4294967296.0,
+      "gflops_gpu": 473.76745573356743,
+      "gflops_wall": 457.53444008863136,
+      "gpu_ms_median": 9.06556,
+      "gpu_spread_p10_p90_over_median": 0.021432321886347847,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 3.4332275390625e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 128,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 16.906170103971366,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:38:58Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 9.3872,
+      "wall_spread_p10_p90_over_median": 0.01950954491222107
+    },
+    {
+      "baseline": {
+        "median_ms": 579.0107,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 17179869184.0,
+      "gflops_gpu": 388.4327812631984,
+      "gflops_wall": 383.4792228571429,
+      "gpu_ms_median": 44.22868,
+      "gpu_spread_p10_p90_over_median": 0.004423735910725792,
+      "identical_runs": 3,
+      "kernel": "gemm_coopmat_f16",
+      "kernel_hash": "e1f06d363f41722c",
+      "max_abs_error": 4.1961669921875e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 12.924345982142858,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:42:09Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 44.8,
+      "wall_spread_p10_p90_over_median": 0.007433482142857091
+    },
+    {
+      "baseline": {
+        "median_ms": 0.6066,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n128k128",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4194304.0,
+      "gflops_gpu": 328.7072100313479,
+      "gflops_wall": 56.91050203527815,
+      "gpu_ms_median": 0.01276,
+      "gpu_spread_p10_p90_over_median": 0.12413793103448265,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 6.67572021484375e-06,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.250 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.250 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 128,
+        "m": 128,
+        "n": 128
+      },
+      "speedup_vs_baseline": 8.23066485753053,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:42:15Z",
+      "tolerance": {
+        "abs": 1.1313708498984761e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0737,
+      "wall_spread_p10_p90_over_median": 0.25020352781546806
+    },
+    {
+      "baseline": {
+        "median_ms": 4.9637,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k256",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 597.4792022792022,
+      "gflops_wall": 393.13921499707084,
+      "gpu_ms_median": 0.22464,
+      "gpu_spread_p10_p90_over_median": 0.009544159544159452,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 1.71661376953125e-05,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.278 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.278 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 256,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 14.539250146455771,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:42:16Z",
+      "tolerance": {
+        "abs": 1.6e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.3414,
+      "wall_spread_p10_p90_over_median": 0.27826596367896905
+    },
+    {
+      "baseline": {
+        "median_ms": 34.5867,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n2048k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1073741824.0,
+      "gflops_gpu": 337.28555668639353,
+      "gflops_wall": 315.9644010240414,
+      "gpu_ms_median": 3.18348,
+      "gpu_spread_p10_p90_over_median": 0.3225803209066807,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 3.24249267578125e-05,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.255 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.255 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 512,
+        "m": 512,
+        "n": 2048
+      },
+      "speedup_vs_baseline": 10.177647647353089,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:42:19Z",
+      "tolerance": {
+        "abs": 2.2627416997969522e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 3.3983,
+      "wall_spread_p10_p90_over_median": 0.2554394844481064
+    },
+    {
+      "baseline": {
+        "median_ms": 68.203,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k1024",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 2147483648.0,
+      "gflops_gpu": 526.5608505463034,
+      "gflops_wall": 465.1152558965585,
+      "gpu_ms_median": 4.07832,
+      "gpu_spread_p10_p90_over_median": 0.5042174228603935,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 7.2479248046875e-05,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.490 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.490 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 1024,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 14.771826471161553,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:42:25Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 4.6171,
+      "wall_spread_p10_p90_over_median": 0.48952372701479285
+    },
+    {
+      "baseline": {
+        "median_ms": 1.123,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n1024k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 6291456.0,
+      "gflops_gpu": 17.470443185604797,
+      "gflops_wall": 13.626718648473034,
+      "gpu_ms_median": 0.36012,
+      "gpu_spread_p10_p90_over_median": 0.009152504720648578,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 4.57763671875e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 3072,
+        "m": 1,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 2.4323153562919644,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:42:26Z",
+      "tolerance": {
+        "abs": 5.542562584220407e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.4617,
+      "wall_spread_p10_p90_over_median": 0.07255793805501415
+    },
+    {
+      "baseline": {
+        "median_ms": 7.8856,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 33554432.0,
+      "gflops_gpu": 27.55784494086728,
+      "gflops_wall": 24.67782010737663,
+      "gpu_ms_median": 1.2176,
+      "gpu_spread_p10_p90_over_median": 0.01691195795006584,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 7.43865966796875e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 5.799514598808561,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:42:27Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 1.3597,
+      "wall_spread_p10_p90_over_median": 0.06545561520923732
+    },
+    {
+      "baseline": {
+        "median_ms": 26.2535,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n16384k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 117440512.0,
+      "gflops_gpu": 28.149151502368117,
+      "gflops_wall": 26.801276158743924,
+      "gpu_ms_median": 4.17208,
+      "gpu_spread_p10_p90_over_median": 0.010682441372169477,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 0.0001087188720703125,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 5.991350783906524,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:42:29Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 4.3819,
+      "wall_spread_p10_p90_over_median": 0.01054793582692458
+    },
+    {
+      "baseline": {
+        "median_ms": 5.1482,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k64",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 347.71432124352333,
+      "gflops_wall": 268.32812475009996,
+      "gpu_ms_median": 0.386,
+      "gpu_spread_p10_p90_over_median": 0.01616580310880835,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 3.814697265625e-06,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 64,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 10.292283086765295,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:42:30Z",
+      "tolerance": {
+        "abs": 8e-06,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.5002,
+      "wall_spread_p10_p90_over_median": 0.07556977209116354
+    },
+    {
+      "baseline": {
+        "median_ms": 28.1935,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 838860800.0,
+      "gflops_gpu": 580.7998227539604,
+      "gflops_wall": 438.2533827908678,
+      "gpu_ms_median": 1.44432,
+      "gpu_spread_p10_p90_over_median": 0.1351279494848787,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 2.288818359375e-05,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.394 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.394 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 320,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 14.729376730578341,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:42:31Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 1.9141,
+      "wall_spread_p10_p90_over_median": 0.39351131079880874
+    },
+    {
+      "baseline": {
+        "median_ms": 61.3231,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n512k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1887436800.0,
+      "gflops_gpu": 518.3158495996133,
+      "gflops_wall": 462.3350970017637,
+      "gpu_ms_median": 3.64148,
+      "gpu_spread_p10_p90_over_median": 0.028827839230203153,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 0.000118255615234375,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 2880,
+        "m": 1024,
+        "n": 320
+      },
+      "speedup_vs_baseline": 15.02133548892808,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:42:32Z",
+      "tolerance": {
+        "abs": 5.366563145999495e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 4.0824,
+      "wall_spread_p10_p90_over_median": 0.09208798745835782
+    },
+    {
+      "baseline": {
+        "median_ms": 171.7689,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4294967296.0,
+      "gflops_gpu": 424.8119039235313,
+      "gflops_wall": 413.03322524185944,
+      "gpu_ms_median": 10.11028,
+      "gpu_spread_p10_p90_over_median": 0.019238240681761384,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 0.000164031982421875,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 128,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 16.518464024003233,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:43:20Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 10.3986,
+      "wall_spread_p10_p90_over_median": 0.023587790664127795
+    },
+    {
+      "baseline": {
+        "median_ms": 567.8599,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 17179869184.0,
+      "gflops_gpu": 435.23398397678193,
+      "gflops_wall": 429.60842779122567,
+      "gpu_ms_median": 39.47272,
+      "gpu_spread_p10_p90_over_median": 0.018308948559916827,
+      "identical_runs": 3,
+      "kernel": "gemm_f16_tiled",
+      "kernel_hash": "14456bbfc4c7fa5e",
+      "max_abs_error": 0.0001678466796875,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 14.200189549282813,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:30Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed] [f16 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 39.9896,
+      "wall_spread_p10_p90_over_median": 0.017248984736031342
+    },
+    {
+      "baseline": {
+        "median_ms": 0.9191,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n128k128",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4194304.0,
+      "gflops_gpu": 483.2147465437788,
+      "gflops_wall": 61.680941176470576,
+      "gpu_ms_median": 0.00868,
+      "gpu_spread_p10_p90_over_median": 0.009216589861751176,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 128,
+        "m": 128,
+        "n": 128
+      },
+      "speedup_vs_baseline": 13.516176470588235,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:36Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 0.068,
+      "wall_spread_p10_p90_over_median": 0.0926470588235294
+    },
+    {
+      "baseline": {
+        "median_ms": 9.5745,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k256",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 716.8218756675924,
+      "gflops_wall": 451.91154208754205,
+      "gpu_ms_median": 0.18724,
+      "gpu_spread_p10_p90_over_median": 0.006109805597094671,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 256,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 32.23737373737374,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:36Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 0.297,
+      "wall_spread_p10_p90_over_median": 0.025117845117845008
+    },
+    {
+      "baseline": {
+        "median_ms": 62.6479,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n2048k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1073741824.0,
+      "gflops_gpu": 731.8305779716466,
+      "gflops_wall": 608.697179138322,
+      "gpu_ms_median": 1.4672,
+      "gpu_spread_p10_p90_over_median": 0.00305888767720832,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 512,
+        "m": 512,
+        "n": 2048
+      },
+      "speedup_vs_baseline": 35.51468253968254,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:37Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 1.764,
+      "wall_spread_p10_p90_over_median": 0.07165532879818598
+    },
+    {
+      "baseline": {
+        "median_ms": 123.5053,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k1024",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 2147483648.0,
+      "gflops_gpu": 728.7213931833915,
+      "gflops_wall": 646.3846275170815,
+      "gpu_ms_median": 2.94692,
+      "gpu_spread_p10_p90_over_median": 0.003930883770173618,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 1024,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 37.174638051951966,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:40Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 3.3223,
+      "wall_spread_p10_p90_over_median": 0.06909069018451076
+    },
+    {
+      "baseline": {
+        "median_ms": 2.3598,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n1024k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 6291456.0,
+      "gflops_gpu": 36.03353951890034,
+      "gflops_wall": 23.079442406456344,
+      "gpu_ms_median": 0.1746,
+      "gpu_spread_p10_p90_over_median": 0.01621993127147767,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 3072,
+        "m": 1,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 8.65663976522377,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:41Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 0.2726,
+      "wall_spread_p10_p90_over_median": 0.12736610418195146
+    },
+    {
+      "baseline": {
+        "median_ms": 12.6575,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 33554432.0,
+      "gflops_gpu": 42.136869600160736,
+      "gflops_wall": 34.48554162384378,
+      "gpu_ms_median": 0.79632,
+      "gpu_spread_p10_p90_over_median": 0.007554751858549353,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 13.008735868448099,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:42Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 0.973,
+      "wall_spread_p10_p90_over_median": 0.04951695786228149
+    },
+    {
+      "baseline": {
+        "median_ms": 46.6763,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n16384k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 117440512.0,
+      "gflops_gpu": 44.300457185967566,
+      "gflops_wall": 38.906911379824415,
+      "gpu_ms_median": 2.651,
+      "gpu_spread_p10_p90_over_median": 0.003935118823085711,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 15.46340897796919,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:44Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 3.0185,
+      "wall_spread_p10_p90_over_median": 0.05058141460990563
+    },
+    {
+      "baseline": {
+        "median_ms": 8.5361,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k64",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 720.2067396437003,
+      "gflops_wall": 445.3142932979429,
+      "gpu_ms_median": 0.18636,
+      "gpu_spread_p10_p90_over_median": 0.005065464691994141,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 64,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 28.321499668214994,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:45Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 0.3014,
+      "wall_spread_p10_p90_over_median": 0.1364299933642999
+    },
+    {
+      "baseline": {
+        "median_ms": 48.0542,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 838860800.0,
+      "gflops_gpu": 728.7344499270276,
+      "gflops_wall": 634.8273043741486,
+      "gpu_ms_median": 1.15112,
+      "gpu_spread_p10_p90_over_median": 0.006296476475085259,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 320,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 36.36612683517482,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:45Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 1.3214,
+      "wall_spread_p10_p90_over_median": 0.13142121991826863
+    },
+    {
+      "baseline": {
+        "median_ms": 109.9264,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n512k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1887436800.0,
+      "gflops_gpu": 727.1005917159763,
+      "gflops_wall": 681.8528232361548,
+      "gpu_ms_median": 2.59584,
+      "gpu_spread_p10_p90_over_median": 0.003525641025640959,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 2880,
+        "m": 1024,
+        "n": 320
+      },
+      "speedup_vs_baseline": 39.71186012066038,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:46:47Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 2.7681,
+      "wall_spread_p10_p90_over_median": 0.03585130594992971
+    },
+    {
+      "baseline": {
+        "median_ms": 254.0142,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4294967296.0,
+      "gflops_gpu": 706.9439536491425,
+      "gflops_wall": 681.4704158667196,
+      "gpu_ms_median": 6.0754,
+      "gpu_spread_p10_p90_over_median": 0.005350100404911516,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 128,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 40.303720745735816,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:47:00Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 6.3025,
+      "wall_spread_p10_p90_over_median": 0.0161586671955572
+    },
+    {
+      "baseline": {
+        "median_ms": 1020.734,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 17179869184.0,
+      "gflops_gpu": 710.294687054512,
+      "gflops_wall": 701.3307907789404,
+      "gpu_ms_median": 24.18696,
+      "gpu_spread_p10_p90_over_median": 0.0026086783953006743,
+      "identical_runs": 3,
+      "kernel": "gemm_i8dot_tiled",
+      "kernel_hash": "7ab13ba898e57c2a",
+      "max_abs_error": 0.0,
+      "promoted": true,
+      "reason": "no equivalent upstream GGML operator to compare against: promoted but not default-enabled",
+      "reasons": [
+        "no equivalent upstream GGML operator to compare against: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 41.66924530843686,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:47:49Z",
+      "tolerance": {
+        "abs": 0.0,
+        "rel": 0.0
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 activations, different semantics)",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "not_comparable",
+        "variant": ""
+      },
+      "wall_ms_median": 24.4961,
+      "wall_spread_p10_p90_over_median": 0.012396258996330057
+    },
+    {
+      "baseline": {
+        "median_ms": 0.5856,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n128k128",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4194304.0,
+      "gflops_gpu": 348.3641196013289,
+      "gflops_wall": 57.221064120054564,
+      "gpu_ms_median": 0.01204,
+      "gpu_spread_p10_p90_over_median": 0.060465116279069864,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 7.152557373046875e-06,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 128,
+        "m": 128,
+        "n": 128
+      },
+      "speedup_vs_baseline": 7.9890859481582535,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:47:57Z",
+      "tolerance": {
+        "abs": 1.1313708498984761e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0733,
+      "wall_spread_p10_p90_over_median": 0.021555252387448813
+    },
+    {
+      "baseline": {
+        "median_ms": 5.54,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k256",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 603.82278207666,
+      "gflops_wall": 406.7203878787879,
+      "gpu_ms_median": 0.22228,
+      "gpu_spread_p10_p90_over_median": 0.005578549577110036,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 1.52587890625e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 256,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 16.78787878787879,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:47:58Z",
+      "tolerance": {
+        "abs": 1.6e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.33,
+      "wall_spread_p10_p90_over_median": 0.15333333333333343
+    },
+    {
+      "baseline": {
+        "median_ms": 40.1197,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n2048k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1073741824.0,
+      "gflops_gpu": 407.30048250538647,
+      "gflops_wall": 370.14093005618946,
+      "gpu_ms_median": 2.63624,
+      "gpu_spread_p10_p90_over_median": 0.03517433921039044,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 3.24249267578125e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 512,
+        "m": 512,
+        "n": 2048
+      },
+      "speedup_vs_baseline": 13.8300872143128,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:48:01Z",
+      "tolerance": {
+        "abs": 2.2627416997969522e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 2.9009,
+      "wall_spread_p10_p90_over_median": 0.06260126167741045
+    },
+    {
+      "baseline": {
+        "median_ms": 71.2122,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k1024",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 2147483648.0,
+      "gflops_gpu": 390.09126988163655,
+      "gflops_wall": 360.22538757024245,
+      "gpu_ms_median": 5.50508,
+      "gpu_spread_p10_p90_over_median": 0.010303210852521729,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 7.2479248046875e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 1024,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 11.945349324834353,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:48:07Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 5.9615,
+      "wall_spread_p10_p90_over_median": 0.05249685481841824
+    },
+    {
+      "baseline": {
+        "median_ms": 1.1752,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n1024k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 6291456.0,
+      "gflops_gpu": 17.293721825178668,
+      "gflops_wall": 13.426069142125481,
+      "gpu_ms_median": 0.3638,
+      "gpu_spread_p10_p90_over_median": 0.09315008246289178,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 5.53131103515625e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 3072,
+        "m": 1,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 2.507895860008536,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:48:08Z",
+      "tolerance": {
+        "abs": 5.542562584220407e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.4686,
+      "wall_spread_p10_p90_over_median": 0.0862569355527101
+    },
+    {
+      "baseline": {
+        "median_ms": 7.2985,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 33554432.0,
+      "gflops_gpu": 21.063144679355194,
+      "gflops_wall": 17.71336747083355,
+      "gpu_ms_median": 1.59304,
+      "gpu_spread_p10_p90_over_median": 0.019966855822829206,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 9.1552734375e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 3.8528744127118193,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:48:08Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 1.8943,
+      "wall_spread_p10_p90_over_median": 0.08788470675183442
+    },
+    {
+      "baseline": {
+        "median_ms": 25.5714,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n16384k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 117440512.0,
+      "gflops_gpu": 24.155171619442527,
+      "gflops_wall": 22.350889159561508,
+      "gpu_ms_median": 4.86192,
+      "gpu_spread_p10_p90_over_median": 0.024074439727514975,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 9.5367431640625e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 1,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 4.86666412911084,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:48:10Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 5.2544,
+      "wall_spread_p10_p90_over_median": 0.04068209500609025
+    },
+    {
+      "baseline": {
+        "median_ms": 5.598,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k64",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 134217728.0,
+      "gflops_gpu": 363.2611453935261,
+      "gflops_wall": 279.27117769454844,
+      "gpu_ms_median": 0.36948,
+      "gpu_spread_p10_p90_over_median": 0.005521273140630188,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 4.76837158203125e-06,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 64,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 11.647940074906366,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:48:11Z",
+      "tolerance": {
+        "abs": 8e-06,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.4806,
+      "wall_spread_p10_p90_over_median": 0.04286308780690804
+    },
+    {
+      "baseline": {
+        "median_ms": 26.6788,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k512",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 838860800.0,
+      "gflops_gpu": 578.1100452089535,
+      "gflops_wall": 443.4193889417486,
+      "gpu_ms_median": 1.45104,
+      "gpu_spread_p10_p90_over_median": 0.12328812437975531,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 2.288818359375e-05,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.348 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.348 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 320,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 14.102336399196533,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:48:12Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 1.8918,
+      "wall_spread_p10_p90_over_median": 0.3478486097896183
+    },
+    {
+      "baseline": {
+        "median_ms": 61.9884,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n512k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1887436800.0,
+      "gflops_gpu": 442.6861806923726,
+      "gflops_wall": 400.4066358352073,
+      "gpu_ms_median": 4.2636,
+      "gpu_spread_p10_p90_over_median": 0.027465991181161532,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 0.000118255615234375,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 2880,
+        "m": 1024,
+        "n": 320
+      },
+      "speedup_vs_baseline": 13.150409436123722,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:48:13Z",
+      "tolerance": {
+        "abs": 5.366563145999495e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 4.7138,
+      "wall_spread_p10_p90_over_median": 0.0527260384403242
+    },
+    {
+      "baseline": {
+        "median_ms": 137.7468,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4294967296.0,
+      "gflops_gpu": 329.99422955172685,
+      "gflops_wall": 320.725786400227,
+      "gpu_ms_median": 13.01528,
+      "gpu_spread_p10_p90_over_median": 0.02449551603960869,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 0.0001373291015625,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 128,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 10.286213540033156,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:49:02Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 13.3914,
+      "wall_spread_p10_p90_over_median": 0.033956121092641546
+    },
+    {
+      "baseline": {
+        "median_ms": 579.9469,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k4096",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 17179869184.0,
+      "gflops_gpu": 336.42902319693826,
+      "gflops_wall": 332.6698446237975,
+      "gpu_ms_median": 51.06536,
+      "gpu_spread_p10_p90_over_median": 0.017372559402303207,
+      "identical_runs": 3,
+      "kernel": "gemm_f32_tiled",
+      "kernel_hash": "b67287a21e06eee2",
+      "max_abs_error": 0.000225067138671875,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 4096,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 11.230053212089292,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:12Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "no upstream mul_mat variant ran: [f32 activations: ggml_backend_alloc_ctx_tensors failed]",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 51.6424,
+      "wall_spread_p10_p90_over_median": 0.017740848605022175
+    },
+    {
+      "baseline": {
+        "median_ms": 0.3842,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m32n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 655360.0,
+      "gflops_gpu": 42.11825192802057,
+      "gflops_wall": 7.322458100558659,
+      "gpu_ms_median": 0.01556,
+      "gpu_spread_p10_p90_over_median": 0.042673521850899836,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 6.984919309616089e-10,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 32,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 4.292737430167597,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:18Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0895,
+      "wall_spread_p10_p90_over_median": 0.12
+    },
+    {
+      "baseline": {
+        "median_ms": 0.762,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1310720.0,
+      "gflops_gpu": 44.582312925170065,
+      "gflops_wall": 11.991948764867338,
+      "gpu_ms_median": 0.0294,
+      "gpu_spread_p10_p90_over_median": 0.030748299319727845,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 3.725290298461914e-09,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 6.971637694419031,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:18Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.1093,
+      "wall_spread_p10_p90_over_median": 0.18005489478499534
+    },
+    {
+      "baseline": {
+        "median_ms": 0.3799,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4n32768k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 640000.0,
+      "gflops_gpu": 9.334889148191365,
+      "gflops_wall": 3.9850560398505603,
+      "gpu_ms_median": 0.06856,
+      "gpu_spread_p10_p90_over_median": 0.031271878646441174,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 5.820766091346741e-11,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4,
+        "n": 32000
+      },
+      "speedup_vs_baseline": 2.365504358655044,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:18Z",
+      "tolerance": {
+        "abs": 0.00017888543819998318,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.1606,
+      "wall_spread_p10_p90_over_median": 0.15666251556662508
+    },
+    {
+      "baseline": {
+        "median_ms": 1.5452,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 5242880.0,
+      "gflops_gpu": 39.32553255325533,
+      "gflops_wall": 22.834843205574913,
+      "gpu_ms_median": 0.13332,
+      "gpu_spread_p10_p90_over_median": 0.020522052205220437,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 3.725290298461914e-09,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 6.7299651567944245,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:18Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.2296,
+      "wall_spread_p10_p90_over_median": 0.11219512195121953
+    },
+    {
+      "baseline": {
+        "median_ms": 1.5121,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m64n16384k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4587520.0,
+      "gflops_gpu": 20.634760705289672,
+      "gflops_wall": 13.797052631578946,
+      "gpu_ms_median": 0.22232,
+      "gpu_spread_p10_p90_over_median": 0.02061892767182442,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 2.3283064365386963e-10,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 64,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 4.547669172932331,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:18Z",
+      "tolerance": {
+        "abs": 0.00011973303637676612,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.3325,
+      "wall_spread_p10_p90_over_median": 0.14291729323308272
+    },
+    {
+      "baseline": {
+        "median_ms": 0.012,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 20480.0,
+      "gflops_gpu": 2.160337552742616,
+      "gflops_wall": 0.3185069984447901,
+      "gpu_ms_median": 0.00948,
+      "gpu_spread_p10_p90_over_median": 0.03375527426160328,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 4.656612873077393e-10,
+      "promoted": false,
+      "reason": "speedup 0.187x vs cpu_mt_autovec (16 threads) is below the required 1.05x",
+      "reasons": [
+        "speedup 0.187x vs cpu_mt_autovec (16 threads) is below the required 1.05x"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 0.18662519440124417,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:52:18Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0643,
+      "wall_spread_p10_p90_over_median": 0.013374805598755828
+    },
+    {
+      "baseline": {
+        "median_ms": 2.6583,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 10485760.0,
+      "gflops_gpu": 38.70998227997637,
+      "gflops_wall": 27.377963446475192,
+      "gpu_ms_median": 0.27088,
+      "gpu_spread_p10_p90_over_median": 0.012256349675132656,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 9.313225746154785e-10,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 6.940731070496084,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:19Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.383,
+      "wall_spread_p10_p90_over_median": 0.09164490861618804
+    },
+    {
+      "baseline": {
+        "median_ms": 0.1605,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 295680.0,
+      "gflops_gpu": 37.714285714285715,
+      "gflops_wall": 4.4131343283582085,
+      "gpu_ms_median": 0.00784,
+      "gpu_spread_p10_p90_over_median": 0.04489795918367335,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 3.725290298461914e-09,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 77,
+        "n": 768
+      },
+      "speedup_vs_baseline": 2.3955223880597014,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:19Z",
+      "tolerance": {
+        "abs": 2.7712812921102034e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.067,
+      "wall_spread_p10_p90_over_median": 0.01850746268656703
+    },
+    {
+      "baseline": {
+        "median_ms": 1.3812,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n2048k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4199040.0,
+      "gflops_gpu": 38.822485207100584,
+      "gflops_wall": 19.658426966292133,
+      "gpu_ms_median": 0.10816,
+      "gpu_spread_p10_p90_over_median": 0.02573964497041415,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 2.7939677238464355e-09,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.357 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.357 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 729,
+        "n": 1152
+      },
+      "speedup_vs_baseline": 6.46629213483146,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:52:19Z",
+      "tolerance": {
+        "abs": 3.394112549695428e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.2136,
+      "wall_spread_p10_p90_over_median": 0.3574906367041199
+    },
+    {
+      "baseline": {
+        "median_ms": 2.0284,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 6553600.0,
+      "gflops_gpu": 27.439289901189078,
+      "gflops_wall": 18.8105625717566,
+      "gpu_ms_median": 0.23884,
+      "gpu_spread_p10_p90_over_median": 0.014938871210852403,
+      "identical_runs": 3,
+      "kernel": "softmax_rows",
+      "kernel_hash": "6383371af7ef60cd",
+      "max_abs_error": 1.1175870895385742e-08,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 5.822043628013778,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:19Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.3484,
+      "wall_spread_p10_p90_over_median": 0.08312284730195191
+    },
+    {
+      "baseline": {
+        "median_ms": 0.3057,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m32n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 917504.0,
+      "gflops_gpu": 57.05870646766168,
+      "gflops_wall": 11.584646464646463,
+      "gpu_ms_median": 0.01608,
+      "gpu_spread_p10_p90_over_median": 0.0308457711442786,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 32,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 3.859848484848485,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:19Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0792,
+      "wall_spread_p10_p90_over_median": 0.015151515151515233
+    },
+    {
+      "baseline": {
+        "median_ms": 0.6056,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1835008.0,
+      "gflops_gpu": 74.23171521035599,
+      "gflops_wall": 17.90251707317073,
+      "gpu_ms_median": 0.02472,
+      "gpu_spread_p10_p90_over_median": 0.03527508090614878,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 5.90829268292683,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:20Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.1025,
+      "wall_spread_p10_p90_over_median": 0.07609756097560977
+    },
+    {
+      "baseline": {
+        "median_ms": 0.3315,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4n32768k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 896000.0,
+      "gflops_gpu": 9.540034071550254,
+      "gflops_wall": 4.642487046632124,
+      "gpu_ms_median": 0.09392,
+      "gpu_spread_p10_p90_over_median": 0.04787052810902911,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4,
+        "n": 32000
+      },
+      "speedup_vs_baseline": 1.717616580310881,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:20Z",
+      "tolerance": {
+        "abs": 0.00017888543819998318,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.193,
+      "wall_spread_p10_p90_over_median": 0.15844559585492227
+    },
+    {
+      "baseline": {
+        "median_ms": 0.91,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 7340032.0,
+      "gflops_gpu": 60.22343288480472,
+      "gflops_wall": 32.32070453544694,
+      "gpu_ms_median": 0.12188,
+      "gpu_spread_p10_p90_over_median": 0.03774204135214971,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 4.007045354469397,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:20Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.2271,
+      "wall_spread_p10_p90_over_median": 0.2327608982826948
+    },
+    {
+      "baseline": {
+        "median_ms": 0.977,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m64n16384k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 6422528.0,
+      "gflops_gpu": 26.430156378600824,
+      "gflops_wall": 18.035742768885143,
+      "gpu_ms_median": 0.243,
+      "gpu_spread_p10_p90_over_median": 0.059358024691357994,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 64,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 2.743611345127773,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:20Z",
+      "tolerance": {
+        "abs": 0.00011973303637676612,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.3561,
+      "wall_spread_p10_p90_over_median": 0.09896096602078065
+    },
+    {
+      "baseline": {
+        "median_ms": 0.0104,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 28672.0,
+      "gflops_gpu": 2.2330218068535825,
+      "gflops_wall": 0.41373737373737374,
+      "gpu_ms_median": 0.01284,
+      "gpu_spread_p10_p90_over_median": 0.06230529595015565,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 2.384185791015625e-07,
+      "promoted": false,
+      "reason": "speedup 0.150x vs cpu_mt_autovec (16 threads) is below the required 1.05x",
+      "reasons": [
+        "speedup 0.150x vs cpu_mt_autovec (16 threads) is below the required 1.05x"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 0.15007215007215005,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:52:20Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0693,
+      "wall_spread_p10_p90_over_median": 0.07417027417027405
+    },
+    {
+      "baseline": {
+        "median_ms": 1.6328,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 14680064.0,
+      "gflops_gpu": 42.25694876223373,
+      "gflops_wall": 32.157861993428256,
+      "gpu_ms_median": 0.3474,
+      "gpu_spread_p10_p90_over_median": 0.05812320092112851,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 3.5767798466593645,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:20Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.4565,
+      "wall_spread_p10_p90_over_median": 0.15242059145673598
+    },
+    {
+      "baseline": {
+        "median_ms": 0.1382,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 413952.0,
+      "gflops_gpu": 65.49873417721518,
+      "gflops_wall": 6.300639269406393,
+      "gpu_ms_median": 0.00632,
+      "gpu_spread_p10_p90_over_median": 0.03670886075949374,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 77,
+        "n": 768
+      },
+      "speedup_vs_baseline": 2.103500761035008,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:21Z",
+      "tolerance": {
+        "abs": 2.7712812921102034e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0657,
+      "wall_spread_p10_p90_over_median": 0.15585996955859968
+    },
+    {
+      "baseline": {
+        "median_ms": 0.8475,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n2048k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 5878656.0,
+      "gflops_gpu": 60.65472554684275,
+      "gflops_wall": 29.073471810089025,
+      "gpu_ms_median": 0.09692,
+      "gpu_spread_p10_p90_over_median": 0.010565414775072194,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 729,
+        "n": 1152
+      },
+      "speedup_vs_baseline": 4.191394658753709,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:21Z",
+      "tolerance": {
+        "abs": 3.394112549695428e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.2022,
+      "wall_spread_p10_p90_over_median": 0.2224530168150346
+    },
+    {
+      "baseline": {
+        "median_ms": 1.4561,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 9175040.0,
+      "gflops_gpu": 52.86379350080664,
+      "gflops_wall": 32.885448028673835,
+      "gpu_ms_median": 0.17356,
+      "gpu_spread_p10_p90_over_median": 0.027471767688407436,
+      "identical_runs": 3,
+      "kernel": "layernorm_rows",
+      "kernel_hash": "c22ebf5bc22fffc3",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 5.218996415770609,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:21Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.279,
+      "wall_spread_p10_p90_over_median": 0.08451612903225802
+    },
+    {
+      "baseline": {
+        "median_ms": 0.2028,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m32n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 524288.0,
+      "gflops_gpu": 39.71878787878788,
+      "gflops_wall": 6.862408376963351,
+      "gpu_ms_median": 0.0132,
+      "gpu_spread_p10_p90_over_median": 0.06606060606060603,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": false,
+      "reason": "timing too noisy (spread 1.000 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 1.000 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 32,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 2.654450261780105,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:52:21Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0764,
+      "wall_spread_p10_p90_over_median": 1.0
+    },
+    {
+      "baseline": {
+        "median_ms": 0.4062,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m256n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1048576.0,
+      "gflops_gpu": 42.55584415584416,
+      "gflops_wall": 9.429640287769786,
+      "gpu_ms_median": 0.02464,
+      "gpu_spread_p10_p90_over_median": 0.05551948051948057,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 256,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 3.652877697841727,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:21Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.1112,
+      "wall_spread_p10_p90_over_median": 0.20053956834532363
+    },
+    {
+      "baseline": {
+        "median_ms": 0.2006,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4n32768k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 512000.0,
+      "gflops_gpu": 7.17488789237668,
+      "gflops_wall": 3.2343651295009477,
+      "gpu_ms_median": 0.07136,
+      "gpu_spread_p10_p90_over_median": 0.04069506726457384,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 2.384185791015625e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4,
+        "n": 32000
+      },
+      "speedup_vs_baseline": 1.2672141503474417,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:21Z",
+      "tolerance": {
+        "abs": 0.00017888543819998318,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.1583,
+      "wall_spread_p10_p90_over_median": 0.13329121920404302
+    },
+    {
+      "baseline": {
+        "median_ms": 1.0205,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 4194304.0,
+      "gflops_gpu": 35.641604350781776,
+      "gflops_wall": 19.239926605504586,
+      "gpu_ms_median": 0.11768,
+      "gpu_spread_p10_p90_over_median": 0.015499660095173402,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1024,
+        "n": 1024
+      },
+      "speedup_vs_baseline": 4.681192660550458,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:22Z",
+      "tolerance": {
+        "abs": 3.2e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.218,
+      "wall_spread_p10_p90_over_median": 0.17146788990825673
+    },
+    {
+      "baseline": {
+        "median_ms": 0.6996,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m64n16384k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 3670016.0,
+      "gflops_gpu": 19.63835616438356,
+      "gflops_wall": 12.241547698465643,
+      "gpu_ms_median": 0.18688,
+      "gpu_spread_p10_p90_over_median": 0.034803082191780875,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 64,
+        "n": 14336
+      },
+      "speedup_vs_baseline": 2.333555703802535,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:22Z",
+      "tolerance": {
+        "abs": 0.00011973303637676612,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.2998,
+      "wall_spread_p10_p90_over_median": 0.11641094062708468
+    },
+    {
+      "baseline": {
+        "median_ms": 0.0068,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 16384.0,
+      "gflops_gpu": 1.5633587786259542,
+      "gflops_wall": 0.20428927680798006,
+      "gpu_ms_median": 0.01048,
+      "gpu_spread_p10_p90_over_median": 0.057251908396946716,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 2.384185791015625e-07,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.439 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.439 > 0.250): not a result",
+        "speedup 0.085x vs cpu_mt_autovec (16 threads) is below the required 1.05x"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 0.08478802992518704,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:52:22Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0802,
+      "wall_spread_p10_p90_over_median": 0.4391521197007482
+    },
+    {
+      "baseline": {
+        "median_ms": 1.2182,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n4096k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 8388608.0,
+      "gflops_gpu": 31.15199049316696,
+      "gflops_wall": 22.092725836186464,
+      "gpu_ms_median": 0.26928,
+      "gpu_spread_p10_p90_over_median": 0.013487819370172193,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 512,
+        "n": 4096
+      },
+      "speedup_vs_baseline": 3.2083223597577035,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:22Z",
+      "tolerance": {
+        "abs": 6.4e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.3797,
+      "wall_spread_p10_p90_over_median": 0.04550961285225168
+    },
+    {
+      "baseline": {
+        "median_ms": 0.0921,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m128n1024k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 236544.0,
+      "gflops_gpu": 37.66624203821656,
+      "gflops_wall": 3.458245614035087,
+      "gpu_ms_median": 0.00628,
+      "gpu_spread_p10_p90_over_median": 0.033121019108280234,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 77,
+        "n": 768
+      },
+      "speedup_vs_baseline": 1.3464912280701755,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:22Z",
+      "tolerance": {
+        "abs": 2.7712812921102034e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0684,
+      "wall_spread_p10_p90_over_median": 0.07339181286549723
+    },
+    {
+      "baseline": {
+        "median_ms": 0.664,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1024n2048k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 3359232.0,
+      "gflops_gpu": 35.1678391959799,
+      "gflops_wall": 17.62451206715635,
+      "gpu_ms_median": 0.09552,
+      "gpu_spread_p10_p90_over_median": 0.015075376884422224,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 729,
+        "n": 1152
+      },
+      "speedup_vs_baseline": 3.4837355718782796,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:23Z",
+      "tolerance": {
+        "abs": 3.394112549695428e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.1906,
+      "wall_spread_p10_p90_over_median": 0.09286463798530951
+    },
+    {
+      "baseline": {
+        "median_ms": 0.9763,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n512k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 5242880.0,
+      "gflops_gpu": 29.120639857809373,
+      "gflops_wall": 17.961219595751967,
+      "gpu_ms_median": 0.18004,
+      "gpu_spread_p10_p90_over_median": 0.008975783159297814,
+      "identical_runs": 3,
+      "kernel": "rmsnorm_rows",
+      "kernel_hash": "7ba698139cd72524",
+      "max_abs_error": 4.76837158203125e-07,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4096,
+        "n": 320
+      },
+      "speedup_vs_baseline": 3.344638574854402,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:23Z",
+      "tolerance": {
+        "abs": 1.7888543819998316e-05,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.2919,
+      "wall_spread_p10_p90_over_median": 0.08804385063377869
+    },
+    {
+      "baseline": {
+        "median_ms": 0.4279,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m512n128k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 196608.0,
+      "gflops_gpu": 43.49734513274336,
+      "gflops_wall": 2.2469485714285713,
+      "gpu_ms_median": 0.00452,
+      "gpu_spread_p10_p90_over_median": 0.0371681415929203,
+      "identical_runs": 3,
+      "kernel": "rope_rows",
+      "kernel_hash": "a56a07a1b946baf0",
+      "max_abs_error": 4.044175148010254e-05,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 512,
+        "n": 128
+      },
+      "speedup_vs_baseline": 4.890285714285715,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:23Z",
+      "tolerance": {
+        "abs": 0.001,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0875,
+      "wall_spread_p10_p90_over_median": 0.1140571428571429
+    },
+    {
+      "baseline": {
+        "median_ms": 0.9729,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m2048n128k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 786432.0,
+      "gflops_gpu": 39.16494023904382,
+      "gflops_wall": 7.763395853899309,
+      "gpu_ms_median": 0.02008,
+      "gpu_spread_p10_p90_over_median": 0.05139442231075688,
+      "identical_runs": 3,
+      "kernel": "rope_rows",
+      "kernel_hash": "a56a07a1b946baf0",
+      "max_abs_error": 0.00020348525140434504,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.265 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.265 > 0.250): not a result"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 2048,
+        "n": 128
+      },
+      "speedup_vs_baseline": 9.604146100691016,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:52:23Z",
+      "tolerance": {
+        "abs": 0.001,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.1013,
+      "wall_spread_p10_p90_over_median": 0.26535044422507403
+    },
+    {
+      "baseline": {
+        "median_ms": 0.0017,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m1n128k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 384.0,
+      "gflops_gpu": 0.27428571428571424,
+      "gflops_wall": 0.006203554119547657,
+      "gpu_ms_median": 0.0014,
+      "gpu_spread_p10_p90_over_median": 0.14285714285714277,
+      "identical_runs": 3,
+      "kernel": "rope_rows",
+      "kernel_hash": "a56a07a1b946baf0",
+      "max_abs_error": 0.0,
+      "promoted": false,
+      "reason": "timing too noisy (spread 0.480 > 0.250): not a result",
+      "reasons": [
+        "timing too noisy (spread 0.480 > 0.250): not a result",
+        "speedup 0.027x vs cpu_mt_autovec (16 threads) is below the required 1.05x"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 1,
+        "n": 128
+      },
+      "speedup_vs_baseline": 0.027463651050080775,
+      "status": "PASS (correct, not promoted)",
+      "timestamp_utc": "2026-11-27T15:52:23Z",
+      "tolerance": {
+        "abs": 0.001,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.0619,
+      "wall_spread_p10_p90_over_median": 0.479806138933764
+    },
+    {
+      "baseline": {
+        "median_ms": 1.1076,
+        "name": "cpu_mt_autovec (16 threads)"
+      },
+      "bucket": "m4096n128k0",
+      "correct": true,
+      "default_enabled": false,
+      "flops": 1572864.0,
+      "gflops_gpu": 31.45728,
+      "gflops_wall": 12.966727122835943,
+      "gpu_ms_median": 0.05,
+      "gpu_spread_p10_p90_over_median": 0.011039999999999939,
+      "identical_runs": 3,
+      "kernel": "rope_rows",
+      "kernel_hash": "a56a07a1b946baf0",
+      "max_abs_error": 0.00042042508721351624,
+      "promoted": true,
+      "reason": "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled",
+      "reasons": [
+        "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled"
+      ],
+      "samples": 15,
+      "shape": {
+        "k": 0,
+        "m": 4096,
+        "n": 128
+      },
+      "speedup_vs_baseline": 9.131079967023906,
+      "status": "PASS (promoted, not default-enabled)",
+      "timestamp_utc": "2026-11-27T15:52:23Z",
+      "tolerance": {
+        "abs": 0.001,
+        "rel": 1e-05
+      },
+      "total_runs": 3,
+      "upstream_ggml_vulkan": {
+        "median_ms": 0.0,
+        "note": "ggml_backend_alloc_ctx_tensors failed",
+        "ratio_upstream_over_hcs": null,
+        "spread_p10_p90_over_median": 0.0,
+        "status": "error",
+        "variant": ""
+      },
+      "wall_ms_median": 0.1213,
+      "wall_spread_p10_p90_over_median": 0.1071723000824402
+    }
+  ],
+  "samples": 15,
+  "schema_version": 1,
+  "suite": "llm",
+  "timestamps": true,
+  "upstream_ggml_vulkan_baseline": "measured in-process with the pinned ggml Vulkan backend on 'AMD Radeon(TM) Graphics'",
+  "upstream_method": "ggml_backend_graph_compute (submit + wait) of a one-node graph per operation, inputs device resident, warm-up then N timed samples; the same wall-clock method as the HCS number (one submit + fence)",
+  "validation": {
+    "active": false,
+    "first_messages": [],
+    "note": "",
+    "requested": false,
+    "warning_and_error_messages": 0
+  }
+}

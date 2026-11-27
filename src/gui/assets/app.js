@@ -748,10 +748,13 @@
     if (size) body.size = size;
     var steps = numOrUndef("image-steps");
     if (steps !== undefined) body.steps = steps;
+    var mp = $("image-modelpreset").value;
+    if (mp) body.preset = mp;
     if (i2i) { body.image = image.initUri; body.strength = Number($("image-strength").value); }
     if (state.mode === "advanced") {
       var neg = $("image-negative").value.trim(); if (neg) body.negative_prompt = neg;
       var cfg = numOrUndef("image-cfg"); if (cfg !== undefined) body.cfg_scale = cfg;
+      var smp = $("image-sampler").value; if (smp) body.sampler = smp;
       if ($("image-lowq").checked) body.allow_low_quality = true;
       var picked = selectedLoras();
       if (picked.length > 4) { setBanner("image-state", "error", "at most 4 LoRAs per image."); return; }
@@ -792,6 +795,43 @@
       stopImageTimer();
       image.ctl = null; $("image-send").disabled = false; $("image-stop").hidden = true; $("image-busy").hidden = true;
       refreshRuntime().catch(function () {});
+    }
+  }
+  /* Upscale the shown gallery image (POST /hcs/v1/images/upscale). Measured on the CPU (docs/upscale.md); shown
+     to the user BEFORE the long wait so it is never a surprise. */
+  var UPSCALE_HINT = "Measured on a Ryzen 7 7735HS (CPU provider): a 512 px image took about 73 s; larger sources take longer (docs/upscale.md).";
+  async function upscaleCurrentImage() {
+    var g = image.gallery[image.current];
+    if (!g || image.ctl) return;
+    image.ctl = new AbortController();
+    $("image-send").disabled = true; $("image-upscale-now").disabled = true; $("image-stop").hidden = false;
+    $("image-busy").hidden = false;
+    var t0 = performance.now();
+    setBanner("image-state", "busy", "upscaling to 4K. " + UPSCALE_HINT + " Cancel stops it between tiles.");
+    stopImageTimer();
+    image.timer = setInterval(function () { text($("image-meta"), "Upscaling... " + Math.round((performance.now() - t0) / 1000) + " s elapsed"); }, 500);
+    try {
+      var j = await api("POST", "/hcs/v1/images/upscale", { image: g.src, upscale: "4k" }, image.ctl.signal);
+      var item = j && j.data && j.data[0];
+      if (!item || !item.b64_json) throw new ApiError(502, null, "the server returned no image data");
+      var h = (j && j.hcs) || {}, up = h.upscale || {};
+      if (up.status === "skipped") {
+        setBanner("image-state", "ok", "nothing to do: " + (up.note || "the image is already at or above 3840 px."));
+        showGalleryItem(image.current);
+        return;
+      }
+      var meta = "upscaled 4K - " + (h.width || "?") + "x" + (h.height || "?") + " from " + (up.from_width || "?") + "x" + (up.from_height || "?") + " (" + (up.provider || "?") + ", " + (typeof up.ms === "number" ? (up.ms / 1000).toFixed(1) + " s" : "?") + (up.tiles ? ", " + up.tiles + " tiles of " + up.tile + " px" : "") + ")";
+      image.gallery.push({ src: "data:image/png;base64," + item.b64_json, meta: meta, seed: g.seed, prompt: g.prompt });
+      if (image.gallery.length > GALLERY_MAX) image.gallery.shift();
+      showGalleryItem(image.gallery.length - 1);
+      setBanner("image-state", "ok", "image upscaled.");
+    } catch (e) {
+      var d = describe(e);
+      setBanner("image-state", d.kind, d.message);
+      showGalleryItem(image.current);
+    } finally {
+      stopImageTimer();
+      image.ctl = null; $("image-send").disabled = false; $("image-upscale-now").disabled = false; $("image-stop").hidden = true; $("image-busy").hidden = true;
     }
   }
   function saveCurrentImage() {
@@ -923,7 +963,7 @@
   var RESETS = {
     chat: { "chat-system": "", "chat-temp": "0.7", "chat-max": "256", "chat-seed": "" },
     vision: { "vision-max": "256", "vision-temp": "0" },
-    image: { "image-negative": "", "image-cfg": "", "image-upscale": "off" }
+    image: { "image-negative": "", "image-cfg": "", "image-sampler": "", "image-modelpreset": "", "image-upscale": "off" }
   };
 
   /* ---------- wiring ---------- */
@@ -980,6 +1020,7 @@
     ["dragleave", "drop"].forEach(function (n) { drop.addEventListener(n, function (e) { e.preventDefault(); drop.classList.remove("over"); }); });
     drop.addEventListener("drop", function (e) { var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; onImageFile(f); });
     $("image-save").addEventListener("click", saveCurrentImage);
+    $("image-upscale-now").addEventListener("click", upscaleCurrentImage);
     $("image-reuse").addEventListener("click", function () {
       var g = image.gallery[image.current];
       if (!g) return;

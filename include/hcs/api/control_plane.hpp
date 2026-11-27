@@ -68,6 +68,8 @@ struct ImageParams {
     float strength = 0.75f;
     float cfg_scale = 0.0f;          // 0 => engine default
     std::string preset;              // "" | "fast" | "quality" (replaces steps/cfg, model-family specific)
+    std::string sampler;             // "" = family default; see is_known_image_sampler
+    std::string scheduler;           // "" = family default; see is_known_image_scheduler
     bool allow_low_quality = false;  // opt in to sizes/steps below the family quality envelope
     std::optional<ImageInput> init_image;  // edit / img2img
     // 0..kMaxLorasPerRequest LoRAs from the library (hcs/lora.hpp); ids only - paths never come from a
@@ -75,6 +77,12 @@ struct ImageParams {
     std::vector<LoraLibrary::Ref> loras;
     // "" | "off" | "4k": after rendering, upscale to a 3840 px long edge (4x model pass + Lanczos, tiled).
     std::string upscale;
+};
+
+// Upscale-only request: an existing PNG goes through the tiled 4x ONNX pass + Lanczos to a 3840 px long edge.
+// No diffusion engine, no model load; the encoded bytes are untrusted and validated before any decode.
+struct UpscaleParams {
+    ImageInput image;
 };
 
 // Benchmark job request. Bounds are the shared bench::validate_plan() bounds.
@@ -211,6 +219,12 @@ public:
     // The 4x ONNX upscaler behind `upscale: "4k"`. The control plane owns a shared reference.
     void set_upscaler(std::shared_ptr<upscale::IUpscaleEngine> engine);
     bool has_upscaler() const noexcept { return upscaler_ != nullptr; }
+    // Upscale an existing PNG as a cancellable job "image.upscale" (result via image_result(); the result's
+    // upscale_status is "done" or "skipped"). Refused up front with: Unsupported (no runtime/model),
+    // InvalidArgument (not a PNG, too many pixels/bytes), OutOfMemory (even the smallest tile does not fit
+    // the live budget) and the admission controller's overload errors - never after memory was committed.
+    Result<void> validate_upscale(const UpscaleParams& p) const;
+    Result<Submitted> submit_upscale(const UpscaleParams& p);
 
     // --- benchmark (POST /hcs/v1/benchmarks) ---------------------------------------------------
     // Runs the shared benchmark runner (hcs/benchmark.hpp) against a registered text model as a cancellable
@@ -266,6 +280,7 @@ private:
     // Resolves request LoRA references against the library for `model` (id; "" = the loaded model).
     Result<std::vector<LoraSpec>> resolve_loras(const ImageParams& p) const;
     Result<void> check_upscale_request(const ImageParams& p) const;
+    Result<upscale::Plan> plan_upscale_request(const UpscaleParams& p) const;
     void note_result(JobId id, const TextResult& r);
     void note_image_result(JobId id, const ImageResult& r);
     void note_benchmark_result(JobId id, nlohmann::json doc);

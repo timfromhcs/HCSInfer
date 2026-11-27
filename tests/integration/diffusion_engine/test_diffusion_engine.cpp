@@ -278,16 +278,25 @@ TEST(DiffusionQuality, Sd15SmokeParametersAreRejectedUnlessOptedIn) {
     EXPECT_NE(r2.error().message.find("steps"), std::string::npos) << r2.error().message;
 }
 
-// SD1.5 has no measured preset table: asking for one must fail loudly, never fall back to the request's
-// steps.
-TEST(DiffusionPreset, PresetWithoutAFamilyTableIsAnErrorOnSd15) {
+// Wave C / i1 gave SD1.5 a measured preset table (fast = 12 steps, quality = 20 steps, cfg 7): a preset
+// replaces the request's steps and is reported back. A preset name outside the table (and a family without a
+// table, covered by ImageProfiles.PresetsComeFromTheProfile) must still fail loudly instead of falling back
+// to the request's steps.
+TEST(DiffusionPreset, Sd15PresetReplacesStepsAndUnknownPresetNameIsRejected) {
     REQUIRE_MODEL_OR_SKIP(path);
     Loaded m(path);
     ImageRequest q = small_request();
+    q.steps = 2;
     q.preset = "fast";
     auto r = m.engine.generate_image(q, CancellationToken{});
-    ASSERT_FALSE(r);
-    EXPECT_EQ(r.error().code, ErrorCode::InvalidArgument) << r.error().message;
+    ASSERT_TRUE(r) << r.error().message;
+    EXPECT_EQ(r.value().steps, 12u);
+    EXPECT_EQ(r.value().preset, "fast");
+    ImageRequest bad = small_request();
+    bad.preset = "turbo";
+    auto rb = m.engine.generate_image(bad, CancellationToken{});
+    ASSERT_FALSE(rb);
+    EXPECT_EQ(rb.error().code, ErrorCode::InvalidArgument) << rb.error().message;
 }
 
 // Real FLUX.3 Klein (diffusion GGUF + sidecar to the Qwen3-VL encoder and VAE). NOT RUN without the files.

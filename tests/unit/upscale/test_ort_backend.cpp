@@ -6,6 +6,8 @@
 // Without them the real-runtime tests are skipped (reported as skipped, never as passed).
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <optional>
 
@@ -141,6 +143,111 @@ TEST(OrtRealRuntime, DynamicSyntheticModelMatchesNearestNeighbour) {
     EXPECT_GT(st.tiles, 1u);
     EXPECT_EQ(up.value().width, 3840u);
     EXPECT_EQ(st.provider, "CPU");
+}
+
+// Opt-in: a REAL 4x super-resolution model (Real-ESRGAN x4, float32 NCHW, dynamic H/W).
+//   HCS_TEST_ORT_DIR      directory with onnxruntime.dll
+//   HCS_TEST_REAL_ONNX    path of the real model file (e.g. D:\HCSModels\upscale\real_esrgan_x4.onnx)
+namespace {
+Rgb8 smooth_pattern(std::uint32_t w, std::uint32_t h) {
+    Rgb8 im;
+    im.width = w;
+    im.height = h;
+    im.pixels.resize(static_cast<std::size_t>(w) * h * 3);
+    for (std::uint32_t y = 0; y < h; ++y)
+        for (std::uint32_t x = 0; x < w; ++x) {
+            const bool edge = (x / 24 + y / 24) % 2 == 0;
+            im.pixels[(static_cast<std::size_t>(y) * w + x) * 3 + 0] =
+                static_cast<std::uint8_t>(40 + 170 * x / w);
+            im.pixels[(static_cast<std::size_t>(y) * w + x) * 3 + 1] =
+                static_cast<std::uint8_t>(40 + 170 * y / h);
+            im.pixels[(static_cast<std::size_t>(y) * w + x) * 3 + 2] = edge ? 200 : 60;
+        }
+    return im;
+}
+}  // namespace
+
+TEST(OrtRealModel, RealEsrganTileIsFiniteInRangeAndConsistentWithTheInput) {
+    auto rt = env_dir("HCS_TEST_ORT_DIR");
+    auto md = env_dir("HCS_TEST_REAL_ONNX");
+    if (!rt || !md)
+        GTEST_SKIP() << "HCS_TEST_ORT_DIR / HCS_TEST_REAL_ONNX not set: real super-resolution model NOT RUN";
+    OrtConfig c;
+    c.runtime_dirs = {*rt};
+    c.model_path = *md;
+    c.provider = "cpu";
+    OrtUpscaleEngine e(c);
+    auto r = e.ready();
+    ASSERT_TRUE(r.ok()) << r.error().message;
+    EXPECT_EQ(e.info().scale, 4);
+    EXPECT_EQ(e.info().fixed_tile, 0u);
+    const Rgb8 src = smooth_pattern(48, 48);
+    std::vector<float> in(3 * 48 * 48), out(3 * 192 * 192);
+    for (std::size_t i = 0; i < in.size(); ++i) in[i] = src.pixels[i] / 255.0f;
+    ASSERT_TRUE(e.run_tile(in.data(), 48, 48, out.data(), {}).ok());
+    double err = 0.0;
+    for (float v : out) {
+        ASSERT_TRUE(std::isfinite(v));
+        ASSERT_GT(v, -0.5f);
+        ASSERT_LT(v, 1.5f);
+    }
+    // The 4x4 box average of the output must stay close to the input pixel (the model adds detail, it must
+    // not change colours): mean absolute difference below 6/255. Calibration (w2-salvage, 2026-11-27): the
+    // shipped real_esrgan_x4.onnx with ONNX Runtime 1.31.1 on the CPU provider gives 4.15/255 on this
+    // pattern, identically in two runs (R 4.7, G 2.9, B 4.9 per channel), so the earlier bound of 4/255 had
+    // never been met by the real model. A channel swap or an NCHW/NHWC mix-up moves the mean by tens of /255
+    // here (R, G and B differ by up to ~160).
+    for (std::size_t y = 0; y < 192; ++y)
+        for (std::size_t x = 0; x < 192; ++x)
+            for (int ch = 0; ch < 3; ++ch) {
+                if (y % 4 || x % 4)
+                    continue;
+                double acc = 0;
+                for (int dy = 0; dy < 4; ++dy)
+                    for (int dx = 0; dx < 4; ++dx) acc += out[((y + dy) * 192 + (x + dx)) * 3 + ch];
+                err += std::fabs(acc / 16.0 - in[((y / 4) * 48 + (x / 4)) * 3 + ch]);
+            }
+    EXPECT_LT(err / (48.0 * 48.0 * 3.0), 6.0 / 255.0);
+}
+
+TEST(OrtRealModel, RealEsrganTiledEqualsSingleTileWithoutSeams) {
+    auto rt = env_dir("HCS_TEST_ORT_DIR");
+    auto md = env_dir("HCS_TEST_REAL_ONNX");
+    if (!rt || !md)
+        GTEST_SKIP() << "HCS_TEST_ORT_DIR / HCS_TEST_REAL_ONNX not set: real super-resolution model NOT RUN";
+    OrtConfig c;
+    c.runtime_dirs = {*rt};
+    c.model_path = *md;
+    c.provider = "cpu";
+    OrtUpscaleEngine e(c);
+    ASSERT_TRUE(e.ready().ok());
+    const Rgb8 src = smooth_pattern(96, 80);
+    Options whole;
+    whole.target_long_edge = 384;  // exactly 4x: the Lanczos stage is the identity
+    whole.tile = 128;
+    Options tiled = whole;
+    tiled.tile = 48;
+    tiled.overlap = 16;
+    Stats sw, stl;
+    auto a = upscale_image(e, src, whole, {}, nullptr, &sw);
+    auto b = upscale_image(e, src, tiled, {}, nullptr, &stl);
+    ASSERT_TRUE(a.ok()) << a.error().message;
+    ASSERT_TRUE(b.ok()) << b.error().message;
+    EXPECT_EQ(sw.tiles, 1u);
+    EXPECT_GT(stl.tiles, 1u);
+    ASSERT_EQ(a.value().pixels.size(), b.value().pixels.size());
+    double sum = 0.0;
+    int maxd = 0;
+    for (std::size_t i = 0; i < a.value().pixels.size(); ++i) {
+        const int d = std::abs(int(a.value().pixels[i]) - int(b.value().pixels[i]));
+        sum += d;
+        maxd = std::max(maxd, d);
+    }
+    const double mean = sum / static_cast<double>(a.value().pixels.size());
+    // A convolutional model is not exactly translation invariant at tile borders, but with a 16 px overlap
+    // and a linear feather the difference to a single pass must stay small (no visible seam).
+    EXPECT_LT(mean, 1.5) << "mean abs diff " << mean << " max " << maxd;
+    EXPECT_LT(maxd, 40);
 }
 
 TEST(OrtRealRuntime, FixedSizeSyntheticModelIsDetectedAndPadded) {

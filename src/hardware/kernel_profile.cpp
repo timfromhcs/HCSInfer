@@ -43,7 +43,11 @@ json entry_to_json(const ProfileEntry& e) {
     j["timing"] = t;
     j["baseline"] = {{"name", e.baseline_name}, {"ms", e.baseline_ms}};
     j["upstream_ggml_vulkan"] = {{"status", e.upstream_status},
-                                 {"ratio", e.upstream_ratio ? json(*e.upstream_ratio) : json(nullptr)}};
+                                 {"ratio", e.upstream_ratio ? json(*e.upstream_ratio) : json(nullptr)},
+                                 {"median_ms", e.upstream_ms},
+                                 {"spread", e.upstream_spread},
+                                 {"variant", e.upstream_variant},
+                                 {"note", e.upstream_note}};
     j["speedup_vs_baseline"] = e.speedup();
     return j;
 }
@@ -88,6 +92,10 @@ std::optional<ProfileEntry> entry_from_json(const json& j) {
         e.upstream_status = u.at("status").get<std::string>();
         if (u.contains("ratio") && u["ratio"].is_number())
             e.upstream_ratio = u["ratio"].get<double>();
+        e.upstream_ms = u.value("median_ms", 0.0);  // absent in profiles written before wave C / k1
+        e.upstream_spread = u.value("spread", 0.0);
+        e.upstream_variant = u.value("variant", "");
+        e.upstream_note = u.value("note", "");
         return e;
     } catch (const json::exception&) {
         return std::nullopt;
@@ -147,13 +155,25 @@ PromotionDecision evaluate_promotion(const ProfileEntry& e, const PromotionPolic
     }
 
     d.promoted = d.correct_ok && d.determinism_ok && d.noise_ok && d.speed_ok;
+    const bool upstream_measured = e.upstream_status == "measured" && e.upstream_ratio.has_value();
+    const bool upstream_noise_ok = std::isfinite(e.upstream_spread) && e.upstream_spread <= p.max_spread;
     const bool upstream_ok =
-        e.upstream_status == "measured" && e.upstream_ratio && *e.upstream_ratio + 1e-12 >= p.min_speedup;
+        upstream_measured && upstream_noise_ok && *e.upstream_ratio + 1e-12 >= p.min_speedup;
     d.default_enabled = d.promoted && upstream_ok;
     if (d.promoted && !upstream_ok) {
-        if (e.upstream_status != "measured")
+        if (e.upstream_status == "not_comparable")
+            d.reasons.push_back(
+                "no equivalent upstream GGML operator to compare against: promoted but not default-enabled");
+        else if (e.upstream_status == "error")
+            d.reasons.push_back(
+                "upstream GGML Vulkan baseline failed to run: promoted but not default-enabled");
+        else if (!upstream_measured)
             d.reasons.push_back("upstream GGML Vulkan baseline NOT RUN: promoted but not default-enabled");
-        else
+        else if (!upstream_noise_ok) {
+            std::snprintf(buf, sizeof(buf), "upstream timing too noisy (spread %.3f > %.3f): not a result",
+                          e.upstream_spread, p.max_spread);
+            d.reasons.push_back(buf);
+        } else
             d.reasons.push_back("upstream GGML Vulkan baseline did not reach the required speedup");
     }
     return d;

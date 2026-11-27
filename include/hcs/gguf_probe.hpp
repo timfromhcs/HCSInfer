@@ -16,6 +16,7 @@
 #include <span>
 #include <string>
 
+#include "hcs/image_profiles.hpp"
 #include "hcs/model_registry.hpp"
 
 namespace hcs {
@@ -32,7 +33,10 @@ struct GgufProbeResult {
     std::size_t tensor_names_read = 0;
     std::string architecture;             // "general.architecture" when the file declares it
     ModelKind kind = ModelKind::Unknown;  // best-effort hint, refined by engine adapters
-    std::string reason;                   // why it is invalid or incomplete (empty when clean)
+    // Structure of a diffusion checkpoint read from tensor names and shapes (never from the file name):
+    // text-context width, SDXL label embedding, FLUX blocks. All zero/false for text models.
+    ImageModelSignature diffusion;
+    std::string reason;  // why it is invalid or incomplete (empty when clean)
 };
 
 // Probes an in-memory prefix. `max_tensor_names` bounds how many tensor-info entries are walked.

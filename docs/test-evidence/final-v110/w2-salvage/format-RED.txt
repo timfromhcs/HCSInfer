@@ -1,0 +1,14 @@
+clang-format: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\x64\bin\clang-format.exe (clang-format version 19.1.5)
+needs formatting: src\api\control_plane_image.cpp
+needs formatting: src\cli\image_cmd.cpp
+needs formatting: src\core\gguf_probe.cpp
+needs formatting: src\engines\diffusion\diffusion_engine.cpp
+needs formatting: src\lora\lora_library.cpp
+needs formatting: src\mcp\mcp_server.cpp
+needs formatting: include\hcs\gguf_probe.hpp
+needs formatting: include\hcs\image_profiles.hpp
+needs formatting: tests\contract\api_image\test_image_routes.cpp
+needs formatting: tests\unit\core\test_gguf_probe.cpp
+needs formatting: tests\unit\core\test_image_profiles.cpp
+needs formatting: tests\unit\lora\test_lora_library.cpp
+FORMAT CHECK FAILED: 12 of 308 files differ (run scripts\format.ps1 -Fix).

@@ -1,0 +1,125 @@
+HCSInfer tune - AMD Radeon(TM) Graphics (vk:1002:1681:drv=0x00800161:api=1.4.315)
+driver: 26.6.1 (AMD proprietary shader compiler)   buffers: device_local (staged uploads)   suite: llm (15 samples)
+validation layer: not requested
+
+kernel            bucket         max err    det  wall ms   gpu ms    GFLOP/s   cpu ms    vs cpu   ups ms    vs ups   status
+gemm_coopmat_f16  m128n128k128   1.91e-06   3/3  0.062     0.006     663.7     0.418     6.78x    0.075     1.22x    PASS (correct, not promoted)
+      timing too noisy (spread 0.335 > 0.250): not a result
+gemm_coopmat_f16  m256n1024k256  3.81e-06   3/3  0.257     0.140     956.8     4.696     18.26x   0.210     0.82x    PASS (correct, not promoted)
+      timing too noisy (spread 0.276 > 0.250): not a result
+gemm_coopmat_f16  m512n2048k512  9.54e-06   3/3  2.072     1.669     643.3     39.323    18.97x   0.727     0.35x    PASS (correct, not promoted)
+      timing too noisy (spread 0.338 > 0.250): not a result
+gemm_coopmat_f16  m1024n1024k10241.91e-05   3/3  3.803     3.387     634.0     69.781    18.35x   0.978     0.26x    PASS (promoted, not default-enabled)
+gemm_coopmat_f16  -- NOT RUN on this hardware: kernel gemm_coopmat_f16 is not usable on this device: coopmat kernel needs m, n, k all multiples of 16
+gemm_coopmat_f16  -- NOT RUN on this hardware: kernel gemm_coopmat_f16 is not usable on this device: coopmat kernel needs m, n, k all multiples of 16
+gemm_coopmat_f16  -- NOT RUN on this hardware: kernel gemm_coopmat_f16 is not usable on this device: coopmat kernel needs m, n, k all multiples of 16
+gemm_coopmat_f16  m1024n1024k64  1.91e-06   3/3  0.222     0.127     1057.5    4.664     21.05x   0.180     0.81x    PASS (promoted, not default-enabled)
+gemm_coopmat_f16  m4096n512k512  5.72e-06   3/3  1.135     0.881     952.6     27.084    23.86x   0.435     0.38x    PASS (promoted, not default-enabled)
+gemm_coopmat_f16  m1024n512k4096 3.05e-05   3/3  2.500     2.312     816.3     62.282    24.91x   0.873     0.35x    PASS (promoted, not default-enabled)
+gemm_coopmat_f16  m128n4096k4096 3.43e-05   3/3  11.392    11.025    389.5     137.300   12.05x   2.428     0.21x    PASS (promoted, not default-enabled)
+gemm_coopmat_f16  m512n4096k4096 4.20e-05   3/3  35.837    35.354    485.9     569.198   15.88x   8.661     0.24x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m128n128k128   6.68e-06   3/3  0.074     0.011     384.1     0.775     10.40x   0.075     1.01x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m256n1024k256  1.72e-05   3/3  0.371     0.225     597.1     4.835     13.03x   0.196     0.53x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m512n2048k512  3.24e-05   3/3  2.668     2.279     471.1     35.383    13.26x   0.740     0.28x    PASS (correct, not promoted)
+      timing too noisy (spread 0.297 > 0.250): not a result
+gemm_f16_tiled    m1024n1024k10247.25e-05   3/3  4.745     4.381     490.2     68.423    14.42x   1.049     0.22x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m1n1024k4096   4.58e-05   3/3  0.449     0.353     17.8      1.145     2.55x    0.150     0.33x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m1n4096k4096   7.44e-05   3/3  1.497     1.212     27.7      7.344     4.90x    0.513     0.34x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m1n16384k4096  1.09e-04   3/3  6.034     5.642     20.8      25.526    4.23x    1.700     0.28x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m1024n1024k64  3.81e-06   3/3  0.363     0.235     570.4     5.344     14.71x   0.180     0.50x    PASS (correct, not promoted)
+      timing too noisy (spread 0.251 > 0.250): not a result
+gemm_f16_tiled    m4096n512k512  2.29e-05   3/3  1.893     1.571     533.9     27.537    14.55x   0.442     0.23x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m1024n512k4096 1.18e-04   3/3  4.129     3.920     481.5     67.362    16.32x   0.886     0.21x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m128n4096k4096 1.64e-04   3/3  10.473    10.097    425.4     140.373   13.40x   2.535     0.24x    PASS (promoted, not default-enabled)
+gemm_f16_tiled    m512n4096k4096 1.68e-04   3/3  41.505    41.081    418.2     589.976   14.21x   8.686     0.21x    PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m128n128k128   0.00e+00   3/3  0.090     0.008     519.1     1.112     12.31x   n/a       n/a      PASS (correct, not promoted)
+      timing too noisy (spread 0.339 > 0.250): not a result
+gemm_i8dot_tiled  m256n1024k256  0.00e+00   3/3  0.283     0.187     717.0     7.721     27.30x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m512n2048k512  0.00e+00   3/3  1.752     1.468     731.4     62.390    35.62x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m1024n1024k10240.00e+00   3/3  3.304     2.947     728.8     123.630   37.42x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m1n1024k4096   0.00e+00   3/3  0.264     0.175     35.9      2.463     9.35x    n/a       n/a      PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m1n4096k4096   0.00e+00   3/3  0.957     0.794     42.3      13.130    13.73x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m1n16384k4096  0.00e+00   3/3  2.984     2.650     44.3      45.271    15.17x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m1024n1024k64  0.00e+00   3/3  0.289     0.186     721.8     7.794     26.97x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m4096n512k512  0.00e+00   3/3  1.420     1.148     730.5     52.045    36.65x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m1024n512k4096 0.00e+00   3/3  2.822     2.596     727.1     109.240   38.71x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m128n4096k4096 0.00e+00   3/3  6.438     6.086     705.8     252.649   39.24x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_i8dot_tiled  m512n4096k4096 0.00e+00   3/3  24.547    24.192    710.2     1028.900  41.92x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_f32_tiled    m128n128k128   7.15e-06   3/3  0.072     0.012     364.1     0.589     8.14x    0.077     1.06x    PASS (promoted, not default-enabled)
+gemm_f32_tiled    m256n1024k256  1.53e-05   3/3  0.325     0.222     604.5     5.073     15.62x   0.210     0.65x    PASS (correct, not promoted)
+      timing too noisy (spread 0.269 > 0.250): not a result
+gemm_f32_tiled    m512n2048k512  3.24e-05   3/3  3.011     2.648     405.5     35.159    11.68x   0.905     0.30x    PASS (promoted, not default-enabled)
+gemm_f32_tiled    m1024n1024k10247.25e-05   3/3  5.800     5.529     388.4     69.016    11.90x   1.355     0.23x    PASS (promoted, not default-enabled)
+gemm_f32_tiled    m1n1024k4096   5.53e-05   3/3  0.461     0.367     17.2      2.042     4.43x    0.258     0.56x    PASS (promoted, not default-enabled)
+gemm_f32_tiled    m1n4096k4096   9.16e-05   3/3  1.861     1.595     21.0      7.756     4.17x    0.943     0.51x    PASS (promoted, not default-enabled)
+gemm_f32_tiled    m1n16384k4096  9.54e-05   3/3  5.541     5.261     22.3      25.746    4.65x    3.165     0.57x    PASS (promoted, not default-enabled)
+gemm_f32_tiled    m1024n1024k64  4.77e-06   3/3  0.345     0.232     578.2     5.060     14.67x   n/a       n/a      PASS (promoted, not default-enabled)
+gemm_f32_tiled    m4096n512k512  2.29e-05   3/3  1.859     1.531     548.0     26.967    14.51x   0.397     0.21x    PASS (promoted, not default-enabled)
+gemm_f32_tiled    m1024n512k4096 1.18e-04   3/3  4.568     4.243     444.9     62.193    13.62x   0.842     0.18x    PASS (promoted, not default-enabled)
+gemm_f32_tiled    m128n4096k4096 1.37e-04   3/3  13.541    13.039    329.4     138.282   10.21x   3.766     0.28x    PASS (promoted, not default-enabled)
+gemm_f32_tiled    m512n4096k4096 2.25e-04   3/3  52.504    51.996    330.4     616.236   11.74x   13.392    0.26x    PASS (promoted, not default-enabled)
+softmax_rows      m32n4096k0     6.98e-10   3/3  0.084     0.013     49.8      0.368     4.40x    0.075     0.90x    PASS (promoted, not default-enabled)
+softmax_rows      m256n1024k0    3.73e-09   3/3  0.105     0.029     45.4      0.711     6.75x    0.106     1.00x    PASS (correct, not promoted)
+      timing too noisy (spread 0.252 > 0.250): not a result
+softmax_rows      m4n32768k0     5.82e-11   3/3  0.158     0.069     9.2       0.619     3.91x    0.121     0.77x    PASS (promoted, not default-enabled)
+softmax_rows      m1024n1024k0   3.73e-09   3/3  0.225     0.131     40.1      1.726     7.69x    0.211     0.94x    PASS (promoted, not default-enabled)
+softmax_rows      m64n16384k0    2.33e-10   3/3  0.299     0.197     23.2      2.014     6.75x    0.231     0.77x    PASS (promoted, not default-enabled)
+softmax_rows      m1n4096k0      4.66e-10   3/3  0.064     0.009     2.3       0.012     0.19x    0.060     0.94x    PASS (correct, not promoted)
+      speedup 0.187x vs cpu_mt_autovec (16 threads) is below the required 1.05x
+softmax_rows      m512n4096k0    9.31e-10   3/3  0.374     0.273     38.4      2.042     5.47x    0.344     0.92x    PASS (promoted, not default-enabled)
+softmax_rows      m128n1024k0    3.73e-09   3/3  0.067     0.007     40.2      0.160     2.40x    0.060     0.90x    PASS (promoted, not default-enabled)
+softmax_rows      m1024n2048k0   2.79e-09   3/3  0.201     0.107     39.4      1.447     7.19x    0.210     1.04x    PASS (promoted, not default-enabled)
+softmax_rows      m4096n512k0    1.12e-08   3/3  0.332     0.238     27.5      1.911     5.77x    0.233     0.70x    PASS (promoted, not default-enabled)
+layernorm_rows    m32n4096k0     4.77e-07   3/3  0.093     0.017     54.7      0.322     3.45x    0.138     1.48x    PASS (correct, not promoted)
+      timing too noisy (spread 0.253 > 0.250): not a result
+layernorm_rows    m256n1024k0    4.77e-07   3/3  0.099     0.024     75.5      0.609     6.18x    0.198     2.01x    PASS (default-enabled)
+layernorm_rows    m4n32768k0     4.77e-07   3/3  0.172     0.088     10.2      0.297     1.73x    0.153     0.89x    PASS (promoted, not default-enabled)
+layernorm_rows    m1024n1024k0   4.77e-07   3/3  0.224     0.120     61.3      1.254     5.61x    0.480     2.15x    PASS (default-enabled)
+layernorm_rows    m64n16384k0    4.77e-07   3/3  0.317     0.214     30.0      0.987     3.11x    0.461     1.45x    PASS (default-enabled)
+layernorm_rows    m1n4096k0      2.38e-07   3/3  0.074     0.012     2.3       0.011     0.14x    0.063     0.85x    PASS (correct, not promoted)
+      timing too noisy (spread 0.297 > 0.250): not a result
+layernorm_rows    m512n4096k0    4.77e-07   3/3  0.455     0.350     41.9      2.217     4.87x    0.888     1.95x    PASS (default-enabled)
+layernorm_rows    m128n1024k0    4.77e-07   3/3  0.069     0.006     69.9      0.159     2.30x    0.119     1.72x    PASS (correct, not promoted)
+      timing too noisy (spread 0.345 > 0.250): not a result
+layernorm_rows    m1024n2048k0   4.77e-07   3/3  0.186     0.096     61.5      1.276     6.87x    0.447     2.41x    PASS (correct, not promoted)
+      timing too noisy (spread 0.265 > 0.250): not a result
+layernorm_rows    m4096n512k0    4.77e-07   3/3  0.261     0.161     56.9      1.282     4.91x    0.723     2.77x    PASS (default-enabled)
+rmsnorm_rows      m32n4096k0     4.77e-07   3/3  0.092     0.014     37.1      0.203     2.22x    0.075     0.82x    PASS (correct, not promoted)
+      timing too noisy (spread 0.398 > 0.250): not a result
+rmsnorm_rows      m256n1024k0    4.77e-07   3/3  0.116     0.026     40.1      0.422     3.64x    0.091     0.78x    PASS (correct, not promoted)
+      timing too noisy (spread 0.317 > 0.250): not a result
+rmsnorm_rows      m4n32768k0     2.38e-07   3/3  0.159     0.075     6.8       0.199     1.26x    0.105     0.66x    PASS (promoted, not default-enabled)
+rmsnorm_rows      m1024n1024k0   4.77e-07   3/3  0.216     0.119     35.2      1.260     5.83x    0.195     0.90x    PASS (promoted, not default-enabled)
+rmsnorm_rows      m64n16384k0    4.77e-07   3/3  0.261     0.168     21.8      0.730     2.80x    0.226     0.87x    PASS (promoted, not default-enabled)
+rmsnorm_rows      m1n4096k0      2.38e-07   3/3  0.068     0.010     1.6       0.007     0.10x    0.061     0.90x    PASS (correct, not promoted)
+      speedup 0.104x vs cpu_mt_autovec (16 threads) is below the required 1.05x
+rmsnorm_rows      m512n4096k0    4.77e-07   3/3  0.361     0.265     31.7      1.297     3.59x    0.345     0.95x    PASS (promoted, not default-enabled)
+rmsnorm_rows      m128n1024k0    4.77e-07   3/3  0.065     0.006     39.7      0.092     1.42x    0.060     0.93x    PASS (promoted, not default-enabled)
+rmsnorm_rows      m1024n2048k0   4.77e-07   3/3  0.175     0.096     35.1      0.649     3.71x    0.180     1.03x    PASS (promoted, not default-enabled)
+rmsnorm_rows      m4096n512k0    4.77e-07   3/3  0.279     0.181     28.9      1.252     4.48x    0.260     0.93x    PASS (promoted, not default-enabled)
+rope_rows         m512n128k0     4.04e-05   3/3  0.067     0.004     49.6      0.299     4.46x    0.067     0.99x    PASS (correct, not promoted)
+      timing too noisy (spread 0.278 > 0.250): not a result
+rope_rows         m2048n128k0    2.03e-04   3/3  0.091     0.020     39.4      0.759     8.34x    0.098     1.08x    PASS (default-enabled)
+rope_rows         m1n128k0       0.00e+00   3/3  0.063     0.001     0.4       0.002     0.03x    0.067     1.06x    PASS (correct, not promoted)
+      speedup 0.032x vs cpu_mt_autovec (16 threads) is below the required 1.05x
+rope_rows         m4096n128k0    4.20e-04   3/3  0.136     0.051     30.7      1.246     9.16x    0.136     1.00x    PASS (promoted, not default-enabled)
+
+upstream GGML Vulkan op baseline: measured in-process with the pinned ggml Vulkan backend on 'AMD Radeon(TM) Graphics'
+('vs ups' = upstream ms / HCS ms: >= 1.05 means the HCS kernel is faster than the upstream operator)
+profile written: D:\HCSScratch\w2\tune-state-2\kernel-profile.json
+
+Planner (release policy: unknown = CPU; needs promotion + measured upstream baseline):
+  gemm      f32  m256n1024k256       reference  [candidate gemm_f32_tiled: rejected]
+      no verified gemm path for f32 on this device yet; CPU reference used (gemm_f32_tiled: timing too noisy (spread 0.269 > 0.250): not a result)
+  gemm      f16  m256n1024k256       reference  [candidate gemm_f16_tiled: promoted]
+      no verified gemm path for f16 on this device yet; CPU reference used (gemm_f16_tiled: promoted but upstream timing too noisy (spread 0.305 > 0.250): not a result)
+  gemm      i8   m256n1024k256       reference  [candidate gemm_i8dot_tiled: promoted]
+      no verified gemm path for i8 on this device yet; CPU reference used (gemm_i8dot_tiled: promoted but no equivalent upstream GGML operator to compare against: promoted but not default-enabled)
+  softmax   f32  m32n4096k0          reference  [candidate softmax_rows: promoted]
+      no verified softmax path for f32 on this device yet; CPU reference used (softmax_rows: promoted but upstream GGML Vulkan baseline did not reach the required speedup)
+  layernorm f32  m32n4096k0          reference  [candidate layernorm_rows: rejected]
+      no verified layernorm path for f32 on this device yet; CPU reference used (layernorm_rows: timing too noisy (spread 0.253 > 0.250): not a result)
+  rmsnorm   f32  m32n4096k0          reference  [candidate rmsnorm_rows: rejected]
+      no verified rmsnorm path for f32 on this device yet; CPU reference used (rmsnorm_rows: timing too noisy (spread 0.398 > 0.250): not a result)
+  rope      f32  m512n128k0          reference  [candidate rope_rows: rejected]
+      no verified rope path for f32 on this device yet; CPU reference used (rope_rows: timing too noisy (spread 0.278 > 0.250): not a result)

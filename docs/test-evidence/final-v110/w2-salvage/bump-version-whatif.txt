@@ -1,0 +1,20 @@
+current: 1.1.0-rc.1 (PEP 440 1.1.0rc1)  ->  new: 1.1.0 (PEP 440 1.1.0)
+What If: Der Vorgang „set version 1.1.0“ wird für das Ziel „CMakeLists.txt“ ausgeführt.
+would update  CMakeLists.txt
+What If: Der Vorgang „set version 1.1.0“ wird für das Ziel „python\pyproject.toml“ ausgeführt.
+would update  python\pyproject.toml
+What If: Der Vorgang „set version 1.1.0“ wird für das Ziel „web\package.json“ ausgeführt.
+would update  web\package.json
+What If: Der Vorgang „set version 1.1.0“ wird für das Ziel „web\js\config.js“ ausgeführt.
+would update  web\js\config.js
+What If: Der Vorgang „set version 1.1.0“ wird für das Ziel „README.md“ ausgeführt.
+would update  README.md
+What If: Der Vorgang „set version 1.1.0“ wird für das Ziel „SECURITY.md“ ausgeführt.
+would update  SECURITY.md
+What If: Der Vorgang „set version 1.1.0“ wird für das Ziel „docs\install.md“ ausgeführt.
+would update  docs\install.md
+What If: Der Vorgang „set version 1.1.0“ wird für das Ziel „docs\support-matrix.md“ ausgeführt.
+would update  docs\support-matrix.md
+What If: Der Vorgang „set version 1.1.0“ wird für das Ziel „docs\pypi-publishing.md“ ausgeführt.
+would update  docs\pypi-publishing.md
+WhatIf: nothing written. Re-run without -WhatIf to apply; then run scripts/check-version.ps1.
