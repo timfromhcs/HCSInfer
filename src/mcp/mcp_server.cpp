@@ -614,10 +614,10 @@ json McpServer::call_tool(const std::string& name, const json& args, const std::
             p.cfg_scale = args["cfg_scale"].get<float>();
         if (args.contains("preset"))
             p.preset = args["preset"].get<std::string>();
-    if (args.contains("sampler"))
-        p.sampler = args["sampler"].get<std::string>();
-    if (args.contains("scheduler"))
-        p.scheduler = args["scheduler"].get<std::string>();
+        if (args.contains("sampler"))
+            p.sampler = args["sampler"].get<std::string>();
+        if (args.contains("scheduler"))
+            p.scheduler = args["scheduler"].get<std::string>();
         if (args.contains("allow_low_quality"))
             p.allow_low_quality = args["allow_low_quality"].get<bool>();
         if (args.contains("strength"))

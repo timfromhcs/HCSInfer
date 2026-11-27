@@ -249,4 +249,3 @@ TEST(LoraResolve, FailsClosedWithStructuredErrors) {
     ASSERT_TRUE(none.ok());
     EXPECT_TRUE(none.value().empty());
 }
-

@@ -344,8 +344,8 @@ Result<Submitted> ControlPlane::submit_image(const ImageParams& p, bool require_
             ir.strength = p.strength;
             ir.cfg_scale = p.cfg_scale;
             ir.preset = p.preset;
-    ir.sampler = p.sampler;
-    ir.scheduler = p.scheduler;
+            ir.sampler = p.sampler;
+            ir.scheduler = p.scheduler;
             ir.allow_low_quality = p.allow_low_quality;
             ir.init_image = p.init_image;
             ir.loras = specs;

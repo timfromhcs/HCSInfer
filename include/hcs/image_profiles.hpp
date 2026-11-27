@@ -30,11 +30,12 @@ struct ImageProfile {
     float default_cfg;             // text CFG applied when the caller leaves cfg_scale at 0
     std::string_view sampler;      // stable-diffusion.cpp sample.method name ("" = engine default)
     std::uint32_t min_short_side;  // below this the family is outside its quality envelope
-    std::uint32_t max_long_side;   // above this too (0 = no cap): distilled checkpoints only work near their size
+    std::uint32_t
+        max_long_side;  // above this too (0 = no cap): distilled checkpoints only work near their size
     std::uint32_t min_steps;
-    std::uint32_t max_steps;       // above this too (0 = no cap): Turbo models over-bake beyond a few steps
-    ImagePresetPoint fast;         // "fast" preset
-    ImagePresetPoint quality;      // "quality" preset
+    std::uint32_t max_steps;   // above this too (0 = no cap): Turbo models over-bake beyond a few steps
+    ImagePresetPoint fast;     // "fast" preset
+    ImagePresetPoint quality;  // "quality" preset
 };
 
 // SD1.5 was trained at 512x512; below ~384 px the composition collapses, and below ~8 steps the sampler has
@@ -81,20 +82,21 @@ inline std::string image_base_family(std::string_view family) {
     return std::string(family);
 }
 
-// Sampler / scheduler names a request may override (stable-diffusion.cpp `sample.method` / `sample.scheduler`).
-// An allow-list, not a pass-through: the strings come from API callers and reach the engine's option parser.
+// Sampler / scheduler names a request may override (stable-diffusion.cpp `sample.method` /
+// `sample.scheduler`). An allow-list, not a pass-through: the strings come from API callers and reach the
+// engine's option parser.
 inline bool is_known_image_sampler(std::string_view s) {
-    static constexpr std::string_view kNames[] = {"euler",   "euler_a",  "heun",          "dpm2",     "dpm++2s_a",
-                                                  "dpm++2m", "ipndm",    "lcm",           "ddim_trailing",
-                                                  "tcd",     "res_multistep", "lms"};
+    static constexpr std::string_view kNames[] = {"euler",         "euler_a", "heun",          "dpm2",
+                                                  "dpm++2s_a",     "dpm++2m", "ipndm",         "lcm",
+                                                  "ddim_trailing", "tcd",     "res_multistep", "lms"};
     for (const auto n : kNames)
         if (n == s)
             return true;
     return false;
 }
 inline bool is_known_image_scheduler(std::string_view s) {
-    static constexpr std::string_view kNames[] = {"discrete", "karras",  "exponential", "ays", "gits",
-                                                  "sgm_uniform", "simple", "smoothstep", "lcm", "beta"};
+    static constexpr std::string_view kNames[] = {"discrete",    "karras", "exponential", "ays", "gits",
+                                                  "sgm_uniform", "simple", "smoothstep",  "lcm", "beta"};
     for (const auto n : kNames)
         if (n == s)
             return true;
@@ -103,9 +105,10 @@ inline bool is_known_image_scheduler(std::string_view s) {
 // What can be read from a checkpoint's tensors without loading any weights (see probe_gguf): the shape of
 // the text cross-attention key projection is the architecture's fingerprint.
 struct ImageModelSignature {
-    std::uint32_t cross_attn_dim = 0;  // ne[0] of ...attn2.to_k.weight: 768 SD1.x, 1024 SD2.x, 2048 SDXL; 0 = unseen
-    bool has_label_emb = false;        // SDXL's size/crop conditioning embedding
-    bool has_flux_blocks = false;      // FLUX double/single stream blocks
+    std::uint32_t cross_attn_dim =
+        0;  // ne[0] of ...attn2.to_k.weight: 768 SD1.x, 1024 SD2.x, 2048 SDXL; 0 = unseen
+    bool has_label_emb = false;    // SDXL's size/crop conditioning embedding
+    bool has_flux_blocks = false;  // FLUX double/single stream blocks
 };
 
 namespace detail {
@@ -115,7 +118,9 @@ inline std::string lower_copy(std::string_view text) {
                    [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     return low;
 }
-inline bool has_sub(const std::string& low, const char* s) { return low.find(s) != std::string::npos; }
+inline bool has_sub(const std::string& low, const char* s) {
+    return low.find(s) != std::string::npos;
+}
 }  // namespace detail
 
 // Best-effort family guess from a model id / file name. Returns "" when nothing matches (then only the
@@ -187,5 +192,3 @@ inline std::string image_envelope_violation(std::string_view family, std::uint32
            " steps); results will be unusable. Pass allow_low_quality=true to render anyway";
 }
 }  // namespace hcs
-
-

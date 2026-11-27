@@ -658,8 +658,8 @@ Result<void> DiffusionImageEngine::load(const LoadRequest& req) {
     s->device_name = chosen->name;
     s->device_description = chosen->description;
     s->gpu = use_gpu;
-    // Structure first: the tensor shapes of the checkpoint (never the file name) say SD1.x / SD2.x / SDXL; the
-    // name only separates a Turbo distillation from its base. Then sd.cpp's own log, then the name alone.
+    // Structure first: the tensor shapes of the checkpoint (never the file name) say SD1.x / SD2.x / SDXL;
+    // the name only separates a Turbo distillation from its base. Then sd.cpp's own log, then the name alone.
     {
         const GgufProbeResult probe = probe_gguf_file(req.model_path);
         if (probe.valid && probe.complete)
@@ -1079,4 +1079,3 @@ Result<ImageResult> DiffusionImageEngine::Impl::render(sd_ctx_t* ctx, const std:
 }
 
 }  // namespace hcs::engines
-

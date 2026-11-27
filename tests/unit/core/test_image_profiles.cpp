@@ -72,7 +72,8 @@ TEST(ImageProfiles, ClassifyByTensorShapeBeatsTheFileName) {
     ImageModelSignature s;
     s.cross_attn_dim = 768;
     EXPECT_EQ(classify_image_family(s, "renamed-model"), "sd15");
-    EXPECT_EQ(classify_image_family(s, "sd_turbo"), "sd15") << "768-wide text context is SD1.x whatever the name says";
+    EXPECT_EQ(classify_image_family(s, "sd_turbo"), "sd15")
+        << "768-wide text context is SD1.x whatever the name says";
     s.cross_attn_dim = 1024;
     EXPECT_EQ(classify_image_family(s, "sd_turbo-f16-q8_0"), "sdturbo");
     EXPECT_EQ(classify_image_family(s, "model-x"), "sd2") << "SD2.x shape without a turbo name is plain sd2";
@@ -123,7 +124,8 @@ TEST(ImageProfiles, TurboEnvelopeRejectsManyStepsAndForeignSizes) {
     EXPECT_TRUE(image_envelope_violation("sdxlturbo", 768, 768, 2, false).empty());
     EXPECT_FALSE(image_envelope_violation("sdxlturbo", 1024, 1024, 2, false).empty());
     EXPECT_FALSE(image_envelope_violation("sdxlturbo", 384, 384, 2, false).empty());
-    EXPECT_TRUE(image_envelope_violation("sd15", 512, 512, 60, false).empty()) << "families without a cap stay open";
+    EXPECT_TRUE(image_envelope_violation("sd15", 512, 512, 60, false).empty())
+        << "families without a cap stay open";
 }
 
 TEST(ImageProfiles, PresetsComeFromTheProfile) {
@@ -150,7 +152,8 @@ TEST(ImageProfiles, PresetPointsLieInsideTheirOwnEnvelope) {
         for (const char* name : {"fast", "quality"}) {
             const auto pt = image_preset(fam, name);
             ASSERT_TRUE(pt.has_value()) << fam << " " << name;
-            EXPECT_TRUE(image_envelope_violation(fam, p->default_width, p->default_height, pt->steps, false).empty())
+            EXPECT_TRUE(
+                image_envelope_violation(fam, p->default_width, p->default_height, pt->steps, false).empty())
                 << fam << " " << name;
         }
     }

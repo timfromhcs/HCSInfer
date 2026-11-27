@@ -292,7 +292,8 @@ GgufProbeResult probe_gguf(std::span<const std::uint8_t> bytes, std::size_t max_
             return out;
         }
         // Dimensions are read (not skipped) only for the one tensor family detection needs: the text
-        // cross-attention key projection, whose ne[0] is the text-context width (SD1.x 768, SD2.x 1024, SDXL 2048).
+        // cross-attention key projection, whose ne[0] is the text-context width (SD1.x 768, SD2.x 1024, SDXL
+        // 2048).
         std::array<std::uint64_t, kMaxDims> dims{};
         for (std::uint64_t d = 0; d < ndims; ++d) dims[d] = r.le(8);
         if (!r.ok()) {

@@ -1,0 +1,19 @@
+ok:   -WhatIf exits 0
+ok:   reports the current version
+ok:   -WhatIf lists CMakeLists.txt
+ok:   -WhatIf leaves every file byte-identical
+ok:   real bump to 9.8.7 exits 0 (check-version.ps1 green)
+ok:   CMake base version set
+ok:   CMake suffix emptied for a stable version
+ok:   pyproject PEP 440 version set
+ok:   package.json version set
+ok:   web config.js version set
+ok:   README has no stale current version (release-notes link target excluded)
+ok:   README historic v1.0.0-rc.1 untouched
+ok:   README shields.io badge updated
+ok:   bump to 9.9.0-rc.2 exits 0
+ok:   rc spelled rc2 for PEP 440
+ok:   CMake suffix -rc.2
+ok:   badge spells -rc.2 with a doubled dash
+ok:   invalid version is rejected
+bump-version test PASS

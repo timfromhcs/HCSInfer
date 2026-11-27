@@ -265,7 +265,8 @@ TEST(GgufProbe, FileProbeHonoursTheByteLimit) {
 TEST(GgufProbe, DiffusionSignatureReadsCrossAttentionWidth) {
     Gguf g(3, 2, 0);
     g.tensor("model.diffusion_model.input_blocks.1.1.transformer_blocks.0.attn2.to_k.weight", {1024, 320}, 8)
-        .tensor("model.diffusion_model.input_blocks.1.1.transformer_blocks.0.attn2.to_q.weight", {320, 320}, 8);
+        .tensor("model.diffusion_model.input_blocks.1.1.transformer_blocks.0.attn2.to_q.weight", {320, 320},
+                8);
     const auto r = probe(g.bytes);
     ASSERT_TRUE(r.complete) << r.reason;
     EXPECT_EQ(r.diffusion.cross_attn_dim, 1024u);
@@ -276,7 +277,8 @@ TEST(GgufProbe, DiffusionSignatureReadsCrossAttentionWidth) {
 TEST(GgufProbe, DiffusionSignatureSeesSdxlLabelEmbeddingAndFluxBlocks) {
     Gguf sdxl(3, 2, 0);
     sdxl.tensor("model.diffusion_model.label_emb.0.0.weight", {2816, 1280}, 8)
-        .tensor("model.diffusion_model.input_blocks.4.1.transformer_blocks.0.attn2.to_k.weight", {2048, 640}, 8);
+        .tensor("model.diffusion_model.input_blocks.4.1.transformer_blocks.0.attn2.to_k.weight", {2048, 640},
+                8);
     const auto a = probe(sdxl.bytes);
     EXPECT_TRUE(a.diffusion.has_label_emb);
     EXPECT_EQ(a.diffusion.cross_attn_dim, 2048u);
@@ -288,7 +290,8 @@ TEST(GgufProbe, DiffusionSignatureSeesSdxlLabelEmbeddingAndFluxBlocks) {
 
 TEST(GgufProbe, DiffusionSignatureIgnoresWrongRankAndTextModels) {
     Gguf g(3, 2, 0);
-    g.tensor("model.diffusion_model.input_blocks.1.1.transformer_blocks.0.attn2.to_k.weight", {7}, 0)  // rank 1
+    g.tensor("model.diffusion_model.input_blocks.1.1.transformer_blocks.0.attn2.to_k.weight", {7},
+             0)  // rank 1
         .tensor("blk.0.attn_k.weight", {4096, 4096}, 8);
     const auto r = probe(g.bytes);
     EXPECT_EQ(r.diffusion.cross_attn_dim, 0u) << "a 1-D tensor must not be read as a (in,out) matrix";
@@ -297,6 +300,7 @@ TEST(GgufProbe, DiffusionSignatureIgnoresWrongRankAndTextModels) {
 TEST(GgufProbe, DiffusionSignatureKeepsTheFirstCrossAttentionTensor) {
     Gguf g(3, 2, 0);
     g.tensor("model.diffusion_model.input_blocks.1.1.transformer_blocks.0.attn2.to_k.weight", {768, 320}, 8)
-        .tensor("model.diffusion_model.input_blocks.2.1.transformer_blocks.0.attn2.to_k.weight", {9999, 320}, 8);
+        .tensor("model.diffusion_model.input_blocks.2.1.transformer_blocks.0.attn2.to_k.weight", {9999, 320},
+                8);
     EXPECT_EQ(probe(g.bytes).diffusion.cross_attn_dim, 768u);
 }

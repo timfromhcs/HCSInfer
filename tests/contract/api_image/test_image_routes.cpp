@@ -404,8 +404,9 @@ TEST(ApiImageQuality, FluxPresetPointIsAcceptedAndTinySizeIsNot) {
 TEST(ApiImageQuality, SamplerAndSchedulerAreForwardedAndValidated) {
     Api a;
     add_image_model(a, "sd15-test");
-    auto r = a.call("POST", "/v1/images/generations",
-                    json{{"model", "sd15-test"}, {"prompt", "x"}, {"sampler", "lcm"}, {"scheduler", "karras"}});
+    auto r =
+        a.call("POST", "/v1/images/generations",
+               json{{"model", "sd15-test"}, {"prompt", "x"}, {"sampler", "lcm"}, {"scheduler", "karras"}});
     ASSERT_EQ(r.status, 200) << r.body;
     EXPECT_EQ(a.fx.image.last.sampler, "lcm");
     EXPECT_EQ(a.fx.image.last.scheduler, "karras");
@@ -498,4 +499,3 @@ TEST(ApiUi, OnlyGetAndHeadAndTheApiStaysAuthenticated) {
     EXPECT_EQ(a.call("GET", "/", false).body.find(kToken), std::string::npos);
 }
 #endif
-
