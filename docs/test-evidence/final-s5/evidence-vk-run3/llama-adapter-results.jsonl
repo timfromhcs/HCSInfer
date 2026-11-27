@@ -1,0 +1,7 @@
+{"test":"CpuGeneration","backend":"cpu","device":"CPU","offloaded_layers":0,"total_layers":24,"load_ms":21444.798200,"ttft_ms":630.764700,"prompt_tokens":23,"prompt_tps":38.228676,"decode_tokens":7,"decode_tps":16.609632,"output_chars":27}
+{"test":"VulkanGeneration","backend":"vulkan","device":"AMD Radeon(TM) Graphics (Vulkan0)","offloaded_layers":25,"total_layers":24,"load_ms":1755.523900,"ttft_ms":155.656400,"prompt_tokens":23,"prompt_tps":263.835596,"decode_tokens":7,"decode_tps":32.573032,"output_chars":27}
+{"test":"CancelCpu","chunks_at_cancel":5,"chunks_final":5,"stop_latency_ms":0.622500}
+{"test":"CancelVulkan","chunks_at_cancel":5,"chunks_final":5,"stop_latency_ms":0.531400}
+{"test":"Cycle10Cpu","cycles":10,"private_bytes_after_each_unload":[21979136,22315008,23506944,23789568,24838144,24666112,23486464,23810048,24584192,24866816],"working_set_after_each_unload":[41869312,42340352,42856448,43061248,43151360,43446272,43524096,43466752,43728896,43823104],"private_growth_after_cycle3":1359872,"working_set_growth_after_cycle3":966656}
+{"test":"Cycle10Vulkan","cycles":10,"private_bytes_after_each_unload":[86261760,86704128,86614016,88059904,86290432,87584768,87003136,87433216,89591808,89243648],"working_set_after_each_unload":[107323392,107864064,108617728,109105152,108969984,109301760,109412352,109477888,110743552,110997504],"private_growth_after_cycle3":2629632,"working_set_growth_after_cycle3":2379776}
+{"test":"ModelSwitch","auto_backend":"vulkan","second_model_distinct":false}

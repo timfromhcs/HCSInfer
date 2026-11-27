@@ -1,0 +1,8 @@
+[57/64] Linking CXX executable bin\hcs_test_mcp.exe
+[58/64] Linking CXX executable bin\hcs_test_llama_engine.exe
+[59/64] Linking CXX executable bin\hcs_test_llama_vision.exe
+[60/64] Linking CXX executable bin\hcs_test_diffusion_engine.exe
+[61/64] Linking CXX executable bin\hcs_test_shutdown_real.exe
+[62/64] Linking CXX executable bin\hcs_test_storage_real_model.exe
+[63/64] Linking CXX executable bin\hcs_test_soak_core.exe
+BUILD OK (windows-msvc-release-static-vulkan)

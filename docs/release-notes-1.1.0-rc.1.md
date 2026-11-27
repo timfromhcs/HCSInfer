@@ -49,6 +49,10 @@ real files (S1), real-model E2E and controlled benchmarks were recorded (S2), an
 - Real trainer run, real `prime-agent` session, real WebGPU inference, Vercel deploy and a clean-machine run are NOT
   RUN. A physical USB cable pull and true RAM exhaustion are replaced by documented fault injection.
 - Long scheduled fuzzing and ASan are NOT RUN (toolchain CRT mismatch); a 61-second UBSan/libFuzzer smoke passed.
+- One of three final Vulkan full-CTest runs had a transient failure in `VulkanRunner.DispatchTimeoutMarksTheRunnerLostAndResetRecovers`
+  (`prepare_gemm_f32` returned an error once); the test passed in isolation, in the 32-test kernel group, and in the two
+  subsequent full runs (both 1085/1085). Root cause was not reproduced; classified as transient device/driver state and
+  kept visible as a residual risk. Full red log: `test-evidence/final-s5/ctest-static-vulkan.txt`.
 - Code signing, publishing the GitHub draft and PyPI upload require the owner's credentials and are not done here.
 
 No model weights, prompts, images of users or tokens are shipped in the repository or the package.

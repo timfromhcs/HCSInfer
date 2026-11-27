@@ -1,0 +1,14 @@
+Test project D:/HCSInfer/build/windows-msvc-release-static-vulkan
+    Start 1024: VulkanRunner.DispatchTimeoutMarksTheRunnerLostAndResetRecovers
+1/1 Test #1024: VulkanRunner.DispatchTimeoutMarksTheRunnerLostAndResetRecovers ...***Skipped   0.39 sec
+
+100% tests passed out of 1
+
+Label Time Summary:
+kernel-vulkan    =   0.39 sec*proc (1 test)
+
+Total Test time (real) =   6.92 sec
+
+The following tests did not run:
+	1024 - VulkanRunner.DispatchTimeoutMarksTheRunnerLostAndResetRecovers (Skipped)
+REPRO_EXIT=0
