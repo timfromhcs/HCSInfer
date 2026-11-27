@@ -429,6 +429,11 @@ HttpResponse ApiHandler::dispatch(const HttpRequest& req, const std::string& rid
             return not_allowed("POST");
         return images(req, rid, guard, req.path == "/v1/images/edits");
     }
+    if (req.path == "/hcs/v1/images/upscale") {  // HCS-native: no OpenAI equivalent
+        if (!is_post)
+            return not_allowed("POST");
+        return upscale_image(req, rid, guard);
+    }
 
     // --- HCS native ---
     if (seg.size() >= 3 && seg[0] == "hcs" && seg[1] == "v1") {
@@ -1105,8 +1110,54 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
     auto sub = cp_.submit_image(p, edit);
     if (!sub)
         return from_error(sub.error(), rid);
-    const JobId job = sub.value().id;
-    auto channel = sub.value().channel;
+    return image_job_response(req, rid, sub.value(), p.seed);
+}
+
+HttpResponse ApiHandler::upscale_image(const HttpRequest& req, const std::string& rid,
+                                       const std::shared_ptr<Inflight>& guard) {
+    (void)guard;  // holds the in-flight slot for the whole (blocking) request
+    if (!cp_.has_upscaler())
+        return error(501, "server_error", "unsupported", "image upscaling is not available in this build",
+                     rid);
+    auto ct = req.headers.find("content-type");
+    if (ct == req.headers.end() || lower(ct->second).rfind("application/json", 0) != 0)
+        return error(415, "invalid_request_error", "unsupported_media_type",
+                     "Content-Type must be application/json", rid);
+    if (req.body.size() > opt_.max_body_bytes)
+        return error(413, "invalid_request_error", "payload_too_large",
+                     "request body exceeds the configured limit", rid);
+    if (!json_depth_ok(req.body, kMaxJsonDepth))
+        return error(400, "invalid_request_error", "invalid_json", "JSON nesting too deep", rid);
+    json body = json::parse(req.body, nullptr, false);
+    if (body.is_discarded())
+        return error(400, "invalid_request_error", "invalid_json", "malformed JSON body", rid);
+    const json schema = {
+        {"type", "object"},
+        {"required", json::array({"image"})},
+        {"properties",
+         {{"image", {{"type", "string"}}}, {"upscale", {{"type", "string"}, {"enum", json::array({"4k"})}}}}},
+        {"additionalProperties", false}};
+    if (auto v = validate_json(schema, body); !v)
+        return error(400, "invalid_request_error", "invalid_request", v.error().message, rid);
+    std::string uri = body["image"].get<std::string>();
+    if (uri.rfind("data:", 0) != 0)
+        uri = "data:image/png;base64," + uri;  // bare base64 is accepted too
+    auto img = decode_image_data_uri(uri, cp_.options().max_image_bytes);
+    if (!img)
+        return error(400, "invalid_request_error", "invalid_image", img.error().message, rid);
+    UpscaleParams p;
+    p.image = std::move(img.value());
+    auto sub = cp_.submit_upscale(p);
+    if (!sub)
+        return from_error(sub.error(), rid);
+    return image_job_response(req, rid, sub.value(), std::nullopt);
+}
+
+HttpResponse ApiHandler::image_job_response(const HttpRequest& req, const std::string& rid,
+                                            const Submitted& submitted, std::optional<std::uint64_t> seed) {
+    using clock = std::chrono::steady_clock;
+    const JobId job = submitted.id;
+    auto channel = submitted.channel;
     const auto deadline = clock::now() + opt_.request_timeout;
     const auto peer_closed = req.peer_closed;
     constexpr auto kPoll = std::chrono::milliseconds(150);
@@ -1154,10 +1205,10 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
                 {"height", r.height},
                 {"steps", r.steps},
                 {"generation_ms", r.generation_ms}};
-    if (auto lm = cp_.loaded_model())
+    if (auto lm = cp_.loaded_model(); lm && r.steps > 0)  // not for upscale-only jobs (no model involved)
         hcs["model"] = *lm;
-    if (p.seed)
-        hcs["seed"] = *p.seed;
+    if (seed)
+        hcs["seed"] = *seed;
     if (!r.preset.empty())
         hcs["preset"] = r.preset;
     if (!r.loras_applied.empty())
@@ -1169,6 +1220,8 @@ HttpResponse ApiHandler::images(const HttpRequest& req, const std::string& rid,
         if (r.upscale_status == "done") {
             up["from_width"] = r.pre_upscale_width;
             up["from_height"] = r.pre_upscale_height;
+            up["tiles"] = r.upscale_tiles;
+            up["tile"] = r.upscale_tile_px;
             up["ms"] = r.upscale_ms;
             up["provider"] = r.upscale_provider;
         }

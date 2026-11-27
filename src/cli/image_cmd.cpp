@@ -83,7 +83,11 @@ const char* image_help() {
            "  --force                Overwrite an existing output file\n"
            "  --json                 Machine-readable result on stdout\n"
            "\n"
-           "Ctrl-C cancels the running generation (exit code 6).\n";
+           "Ctrl-C cancels the running generation (exit code 6).\n"
+           "\n"
+           "Also: `HCSInfer image upscale --input <png> --output <png>` upscales an existing PNG to a 3840 "
+           "px\n"
+           "long edge (see `image upscale --help`).\n";
 }
 
 #ifndef HCS_HAVE_DIFFUSION
