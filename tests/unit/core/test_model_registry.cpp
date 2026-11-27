@@ -262,7 +262,8 @@ TEST(ModelRegistryScan, NeverModifiesScannedFiles) {
     ModelRegistry r;
     ASSERT_TRUE(r.scan(t / "r", g));
     EXPECT_EQ(hcs::test::read_file(f), before);
-    EXPECT_EQ(fs::last_write_time(f), stamp);
+    EXPECT_TRUE(fs::last_write_time(f) ==
+                stamp);  // no gtest printing: libc++ formats floating chrono ticks (macOS 13.3+ only)
     std::size_t n = 0;
     for (auto& e : fs::recursive_directory_iterator(t / "r")) {
         (void)e;

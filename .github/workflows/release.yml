@@ -241,11 +241,12 @@ jobs:
           set -euo pipefail
           docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp/hcs-home \
             -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -w "$GITHUB_WORKSPACE" "$MANYLINUX_IMAGE" \
-            bash scripts/release-build-posix.sh --kind cpu --bootstrap-manylinux --out stage --info-dir buildinfo --jobs 4
-      - name: "Test (portable set: unit, contract, parser, kernel-cpu; model tests report Skipped = NOT RUN)"
+            bash scripts/release-build-posix.sh --kind cpu --bootstrap-manylinux --run-tests --out stage --info-dir buildinfo --jobs 4
+      - name: "Test result (portable set unit/contract/parser/kernel-cpu ran in the build container with its own CMake; model tests = NOT RUN)"
         run: |
           set -euo pipefail
-          ctest --test-dir build/linux-gcc-release -L '^(unit|contract|parser|kernel-cpu)$' --output-on-failure --no-tests=error -j 4 | tee buildinfo/ctest-cpu.txt
+          grep -E 'tests passed|Total Test time' buildinfo/ctest-cpu.txt
+          grep -q '100% tests passed' buildinfo/ctest-cpu.txt
       - name: Run the CPU binary on the plain Ubuntu host (not the build container)
         run: |
           set -euo pipefail
