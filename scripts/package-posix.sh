@@ -11,7 +11,7 @@
 # gzip -n) so the same inputs give the same archive.
 set -euo pipefail
 
-bindir=""; version=""; os=""; arch=""; out=""
+bindir=""; version=""; os=""; arch=""; out=""; suffix=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --bin-dir) bindir="$2"; shift 2 ;;
@@ -19,6 +19,7 @@ while [ $# -gt 0 ]; do
     --os) os="$2"; shift 2 ;;
     --arch) arch="$2"; shift 2 ;;
     --out) out="$2"; shift 2 ;;
+    --suffix) suffix="$2"; shift 2 ;;
     *) echo "unknown argument: $1" >&2; exit 2 ;;
   esac
 done
@@ -31,7 +32,8 @@ printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?$' ||
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 py="$(command -v python3 || command -v python)" || { echo "python3 is required" >&2; exit 1; }
-name="HCSInfer-$version-$os-$arch"
+printf '%s' "$suffix" | grep -Eq '^[A-Za-z0-9]*$' || { echo "bad suffix: $suffix" >&2; exit 2; }
+name="HCSInfer-$version-$os-$arch${suffix:+-$suffix}"
 stage="$(mktemp -d)"
 trap 'rm -rf "$stage"' EXIT
 pkg="$stage/$name"

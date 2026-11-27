@@ -230,7 +230,6 @@ jobs:
       MANYLINUX_IMAGE: quay.io/pypa/manylinux_2_28_x86_64:2026.11.21-1@sha256:55a36963bc0504cdf004011001c1072306402f0b8b83be5a5eba7068f93eec53
     outputs:
       built: ${{ steps.done.outputs.built }}
-      vulkan: ${{ steps.vk.outcome }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -252,22 +251,11 @@ jobs:
           set -euo pipefail
           ./stage/HCSInfer --version
           ./stage/HCSInfer doctor --json | head -c 400; echo
-      - name: Build Vulkan binary (links libvulkan.so.1; best effort, reported as NOT BUILT when it fails)
-        id: vk
-        continue-on-error: true
-        run: |
-          set -euo pipefail
-          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp/hcs-home -e VULKAN_SDK_VERSION="$VULKAN_SDK_VERSION" \
-            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" -w "$GITHUB_WORKSPACE" "$MANYLINUX_IMAGE" \
-            bash scripts/release-build-posix.sh --kind vulkan --bootstrap-manylinux --out stage --info-dir buildinfo --jobs 4
       - name: Package tar.gz
-        env:
-          VK_OUTCOME: ${{ steps.vk.outcome }}
         run: |
           set -euo pipefail
           scripts/package-posix.sh --bin-dir stage --version "$VERSION" --os linux --arch x86_64 --out pkg
-          { echo "### Linux x86_64"; echo "* HCSInfer (CPU): built and tested in the manylinux_2_28 container";
-            echo "* HCSInfer-vulkan build: $VK_OUTCOME (loads the system libvulkan.so.1; a real-GPU run is NOT RUN)"; } >> "$GITHUB_STEP_SUMMARY"
+          { echo "### Linux x86_64"; echo "* HCSInfer (CPU): built and tested in the manylinux_2_28 container"; } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: hcsinfer-bin-manylinux_2_28_x86_64
@@ -282,6 +270,55 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: buildinfo-linux-x86_64
+          path: buildinfo/*
+          if-no-files-found: warn
+      - id: done
+        run: echo "built=true" >> "$GITHUB_OUTPUT"
+
+  exe-linux-vulkan:
+    name: HCSInfer-vulkan (Linux x86_64, Ubuntu 22.04, glibc >= 2.35, experimental)
+    # The LunarG SDK's glslc/spirv-val need glibc >= 2.34, so the Vulkan binary cannot be built in the glibc 2.28 image.
+    # It is built natively on Ubuntu 22.04 with a documented glibc 2.35 floor and shipped as its own archive.
+    needs: [version-consistency, exe-linux-x86_64]
+    if: ${{ !cancelled() && needs.exe-linux-x86_64.result == 'success' }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 150
+    continue-on-error: true
+    defaults:
+      run:
+        shell: bash
+    env:
+      VERSION: ${{ needs.version-consistency.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Build the Vulkan binary (links libvulkan.so.1; glibc floor 2.35)
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ninja-build cmake
+          scripts/release-build-posix.sh --kind vulkan --out stage --info-dir buildinfo --jobs 4 --glibc-max 2.35
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: hcsinfer-bin-manylinux_2_28_x86_64
+          path: cpu
+      - name: Package tar.gz (CPU + Vulkan, own archive name)
+        run: |
+          set -euo pipefail
+          cp cpu/HCSInfer stage/HCSInfer
+          scripts/package-posix.sh --bin-dir stage --version "$VERSION" --os linux --arch x86_64 --suffix vulkan --out pkg
+          { echo "### Linux x86_64 Vulkan (experimental)"; echo "* HCSInfer-vulkan built on Ubuntu 22.04 (glibc >= 2.35, loads the system libvulkan.so.1); a real-GPU run is NOT RUN"; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: pkg-linux-x86_64-vulkan
+          path: pkg/*.tar.gz
+          if-no-files-found: error
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ !cancelled() }}
+        with:
+          name: buildinfo-linux-x86_64-vulkan
           path: buildinfo/*
           if-no-files-found: warn
       - id: done
@@ -468,7 +505,7 @@ jobs:
       - name: Scan the SBOM and the source tree with osv-scanner
         shell: bash
         run: |
-          set -uo pipefail
+          set +e -uo pipefail   # `shell: bash` adds -e: exit 1 (vulnerabilities found) must reach the gate below
           osv="$RUNNER_TEMP/osv/osv-scanner"
           # exit 0 = clean, 1 = vulnerabilities found (the gate below decides); anything else is a tool failure.
           "$osv" scan source -S artifacts/osv/hcsinfer.cdx.json --allow-no-lockfiles --format json --output-file artifacts/osv/osv-scanner-sbom.json; rc1=$?
@@ -533,7 +570,7 @@ jobs:
 
   release:
     name: Checksums + SBOM + draft release
-    needs: [version-consistency, exe-cpu, exe-vulkan, bin-win-amd64, exe-linux-x86_64, exe-linux-aarch64, exe-macos-arm64, wheel-plan, wheels, web, osv-scan]
+    needs: [version-consistency, exe-cpu, exe-vulkan, bin-win-amd64, exe-linux-x86_64, exe-linux-vulkan, exe-linux-aarch64, exe-macos-arm64, wheel-plan, wheels, web, osv-scan]
     # Stable tags need Vulkan, Linux x86_64 and a passing OSV gate too; release candidates may ship without them (the
     # assemble step reports what is missing). Experimental platforms never gate.
     if: >-
@@ -553,7 +590,7 @@ jobs:
       # runs report them instead.
       STRICT: ${{ needs.version-consistency.outputs.prerelease != 'true' && needs.version-consistency.outputs.dry_run != 'true' }}
       LINUX_X64: ${{ needs.exe-linux-x86_64.outputs.built }}
-      LINUX_X64_VULKAN: ${{ needs.exe-linux-x86_64.outputs.vulkan }}
+      LINUX_X64_VULKAN: ${{ needs.exe-linux-vulkan.result }}
       LINUX_ARM64: ${{ needs.exe-linux-aarch64.outputs.built }}
       LINUX_ARM64_TESTS: ${{ needs.exe-linux-aarch64.outputs.tests }}
       MACOS_ARM64: ${{ needs.exe-macos-arm64.outputs.built }}
@@ -610,7 +647,7 @@ jobs:
             '| Windows x64 CPU (HCSInfer.exe) | yes | required, tested on the hardware runner by the owner |',
             ('| Windows x64 Vulkan (HCSInfer-vulkan.exe) | {0} | required for stable |' -f $(if (Test-Path release\HCSInfer-vulkan.exe) { 'yes' } else { 'NO' })),
             ('| Linux x86_64 CPU | {0} | required for stable; portable ctest set run in CI |' -f $(if ($env:LINUX_X64 -eq 'true') { 'yes' } else { 'NO' })),
-            ('| Linux x86_64 Vulkan (libvulkan.so.1) | {0} | best effort; no real-GPU run |' -f $(if ($env:LINUX_X64_VULKAN -eq 'success') { 'yes' } else { 'NO' })),
+            ('| Linux x86_64 Vulkan (libvulkan.so.1, glibc >= 2.35) | {0} | EXPERIMENTAL; no real-GPU run |' -f $(if ($env:LINUX_X64_VULKAN -eq 'success') { 'yes' } else { 'NO' })),
             ('| Linux aarch64 CPU | {0} (tests: {1}) | EXPERIMENTAL |' -f $(if ($env:LINUX_ARM64 -eq 'true') { 'yes' } else { 'NO' }), $env:LINUX_ARM64_TESTS),
             ('| macOS arm64 CPU (Metal off) | {0} (tests: {1}) | EXPERIMENTAL |' -f $(if ($env:MACOS_ARM64 -eq 'true') { 'yes' } else { 'NO' }), $env:MACOS_ARM64_TESTS),
             ('| OSV gate | {0} | see osv-report.json |' -f $env:OSV_RESULT)
