@@ -135,6 +135,7 @@ Evidence: `docs/test-evidence/final-s5/`. Working tree clean at `3c7680f` before
 | Format / clang-tidy / web | **PASS** | `format.txt` 298 files, `clang-tidy.txt` 0 diagnostics in 92 TUs, `web-npm-test.txt` 46/46 |
 | Wheel / SHA-256 / restricted-env final re-check | **PASS** | `release-local-final.txt`: package rebuilt from commit `e81d002` (CPU EXE `e440172c...`, Vulkan EXE `b639bd8e...`, ZIP `c156cf85...`), `release-verify-final.txt` 7/7 hashes, `wheel-smoke-final.txt` = 1.1.0-rc.1, `restricted-final-{cpu,vulkan}.json` 0 modules outside Windows, health/GUI 200 |
 | Merge `release/v1.1-stable` into `main`, push, tag `v1.1.0-rc.1` | **PASS** | merge commit `e958241` on `main`, pushed to `origin/main`; annotated tag `v1.1.0-rc.1` pushed; follow-up commit `24383ed` records it. GitHub **draft pre-release** created with 8 verified assets (`gh release view v1.1.0-rc.1`); publishing/signing remains the owner's step. No force-push. |
+| Hosted `pr-quick-gate` on the merged commit | RED then fixed (post-tag) | run `45943833293` failed in both build+ctest jobs: 3 `MergeFiles.*` tests because the hosted `TEMP` is on `C:` and the merge engine correctly refuses C: outputs. Test fixture now selects a non-C: base (`tests/support/temp_dir.hpp`, `tests/unit/merge/test_merge_files.cpp`); repro with `TEMP=C:\...\Temp` locally: 15/15 PASS on both static presets. The fix is test-only; shipped EXEs are unchanged. Tag stays at `e958241` (no force-push). |
 
 ### Engineering report (S5, final values completed below)
 

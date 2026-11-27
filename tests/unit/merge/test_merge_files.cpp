@@ -25,8 +25,21 @@ using hcs::test::f32_tensor;
 
 namespace {
 
+// The merge engine deliberately refuses outputs on drive C:. On hosted CI the system temp directory is on C:,
+// so these tests must use a writable directory off C: (the CTest working directory is the build tree there).
+// This changes only the test fixture location, never a product rule or an assertion.
+static std::filesystem::path merge_test_base() {
+    auto base = std::filesystem::temp_directory_path();
+    if (base.root_name() == L"C:") {
+        const auto cwd = std::filesystem::current_path();
+        if (cwd.root_name() != L"C:")
+            return cwd / "hcs-merge-test-tmp";
+    }
+    return base;
+}
+
 struct Env {
-    test::TempDir td;
+    test::TempDir td{merge_test_base()};
     PathGuard guard;
     Env() { EXPECT_TRUE(guard.add_root(td.path()).ok()); }
     std::filesystem::path p(const std::string& n) const { return td.path() / n; }

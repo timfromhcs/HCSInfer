@@ -11,11 +11,11 @@ namespace hcs::test {
 
 class TempDir {
 public:
-    TempDir() {
+    TempDir() : TempDir(std::filesystem::temp_directory_path()) {}
+    explicit TempDir(std::filesystem::path base) {
         static std::atomic<unsigned> counter{0};
         const auto stamp = std::chrono::steady_clock::now().time_since_epoch().count();
-        path_ = std::filesystem::temp_directory_path() /
-                ("hcs-test-" + std::to_string(stamp) + "-" + std::to_string(counter.fetch_add(1)));
+        path_ = base / ("hcs-test-" + std::to_string(stamp) + "-" + std::to_string(counter.fetch_add(1)));
         std::filesystem::create_directories(path_);
         path_ = std::filesystem::canonical(path_);
     }
