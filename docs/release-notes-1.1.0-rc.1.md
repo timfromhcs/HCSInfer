@@ -1,7 +1,8 @@
 # HCSInfer 1.1.0-rc.1 (release candidate)
 
-Status: **release candidate**. The authoritative gate table is `docs/roadmap/STATUS.md`; every statement below is backed
-by a file under `docs/test-evidence/`. Items without evidence are `NOT RUN` or `BLOCKED`, never `PASS`.
+Status: **release candidate; tag `v1.1.0-rc.1` pushed, GitHub release is a draft (publishing is the owner's step)**.
+Merge commit `e958241` on `main`. The authoritative gate table is `docs/roadmap/STATUS.md`; every statement below is
+backed by a file under `docs/test-evidence/`. Items without evidence are `NOT RUN` or `BLOCKED`, never `PASS`.
 
 Verified machine: Ryzen 7 7735HS, Radeon 680M (Vulkan 1.4.315, driver 26.6.1 / Windows AMD package
 32.0.21043.12001), ~21.2 GB shared RAM, Windows 11 build 10.0.26200.9974, MSVC 19.44.35228, CMake 4.4.0. No other

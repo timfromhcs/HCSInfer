@@ -134,14 +134,14 @@ Evidence: `docs/test-evidence/final-s5/`. Working tree clean at `3c7680f` before
 | Full Vulkan CTest on the static preset with real models | **PASS (2 of 3 runs green; 1 transient failure)** | Run 1 `ctest-static-vulkan.txt`: 1084/1085, `VulkanRunner.DispatchTimeoutMarksTheRunnerLostAndResetRecovers` failed at `prepare_gemm_f32` (`op.ok()` false). Repro attempts: isolated test SKIP (NOT RUN), 32-test kernel group 32/32, range 1000–1025 26/26. After adding the error message to the assertion (diagnostic only), run 2 `ctest-static-vulkan-rerun.txt` and run 3 `ctest-static-vulkan-run3.txt` are **1085/1085, 0 failed**. Root cause not reproduced; classified as transient device/driver state, recorded as a residual risk, not hidden. |
 | Format / clang-tidy / web | **PASS** | `format.txt` 298 files, `clang-tidy.txt` 0 diagnostics in 92 TUs, `web-npm-test.txt` 46/46 |
 | Wheel / SHA-256 / restricted-env final re-check | **PASS** | `release-local-final.txt`: package rebuilt from commit `e81d002` (CPU EXE `e440172c...`, Vulkan EXE `b639bd8e...`, ZIP `c156cf85...`), `release-verify-final.txt` 7/7 hashes, `wheel-smoke-final.txt` = 1.1.0-rc.1, `restricted-final-{cpu,vulkan}.json` 0 modules outside Windows, health/GUI 200 |
-| Merge `release/v1.1-stable` into `main`, push, tag `v1.1.0-rc.1` | in progress | after the final docs commit; no force-push |
+| Merge `release/v1.1-stable` into `main`, push, tag `v1.1.0-rc.1` | **PASS** | merge commit `e958241` on `main`, pushed to `origin/main`; annotated tag `v1.1.0-rc.1` pushed. No force-push. |
 
 ### Engineering report (S5, final values completed below)
 
 ```text
 HCSInfer engineering report
 - Current phase: S5 final gate (release/v1.1-stable), version 1.1.0-rc.1
-- Commit: e81d002 (final builds reconfigured from the clean tree)
+- Commit: e81d002 (final builds reconfigured from a clean tree), merge commit e958241 on main, tag v1.1.0-rc.1
 - Build status: PASS - static CPU 515/515 steps, static Vulkan 876/876 steps, 10 shaders validated
 - Tests: CPU static CTest 1054/1054 PASS; Vulkan static CTest 1085/1085 PASS on 2 consecutive final runs (1 earlier transient failure of the dispatch-timeout test, reproduced green in isolation and in 2 full reruns; see S3/S5 evidence)
 - Real Radeon 680M test: PASS (S0 Vulkan CTest 1085/1085, S2 Studio 42/42, real tune)
