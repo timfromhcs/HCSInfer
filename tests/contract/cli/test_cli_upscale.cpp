@@ -85,7 +85,12 @@ TEST(CliUpscale, MissingRuntimeOrModelIsUnsupportedExit10NamingWhatIsMissing) {
     auto r = run({"image", "upscale", "--input", in.string(), "--output", (dir.path() / "o.png").string(),
                   "--upscale-dir", (dir.path() / "up").string()});
     EXPECT_EQ(r.code, 10) << r.err;
+#ifdef _WIN32
     EXPECT_TRUE(contains(r.err, "onnxruntime.dll")) << r.err;
+#else
+    // The ONNX Runtime upscaler backend is Windows-only; other platforms must say so explicitly.
+    EXPECT_TRUE(contains(r.err, "Windows only")) << r.err;
+#endif
     EXPECT_TRUE(contains(r.err, "unsupported")) << r.err;
     EXPECT_FALSE(fs::exists(dir.path() / "o.png")) << "no output file is created on failure";
 }
