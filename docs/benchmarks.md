@@ -1,8 +1,27 @@
 # Benchmarks
 
-Everything here is copied or computed from the raw JSON under `docs/test-evidence/benchmarks/` (wave D, 2026-11-20); nothing is
-estimated. Status words: PASS / NOT RUN / BLOCKED. Methodology decision: `decisions/ADR-010-benchmark-methodology.md`.
-All numbers come from **one machine** and must not be generalised to other hardware, models, quantisations or drivers.
+Everything here is copied or computed from raw JSON under `docs/test-evidence/`; nothing is estimated. Status words:
+PASS / NOT RUN / BLOCKED. Methodology decision: `decisions/ADR-010-benchmark-methodology.md`. All numbers come from
+**one machine** and must not be generalised to other hardware, models, quantisations or drivers.
+
+## 1.1.0-rc.1 integration run (2026-11-27): controlled B0 vs B1
+
+Same model (LFM3-Omni-2B Q8_0, SHA-256 `59118f66...d49158d4`), same fixed prompt (223 tokens), seed 42,
+context 4096, `--suite full`, 1 warm-up + 5 measured iterations, cold phase separate. Raw JSON and all samples:
+`docs/test-evidence/final-s2/bench-{cpu,vulkan}-full.json`. The EXEs were configured at `6bfe340+dirty`; the S4
+release EXEs are rebuilt from the final clean tree.
+
+| Metric (median, warm) | B0 CPU | B1 Vulkan (680M) | Ratio |
+|---|---|---|---|
+| Decode tokens/s | 18.97 | 35.97 | 1.90x |
+| TTFT ms | 2579.3 | 311.9 | 8.27x |
+| Prompt tokens/s (reported) | 86.6 | 13,583.9 | see the async-submission caveat in Wave D |
+| Load ms | 362.2 | 923.9 | Vulkan pipeline start is slower |
+| Peak working set | 2.09 GB | 590 MB | different allocator/backends |
+| Result status | PASS (all sweep points) | PASS (all sweep points) | 4 prefill + 4 decode points with raw samples |
+
+Driver 26.6.1, Vulkan 1.4.315, device 0x1681, 25/24 layers offloaded; OS file cache was **not** flushed and thermal
+data was not available. The earlier wave D table below uses different binaries and must not be mixed with these numbers.
 
 ## Wave D: final binaries
 

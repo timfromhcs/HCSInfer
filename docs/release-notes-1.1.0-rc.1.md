@@ -36,6 +36,8 @@ real files (S1), real-model E2E and controlled benchmarks were recorded (S2), an
 | Full soak profile + fault injection | PASS, 13/13 phases incl. 30.1 min generation and 18/18 HttpStorm checks | `test-evidence/final-s3/soak-full/summary.json` |
 | 30-min drift / leak | PASS, +0.63% decode drift, 41.0 MiB private growth over 100 cycles, handle growth 0 | `test-evidence/final-s3/soak-full/soak-core.jsonl` |
 | Parser fuzz smoke / XSS | PASS: 376k executions, 0 crashes (UBSan, no ASan) / 9/9 XSS checks | `test-evidence/final-s3/libfuzzer-smoke.txt`, `xss/xss-run.txt` |
+| Static CPU + Vulkan builds, restricted-env proxy | PASS: 515/515 and 876/876 build steps; real generation with an empty PATH; 0 modules outside `C:\Windows` | `test-evidence/final-s4/{build-static-*,restricted-static-*}` |
+| Release set, SHA-256, web/wheel smoke | PASS: 2 EXEs, portable ZIP, wheel + sdist (`twine check`), web dist, SBOM, 7/7 hashes; web 46/46 | `test-evidence/final-s4/release-local.txt`, `release-verify.txt`, `web-npm-test.txt` |
 
 ## Known limits / blockers
 

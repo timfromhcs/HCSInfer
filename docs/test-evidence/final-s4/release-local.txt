@@ -1,0 +1,38 @@
+MSVC environment: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
+compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64 [C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\cl.exe]
+WARNUNG: licence file missing for prime-agent: external/prime-agent/LICENSE
+WARNUNG: licence file for 'prime-agent' not found: external/prime-agent/LICENSE
+SBOM written: D:\HCSInfer\artifacts\package\HCSInfer-1.1.0-rc.1-windows-msvc-release-static-portable\sbom.cdx.json (15 components, HCSInfer 1.1.0-rc.1, commit d1856789d04e88564946e9f44fe84b63b26b9b8a)
+Package: D:\HCSInfer\artifacts\package\HCSInfer-1.1.0-rc.1-windows-msvc-release-static-portable (76 files hashed)
+Zip: D:\HCSInfer\artifacts\package\HCSInfer-1.1.0-rc.1-windows-msvc-release-static-portable.zip  sha256 77974fa5e6d70590f02aaa9f6cddf8b40ba09b5f5841c929191706ac29aa6657
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - hatchling>=1.25
+* Getting build dependencies for sdist...
+* Installed build dependency versions:
+  - hatchling==1.33.0
+* Building sdist...
+Successfully built hcsinfer-1.1.0rc1.tar.gz
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - hatchling>=1.25
+* Getting build dependencies for wheel...
+* Installed build dependency versions:
+  - hatchling==1.33.0
+* Building wheel...
+Successfully built hcsinfer-1.1.0rc1-py3-none-win_amd64.whl
+Checking 
+D:\HCSInfer\artifacts\release\_py\hcsinfer-1.1.0rc1-py3-none-win_amd64.whl: PASSED
+Checking D:\HCSInfer\artifacts\release\_py\hcsinfer-1.1.0rc1.tar.gz: PASSED
+web/dist ready: 12 files, 86798 bytes
+WARNUNG: licence file for 'prime-agent' not found: external/prime-agent/LICENSE
+SBOM written: D:\HCSInfer\artifacts\release\hcsinfer.cdx.json (15 components, HCSInfer 1.1.0-rc.1, commit d1856789d04e88564946e9f44fe84b63b26b9b8a)
+cc1ecb48ff3ce1345a4c2d465d4e35ed6cc7780c9cc4d8fc9cbcba9681d71799  hcsinfer.cdx.json
+e1daef64e6b8a03fde3269afc72009d7866be094ad5677491024bb16756bc160  HCSInfer.exe
+77974fa5e6d70590f02aaa9f6cddf8b40ba09b5f5841c929191706ac29aa6657  HCSInfer-1.1.0-rc.1-windows-msvc-release-static-portable.zip
+7891dc05dc5f77df3fb6dab3fe610723da3533e176003ca09543a7af77a9fbe1  hcsinfer-1.1.0rc1.tar.gz
+3f60a6b88549994f58b7862430eb330919c72b9c0d848a37ddd4045b42cde0de  hcsinfer-1.1.0rc1-py3-none-win_amd64.whl
+885c79d785ea371e1793df8790ff70283e7e2ef3fcd469279a0376948a881729  HCSInfer-vulkan.exe
+f29aaa188fa3cfb5fcef8709c35ed0a5dcb94163e23a07e1540a6d0f028e999f  hcs-studio-web-dist.zip
+Release files: D:\HCSInfer\artifacts\release
+RELEASE_LOCAL_EXIT=0

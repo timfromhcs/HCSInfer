@@ -1,6 +1,6 @@
 # Support matrix (tested hardware, OS and models)
 
-Version 1.0.0-rc.1. Status: **one machine, one OS** — exactly what the evidence files show. This is not a compatibility guarantee; it is
+Version 1.1.0-rc.1. Status: **one machine, one OS** — exactly what the evidence files show. This is not a compatibility guarantee; it is
 the list of configurations HCSInfer has actually been built and run on, with the status of each. AGENTS.md 20:
 general RDNA/Radeon or Windows claims are **not** made from one device.
 

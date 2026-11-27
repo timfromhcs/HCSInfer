@@ -4,8 +4,8 @@
 
 **One local app for chat, image understanding and image generation on Windows. No cloud, no account, no telemetry.**
 
-[![CI: pr-quick-gate green on v1.0.0-rc.1](https://img.shields.io/badge/CI-pr--quick--gate%20green%20(v1.0.0--rc.1)-brightgreen)](https://github.com/timfromhcs/HCSInfer/actions/workflows/pr.yml)
-![Version](https://img.shields.io/badge/version-1.0.0--rc.1-orange)
+[![CI: last hosted green on v1.0.0-rc.1](https://img.shields.io/badge/CI-last%20hosted%20green%20(v1.0.0--rc.1)-brightgreen)](https://github.com/timfromhcs/HCSInfer/actions/workflows/pr.yml)
+![Version](https://img.shields.io/badge/version-1.1.0--rc.1-orange)
 ![Platform](https://img.shields.io/badge/platform-Windows%2011%20x64-blue)
 ![Backends](https://img.shields.io/badge/backends-CPU%20%7C%20Vulkan-informational)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -22,11 +22,11 @@ static EXEs (a CPU `HCSInfer.exe` that imports only Windows system DLLs, and `HC
 system `vulkan-1.dll` from your GPU driver), a Python wheel and a portable ZIP. It is not labelled "single-file" until a
 clean-machine test has been run (NOT RUN).
 
-> **Status: 1.0.0-rc.1, release candidate.** Everything below is backed by a file under
+> **Status: 1.1.0-rc.1, release candidate (not yet tagged or published).** Everything below is backed by a file under
 > [`docs/test-evidence/`](docs/test-evidence/README.md), but it was verified on **one machine** (Ryzen 7 7735HS,
-> Radeon 680M, Windows 11) and the binaries are **unsigned and untested on a clean Windows install**. It is a release
-> candidate rather than 1.0.0 because some core gates are not green yet (see [Limitations](#limitations) and the
-> checklist in [`docs/roadmap/STATUS.md`](docs/roadmap/STATUS.md)).
+> Radeon 680M, Windows 11) and the binaries are **unsigned and untested on a clean Windows install**. It stays a
+> release candidate because a few gates remain BLOCKED/NOT RUN (see [Limitations](#limitations) and the checklist in
+> [`docs/roadmap/STATUS.md`](docs/roadmap/STATUS.md)).
 
 ## Contents
 
@@ -38,9 +38,9 @@ clean-machine test has been run (NOT RUN).
 
 ## Install
 
-The tag `v1.0.0-rc.1` is pushed and the hosted `release` workflow produced a **draft** pre-release with these files (not
-public; no PyPI upload; publishing is the owner's step). The files can also be built
-locally by [`scripts/release-local.ps1`](scripts/release-local.ps1); every file is listed with its SHA-256 in
+The previous tag `v1.0.0-rc.1` is pushed and its hosted `release` workflow produced a **draft** pre-release (not public;
+no PyPI upload). The **1.1.0-rc.1** files below are built locally by [`scripts/release-local.ps1`](scripts/release-local.ps1)
+and are not tagged or published yet (publishing is the owner's step); every file is listed with its SHA-256 in
 `SHA256SUMS.txt`. Details: [`docs/install.md`](docs/install.md), [`docs/packaging.md`](docs/packaging.md).
 
 | You want | File | How |
@@ -48,7 +48,7 @@ locally by [`scripts/release-local.ps1`](scripts/release-local.ps1); every file 
 | the CPU program, one static EXE | `HCSInfer.exe` | run it; imports Windows system DLLs only (checked with `dumpbin`; clean-machine run NOT RUN) |
 | the same with GPU support | `HCSInfer-vulkan.exe` | run it; needs the `vulkan-1.dll` that your AMD/OEM graphics driver installs |
 | everything with licences, SBOM, checksums | `HCSInfer-<version>-windows-msvc-release-static-portable.zip` | unzip, run `HCSInfer.exe doctor` |
-| use it from Python | `hcsinfer-1.0.0rc1-py3-none-win_amd64.whl` | `pip install <wheel>` (bundles both EXEs) |
+| use it from Python | `hcsinfer-1.1.0rc1-py3-none-win_amd64.whl` | `pip install <wheel>` (bundles both EXEs) |
 | the browser demo | `hcs-studio-web-dist.zip` | static files, see [`web/README.md`](web/README.md) |
 
 Models are **not** included. See [Models and licences](#models-and-licences).
@@ -94,8 +94,8 @@ purpose.
 | Vision (image in, text out) | Experimental | one image per single-turn request; SmolVLM2-500M and LFM3-Omni-2B, CPU and Vulkan; no video/audio |
 | Image generation and image-to-image | Experimental | SD 1.5 Q8_0 (CPU and Vulkan) and FLUX.3 Klein (Vulkan; minutes per 512x512 image); `url`, `mask`, `multipart` are rejected |
 | Model registry, lifecycle, job queue, cancellation, memory budget, approved-root path guard | Implemented | |
-| Image LoRA library (`loras` on image requests, `GET /hcs/v1/loras`, `--lora`, MCP `hcs.loras.list`) | Experimental | manifest + family-compatibility checks tested with synthetic files; no real LoRA render yet (NOT RUN); [`docs/lora.md`](docs/lora.md) |
-| 4K upscale (`upscale: "4k"`, `--upscale 4k`), tiled 4x ONNX + Lanczos | Experimental, OFF by default | needs a user-supplied `onnxruntime.dll` + `.onnx` model; pipeline and ORT backend verified with a synthetic model, no real super-resolution model run (NOT RUN); [`docs/upscale.md`](docs/upscale.md) |
+| Image LoRA library (`loras` on image requests, `GET /hcs/v1/loras`, `--lora`, MCP `hcs.loras.list`) | Experimental | real LCM-LoRA SD1.5 render applied and measured (PSNR 11.50 dB / SSIM 0.64 vs baseline, both images viewed); family mismatch is a structured error; [`docs/lora.md`](docs/lora.md) |
+| 4K upscale (`upscale: "4k"`, `--upscale 4k`), tiled 4x ONNX + Lanczos | Experimental, OFF by default | needs a user-supplied `onnxruntime.dll` + `.onnx` model; real Real-ESRGAN x4 run 512->3840 px (4 tiles, 73 s, CPU provider, image viewed); [`docs/upscale.md`](docs/upscale.md) |
 | `HCSInfer merge` (linear, SLERP, TIES, DARE, LoRA-into-base) | Experimental | float safetensors/GGUF only, streaming; NumPy-golden unit tests; no HTTP/MCP route; [`docs/merge.md`](docs/merge.md) |
 | HTTP API (`/v1/chat/completions` streaming, `/v1/models`, `/v1/images/*`, `/hcs/v1/*`) | Experimental | loopback + bearer token; [`docs/api.md`](docs/api.md) |
 | MCP over stdio (models, chat, vision, image, runtime, jobs, benchmark tools) | Experimental | [`docs/mcp.md`](docs/mcp.md); exercised by a scripted stdio client, not by a third-party MCP client |
@@ -111,7 +111,8 @@ purpose.
 | HCS Vulkan kernel (Q8_0 GEMV) | Experimental, OFF by default | correct on the 680M but 18x slower than upstream GGML Vulkan |
 | `models load\|unload\|status` CLI commands | Implemented | HTTP clients of a running `serve` (`--port/--token`); no server => exit 8 |
 | `tune` CLI command and 8 HCSUDA-ported Vulkan kernels (tiled f32/f16/int8-dot/coopmat GEMM, softmax, LayerNorm, RMSNorm, RoPE) | Experimental | opt-in build (`HCS_ENABLE_VULKAN_KERNELS`); correct on the 680M and 1.3-26x a CPU baseline, but **none is default-enabled** (no upstream GGML baseline measured), not in the engines; [`docs/vulkan-kernels.md`](docs/vulkan-kernels.md) |
-| Scheduler, telemetry module, further custom kernels | Planned | only with measured benefit |
+| Overload protection (`/hcs/v1/shed`, watchdog, admission control) and telemetry probe | Experimental | 429/503 + `Retry-After`, kill switch and watchdog verified with injected memory pressure; [overload docs](docs/overload-protection.md) |
+| Further custom kernels / adaptive per-op scheduling | Planned | only with measured benefit |
 | Linux, other GPUs, ROCm | Unsupported | not built or tested |
 
 ## Requirements
@@ -294,7 +295,7 @@ Tests that need a real model skip (and report NOT RUN) unless `HCS_TEST_GGUF`, `
 
 Read [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`AGENTS.md`](AGENTS.md) (the binding engineering specification). In short:
 small changes with tests and docs, never weaken a test to get green, no fake features, pinned dependencies.
-History: [`CHANGELOG.md`](CHANGELOG.md); release notes: [`docs/release-notes-1.0.0-rc.1.md`](docs/release-notes-1.0.0-rc.1.md).
+History: [`CHANGELOG.md`](CHANGELOG.md); release notes: [`docs/release-notes-1.1.0-rc.1.md`](docs/release-notes-1.1.0-rc.1.md).
 
 ## Licence
 

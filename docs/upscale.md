@@ -2,8 +2,9 @@
 
 Status: **Experimental, opt-in, default OFF**. The tiling/blending/resampling pipeline, the PNG glue, the dynamically loaded
 ONNX Runtime backend and the integration into image generation (API, MCP, CLI, UI) are implemented and tested. A run with a
-**real ONNX super-resolution model is NOT RUN**: there is no upscaler `.onnx` on this machine and nothing is downloaded by
-HCSInfer. Timings, RAM and quality (PSNR/SSIM/LPIPS) of a real model are therefore unmeasured. No `onnxruntime.dll` is shipped
+a **real Real-ESRGAN x4 ONNX run is PASS** (2026-11-27): 512x512 -> 3840x3840 in 4 tiles / 73.3 s on the CPU
+provider, image viewed (no visible seams), evidence in `docs/test-evidence/final-s1/upscale-real.txt`; LPIPS and a
+DirectML run remain NOT RUN. HCSInfer does not download models. No `onnxruntime.dll` is shipped
 or required; the backend was verified against an ONNX Runtime found elsewhere on this machine (below).
 
 ## What it does

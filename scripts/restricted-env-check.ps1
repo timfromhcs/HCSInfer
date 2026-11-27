@@ -77,7 +77,7 @@ function Invoke-Restricted([string] $name, [string] $args_, [int] $timeoutSec = 
     $so = $p.StandardOutput.ReadToEndAsync()
     $se = $p.StandardError.ReadToEndAsync()
     $done = $p.WaitForExit($timeoutSec * 1000)
-    if (-not $done) { $p.Kill($true); $p.WaitForExit() }
+    if (-not $done) { $p.Kill(); $p.WaitForExit() }
     $rec = [ordered]@{
         name      = $name
         args      = $args_
@@ -152,7 +152,7 @@ try {
         modules_outside_windows_dir = $nonSystem
         windows_modules  = @($mods | Where-Object { $_.StartsWith($sysRoot, [StringComparison]::OrdinalIgnoreCase) } | ForEach-Object { Split-Path $_ -Leaf } | Sort-Object -Unique)
     }
-    if (-not $srv.HasExited) { $srv.Kill($true); $srv.WaitForExit() }   # only the process this script started
+    if (-not $srv.HasExited) { $srv.Kill(); $srv.WaitForExit() }   # only the process this script started
 }
 finally {
     $results['verdict'] = 'see checks; PASS needs: exit_code 0 for help/doctor, health 200, GUI page 200 with the HCS title, modules_outside_windows_dir empty'

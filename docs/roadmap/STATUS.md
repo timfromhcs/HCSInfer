@@ -107,6 +107,22 @@ Evidence: `docs/test-evidence/final-s3/README.md` (branch `release/v1.1-stable`,
 | Runtime XSS regression | **PASS** | `xss/xss-run.txt`: 9/9 checks; previously skipped because `websockets` was missing. |
 | Physical USB pull, true RAM exhaustion, Vulkan soak, long fuzz, stress harness abort re-run | NOT RUN | documented fault injection/substitutes only |
 
+## S4 (2026-11-27, in progress): release package and docs
+
+Branch `release/v1.1-stable` at `d185678` + this wave. Version bumped to **1.1.0-rc.1** (CMake, wheel, web package,
+README, install/security/support docs, CHANGELOG, release notes). Evidence: `docs/test-evidence/final-s4/`.
+
+| Item | Status | Evidence / reason |
+|---|---|---|
+| Python build venv (`build` + `twine`) | PASS | created under `build/devtools/pybuild` (D:), `build+twine OK` |
+| Static CPU `/MT` EXE from a clean tree | **PASS** | `build-static-cpu.txt`: BUILD OK, 515/515 steps; `HCSInfer.exe --version` = **HCSInfer 1.1.0-rc.1** |
+| Static Vulkan `/MT` EXE | **PASS** | `build-static-vulkan.txt`: BUILD OK, 876/876 steps, 10 shaders compiled/validated/embedded |
+| Restricted-env proxy (both EXEs, real model) | **PASS** | `restricted-static-{cpu,vulkan}.json`: empty PATH, help/doctor/real generation/serve+GUI 200, 0 modules outside `C:\Windows` (Vulkan adds `vulkan-1.dll`); fixed a real PS 5.1 `Kill(bool)` defect red->green. A clean-machine run remains NOT RUN. |
+| Portable ZIP / wheel / sdist / web dist / SBOM / SHA-256 | **PASS** | `release-local.txt`: CPU EXE `e1daef64...`, Vulkan EXE `885c79d7...`, ZIP `77974fa5...`, wheel + sdist (`twine check` PASS), SBOM 15 components; `release-verify.txt`: 7/7 hashes, LF endings |
+| Web tests / wheel smoke | **PASS** | `web-npm-test.txt` 46/46; `wheel-smoke.txt`: fresh venv, `HCSInfer 1.1.0-rc.1` |
+| Licences | PARTIAL | prime-agent submodule not initialised -> its LICENSE file is missing from the package; reported by the script |
+| Docs reconciled with the binary | **PASS** | README/CHANGELOG/install/security/support/benchmarks/release notes and LoRA/Upscale/Merge docs updated in this wave; final gate in S5 |
+
 ## Audit fixes (2026-11-21, after wave R)
 
 A release audit found overstated or stale claims in README/ADR-008/STATUS/benchmarks (single-file wording, benchmark binary
