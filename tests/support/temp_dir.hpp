@@ -34,7 +34,8 @@ private:
 };
 
 // Tests that call product code which refuses writes on drive C: (e.g. `merge`) need a temp base off C:;
-// on hosted CI the system temp is C:\..., while the CTest working directory is the build tree on another drive.
+// on hosted CI the system temp is C:\..., while the CTest working directory is the build tree on another
+// drive.
 inline std::filesystem::path safe_temp_base() {
     auto base = std::filesystem::temp_directory_path();
     if (base.root_name() == L"C:") {
