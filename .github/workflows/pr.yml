@@ -18,7 +18,8 @@ name: pr-quick-gate
 on:
   pull_request:
   push:
-    branches: [main]
+    # ci/** and release/** give a bring-up or release branch hosted verification without a PR.
+    branches: [main, 'ci/**', 'release/**']
 
 permissions:
   contents: read
@@ -293,3 +294,191 @@ jobs:
         with:
           name: sbom
           path: artifacts/sbom/hcsinfer.cdx.json
+
+  # ---------------------------------------------------------------------------------------------------------------
+  # POSIX legs. Each runs the "portable" ctest set (the test preset's label filter: unit | contract | parser |
+  # kernel-cpu); model-dependent tests skip = NOT RUN. Werror stays ON (HCS_WARNINGS_AS_ERRORS default) on HCS targets.
+  # ---------------------------------------------------------------------------------------------------------------
+  linux:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux-gcc, runner: ubuntu-24.04, preset: linux-gcc-release }
+          - { name: linux-clang, runner: ubuntu-24.04, preset: linux-clang-release }
+          - { name: linux-arm64, runner: ubuntu-24.04-arm, preset: linux-arm64-release }
+    defaults:
+      run:
+        shell: bash
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_MAXSIZE: 500M
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ninja-build ccache
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .ccache
+          key: ccache-${{ matrix.name }}-${{ github.sha }}
+          restore-keys: ccache-${{ matrix.name }}-
+      - name: Tool versions
+        run: |
+          mkdir -p artifacts
+          {
+            echo "uname: $(uname -srm)"
+            echo "cmake: $(cmake --version | head -1)"
+            echo "ninja: $(ninja --version)"
+            echo "gcc: $(gcc --version | head -1)"
+            echo "clang: $(clang --version 2>&1 | head -1 || true)"
+            echo "submodules:"; git submodule status
+          } | tee artifacts/environment-${{ matrix.name }}.txt
+      - name: Configure (${{ matrix.preset }})
+        run: |
+          cmake --preset ${{ matrix.preset }} \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }} -j4
+      - name: List discovered tests
+        run: ctest --preset ${{ matrix.preset }} -N | tee artifacts/ctest-list-${{ matrix.name }}.txt
+      - name: ctest (portable set, no models available)
+        run: |
+          set -o pipefail
+          ctest --preset ${{ matrix.preset }} --output-on-failure --no-tests=error 2>&1 |
+            tee artifacts/ctest-${{ matrix.name }}.txt
+      - name: Smoke the built binary
+        run: |
+          exe="$(find build/${{ matrix.preset }} -type f -name HCSInfer | head -1)"
+          test -n "$exe"
+          "$exe" --version
+          "$exe" doctor --json --no-vulkan > artifacts/doctor-${{ matrix.name }}.json
+          python3 -c "import json; r=json.load(open('artifacts/doctor-${{ matrix.name }}.json')); print('doctor ok; keys:', sorted(r)[:8])"
+      - name: Report skipped (NOT RUN) tests
+        if: always()
+        run: |
+          f="artifacts/ctest-${{ matrix.name }}.txt"
+          if [ -f "$f" ]; then
+            echo "NOT RUN (skipped, need HCS_TEST_GGUF or a GPU build): $(grep -c '(Skipped)' "$f" || true)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: ci-evidence-${{ matrix.name }}
+          path: artifacts/*
+          if-no-files-found: warn
+
+  macos-arm64:
+    name: macos-arm64
+    runs-on: macos-15
+    timeout-minutes: 120
+    # continue-on-error until a first hosted run proves it (macOS is best effort in V1.1, see docs/ci.md). A failure
+    # here is reported, never counted as PASS.
+    continue-on-error: true
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Install build tools
+        run: brew install ninja ccache
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/Library/Caches/ccache
+          key: ccache-macos-arm64-${{ github.sha }}
+          restore-keys: ccache-macos-arm64-
+      - name: Configure
+        run: |
+          cmake --preset macos-arm64-release \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+      - name: Build
+        run: cmake --build --preset macos-arm64-release -j4
+      - name: ctest (portable set, no models available)
+        run: |
+          set -o pipefail
+          mkdir -p artifacts
+          ctest --preset macos-arm64-release --output-on-failure --no-tests=error 2>&1 | tee artifacts/ctest-macos-arm64.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: ci-evidence-macos-arm64
+          path: artifacts/*
+          if-no-files-found: warn
+
+  linux-vulkan-smoke:
+    name: linux-vulkan-smoke (lavapipe)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_MAXSIZE: 500M
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Install build tools + software Vulkan (lavapipe)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ninja-build ccache \
+            libvulkan-dev vulkan-tools mesa-vulkan-drivers glslc spirv-tools
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .ccache
+          key: ccache-linux-vulkan-${{ github.sha }}
+          restore-keys: ccache-linux-vulkan-
+      - name: Vulkan environment
+        run: |
+          mkdir -p artifacts
+          icd="$(ls /usr/share/vulkan/icd.d/lvp_icd*.json | head -1)"
+          echo "VK_ICD_FILENAMES=$icd" >> "$GITHUB_ENV"
+          { echo "icd: $icd"; glslc --version | head -2; spirv-val --version | head -1; } | tee artifacts/vulkan-tools.txt
+          VK_ICD_FILENAMES="$icd" vulkaninfo --summary | tee artifacts/vulkaninfo.txt
+      - name: Configure (linux-release-vulkan)
+        run: |
+          cmake --preset linux-release-vulkan \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+      - name: Build
+        run: cmake --build --preset linux-release-vulkan -j4
+      - name: ctest (portable set; tests that need a GPU or models skip = NOT RUN)
+        run: |
+          set -o pipefail
+          ctest --preset linux-release-vulkan --output-on-failure --no-tests=error 2>&1 |
+            tee artifacts/ctest-linux-vulkan.txt
+      - name: doctor --json must enumerate a Vulkan device
+        run: |
+          exe="$(find build/linux-release-vulkan -type f -name HCSInfer | head -1)"
+          test -n "$exe"
+          "$exe" doctor --json > artifacts/doctor-vulkan.json
+          python3 - <<'PY'
+          import json
+          r = json.load(open("artifacts/doctor-vulkan.json"))
+          v = r["vulkan"]
+          devs = v.get("devices", [])
+          print("vulkan status:", v.get("status"), "devices:", len(devs))
+          for d in devs:
+              print(" -", d.get("name"), d.get("api_version"), d.get("device_type"))
+          assert isinstance(devs, list) and len(devs) >= 1, "no Vulkan device enumerated: " + json.dumps(v)[:500]
+          PY
+      - name: Note
+        run: |
+          echo "lavapipe is a CPU Vulkan implementation: this proves loader + device enumeration + build, NOT Radeon 680M execution and NOT real-model inference (NOT RUN, see hardware.yml)." >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: ci-evidence-linux-vulkan
+          path: artifacts/*
+          if-no-files-found: warn
