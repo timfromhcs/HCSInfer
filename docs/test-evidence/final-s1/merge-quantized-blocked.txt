@@ -1,0 +1,2 @@
+error: input 1 ('sd_turbo-f16-q8_0.gguf') has 1323 tensors, the base has 1131 [invalid_argument]
+MERGE_EXIT=2

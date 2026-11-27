@@ -1,0 +1,12 @@
+{
+  "pixel_identical": false,
+  "max_abs_diff": 255,
+  "mean_abs_diff": 53.96160125732422,
+  "frac_pixels_differing": 1.0,
+  "frac_pixels_diff_gt8": 0.9879188537597656,
+  "psnr_db": 11.495334351988793,
+  "ssim_luma": 0.6419638588915877,
+  "byte_identical": false,
+  "sha256_a": "7fb1ec1ec3754e5a36801ce39825f658c5b211128c88c323a9f189b6c4b82969",
+  "sha256_b": "ba85ac65b5097f4d267918409fef39e56f8d3286741edf53af67421a8b1491ea"
+}

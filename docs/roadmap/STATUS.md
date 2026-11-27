@@ -69,6 +69,19 @@ ealmodel.lock`. Evidence: `docs/test-evidence/wave-a/a4/`.
 * Documentation audit: `docs/test-evidence/wave-a/a4/DOC_AUDIT.md` (stale CI / "never pushed" statements corrected in this file, README, packaging, release notes, CHANGELOG).
   Older statements further down that still say "never pushed" or "NOT RUN" for the hosted release workflow are superseded by this section.
 
+## S1 (2026-11-27): new-feature correctness with real files
+
+Evidence: `docs/test-evidence/final-s1/README.md`. Branch `release/v1.1-stable` at `daf4c3e` + this wave.
+
+| Item | Status | Proven / not proven |
+|---|---|---|
+| Real image LoRA (LCM-LoRA SD1.5, id `lcm-sd15`) | **PASS** | CLI render with and without the LoRA at the same seed; JSON reports the applied id/weight; PSNR 11.50 dB / SSIM 0.64 prove a real change; both PNGs viewed and coherent. `lora-{baseline,real,compare}` |
+| Real 4K ONNX upscale (Real-ESRGAN x4) | **PASS** | 512x512 -> 3840x3840, 4 tiles, 73.3 s, CPU provider explicitly reported (no DirectML in this ORT build), viewed image has no visible seams. `upscale-real.txt` |
+| `HCSInfer tune --suite quick` on Radeon 680M | **PASS** | 10 results, all correct + 3 identical runs; 0 kernels default-enabled because the upstream GGML Vulkan op baseline is NOT RUN; noisy f32 GEMM bucket rejected. `tune-quick.json` |
+| Merge of two distinct real models | **BLOCKED** | No same-architecture float pair locally; quantized SD1.5 + SD-Turbo gives a clean `invalid_argument` (1131 vs 1323 tensors), quantized self-merge gives `unsupported` (exit 10). Downloads require owner approval. |
+| LoRA/upscale/merge/admission/vault/CLI/planner/image-profile/guard tests | **PASS** | covered by the S0 CPU (1054/1054) and Vulkan (1085/1085) CTest runs; new features are not mocks in those suites where a real file was available |
+| Real trainer run, real `prime-agent` session, real WebGPU | NOT RUN | external model/credential/hardware dependencies |
+
 ## Audit fixes (2026-11-21, after wave R)
 
 A release audit found overstated or stale claims in README/ADR-008/STATUS/benchmarks (single-file wording, benchmark binary

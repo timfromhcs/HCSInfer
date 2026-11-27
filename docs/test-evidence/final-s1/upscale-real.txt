@@ -1,0 +1,25 @@
+{
+  "backend": "cpu",
+  "bytes": 14905707,
+  "device": "AMD Ryzen 7 7735HS with Radeon Graphics         (CPU)",
+  "generation_ms": 88781.4772,
+  "height": 3840,
+  "load_ms": 145.9228,
+  "mode": "generate",
+  "model": "D:\\HCSModels\\diffusion\\sd15-q8_0.gguf",
+  "output": "D:\\HCSScratch\\s1\\sd15-4k-upscale.png",
+  "preset": "",
+  "schema_version": 1,
+  "steps": 8,
+  "total_ms": 165065.0983,
+  "upscale": {
+    "from_height": 512,
+    "from_width": 512,
+    "ms": 73286.0179,
+    "provider": "CPU (DirectML unavailable: this onnxruntime.dll does not export the DirectML provider)",
+    "status": "done",
+    "tiles": 4
+  },
+  "width": 3840
+}
+UPSCALE_EXIT=0

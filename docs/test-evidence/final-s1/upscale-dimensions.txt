@@ -1,0 +1,1 @@
+png_dimensions (3840, 3840) bytes 14905707
