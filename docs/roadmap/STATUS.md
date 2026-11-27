@@ -93,6 +93,20 @@ Evidence: `docs/test-evidence/final-s2/README.md`. Branch `release/v1.1-stable` 
 | HTTP/MCP real inference and agentic eval | **PASS** | S0 CPU and Vulkan CTest e2e suites (see S0 section); `e2e_llama_agentic_real` PASS with `HCS_TEST_LFM3` on both builds. |
 | Benchmark provenance | caveat | the EXEs were configured at `6bfe340+dirty`; S4 rebuilds static EXEs from the final clean tree and records hashes. |
 
+## S3 (2026-11-27): hardening / soak
+
+Evidence: `docs/test-evidence/final-s3/README.md` (branch `release/v1.1-stable`, commit `35c3bd6` + this wave).
+
+| Item | Status | Evidence / reason |
+|---|---|---|
+| Full soak profile (100 load/unload cycles, 30 min generation, vision/image repeats, cancel storm, shutdown, unplug fault injection, HTTP storm) | **PASS** | `soak-full/summary.json`: **13/13 phases PASS**, exit 0; 100 cycles 118.8 s, 30 vision runs, 20 diffusion runs, 60 cancel rounds, 3 shutdown phases, 30-minute generation (1807.3 s), 100 unplug-injection rounds, HttpStorm 63.1 s. Free RAM 11.54 GB logged before the run. |
+| Leak / resource growth | **PASS** | `soak-core.jsonl`: load/unload private growth 41.0 MiB (limit 128), handle growth 0; 30-min generation private growth 5.68 MiB, handle growth -1; all verdicts PASS. |
+| Throughput drift over 30 minutes | **PASS** | 256 samples, first fifth 18.97 t/s vs last fifth 19.09 t/s (**+0.63%**). |
+| HttpStorm | **PASS** | `http-storm.json`: 18/18 checks (FIN/RST storm, abandoned requests, 64 sockets, unload/reload, kill+restart, Ctrl+Break). |
+| Parser fuzz smoke (UBSan, no ASan) | **PASS (smoke)** | `libfuzzer-smoke.txt`: 376,006 executions in 61 s from an empty corpus, 0 crashes / 0 UBSan reports, peak RSS 30 MB. ASan unavailable with this toolchain; long campaign NOT RUN. |
+| Runtime XSS regression | **PASS** | `xss/xss-run.txt`: 9/9 checks; previously skipped because `websockets` was missing. |
+| Physical USB pull, true RAM exhaustion, Vulkan soak, long fuzz, stress harness abort re-run | NOT RUN | documented fault injection/substitutes only |
+
 ## Audit fixes (2026-11-21, after wave R)
 
 A release audit found overstated or stale claims in README/ADR-008/STATUS/benchmarks (single-file wording, benchmark binary

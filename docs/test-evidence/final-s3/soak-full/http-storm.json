@@ -1,0 +1,173 @@
+{
+ "schema_version": 1,
+ "timestamp_utc": "2026-11-27T02:28:10Z",
+ "rounds": 40,
+ "checks": [
+  {
+   "check": "serve starts, prints port and token",
+   "pass": true,
+   "detail": "['HCSInfer web UI: http://127.0.0.1:60231/  (enter the token on the page, or open it with #token=<token> appended; the fragment is never sent to the server)', 'HCSInfer API listening on http://127.0.0.1:60231', 'HCSInfer API token: 53bf43b0e30deb3d95d0a6bca166e662022e3da616ab7cecdf4ccdd1cfd6c941']"
+  },
+  {
+   "check": "LFM3-Omni-2B Q8_0 is listed",
+   "pass": true,
+   "detail": "['flux2-vae', 'lcm-lora-sdv1-5', 'lfm3-omni-2b-q8_0', 'lfm3-omni-2b-q8_0-2', 'mmproj-lfm3-omni-2b-q8_0', 'mmproj-lfm3-omni-2b-q8_0-2', 'mmproj-smolvlm2-500m-video-instruct-q8_0', 'qwen3vl-4b-instruct-q4_k_m', 'smolvlm2-500m-video-instruct-q8_0']"
+  },
+  {
+   "check": "baseline chat (model auto-load) works",
+   "pass": true,
+   "detail": "(200, 'The wind howled through the open doors of the Old Mariner\u2019s Lighthouse', 2.352297782897949)"
+  },
+  {
+   "check": "A: server survived the streaming disconnect storm",
+   "pass": true,
+   "detail": "['{\"ts\":\"2026-11-27T02:27:31.897Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"request\",\"method\":\"POST\",\"path\":\"/v1/chat/completions\",\"status\":\"200\",\"rid\":\"req-7266ed04bbcf000d\"}', '{\"ts\":\"2026-11-27T02:27:32.291Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"request\",\"method\":\"POST\",\"path\":\"/v1/chat/completions\",\"status\":\"200\",\"rid\":\"req-f9198de1b7aaf672\"}', '{\"ts\":\"2026-11-27T02:27:32.767Z\",\"level\":\"info\",\"component\":\"api\",\"msg\":\"request\",\"method\":\"POST\",\"path\":\"/v1/chat/completions\",\"status\":\"200\",\"ri"
+  },
+  {
+   "check": "A: engine is free again after the storm (short chat promptly served)",
+   "pass": true,
+   "detail": "(0.4488675594329834, 0.44888782501220703)"
+  },
+  {
+   "check": "B: server alive after abandoned non-streaming requests",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "B: abandoned requests were cancelled (engine free, not stuck generating 512 tokens each)",
+   "pass": true,
+   "detail": "(0.6871917247772217, 0.6872026920318604)"
+  },
+  {
+   "check": "C: health still answers while ~64 idle/half-open connections are held",
+   "pass": true,
+   "detail": "(200, 1.9091038703918457)"
+  },
+  {
+   "check": "C: server alive after the flood",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "C: health recovers promptly after the flood is released",
+   "pass": true,
+   "detail": "0.0007817745208740234"
+  },
+  {
+   "check": "D: unload during a live stream / reload churn gave only clean statuses",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "D: chat works after churn",
+   "pass": true,
+   "detail": "(1.5723204612731934, 1.572326421737671)"
+  },
+  {
+   "check": "server private-bytes growth within limit (192 MB)",
+   "pass": true,
+   "detail": "5.09375"
+  },
+  {
+   "check": "server handle growth within limit (48)",
+   "pass": true,
+   "detail": "0"
+  },
+  {
+   "check": "server thread growth within limit (8)",
+   "pass": true,
+   "detail": "2"
+  },
+  {
+   "check": "E: restart after hard kill (same state dir)",
+   "pass": true,
+   "detail": "['HCSInfer API listening on http://127.0.0.1:60491', 'HCSInfer API token: f26baa6bf0e4c1da70c695637da6c9e7162c5486881c0cd3dadb3431fe352189', 'HCSInfer web UI: http://127.0.0.1:60491/  (enter the token on the page, or open it with #token=<token> appended; the fragment is never sent to the server)', 'HCSInfer API token: f26baa6bf0e4c1da70c695637da6c9e7162c5486881c0cd3dadb3431fe352189']"
+  },
+  {
+   "check": "E: chat works after crash recovery",
+   "pass": true,
+   "detail": "(200, 'The wind howled through the open doors of the Old Mariner\u2019s ', 2.237065553665161)"
+  },
+  {
+   "check": "F: server exits on Ctrl+Break while generating (rc=0, 0.4s)",
+   "pass": true,
+   "detail": "0"
+  }
+ ],
+ "server_samples": [
+  {
+   "label": "after-first-load-and-pool-warmup",
+   "t": 1795746434.5902863,
+   "private_bytes": 2154676224,
+   "working_set": 2550104064,
+   "handles": 290,
+   "threads": 64
+  },
+  {
+   "label": "A-round-10",
+   "t": 1795746439.3501654,
+   "private_bytes": 2156425216,
+   "working_set": 2551857152,
+   "handles": 291,
+   "threads": 64
+  },
+  {
+   "label": "A-round-20",
+   "t": 1795746444.0641367,
+   "private_bytes": 2156601344,
+   "working_set": 2552037376,
+   "handles": 291,
+   "threads": 64
+  },
+  {
+   "label": "A-round-30",
+   "t": 1795746449.0916939,
+   "private_bytes": 2156855296,
+   "working_set": 2552303616,
+   "handles": 291,
+   "threads": 64
+  },
+  {
+   "label": "A-round-40",
+   "t": 1795746454.0642843,
+   "private_bytes": 2157101056,
+   "working_set": 2552549376,
+   "handles": 291,
+   "threads": 64
+  },
+  {
+   "label": "after-A",
+   "t": 1795746454.5795062,
+   "private_bytes": 2155581440,
+   "working_set": 2551029760,
+   "handles": 290,
+   "threads": 64
+  },
+  {
+   "label": "after-B",
+   "t": 1795746469.4649365,
+   "private_bytes": 2155941888,
+   "working_set": 2551386112,
+   "handles": 290,
+   "threads": 66
+  },
+  {
+   "label": "after-C",
+   "t": 1795746471.7195249,
+   "private_bytes": 2156146688,
+   "working_set": 2551574528,
+   "handles": 290,
+   "threads": 66
+  },
+  {
+   "label": "after-D",
+   "t": 1795746486.654946,
+   "private_bytes": 2160017408,
+   "working_set": 2555281408,
+   "handles": 290,
+   "threads": 66
+  }
+ ],
+ "verdict": "PASS",
+ "failed": []
+}

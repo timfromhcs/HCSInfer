@@ -1,0 +1,23 @@
+﻿{
+    "schema_version":  1,
+    "label":  "final-cpu",
+    "profile":  "full",
+    "timestamp_utc":  "2026-11-27T01:47:50.4874719Z",
+    "git_commit":  "35c3bd629bc0",
+    "git_dirty":  true,
+    "os":  "Microsoft Windows 11 Pro 26200",
+    "cpu":  "AMD Ryzen 7 7735HS with Radeon Graphics        ",
+    "ram_bytes":  21245952000,
+    "exe_test":  "D:\\HCSInfer\\build\\windows-msvc-release\\bin\\hcs_test_soak_core.exe",
+    "knobs":  {
+                  "HCS_SOAK_SHUTDOWN_ROUNDS":  5,
+                  "HCS_SOAK_SWITCH_CYCLES":  20,
+                  "Storm":  40,
+                  "HCS_SOAK_IMAGE_RUNS":  20,
+                  "HCS_SOAK_UNPLUG_ROUNDS":  100,
+                  "HCS_SOAK_GEN_SECONDS":  1800,
+                  "HCS_SOAK_CYCLES":  100,
+                  "HCS_SOAK_VISION_RUNS":  30,
+                  "HCS_SOAK_CANCEL_ROUNDS":  60
+              }
+}

@@ -1,0 +1,53 @@
+{
+  "tool": "studio_xss.py",
+  "fake_model_reply": true,
+  "browser": "msedge.exe",
+  "checks": [
+    {
+      "check": "connected",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "reply finished",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "precondition: hostile payload reached the UI intact",
+      "status": "PASS",
+      "detail": "## Heading\n**bold word** and `inline code`\n<img src=x onerror=\"document.title='p"
+    },
+    {
+      "check": "no img/script/svg/iframe/object/embed/handler element created",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "no javascript: href created",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "page title unchanged (no payload ran)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "payload shown as text",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "markdown still rendered (bold + code block)",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "check": "no console errors / CSP violations",
+      "status": "PASS",
+      "detail": ""
+    }
+  ],
+  "result_status": "PASS"
+}
