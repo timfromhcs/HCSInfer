@@ -1,0 +1,104 @@
+name: pypi
+
+# Publishes already-built wheels/sdist to (Test)PyPI with Trusted Publishing (OIDC, no API token) and attestations.
+# Never runs on tag pushes. It starts only from a manual dispatch or when a GitHub release is published, and the
+# `pypi` / `testpypi` environments (with required reviewers) gate the actual upload. Owner setup: docs/pypi-publishing.md
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: "Target index"
+        type: choice
+        options: [testpypi, pypi]
+        default: testpypi
+      wheels-run-id:
+        description: "Run id of a wheels.yml run whose wheel-* and sdist artifacts to publish (dispatch only)"
+        type: string
+        required: false
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    name: collect distributions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      count: ${{ steps.list.outputs.count }}
+    steps:
+      - name: Require a wheels run id for manual dispatch
+        if: github.event_name == 'workflow_dispatch' && inputs.wheels-run-id == ''
+        shell: bash
+        run: |
+          echo '::error::workflow_dispatch needs wheels-run-id (a wheels.yml run)'; exit 1
+      - name: Download distributions from a wheels.yml run
+        if: github.event_name == 'workflow_dispatch' && inputs.wheels-run-id != ''
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: "{wheel-*,sdist}"
+          path: dist
+          merge-multiple: true
+          run-id: ${{ inputs.wheels-run-id }}
+          github-token: ${{ github.token }}
+      - name: Download distributions attached to the published release
+        if: github.event_name == 'release'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          mkdir dist
+          # fails closed when the release carries no wheels/sdist
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir dist --pattern '*.whl' --pattern '*.tar.gz'
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - name: Verify distributions
+        id: list
+        shell: bash
+        run: |
+          set -euo pipefail
+          ls -l dist
+          python -m pip install --upgrade twine
+          python -m twine check --strict dist/*
+          echo "count=$(ls dist | wc -l)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: dist-to-publish
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    name: publish to ${{ inputs.repository || 'pypi' }}
+    needs: collect
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: ${{ inputs.repository || 'pypi' }}
+      url: ${{ (inputs.repository || 'pypi') == 'testpypi' && 'https://test.pypi.org/p/hcsinfer' || 'https://pypi.org/p/hcsinfer' }}
+    permissions:
+      id-token: write # Trusted Publishing (OIDC) and attestations; no long-lived secret
+      contents: read
+    steps:
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: dist-to-publish
+          path: dist
+      - name: Publish to TestPyPI
+        if: inputs.repository == 'testpypi'
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          attestations: true
+          packages-dir: dist
+      - name: Publish to PyPI
+        if: inputs.repository != 'testpypi'
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
+        with:
+          attestations: true
+          packages-dir: dist

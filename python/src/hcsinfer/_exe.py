@@ -50,17 +50,46 @@ def _which_native_exe() -> Optional[Path]:
     return None
 
 
+def _exe_suffix() -> str:
+    return ".exe" if sys.platform == "win32" else ""
+
+
 def _vulkan_loader_present() -> bool:
-    root = os.environ.get("SystemRoot")
-    return bool(root) and (Path(str(root)) / "System32" / "vulkan-1.dll").is_file()
+    """True when a system Vulkan loader exists (Windows ``vulkan-1.dll``; Linux ``libvulkan.so.1``; never macOS)."""
+    if sys.platform == "win32":
+        root = os.environ.get("SystemRoot")
+        return bool(root) and (Path(str(root)) / "System32" / "vulkan-1.dll").is_file()
+    if sys.platform.startswith("linux"):
+        try:
+            from ctypes.util import find_library
+
+            if find_library("vulkan"):
+                return True
+        except Exception:  # find_library shells out to ldconfig/gcc; any failure means "unknown" -> fall through
+            pass
+        for d in ("/usr/lib", "/usr/lib64", "/lib", "/lib64", "/usr/lib/x86_64-linux-gnu", "/usr/lib/aarch64-linux-gnu",
+                  "/lib/x86_64-linux-gnu", "/lib/aarch64-linux-gnu"):
+            if (Path(d) / "libvulkan.so.1").exists():
+                return True
+    return False
+
+
+def _ensure_executable(p: Path) -> Path:
+    """Wheels preserve the exec bit, but some installers do not; repair it when we may (POSIX only)."""
+    if sys.platform != "win32" and not os.access(p, os.X_OK):
+        try:
+            p.chmod(p.stat().st_mode | 0o111)
+        except OSError:
+            pass
+    return p
 
 
 def find_exe(prefer: Optional[str] = None) -> Path:
     """Return the HCSInfer executable.
 
-    Order: ``HCSINFER_EXE`` (explicit); the bundled ``bin/HCSInfer-vulkan.exe`` when the system Vulkan loader is
-    present and ``prefer`` / ``HCSINFER_BACKEND`` is not ``cpu``; the bundled CPU ``bin/HCSInfer.exe``; ``HCSInfer``
-    on PATH.
+    Order: ``HCSINFER_EXE`` (explicit); the bundled ``bin/HCSInfer-vulkan[.exe]`` when the system Vulkan loader is
+    present and ``prefer`` / ``HCSINFER_BACKEND`` is not ``cpu``; the bundled CPU ``bin/HCSInfer[.exe]``;
+    ``HCSInfer`` on PATH.
     """
     explicit = os.environ.get("HCSINFER_EXE")
     if explicit:
@@ -71,23 +100,23 @@ def find_exe(prefer: Optional[str] = None) -> Path:
     backend = (prefer or os.environ.get("HCSINFER_BACKEND") or "auto").lower()
     if backend not in ("auto", "cpu", "vulkan"):
         raise ValueError("backend must be 'auto', 'cpu' or 'vulkan'")
-    vk, cpu = _BIN / "HCSInfer-vulkan.exe", _BIN / "HCSInfer.exe"
+    sfx = _exe_suffix()
+    vk, cpu = _BIN / f"HCSInfer-vulkan{sfx}", _BIN / f"HCSInfer{sfx}"
     if backend == "vulkan" and vk.is_file():
-        return vk
+        return _ensure_executable(vk)
     if backend == "auto" and vk.is_file() and _vulkan_loader_present():
-        return vk
+        return _ensure_executable(vk)
     if cpu.is_file():
-        return cpu
+        return _ensure_executable(cpu)
     if vk.is_file() and backend != "cpu" and _vulkan_loader_present():
-        return vk
+        return _ensure_executable(vk)
     found = _which_native_exe()
     if found:
         return found
     raise ExeNotFoundError(
         "HCSInfer executable not found: this install has no bundled runtime for your platform. "
-        "Set HCSINFER_EXE or put HCSInfer.exe on PATH."
+        "Set HCSINFER_EXE or put HCSInfer on PATH."
     )
-
 
 def run_cli(args: Sequence[str], *, exe: Optional[Path] = None, timeout: Optional[float] = None,
             state_dir: Optional[str] = None) -> "subprocess.CompletedProcess[str]":
