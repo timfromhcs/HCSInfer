@@ -2,7 +2,9 @@
 # OSV vulnerability gate, web demo dist.
 #
 # Trigger: a pushed tag `v*` (creates a DRAFT release; nothing is published automatically) or manual dispatch (build
-# and upload artifacts only). Hardware tests (Radeon/Vulkan execution, real models) are NOT part of this workflow:
+# and upload artifacts only). Dispatch input `dry_run` (default true) runs the whole pipeline, validates versions against
+# CMake/pyproject (no tag), keeps osv/vulkan/linux/notes gates non-blocking (reported only), uploads the assembled files
+# as the artifact `release-candidate-files` and never calls `gh release`. Real stable tags keep every gate blocking. Hardware tests (Radeon/Vulkan execution, real models) are NOT part of this workflow:
 # they live in hardware.yml and must be run on the self-hosted target machine before the draft is published.
 #
 # What this workflow proves on a hosted runner: the static-CRT Windows builds link, the EXE imports only system DLLs
@@ -39,6 +41,11 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: build and verify everything, upload the assembled files as the 'release-candidate-files' artifact, never create or touch a GitHub release"
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -63,6 +70,8 @@ jobs:
     outputs:
       version: ${{ steps.check.outputs.version }}
       prerelease: ${{ steps.check.outputs.prerelease }}
+      # true on a manual dispatch with dry_run (the default): release-only gates are reported, not enforced.
+      dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -132,7 +141,7 @@ jobs:
     # Release candidates tolerate a failed Vulkan build (the SDK install is the least-proven step and the hosted
     # runner has no GPU); the artifact is then simply absent and the draft says so. STABLE tags require it: there the
     # failure is not tolerated and the release job additionally refuses to run without the file.
-    continue-on-error: ${{ needs.version-consistency.outputs.prerelease == 'true' }}
+    continue-on-error: ${{ needs.version-consistency.outputs.prerelease == 'true' || needs.version-consistency.outputs.dry_run == 'true' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -210,8 +219,8 @@ jobs:
     needs: [version-consistency]
     runs-on: ubuntu-24.04
     timeout-minutes: 150
-    # Required for STABLE tags (this is the Linux release binary); tolerated for release candidates.
-    continue-on-error: ${{ needs.version-consistency.outputs.prerelease == 'true' }}
+    # Required for STABLE tags (this is the Linux release binary); tolerated for release candidates and dry runs.
+    continue-on-error: ${{ needs.version-consistency.outputs.prerelease == 'true' || needs.version-consistency.outputs.dry_run == 'true' }}
     defaults:
       run:
         shell: bash
@@ -432,8 +441,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     # Fails on HIGH/CRITICAL (and unknown-severity) findings that osv-allowlist.json does not justify. For release
-    # candidates the result is reported but does not stop the draft; a STABLE tag requires it (release job condition).
-    continue-on-error: ${{ needs.version-consistency.outputs.prerelease == 'true' }}
+    # candidates and dry runs the result is reported but does not stop the pipeline; a STABLE tag requires it (release
+    # job condition).
+    continue-on-error: ${{ needs.version-consistency.outputs.prerelease == 'true' || needs.version-consistency.outputs.dry_run == 'true' }}
     env:
       OSV_SCANNER_VERSION: "2.7.1"
       # sha256 of osv-scanner_linux_amd64 from the official osv-scanner_SHA256SUMS of that release
@@ -528,7 +538,7 @@ jobs:
     if: >-
       ${{ !cancelled() && needs.exe-cpu.result == 'success' && needs.bin-win-amd64.result == 'success'
       && needs.wheels.result == 'success' && needs.web.result == 'success'
-      && (needs.version-consistency.outputs.prerelease == 'true'
+      && (needs.version-consistency.outputs.prerelease == 'true' || needs.version-consistency.outputs.dry_run == 'true'
       || (needs.exe-vulkan.result == 'success' && needs.exe-linux-x86_64.result == 'success' && needs.osv-scan.result == 'success')) }}
     runs-on: windows-latest
     timeout-minutes: 30
@@ -537,6 +547,10 @@ jobs:
     env:
       VERSION: ${{ needs.version-consistency.outputs.version }}
       PRERELEASE: ${{ needs.version-consistency.outputs.prerelease }}
+      DRY_RUN: ${{ needs.version-consistency.outputs.dry_run }}
+      # Strict = a real stable release: missing required assets and unfinished notes are errors. Pre-releases and dry
+      # runs report them instead.
+      STRICT: ${{ needs.version-consistency.outputs.prerelease != 'true' && needs.version-consistency.outputs.dry_run != 'true' }}
       LINUX_X64: ${{ needs.exe-linux-x86_64.outputs.built }}
       LINUX_X64_VULKAN: ${{ needs.exe-linux-x86_64.outputs.vulkan }}
       LINUX_ARM64: ${{ needs.exe-linux-aarch64.outputs.built }}
@@ -555,7 +569,10 @@ jobs:
         run: |
           $notes = "docs/release-notes-$($env:VERSION).md"
           if (-not (Test-Path $notes)) { throw "release notes file missing: $notes" }
-          if ($env:PRERELEASE -ne 'true' -and (Select-String -Path $notes -Pattern 'TO BE FILLED BY COORDINATOR' -Quiet)) {
+          if (($env:DRY_RUN -eq 'true') -and (Select-String -Path $notes -Pattern 'TO BE FILLED BY COORDINATOR' -Quiet)) {
+            "WARNING (dry run): $notes still contains the 'TO BE FILLED BY COORDINATOR' block; a stable tag would be refused" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          }
+          elseif ($env:STRICT -eq 'true' -and (Select-String -Path $notes -Pattern 'TO BE FILLED BY COORDINATOR' -Quiet)) {
             throw "$notes still contains the 'TO BE FILLED BY COORDINATOR' block; fill it from evidence before tagging a stable release"
           }
       - name: Assemble release files
@@ -567,13 +584,13 @@ jobs:
           Copy-Item $cpu release\HCSInfer.exe
           $vk = 'staged\hcsinfer-bin-win_amd64\HCSInfer-vulkan.exe'
           if (Test-Path $vk) { Copy-Item $vk release\HCSInfer-vulkan.exe }
-          elseif ($env:PRERELEASE -eq 'true') { "WARNING: HCSInfer-vulkan.exe is absent from this release candidate" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY }
+          elseif ($env:STRICT -ne 'true') { "WARNING: HCSInfer-vulkan.exe is absent from this release candidate / dry run" | Tee-Object -Append $env:GITHUB_STEP_SUMMARY }
           else { throw 'stable release requires HCSInfer-vulkan.exe (exe-vulkan produced no artifact)' }
           Get-ChildItem staged\exe-cpu -Recurse -Include *.zip | Copy-Item -Destination release
           # Linux / macOS tar.gz (pkg-<os>-<arch> artifacts; a platform that did not build simply has no directory).
           $tars = @(Get-ChildItem staged -Directory -Filter 'pkg-*' | ForEach-Object { Get-ChildItem $_.FullName -File -Filter '*.tar.gz' })
           $tars | Copy-Item -Destination release
-          if ($env:PRERELEASE -ne 'true' -and -not (Test-Path ("release\HCSInfer-$($env:VERSION)-linux-x86_64.tar.gz"))) {
+          if ($env:STRICT -eq 'true' -and -not (Test-Path ("release\HCSInfer-$($env:VERSION)-linux-x86_64.tar.gz"))) {
             throw 'stable release requires the Linux x86_64 CPU archive'
           }
           # Wheels / sdist come from wheels.yml: wheel-<plat>, wheel-pure, sdist.
@@ -606,7 +623,7 @@ jobs:
           [System.IO.File]::WriteAllText((Join-Path (Get-Location) 'release\SHA256SUMS.txt'), (($lines -join "`n") + "`n"), [System.Text.Encoding]::ASCII)
           Get-Content release\SHA256SUMS.txt
           # Both Windows executables are mandatory for a stable tag (also enforced by the job condition above).
-          if ($env:PRERELEASE -ne 'true') {
+          if ($env:STRICT -eq 'true') {
             foreach ($n in 'HCSInfer.exe', 'HCSInfer-vulkan.exe') { if (-not (Test-Path "release\$n")) { throw "stable release is missing $n" } }
           }
       - name: Verify SHA256SUMS.txt (sha256sum -c, LF only)
@@ -619,11 +636,11 @@ jobs:
           test "$(wc -l < SHA256SUMS.txt)" = "$(find . -maxdepth 1 -type f ! -name SHA256SUMS.txt | wc -l)"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: release-files
+          name: ${{ needs.version-consistency.outputs.dry_run == 'true' && 'release-candidate-files' || 'release-files' }}
           path: release/*
           if-no-files-found: error
       - name: Draft GitHub release (tags only; you publish it manually after the hardware tests)
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: ${{ startsWith(github.ref, 'refs/tags/v') && needs.version-consistency.outputs.dry_run != 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
