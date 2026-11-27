@@ -1,0 +1,207 @@
+RAM free GiB before: 10.04
+Test project D:/HCSInfer/.claude/worktrees/wf_f7ef75f3-b55-3/build/windows-msvc-release
+      Start  271: GgufProbe.DiffusionModelIsClassifiedAsImageWithoutMetadata
+ 1/97 Test  #271: GgufProbe.DiffusionModelIsClassifiedAsImageWithoutMetadata ......................   Passed    0.03 sec
+      Start  272: GgufProbe.ArchitectureMarksDiffusion
+ 2/97 Test  #272: GgufProbe.ArchitectureMarksDiffusion ............................................   Passed    0.03 sec
+      Start  288: GgufProbe.DiffusionSignatureReadsCrossAttentionWidth
+ 3/97 Test  #288: GgufProbe.DiffusionSignatureReadsCrossAttentionWidth ............................   Passed    0.03 sec
+      Start  289: GgufProbe.DiffusionSignatureSeesSdxlLabelEmbeddingAndFluxBlocks
+ 4/97 Test  #289: GgufProbe.DiffusionSignatureSeesSdxlLabelEmbeddingAndFluxBlocks .................   Passed    0.03 sec
+      Start  290: GgufProbe.DiffusionSignatureIgnoresWrongRankAndTextModels
+ 5/97 Test  #290: GgufProbe.DiffusionSignatureIgnoresWrongRankAndTextModels .......................   Passed    0.03 sec
+      Start  291: GgufProbe.DiffusionSignatureKeepsTheFirstCrossAttentionTensor
+ 6/97 Test  #291: GgufProbe.DiffusionSignatureKeepsTheFirstCrossAttentionTensor ...................   Passed    0.04 sec
+      Start  318: DiffusionRuntime.GpuPinsKernelChoiceSoNoTimingProbeRuns
+ 7/97 Test  #318: DiffusionRuntime.GpuPinsKernelChoiceSoNoTimingProbeRuns .........................   Passed    0.03 sec
+      Start  319: DiffusionRuntime.CpuKeepsUpstreamDefaults
+ 8/97 Test  #319: DiffusionRuntime.CpuKeepsUpstreamDefaults .......................................   Passed    0.03 sec
+      Start  320: ImageProfiles.Sd15DefaultsAre512x512TwentyStepsEulerA
+ 9/97 Test  #320: ImageProfiles.Sd15DefaultsAre512x512TwentyStepsEulerA ...........................   Passed    0.03 sec
+      Start  321: ImageProfiles.Flux3KeepsTheMeasuredCfgOfOne
+10/97 Test  #321: ImageProfiles.Flux3KeepsTheMeasuredCfgOfOne .....................................   Passed    0.04 sec
+      Start  322: ImageProfiles.UnknownFamilyHasNoProfileAndNoEnvelope
+11/97 Test  #322: ImageProfiles.UnknownFamilyHasNoProfileAndNoEnvelope ............................   Passed    0.03 sec
+      Start  323: ImageProfiles.GuessFamilyFromIdOrFileName
+12/97 Test  #323: ImageProfiles.GuessFamilyFromIdOrFileName .......................................   Passed    0.03 sec
+      Start  324: ImageProfiles.Sd15EnvelopeBoundaries
+13/97 Test  #324: ImageProfiles.Sd15EnvelopeBoundaries ............................................   Passed    0.03 sec
+      Start  325: ImageProfiles.PresetSkipsTheStepCheckButNotTheSizeCheck
+14/97 Test  #325: ImageProfiles.PresetSkipsTheStepCheckButNotTheSizeCheck .........................   Passed    0.03 sec
+      Start  326: ImageProfiles.Flux3MeasuredFastPresetIsInsideTheEnvelope
+15/97 Test  #326: ImageProfiles.Flux3MeasuredFastPresetIsInsideTheEnvelope ........................   Passed    0.04 sec
+      Start  327: ImageProfiles.GuessTurboFamiliesFromName
+16/97 Test  #327: ImageProfiles.GuessTurboFamiliesFromName ........................................   Passed    0.03 sec
+      Start  328: ImageProfiles.ClassifyByTensorShapeBeatsTheFileName
+17/97 Test  #328: ImageProfiles.ClassifyByTensorShapeBeatsTheFileName .............................   Passed    0.03 sec
+      Start  329: ImageProfiles.ClassifyFallsBackToTheNameWhenTheShapeIsUnknown
+18/97 Test  #329: ImageProfiles.ClassifyFallsBackToTheNameWhenTheShapeIsUnknown ...................   Passed    0.03 sec
+      Start  330: ImageProfiles.FluxBlocksMapToFlux3ThroughTheSignature
+19/97 Test  #330: ImageProfiles.FluxBlocksMapToFlux3ThroughTheSignature ...........................   Passed    0.04 sec
+      Start  331: ImageProfiles.TurboProfilesAreCfgOneFewStep
+20/97 Test  #331: ImageProfiles.TurboProfilesAreCfgOneFewStep .....................................   Passed    0.03 sec
+      Start  332: ImageProfiles.TurboEnvelopeRejectsManyStepsAndForeignSizes
+21/97 Test  #332: ImageProfiles.TurboEnvelopeRejectsManyStepsAndForeignSizes ......................   Passed    0.03 sec
+      Start  333: ImageProfiles.PresetsComeFromTheProfile
+22/97 Test  #333: ImageProfiles.PresetsComeFromTheProfile .........................................   Passed    0.03 sec
+      Start  334: ImageProfiles.PresetPointsLieInsideTheirOwnEnvelope
+23/97 Test  #334: ImageProfiles.PresetPointsLieInsideTheirOwnEnvelope .............................   Passed    0.03 sec
+      Start  335: ImageProfiles.BaseFamilyMapsTurboVariantsForLoraCompatibility
+24/97 Test  #335: ImageProfiles.BaseFamilyMapsTurboVariantsForLoraCompatibility ...................   Passed    0.03 sec
+      Start  336: ImageProfiles.SamplerAndSchedulerAllowLists
+25/97 Test  #336: ImageProfiles.SamplerAndSchedulerAllowLists .....................................   Passed    0.03 sec
+      Start  348: GuiAssets.RootServesIndexHtmlWithStrictCsp
+26/97 Test  #348: GuiAssets.RootServesIndexHtmlWithStrictCsp ......................................   Passed    0.03 sec
+      Start  349: GuiAssets.EveryAssetIsServedWithCspAndRightType
+27/97 Test  #349: GuiAssets.EveryAssetIsServedWithCspAndRightType .................................   Passed    0.03 sec
+      Start  350: GuiAssets.StudioStructure
+28/97 Test  #350: GuiAssets.StudioStructure .......................................................   Passed    0.03 sec
+      Start  351: GuiAssets.EmbeddedBytesMatchExpectedMarkers
+29/97 Test  #351: GuiAssets.EmbeddedBytesMatchExpectedMarkers .....................................   Passed    0.03 sec
+      Start  352: GuiAssets.NoExternalUrlsOrInlineCode
+30/97 Test  #352: GuiAssets.NoExternalUrlsOrInlineCode ............................................   Passed    0.11 sec
+      Start  353: GuiAssets.ModelOutputIsRenderedAsDomNodesNeverAsHtml
+31/97 Test  #353: GuiAssets.ModelOutputIsRenderedAsDomNodesNeverAsHtml ............................   Passed    0.03 sec
+      Start  354: GuiAssets.TokenComesFromFragmentNeverQueryString
+32/97 Test  #354: GuiAssets.TokenComesFromFragmentNeverQueryString ................................   Passed    0.04 sec
+      Start  355: GuiAssets.TraversalAndMalformedPathsAreRejected
+33/97 Test  #355: GuiAssets.TraversalAndMalformedPathsAreRejected .................................   Passed    0.04 sec
+      Start  356: GuiAssets.UnknownAssetIs404AndNamespaceEdges
+34/97 Test  #356: GuiAssets.UnknownAssetIs404AndNamespaceEdges ....................................   Passed    0.04 sec
+      Start  357: GuiAssets.OtherPathsAreNotHandled
+35/97 Test  #357: GuiAssets.OtherPathsAreNotHandled ...............................................   Passed    0.03 sec
+      Start  358: GuiAssets.MethodHandling
+36/97 Test  #358: GuiAssets.MethodHandling ........................................................   Passed    0.03 sec
+      Start  359: GuiAssets.NoSecretsEmbedded
+37/97 Test  #359: GuiAssets.NoSecretsEmbedded .....................................................   Passed    0.03 sec
+      Start  360: GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles
+38/97 Test  #360: GuiAssets.EmbeddedBytesAreIdenticalToSourceFiles ................................   Passed    0.04 sec
+      Start  712: UpscaleTiles.SingleTileWhenImageFits
+39/97 Test  #712: UpscaleTiles.SingleTileWhenImageFits ............................................   Passed    0.03 sec
+      Start  713: UpscaleTiles.CoversEveryPixelWithOverlapAndAlignedLastTile
+40/97 Test  #713: UpscaleTiles.CoversEveryPixelWithOverlapAndAlignedLastTile ......................   Passed    0.03 sec
+      Start  714: UpscaleTiles.DegenerateInputs
+41/97 Test  #714: UpscaleTiles.DegenerateInputs ...................................................   Passed    0.03 sec
+      Start  715: UpscaleTarget.LongEdgeExactAspectPreserved
+42/97 Test  #715: UpscaleTarget.LongEdgeExactAspectPreserved ......................................   Passed    0.03 sec
+      Start  716: UpscalePlan.NeverUpscalesBeyondTheCap
+43/97 Test  #716: UpscalePlan.NeverUpscalesBeyondTheCap ...........................................   Passed    0.03 sec
+      Start  717: UpscalePlan.TileSizeShrinksWithTheBudgetAndFailsClosed
+44/97 Test  #717: UpscalePlan.TileSizeShrinksWithTheBudgetAndFailsClosed ..........................   Passed    0.03 sec
+      Start  718: UpscalePlan.FixedTileModelsAndExplicitTile
+45/97 Test  #718: UpscalePlan.FixedTileModelsAndExplicitTile ......................................   Passed    0.03 sec
+      Start  719: UpscaleFeather.MonotonicPositiveAndSumsToOneAcrossAnOverlap
+46/97 Test  #719: UpscaleFeather.MonotonicPositiveAndSumsToOneAcrossAnOverlap .....................   Passed    0.03 sec
+      Start  720: UpscalePipeline.TiledResultEqualsSingleTileResultForAPositionIndependentModel
+47/97 Test  #720: UpscalePipeline.TiledResultEqualsSingleTileResultForAPositionIndependentModel ...   Passed    0.29 sec
+      Start  721: UpscalePipeline.StatsSplitTheStagesAndCountPerTileTime
+48/97 Test  #721: UpscalePipeline.StatsSplitTheStagesAndCountPerTileTime ..........................   Passed    0.10 sec
+      Start  722: UpscalePipeline.PreResizeLandsOnTheTargetAndRunsTheModelOnTheLargerInput
+49/97 Test  #722: UpscalePipeline.PreResizeLandsOnTheTargetAndRunsTheModelOnTheLargerInput ........   Passed    0.47 sec
+      Start  723: UpscalePipeline.PreResizeIsValidatedAndNeverAppliedToAnAlreadyLargeSource
+50/97 Test  #723: UpscalePipeline.PreResizeIsValidatedAndNeverAppliedToAnAlreadyLargeSource .......   Passed    0.03 sec
+      Start  724: UpscalePipeline.ConstantImageStaysConstantAfterBlendAndResample
+51/97 Test  #724: UpscalePipeline.ConstantImageStaysConstantAfterBlendAndResample .................   Passed    0.16 sec
+      Start  725: UpscalePipeline.SeamBlendIsSmoothWhenTilesDisagree
+52/97 Test  #725: UpscalePipeline.SeamBlendIsSmoothWhenTilesDisagree ..............................   Passed    0.03 sec
+      Start  726: UpscalePipeline.FixedTileModelWithPaddingGivesTheSameImage
+53/97 Test  #726: UpscalePipeline.FixedTileModelWithPaddingGivesTheSameImage ......................   Passed    0.14 sec
+      Start  727: UpscalePipeline.SkipsAtTheCapWithoutCallingTheModel
+54/97 Test  #727: UpscalePipeline.SkipsAtTheCapWithoutCallingTheModel .............................   Passed    0.03 sec
+      Start  728: UpscalePipeline.CancellationBetweenTilesAndStructuredErrors
+55/97 Test  #728: UpscalePipeline.CancellationBetweenTilesAndStructuredErrors .....................   Passed    0.03 sec
+      Start  729: UpscalePipeline.ProgressIsMonotonicAndEndsAtOne
+56/97 Test  #729: UpscalePipeline.ProgressIsMonotonicAndEndsAtOne .................................   Passed    0.10 sec
+      Start  730: UpscaleResample.IdentityAndConstant
+57/97 Test  #730: UpscaleResample.IdentityAndConstant .............................................   Passed    0.03 sec
+      Start  731: UpscaleResample.LinearRampSurvivesDownscale
+58/97 Test  #731: UpscaleResample.LinearRampSurvivesDownscale .....................................   Passed    0.03 sec
+      Start  732: UpscaleResample.MatchesNumpyGolden
+59/97 Test  #732: UpscaleResample.MatchesNumpyGolden ..............................................   Passed    0.04 sec
+      Start  733: UpscalePng.RoundTripAndRejectGarbage
+60/97 Test  #733: UpscalePng.RoundTripAndRejectGarbage ............................................   Passed    0.03 sec
+      Start  734: UpscalePng.UpscalePngEndToEndAndSkipKeepsBytes
+61/97 Test  #734: UpscalePng.UpscalePngEndToEndAndSkipKeepsBytes ..................................   Passed    0.57 sec
+      Start  742: OrtRealModel.RealEsrganTileIsFiniteInRangeAndConsistentWithTheInput
+62/97 Test  #742: OrtRealModel.RealEsrganTileIsFiniteInRangeAndConsistentWithTheInput .............   Passed    1.87 sec
+      Start  743: OrtRealModel.RealEsrganTiledEqualsSingleTileWithoutSeams
+63/97 Test  #743: OrtRealModel.RealEsrganTiledEqualsSingleTileWithoutSeams ........................   Passed    3.82 sec
+      Start  904: ApiUpscale.OffIsTheDefaultAndNeverTouchesTheUpscaler
+64/97 Test  #904: ApiUpscale.OffIsTheDefaultAndNeverTouchesTheUpscaler ............................   Passed    0.05 sec
+      Start  905: ApiUpscale.FourKProducesA3840LongEdgeImage
+65/97 Test  #905: ApiUpscale.FourKProducesA3840LongEdgeImage ......................................   Passed    0.94 sec
+      Start  906: ApiUpscale.MissingUpscalerOrRuntimeIsUnsupportedBeforeTheRender
+66/97 Test  #906: ApiUpscale.MissingUpscalerOrRuntimeIsUnsupportedBeforeTheRender .................   Passed    0.06 sec
+      Start  907: ApiUpscale.InvalidValueIsRejected
+67/97 Test  #907: ApiUpscale.InvalidValueIsRejected ...............................................   Passed    0.05 sec
+      Start  908: ApiUpscale.TileFailureKeepsTheRenderAndSaysWhy
+68/97 Test  #908: ApiUpscale.TileFailureKeepsTheRenderAndSaysWhy ..................................   Passed    0.05 sec
+      Start  909: ApiUpscaleOnly.UpscalesAnExistingPngToA3840LongEdgeWithoutAModel
+69/97 Test  #909: ApiUpscaleOnly.UpscalesAnExistingPngToA3840LongEdgeWithoutAModel ................   Passed    0.67 sec
+      Start  910: ApiUpscaleOnly.PortraitKeepsTheAspectRatio
+70/97 Test  #910: ApiUpscaleOnly.PortraitKeepsTheAspectRatio ......................................   Passed    0.49 sec
+      Start  911: ApiUpscaleOnly.SourceAlreadyAtTheCapIsReportedSkippedNotUpscaled
+71/97 Test  #911: ApiUpscaleOnly.SourceAlreadyAtTheCapIsReportedSkippedNotUpscaled ................   Passed    0.05 sec
+      Start  912: ApiUpscaleOnly.NoUpscalerOrRuntimeIsUnsupportedWithTheReason
+72/97 Test  #912: ApiUpscaleOnly.NoUpscalerOrRuntimeIsUnsupportedWithTheReason ....................   Passed    0.06 sec
+      Start  913: ApiUpscaleOnly.BadInputIsRejectedBeforeAnyDecodeOrAllocation
+73/97 Test  #913: ApiUpscaleOnly.BadInputIsRejectedBeforeAnyDecodeOrAllocation ....................   Passed    0.05 sec
+      Start  914: ApiUpscaleOnly.MethodMustBePost
+74/97 Test  #914: ApiUpscaleOnly.MethodMustBePost .................................................   Passed    0.04 sec
+      Start  915: ApiUpscaleOnly.BudgetThatCannotFitEvenTheSmallestTileIsRefusedUpFront
+75/97 Test  #915: ApiUpscaleOnly.BudgetThatCannotFitEvenTheSmallestTileIsRefusedUpFront ...........   Passed    0.04 sec
+      Start  916: ApiUpscaleOnly.CancelStopsTheJobBetweenTilesAndReleasesTheSlot
+76/97 Test  #916: ApiUpscaleOnly.CancelStopsTheJobBetweenTilesAndReleasesTheSlot ..................   Passed    0.07 sec
+      Start  981: CliUpscale.HelpDocumentsTheOptionsAndIsReachableFromImageHelp
+77/97 Test  #981: CliUpscale.HelpDocumentsTheOptionsAndIsReachableFromImageHelp ...................   Passed    0.04 sec
+      Start  982: CliUpscale.ArgumentErrorsAreInvalidArgumentExit2
+78/97 Test  #982: CliUpscale.ArgumentErrorsAreInvalidArgumentExit2 ................................   Passed    0.04 sec
+      Start  983: CliUpscale.PathRulesAreEnforcedBeforeAnyWork
+79/97 Test  #983: CliUpscale.PathRulesAreEnforcedBeforeAnyWork ....................................   Passed    0.04 sec
+      Start  984: CliUpscale.MissingRuntimeOrModelIsUnsupportedExit10NamingWhatIsMissing
+80/97 Test  #984: CliUpscale.MissingRuntimeOrModelIsUnsupportedExit10NamingWhatIsMissing ..........   Passed    0.04 sec
+      Start 1033: McpImage.LoraAndUpscaleFieldsAreInTheSchemaAndLoraListNeverLeaksPaths
+81/97 Test #1033: McpImage.LoraAndUpscaleFieldsAreInTheSchemaAndLoraListNeverLeaksPaths ...........   Passed    0.04 sec
+      Start 1034: McpImage.LoraRequestWithoutLibraryIsUnsupportedAndUpscaleWithoutRuntimeToo
+82/97 Test #1034: McpImage.LoraRequestWithoutLibraryIsUnsupportedAndUpscaleWithoutRuntimeToo ......   Passed    0.04 sec
+      Start 1038: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng
+83/97 Test #1038: DiffusionBlocking.GenerateWithoutAProgressSinkProducesAPng ......................   Passed    9.10 sec
+      Start 1039: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize
+84/97 Test #1039: DiffusionBlocking.EditWithoutAProgressSinkKeepsTheInputSize .....................   Passed   20.33 sec
+      Start 1040: DiffusionBlocking.ProgressSinkStillReceivesProgress
+85/97 Test #1040: DiffusionBlocking.ProgressSinkStillReceivesProgress .............................   Passed    9.18 sec
+      Start 1041: DiffusionBlocking.CancellationStopsTheRender
+86/97 Test #1041: DiffusionBlocking.CancellationStopsTheRender ....................................   Passed    8.86 sec
+      Start 1042: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering
+87/97 Test #1042: DiffusionBlocking.InvalidRequestsAreRejectedBeforeRendering .....................   Passed    0.21 sec
+      Start 1043: DiffusionBlocking.NotLoadedIsAnErrorNotACrash
+88/97 Test #1043: DiffusionBlocking.NotLoadedIsAnErrorNotACrash ...................................   Passed    0.03 sec
+      Start 1044: DiffusionComponents.SidecarWithParentTraversalIsRejected
+89/97 Test #1044: DiffusionComponents.SidecarWithParentTraversalIsRejected ........................   Passed    0.04 sec
+      Start 1045: DiffusionComponents.SidecarWithAbsolutePathIsRejected
+90/97 Test #1045: DiffusionComponents.SidecarWithAbsolutePathIsRejected ...........................   Passed    0.04 sec
+      Start 1046: DiffusionComponents.SidecarWithMissingFileIsNotFound
+91/97 Test #1046: DiffusionComponents.SidecarWithMissingFileIsNotFound ............................   Passed    0.04 sec
+      Start 1047: DiffusionComponents.MalformedSidecarIsInvalidArgument
+92/97 Test #1047: DiffusionComponents.MalformedSidecarIsInvalidArgument ...........................   Passed    0.04 sec
+      Start 1048: DiffusionComponents.UnknownParamsBackendIsInvalidArgument
+93/97 Test #1048: DiffusionComponents.UnknownParamsBackendIsInvalidArgument .......................   Passed    0.04 sec
+      Start 1049: DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel
+94/97 Test #1049: DiffusionPreset.UnknownPresetNameIsRejectedEvenWithoutAModel ....................   Passed    0.03 sec
+      Start 1050: DiffusionPreset.Sd15PresetReplacesStepsAndUnknownPresetNameIsRejected
+95/97 Test #1050: DiffusionPreset.Sd15PresetReplacesStepsAndUnknownPresetNameIsRejected ...........   Passed   28.38 sec
+      Start 1051: DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem
+96/97 Test #1051: DiffusionPreset.Flux3PresetsReplaceStepsAndReportThem ...........................   Passed  687.94 sec
+      Start 1052: DiffusionQuality.Sd15SmokeParametersAreRejectedUnlessOptedIn
+97/97 Test #1052: DiffusionQuality.Sd15SmokeParametersAreRejectedUnlessOptedIn ....................   Passed    0.57 sec
+
+100% tests passed out of 97
+
+Label Time Summary:
+contract       =   2.85 sec*proc (19 tests)
+integration    = 764.82 sec*proc (15 tests)
+unit           =   9.41 sec*proc (63 tests)
+
+Total Test time (real) = 784.78 sec
+CTEST_EXIT=0
+RAM free GiB after: 10.07

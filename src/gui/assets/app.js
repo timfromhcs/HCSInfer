@@ -799,7 +799,7 @@
   }
   /* Upscale the shown gallery image (POST /hcs/v1/images/upscale). Measured on the CPU (docs/upscale.md); shown
      to the user BEFORE the long wait so it is never a surprise. */
-  var UPSCALE_HINT = "UPSCALE_HINT_PLACEHOLDER";
+  var UPSCALE_HINT = "Measured on a Ryzen 7 7735HS (CPU provider): a 512 px image took about 73 s; larger sources take longer (docs/upscale.md).";
   async function upscaleCurrentImage() {
     var g = image.gallery[image.current];
     if (!g || image.ctl) return;
