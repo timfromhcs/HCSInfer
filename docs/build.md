@@ -165,7 +165,9 @@ CI (`.github/workflows/`): `pr.yml` (`pr-quick-gate`) = hosted Windows quick gat
 reported as skipped = NOT RUN), `clang-format check`, `clang-tidy (static analysis)` (`static-analysis.ps1 -Scope src
 -FailOnFindings`), `SBOM generation + schema sanity`, and `web` (`npm test` plus the headless Chrome boot check).
 Green on `main`: run 44167798984 (2026-11-17, commit `d8a5e37`). `hardware.yml` = self-hosted Radeon 680M runner for
-nightly / manual / `v*` tag runs only, never for pull requests; it has never been executed (NOT RUN).
+manual runs only (opt-in via the repository variable `HW_RUNNER_ENABLED=true`), never for pull requests; it has never
+been executed (NOT RUN). Since release/v1.1.0-stable the PR gate also builds and tests `windows-msvc-release-static`
+(the shipped preset) and runs a version-consistency check and actionlint; details in `docs/ci.md`.
 
 ## Nothing on C: (storage guard)
 

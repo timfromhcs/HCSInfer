@@ -1,0 +1,11 @@
+# Proposes updates for the SHA-pinned GitHub Actions (AGENTS.md 7.2: only an explicit compatibility PR moves a pin).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns: ["*"]

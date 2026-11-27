@@ -1,0 +1,8 @@
+w1-ci evidence
+actionlint 1.7.12 (windows_amd64.zip sha256 6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f6e9, matches the official actionlint_1.7.12_checksums.txt)
+Run on .github/ with a TEMPORARY local stub for .github/workflows/wheels.yml (on: workflow_call, no inputs; removed afterwards, not committed).
+actionlint findings: 0  exit code: 0
+check-version.ps1 -Tag v1.1.0-rc.1: cmake=1.1.0-rc.1 pyproject=1.1.0rc1 (expected 1.1.0rc1) web=1.1.0-rc.1 tag='v1.1.0-rc.1' prerelease=true
+Negative check: -Tag v1.1.0 exits 1 (tag != CMake suffix).
+Action pins verified via git ls-remote tags and action.yml runs.using = node24 at each SHA.
+Hosted execution of pr.yml/release.yml/hardware.yml: NOT RUN (cannot run Actions from this branch).
