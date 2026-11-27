@@ -1,0 +1,211 @@
+name: wheels
+
+# Builds the hcsinfer Python wheels from already-built HCSInfer binaries and smoke-installs each one on a native runner.
+#
+# Binary artifact contract (produced by the build workflow that calls this one, or by an earlier run named in
+# `source-run-id`): one artifact per platform called `hcsinfer-bin-<plat>`, files at the artifact root:
+#   HCSInfer[.exe]          CPU build (required)
+#   HCSInfer-vulkan[.exe]   CPU+Vulkan build (optional)
+# <plat> is one of the wheel platform tags in python/hatch_build.py (win_amd64, win_arm64, manylinux_2_28_x86_64,
+# manylinux_2_28_aarch64, macosx_11_0_arm64, macosx_10_15_x86_64).
+#
+# Outputs: artifacts `wheel-<plat>`, `wheel-pure` and `sdist`. Nothing is published here (see pypi.yml).
+
+on:
+  workflow_call:
+    inputs:
+      platforms:
+        description: "Space separated platform tags to build, or 'all'"
+        type: string
+        default: all
+      source-run-id:
+        description: "Workflow run id that holds the hcsinfer-bin-<plat> artifacts (default: this run)"
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: "Space separated platform tags to build, or 'all'"
+        type: string
+        default: all
+      source-run-id:
+        description: "Workflow run id that holds the hcsinfer-bin-<plat> artifacts (default: this run)"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wheels-${{ github.ref }}-${{ inputs.source-run-id }}
+  cancel-in-progress: false
+
+jobs:
+  pure:
+    name: pure wheel + sdist
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - name: Build sdist and pure wheel (no binary staged)
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e python/src/hcsinfer/bin
+          python -m pip install --upgrade pip build twine
+          python -m build python --outdir dist
+          ls -l dist
+          ls dist/*-py3-none-any.whl
+          ls dist/*.tar.gz
+          python -m twine check --strict dist/*
+      - name: Smoke install (client + launcher only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv v
+          v/bin/python -m pip install --no-index --no-deps dist/*-py3-none-any.whl
+          v/bin/python -c "import hcsinfer; print('import ok', hcsinfer.__name__)"
+          set +e
+          out="$(env -u HCSINFER_EXE v/bin/hcsinfer --version 2>&1)"
+          rc=$?
+          set -e
+          echo "rc=$rc out=$out"
+          # no bundled runtime: the launcher must say so and exit 127, not crash
+          test "$rc" = 127
+          echo "$out" | grep -q "executable not found"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: wheel-pure
+          path: dist/*.whl
+          if-no-files-found: error
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  plan:
+    name: select platforms
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - id: m
+        shell: bash
+        env:
+          WANT: ${{ inputs.platforms }}
+        run: |
+          set -euo pipefail
+          all='[
+            {"plat":"win_amd64","runner":"windows-2025","optional":false,"image":""},
+            {"plat":"win_arm64","runner":"windows-11-arm","optional":true,"image":""},
+            {"plat":"manylinux_2_28_x86_64","runner":"ubuntu-24.04","optional":false,"image":"quay.io/pypa/manylinux_2_28_x86_64"},
+            {"plat":"manylinux_2_28_aarch64","runner":"ubuntu-24.04-arm","optional":true,"image":"quay.io/pypa/manylinux_2_28_aarch64"},
+            {"plat":"macosx_11_0_arm64","runner":"macos-15","optional":true,"image":""},
+            {"plat":"macosx_10_15_x86_64","runner":"macos-15-intel","optional":true,"image":""}
+          ]'
+          if [ -z "$WANT" ] || [ "$WANT" = all ]; then
+            sel="$all"
+          else
+            # exact tag match on the space separated list (a tag is never a substring of another entry here)
+            sel="$(jq -c --arg want "$WANT" '[ .[] | select(.plat as $p | ($want | split(" ") | index($p)) != null) ]' <<<"$all")"
+          fi
+          [ "$(jq 'length' <<<"$sel")" -gt 0 ] || { echo "::error::no platform selected from '$WANT'"; exit 1; }
+          echo "matrix=$(jq -c . <<<"$sel")" >> "$GITHUB_OUTPUT"
+
+  platform:
+    name: wheel ${{ matrix.plat }}
+    needs: plan
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: ${{ matrix.optional }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: hcsinfer-bin-${{ matrix.plat }}
+          path: python/src/hcsinfer/bin
+          run-id: ${{ inputs.source-run-id || github.run_id }}
+          github-token: ${{ github.token }}
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - name: Inspect staged binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd python/src/hcsinfer/bin
+          case "${{ matrix.plat }}" in win_*) ;; *) chmod +x HCSInfer HCSInfer-vulkan 2>/dev/null || true ;; esac
+          ls -l
+          if [ -f HCSInfer.exe ] || [ -f HCSInfer ]; then echo "CPU binary present"; else echo "::error::artifact has no HCSInfer[.exe]"; exit 1; fi
+      - name: glibc symbol floor (Linux binaries must not need more than GLIBC_2.28)
+        if: startsWith(matrix.plat, 'manylinux')
+        shell: bash
+        run: |
+          set -euo pipefail
+          # auditwheel repair cannot help a standalone executable (it grafts shared libraries into extension
+          # modules); the manylinux claim is only honest if the binary itself stays within the glibc 2.28 floor.
+          fail=0
+          for f in python/src/hcsinfer/bin/HCSInfer python/src/hcsinfer/bin/HCSInfer-vulkan; do
+            [ -f "$f" ] || continue
+            echo "== $f"
+            objdump -p "$f" | grep NEEDED || true
+            maxg="$(objdump -T "$f" | grep -o 'GLIBC_[0-9][0-9.]*' | sed 's/GLIBC_//' | sort -V | uniq | tail -1 || true)"
+            maxx="$(objdump -T "$f" | grep -o 'GLIBCXX_[0-9][0-9.]*' | sed 's/GLIBCXX_//' | sort -V | uniq | tail -1 || true)"
+            echo "max GLIBC=${maxg:-none} max GLIBCXX=${maxx:-none}"
+            if [ -n "$maxg" ] && [ "$(printf '%s\n2.28\n' "$maxg" | sort -V | tail -1)" != "2.28" ]; then
+              echo "::error::$f needs GLIBC_$maxg > 2.28"; fail=1
+            fi
+          done
+          exit $fail
+      - name: Build platform wheel
+        shell: bash
+        env:
+          HCS_WHEEL_PLAT: ${{ matrix.plat }}
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip build twine
+          python -m build --wheel python --outdir dist
+          ls -l dist
+          ls dist/*-py3-none-${{ matrix.plat }}.whl
+          python -m twine check --strict dist/*.whl
+      - name: auditwheel show (informational, manylinux_2_28 image)
+        if: startsWith(matrix.plat, 'manylinux')
+        shell: bash
+        run: |
+          set -euo pipefail
+          # `show` only reports; a standalone executable has nothing for `repair` to fix. Non-zero here is logged,
+          # the objdump glibc check above is the gate.
+          docker run --rm -v "$PWD/dist:/dist:ro" "${{ matrix.image }}" \
+            bash -c 'auditwheel show /dist/*.whl' || echo "auditwheel show exited non-zero (informational)"
+      - name: Smoke install in a clean venv and run hcsinfer --version
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv v
+          if [ -d v/Scripts ]; then VBIN=v/Scripts; else VBIN=v/bin; fi
+          "$VBIN/python" -m pip install --no-index --no-deps dist/*.whl
+          unset HCSINFER_EXE
+          out="$("$VBIN/hcsinfer" --version)"
+          echo "hcsinfer --version -> $out"
+          test -n "$out"
+          out2="$(HCSINFER_BACKEND=cpu "$VBIN/python" -m hcsinfer --version)"
+          test -n "$out2"
+          "$VBIN/python" -c "import hcsinfer; print(hcsinfer.find_exe())"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: wheel-${{ matrix.plat }}
+          path: dist/*.whl
+          if-no-files-found: error

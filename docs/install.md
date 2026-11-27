@@ -12,8 +12,8 @@ licences. Details of every artefact: [packaging.md](packaging.md).
 | one file, runs anywhere on Windows x64 (CPU) | `HCSInfer.exe` | nothing else (no Visual C++ Redistributable) |
 | the same plus GPU acceleration (Vulkan) | `HCSInfer-vulkan.exe` | the Vulkan loader `vulkan-1.dll` that your GPU driver installs; it does not start without it |
 | everything in one folder with licences, SBOM, checksums | `HCSInfer-1.1.0-rc.1-windows-msvc-release-static-portable.zip` | unzip |
-| use it from Python | `pip install hcsinfer-1.1.0rc1-py3-none-win_amd64.whl` | Python >= 3.9 |
-| Python code only (bring your own exe) | `hcsinfer-1.1.0rc1.tar.gz` | `HCSINFER_EXE=<path to HCSInfer.exe>` |
+| use it from Python | `pip install hcsinfer-1.1.0rc1-py3-none-<plat>.whl` (`win_amd64`, `win_arm64`, `manylinux_2_28_x86_64`/`aarch64`, `macosx_11_0_arm64`, `macosx_10_15_x86_64`; platforms without a native wheel get the pure `py3-none-any` wheel) | Python >= 3.9 |
+| Python code only (bring your own binary) | `hcsinfer-1.1.0rc1-py3-none-any.whl` or `hcsinfer-1.1.0rc1.tar.gz` | `HCSINFER_EXE=<path to HCSInfer>` |
 | the browser demo (WebGPU/WASM) | `hcs-studio-web-dist.zip` | any static web host; not deployed by this project yet |
 
 Check the download first:
@@ -55,7 +55,7 @@ with hcsinfer.Server(["D:/Models"]) as srv:           # scans the folder, serves
     print(c.chat_text("Say hi", model="<id>", max_tokens=32))
 ```
 
-`HCSINFER_BACKEND=cpu|vulkan|auto` chooses the bundled executable (auto = Vulkan only when `vulkan-1.dll` exists);
+`HCSINFER_BACKEND=cpu|vulkan|auto` chooses the bundled executable (auto = Vulkan only when the system Vulkan loader exists: `vulkan-1.dll` on Windows, `libvulkan.so.1` on Linux);
 `HCSINFER_EXE` points at any other executable. The wheel has no Python dependencies. See `python/README.md`.
 
 ## Build from source

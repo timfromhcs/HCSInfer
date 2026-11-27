@@ -1,11 +1,13 @@
 # hcsinfer (Python)
 
 Python launcher and client for [HCSInfer](https://github.com/timfromhcs/HCSInfer), a local-first AI runtime for text
-chat, vision and image generation on Windows (llama.cpp / stable-diffusion.cpp behind one control plane).
+chat, vision and image generation (llama.cpp / stable-diffusion.cpp behind one control plane).
 
-- The **platform wheel** (`py3-none-win_amd64`) bundles the static CPU `HCSInfer.exe` (static CRT, system DLL imports only) and, when
-  present, `HCSInfer-vulkan.exe` (CPU + Vulkan; needs the system `vulkan-1.dll` from your GPU driver).
-- The **sdist / pure wheel** contains only the Python code; point it at an executable with `HCSINFER_EXE`.
+- A **platform wheel** (`py3-none-<plat>`: `win_amd64`, `win_arm64`, `manylinux_2_28_x86_64`/`aarch64`, `macosx_11_0_arm64`,
+  `macosx_10_15_x86_64`) bundles the CPU `HCSInfer[.exe]` and, when present, `HCSInfer-vulkan[.exe]` (CPU + Vulkan; chosen only
+  when the system Vulkan loader exists: `vulkan-1.dll` / `libvulkan.so.1`). Only the Windows x64 wheel has been verified so far.
+- The **sdist / pure wheel** (`py3-none-any`) contains only the Python code (fallback for platforms without a native binary);
+  point it at an executable with `HCSINFER_EXE`.
 - No Python dependencies; the client uses only the standard library.
 - Models are **not** included. Use your own GGUF files and respect their licences.
 
