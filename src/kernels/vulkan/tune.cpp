@@ -6,13 +6,18 @@
 //  * a kernel the device cannot run is reported "NOT RUN on this hardware" with the reason (never skipped
 //    silently, never faked);
 //  * only entries that passed correctness are persisted; a failing kernel removes its own stale evidence;
-//  * the upstream GGML Vulkan op baseline is recorded as NOT RUN (it cannot be driven in-process cheaply from
-//    here), so no kernel is ever default-enabled by this command (planner: promoted != default-enabled);
+//  * the upstream GGML Vulkan op baseline is measured in-process (hcs/kernels/ggml_vk_baseline.hpp: the
+//  pinned
+//    ggml backend, same shape, same device, same timing method) when this build has the ggml Vulkan backend;
+//    otherwise it is recorded as NOT RUN. A kernel is default-enabled only when promoted AND measured
+//    >= 1.05x faster than the upstream operator (planner: promoted != default-enabled);
 //  * one dispatch whose first (cold) run takes > 1.5 s is abandoned: TDR guard, the OS watchdog resets a GPU
 //    that is busy for ~2 s.
 #include "hcs/kernels/vk_tune.hpp"
 
 #include <algorithm>
+#include <map>
+#include <optional>
 #include <chrono>
 #include <cmath>
 #include <cstdio>
@@ -32,6 +37,9 @@
 #include "hcs/hardware/planner.hpp"
 #include "hcs/kernels/cpu.hpp"
 #include "hcs/kernels/cpu_baseline.hpp"
+#ifdef HCS_HAVE_GGML_BASELINE
+#include "hcs/kernels/ggml_vk_baseline.hpp"
+#endif
 #include "hcs/kernels/oracle.hpp"
 #include "hcs/kernels/vk_ops.hpp"
 #include "hcs/version.hpp"
@@ -48,8 +56,9 @@ using Clock = std::chrono::steady_clock;
 constexpr double kColdAbortMs = 1500.0;
 
 const char* kHelp =
-    "Usage: HCSInfer tune [--device <index|name|radeon-680m>] [--suite quick|full] [--kernel <id>]...\n"
+    "Usage: HCSInfer tune [--device <index|name|radeon-680m>] [--suite quick|full|llm] [--kernel <id>]...\n"
     "                     [--samples N] [--out <evidence.json>] [--json] [--validation|--no-validation]\n"
+    "                     [--no-upstream]\n"
     "       HCSInfer tune --show  [--device <sel>]       Show the planner table from the saved profile (no "
     "GPU work)\n"
     "       HCSInfer tune --reset [--device <sel>] [--kernel <id>]   Drop saved evidence for the device\n"
@@ -58,13 +67,18 @@ const char* kHelp =
     "softmax,\n"
     "LayerNorm, RMSNorm, RoPE) on this machine: correctness vs the CPU oracle, 3 bit-identical runs, wall + "
     "GPU\n"
-    "timestamp timings, and a multi-threaded CPU baseline. Results are stored in "
-    "<state-dir>/kernel-profile.json,\n"
-    "keyed by device, driver, shader hash and shape bucket. A kernel is PROMOTED only when correct, "
-    "deterministic\n"
-    "and >= 1.05x the CPU baseline; it is DEFAULT-ENABLED only with a measured upstream GGML Vulkan "
-    "baseline,\n"
-    "which this command records as NOT RUN - so tune never enables anything by itself.\n"
+    "timestamp timings, a multi-threaded CPU baseline and - when this build has the ggml Vulkan backend - "
+    "the\n"
+    "upstream GGML Vulkan operator on the same shape (--no-upstream skips it). Suite llm adds real LLM and\n"
+    "SD-like shapes. Results are stored in <state-dir>/kernel-profile.json, keyed by device, driver, shader "
+    "hash\n"
+    "and shape bucket. A kernel is PROMOTED only when correct, deterministic and >= 1.05x the CPU baseline;\n"
+    "it is DEFAULT-ENABLED only with a measured upstream baseline that it beats by >= 1.05x. Run the whole\n"
+    "tune three times (scripts/kernel-decision.ps1) before trusting a promotion. Nothing enables itself:\n"
+    "the engines never call these kernels unless a feature flag says so.\n"
+    "--reset drops the saved evidence (forces a fresh rebenchmark); stale evidence (other driver, other "
+    "shader\n"
+    "hash) is never matched anyway.\n"
     "Kernels the device cannot run are reported as 'NOT RUN on this hardware' with the reason.\n"
     "Exit codes: 0 ok, 2 invalid argument, 4 a kernel produced wrong results / device failure, 10 no Vulkan "
     "device.\n";
@@ -74,6 +88,7 @@ struct Options {
     std::string suite = "quick";
     std::vector<std::string> kernels;
     std::uint32_t samples = 0;  // 0 = suite default
+    bool no_upstream = false;
     std::string out_file;
     bool as_json = false;
     bool show = false;
@@ -114,8 +129,17 @@ std::vector<float> rand_f32(std::size_t n, std::uint32_t seed, float lo, float h
     for (auto& x : v) x = r.f(lo, hi);
     return v;
 }
-std::vector<std::uint16_t> rand_f16(std::size_t n, std::uint32_t seed) {
-    const auto f = rand_f32(n, seed, -1.0f, 1.0f);
+// Operand half-range for a length-k reduction. Up to k = 1024 the unit-range data of wave B / c1 is kept (so
+// that evidence stays comparable). Beyond it the operands shrink by (1024/k)^(1/4) each, so the sum keeps the
+// magnitude it has at k = 1024 - the variance-preserving scale real weights and activations have. Unit-range
+// data at k = 4096 makes the float32 accumulation error (~ k * u * rms partial sum, Higham) exceed the
+// sqrt(k)-scaled tolerance on cancelling elements (measured: 4.3e-4 vs 6.4e-5), which is an oracle-data
+// problem, not a kernel defect; the tolerance itself is not changed.
+float operand_range(std::uint32_t k) {
+    return k > 1024 ? std::pow(1024.0f / static_cast<float>(k), 0.25f) : 1.0f;
+}
+std::vector<std::uint16_t> rand_f16(std::size_t n, std::uint32_t seed, float range = 1.0f) {
+    const auto f = rand_f32(n, seed, -range, range);
     std::vector<std::uint16_t> h(n);
     for (std::size_t i = 0; i < n; ++i) h[i] = cpu::fp32_to_fp16(f[i]);
     return h;
@@ -146,10 +170,35 @@ struct Suite {
 };
 Suite suite_for(const std::string& name) {
     Suite s;
-    if (name == "full") {
+    if (name == "full" || name == "llm") {
         s.gemm = {{128, 128, 128}, {256, 1024, 256}, {512, 2048, 512}, {1024, 1024, 1024}};
         s.rows = {{32, 4096, 0}, {256, 1024, 0}, {4, 32000, 0}};
         s.rope = {{512, 128, 0}, {2048, 128, 0}};
+        if (name == "llm") {
+            // Real shapes (m = tokens, n = output features, k = input features), ascending so the TDR guard
+            // can predict the duration of the big ones from the rate measured on the small ones:
+            //   decode GEMV 1x1024x3072 / 1x4096x4096 / 1x14336x4096 (qwen3-0.6b FFN, Llama-8B proj/FFN),
+            //   prefill 128x4096x4096 and 512x4096x4096, SD UNet-like: attention QK^T 1024x1024x64 and
+            //   3x3 conv as GEMM at 32x32 latent 1024x320x2880 and 1x1 conv / attention projection
+            //   4096x320x320.
+            s.gemm.insert(s.gemm.end(), {{1, 1024, 3072},
+                                         {1, 4096, 4096},
+                                         {1, 14336, 4096},
+                                         {1024, 1024, 64},
+                                         {4096, 320, 320},
+                                         {1024, 320, 2880},
+                                         {128, 4096, 4096},
+                                         {512, 4096, 4096}});
+            s.rows.insert(s.rows.end(),
+                          {{1024, 1024, 0},
+                           {64, 14336, 0},
+                           {1, 4096, 0},      // Llama-style decode RMSNorm
+                           {512, 4096, 0},    // prefill RMSNorm / row softmax
+                           {77, 768, 0},      // CLIP text encoder LayerNorm
+                           {729, 1152, 0},    // SigLIP vision tower LayerNorm
+                           {4096, 320, 0}});  // SD1.5 UNet transformer block LayerNorm (64x64 latent)
+            s.rope.insert(s.rope.end(), {{1, 128, 0}, {4096, 128, 0}});
+        }
     } else {
         s.gemm = {{256, 1024, 256}};
         s.rows = {{32, 4096, 0}};
@@ -192,8 +241,10 @@ Result<Prepared> prepare_case(KernelSet& ks, const std::string& id, const Shape&
                k = static_cast<std::uint32_t>(s.k);
     const float eps = 1e-5f;
     if (id == "gemm_f32_tiled") {
-        auto a = std::make_shared<std::vector<float>>(rand_f32(std::size_t{m} * k, seed, -1, 1));
-        auto b = std::make_shared<std::vector<float>>(rand_f32(std::size_t{k} * n, seed + 1, -1, 1));
+        auto a = std::make_shared<std::vector<float>>(
+            rand_f32(std::size_t{m} * k, seed, -operand_range(k), operand_range(k)));
+        auto b = std::make_shared<std::vector<float>>(
+            rand_f32(std::size_t{k} * n, seed + 1, -operand_range(k), operand_range(k)));
         auto op = ks.prepare_gemm_f32(a->data(), b->data(), m, n, k);
         if (!op)
             return op.error();
@@ -204,8 +255,10 @@ Result<Prepared> prepare_case(KernelSet& ks, const std::string& id, const Shape&
         auto out = std::make_shared<std::vector<float>>(std::size_t{m} * n);
         p.baseline = [=] { cpu::baseline_gemm_f32(a->data(), b->data(), out->data(), m, n, k); };
     } else if (id == "gemm_f16_tiled" || id == "gemm_coopmat_f16") {
-        auto a = std::make_shared<std::vector<std::uint16_t>>(rand_f16(std::size_t{m} * k, seed));
-        auto b = std::make_shared<std::vector<std::uint16_t>>(rand_f16(std::size_t{k} * n, seed + 1));
+        auto a = std::make_shared<std::vector<std::uint16_t>>(
+            rand_f16(std::size_t{m} * k, seed, operand_range(k)));
+        auto b = std::make_shared<std::vector<std::uint16_t>>(
+            rand_f16(std::size_t{k} * n, seed + 1, operand_range(k)));
         auto op = id == "gemm_f16_tiled" ? ks.prepare_gemm_f16(a->data(), b->data(), m, n, k)
                                          : ks.prepare_gemm_coopmat_f16(a->data(), b->data(), m, n, k);
         if (!op)
@@ -291,8 +344,104 @@ Result<Prepared> prepare_case(KernelSet& ks, const std::string& id, const Shape&
     return p;
 }
 
+// The in-process upstream GGML Vulkan baseline for one tune run (see hcs/kernels/ggml_vk_baseline.hpp).
+struct UpstreamCtx {
+#ifdef HCS_HAVE_GGML_BASELINE
+    std::optional<ggml_baseline::Session> session;
+    std::string device_description;
+    std::string state = "NOT RUN";
+#else
+    std::string state =
+        "NOT RUN (this build has no ggml Vulkan backend: needs HCS_ENABLE_VULKAN=ON and "
+        "external/llama.cpp)";
+#endif
+    bool available() const {
+#ifdef HCS_HAVE_GGML_BASELINE
+        return session.has_value();
+#else
+        return false;
+#endif
+    }
+    void init(const std::string& device_name, bool disabled) {
+        if (disabled) {
+            state = "NOT RUN (--no-upstream)";
+            return;
+        }
+#ifdef HCS_HAVE_GGML_BASELINE
+        auto r = ggml_baseline::Session::create(device_name);
+        if (!r) {
+            state = "NOT RUN (cannot create the ggml Vulkan session: " + r.error().message + ")";
+            return;
+        }
+        session.emplace(std::move(r.value()));
+        device_description = session->device().description;
+        state = "measured in-process with the pinned ggml Vulkan backend on '" + device_description + "'";
+#else
+        (void)device_name;
+#endif
+    }
+};
+
+#ifdef HCS_HAVE_GGML_BASELINE
+Result<ggml_baseline::Measurement> upstream_op(ggml_baseline::Session& s, const std::string& id,
+                                               const Shape& sh, std::uint32_t samples) {
+    const auto m = static_cast<std::uint32_t>(sh.m), n = static_cast<std::uint32_t>(sh.n),
+               k = static_cast<std::uint32_t>(sh.k);
+    if (id == "gemm_f32_tiled")
+        return s.mul_mat(ggml_baseline::WeightType::F32, m, n, k, samples);
+    if (id == "gemm_f16_tiled" || id == "gemm_coopmat_f16")
+        return s.mul_mat(ggml_baseline::WeightType::F16, m, n, k, samples);
+    if (id == "softmax_rows")
+        return s.softmax(m, n, samples);
+    if (id == "layernorm_rows")
+        return s.layernorm(m, n, 1e-5f, samples);
+    if (id == "rmsnorm_rows")
+        return s.rmsnorm(m, n, 1e-5f, samples);
+    if (id == "rope_rows")
+        return s.rope(m, n, 0, samples);
+    return make_error(ErrorCode::InvalidArgument, "no upstream mapping for " + id);
+}
+#endif
+
+void measure_upstream(UpstreamCtx& up, const std::string& id, const Shape& sh, std::uint32_t samples,
+                      hardware::ProfileEntry& e) {
+    if (id == "gemm_i8dot_tiled") {
+        // GGML has no int8 x int8 -> int32 mul_mat: Q8_0 weights x f32 activations (quantised to Q8_1 inside)
+        // is a different operation. Not compared, so it can never be default-enabled on this evidence.
+        e.upstream_status = "not_comparable";
+        e.upstream_note =
+            "no GGML operator computes int8 x int8 -> int32 (closest: Q8_0 mul_mat with f32 "
+            "activations, different semantics)";
+        return;
+    }
+    if (!up.available()) {
+        e.upstream_status = "not_run";
+        e.upstream_note = up.state;
+        return;
+    }
+#ifdef HCS_HAVE_GGML_BASELINE
+    auto r = upstream_op(*up.session, id, sh, samples);
+    if (!r) {
+        e.upstream_status = "error";
+        e.upstream_note = r.error().message;
+        return;
+    }
+    const ggml_baseline::Measurement& m = r.value();
+    e.upstream_status = "measured";
+    e.upstream_ms = m.median_ms;
+    e.upstream_spread = m.spread;
+    e.upstream_variant = m.variant;
+    e.upstream_note = m.note;
+    e.upstream_ratio = e.wall_ms_median > 0.0 ? m.median_ms / e.wall_ms_median : 0.0;
+#else
+    (void)sh;
+    (void)samples;
+#endif
+}
+
 CaseResult run_case(Runner& runner, KernelSet& ks, const hardware::KernelDesc& kd, const Shape& s,
-                    std::uint32_t samples, const std::string& hash) {
+                    std::uint32_t samples, const std::string& hash, UpstreamCtx& up,
+                    std::map<std::string, double>& rates_gflops) {
     const hardware::DeviceCaps& caps = runner.caps();
     CaseResult r;
     r.kernel = kd.id;
@@ -302,7 +451,20 @@ CaseResult run_case(Runner& runner, KernelSet& ks, const hardware::KernelDesc& k
     const double flops_guess =
         s.k > 0 ? 2.0 * static_cast<double>(s.m) * static_cast<double>(s.n) * static_cast<double>(s.k)
                 : 6.0 * static_cast<double>(s.m) * static_cast<double>(s.n);
-    if (flops_guess > 4.0e9) {  // would exceed ~1.5 s at a 3 GFLOP/s floor
+    // TDR guard (the OS watchdog resets a GPU that is busy for ~2 s). Without a measured rate for this kernel
+    // the absolute cap is 4 GFLOP (1.5 s at a 3 GFLOP/s floor); once a smaller shape of the same kernel has
+    // been timed, the guard predicts the new dispatch from that rate and allows up to 0.5 s.
+    const auto known = rates_gflops.find(kd.id);
+    if (known != rates_gflops.end() && known->second > 0.0) {
+        const double predicted_ms = flops_guess / (known->second * 1e9) * 1e3;
+        if (predicted_ms > 500.0) {
+            r.status = "SKIPPED";
+            r.reason = "TDR guard: predicted " + std::to_string(predicted_ms) +
+                       " ms for one dispatch at the "
+                       "rate measured on smaller shapes";
+            return r;
+        }
+    } else if (flops_guess > 4.0e9) {
         r.status = "SKIPPED";
         r.reason = "TDR guard: shape too large for a single dispatch";
         return r;
@@ -446,6 +608,9 @@ CaseResult run_case(Runner& runner, KernelSet& ks, const hardware::KernelDesc& k
                       std::to_string(std::max(1u, std::thread::hardware_concurrency())) + " threads)";
     e.baseline_ms = median_of(base);
     e.upstream_status = "not_run";
+    if (const auto gf = e.gflops_wall())
+        rates_gflops[kd.id] = std::max(rates_gflops[kd.id], *gf * 0.5);  // keep a conservative (halved) rate
+    measure_upstream(up, kd.id, s, samples, e);
 
     r.decision = hardware::evaluate_promotion(e);
     r.status = r.decision.default_enabled ? "PASS (default-enabled)"
@@ -477,8 +642,12 @@ json entry_json(const hardware::ProfileEntry& e, const hardware::PromotionDecisi
     j["baseline"] = {{"name", e.baseline_name}, {"median_ms", e.baseline_ms}};
     j["speedup_vs_baseline"] = e.speedup();
     j["upstream_ggml_vulkan"] = {
-        {"status", "NOT RUN"},
-        {"note", "an in-process upstream GGML Vulkan op baseline is not driven by this command"}};
+        {"status", e.upstream_status},
+        {"median_ms", e.upstream_ms},
+        {"spread_p10_p90_over_median", e.upstream_spread},
+        {"variant", e.upstream_variant},
+        {"note", e.upstream_note},
+        {"ratio_upstream_over_hcs", e.upstream_ratio ? json(*e.upstream_ratio) : json(nullptr)}};
     j["promoted"] = d.promoted;
     j["default_enabled"] = d.default_enabled;
     j["reasons"] = d.reasons;
@@ -509,8 +678,8 @@ bool parse_args(std::vector<std::string>& args, Options& o, std::string& error) 
         } else if (a == "--suite") {
             if (!need(o.suite))
                 return false;
-            if (o.suite != "quick" && o.suite != "full") {
-                error = "--suite must be quick or full";
+            if (o.suite != "quick" && o.suite != "full" && o.suite != "llm") {
+                error = "--suite must be quick, full or llm";
                 return false;
             }
         } else if (a == "--kernel") {
@@ -541,6 +710,8 @@ bool parse_args(std::vector<std::string>& args, Options& o, std::string& error) 
             o.show = true;
         } else if (a == "--reset") {
             o.reset = true;
+        } else if (a == "--no-upstream") {
+            o.no_upstream = true;
         } else if (a == "--validation") {
             o.validation = 1;
         } else if (a == "--no-validation") {
@@ -692,6 +863,9 @@ int run_tune(std::vector<std::string> args, const std::filesystem::path& state_d
     const Suite suite = suite_for(o.suite);
     const std::uint32_t samples = o.samples != 0 ? o.samples : (o.suite == "full" ? 21 : 15);
 
+    UpstreamCtx upstream;
+    upstream.init(caps.name, o.no_upstream);
+    std::map<std::string, double> rates_gflops;
     std::vector<CaseResult> results;
     bool any_wrong = false, any_error = false;
     for (const auto& kd : hardware::kernel_catalog()) {
@@ -709,8 +883,8 @@ int run_tune(std::vector<std::string> args, const std::filesystem::path& state_d
         }
         const auto h = hashes.find(kd.id);
         for (const Shape& s : shapes_for(suite, kd.op)) {
-            CaseResult c =
-                run_case(runner, ks, kd, s, samples, h != hashes.end() ? h->second : std::string());
+            CaseResult c = run_case(runner, ks, kd, s, samples, h != hashes.end() ? h->second : std::string(),
+                                    upstream, rates_gflops);
             if (c.status.rfind("FAIL", 0) == 0) {
                 any_wrong = true;
                 // The old evidence for this key is now untrustworthy.
@@ -770,7 +944,11 @@ int run_tune(std::vector<std::string> args, const std::filesystem::path& state_d
     ev["baseline"] =
         "cpu_mt_autovec: row-parallel std::thread, float accumulation, compiler auto-vectorisation only; "
         "conversion of f16 inputs excluded from the CPU timing";
-    ev["upstream_ggml_vulkan_baseline"] = "NOT RUN";
+    ev["upstream_ggml_vulkan_baseline"] = upstream.state;
+    ev["upstream_method"] =
+        "ggml_backend_graph_compute (submit + wait) of a one-node graph per operation, inputs device "
+        "resident, "
+        "warm-up then N timed samples; the same wall-clock method as the HCS number (one submit + fence)";
     ev["decisive_time"] = "wall_ms_median of one dispatch (submit + fence, data resident on the device)";
     ev["validation"] = {{"requested", vr.requested},
                         {"active", vr.active},
@@ -810,7 +988,8 @@ int run_tune(std::vector<std::string> args, const std::filesystem::path& state_d
             << "\n\n";
         out << std::left << std::setw(18) << "kernel" << std::setw(15) << "bucket" << std::setw(11)
             << "max err" << std::setw(5) << "det" << std::setw(10) << "wall ms" << std::setw(10) << "gpu ms"
-            << std::setw(10) << "GFLOP/s" << std::setw(10) << "cpu ms" << std::setw(9) << "speedup"
+            << std::setw(10) << "GFLOP/s" << std::setw(10) << "cpu ms" << std::setw(9) << "vs cpu"
+            << std::setw(10) << "ups ms" << std::setw(9) << "vs ups"
             << "status\n";
         for (const auto& c : results) {
             if (!c.have_entry) {
@@ -826,11 +1005,15 @@ int run_tune(std::vector<std::string> args, const std::filesystem::path& state_d
                 << std::setw(10) << fmt(e.wall_ms_median) << std::setw(10)
                 << (e.gpu_ms_median ? fmt(*e.gpu_ms_median) : "n/a") << std::setw(10)
                 << (e.gflops_gpu() ? fmt(*e.gflops_gpu(), 1) : "n/a") << std::setw(10) << fmt(e.baseline_ms)
-                << std::setw(9) << (fmt(e.speedup(), 2) + "x") << c.status << "\n";
+                << std::setw(9) << (fmt(e.speedup(), 2) + "x") << std::setw(10)
+                << (e.upstream_status == "measured" ? fmt(e.upstream_ms) : "n/a") << std::setw(9)
+                << (e.upstream_ratio ? fmt(*e.upstream_ratio, 2) + "x" : "n/a") << c.status << "\n";
             if (!c.reason.empty() && c.status != "PASS (promoted, not default-enabled)")
                 out << "      " << c.reason << "\n";
         }
-        out << "\nupstream GGML Vulkan op baseline: NOT RUN (no kernel is default-enabled by tune)\n"
+        out << "\nupstream GGML Vulkan op baseline: " << upstream.state
+            << "\n('vs ups' = upstream ms / HCS ms: >= 1.05 means the HCS kernel is faster than the upstream "
+               "operator)\n"
             << "profile written: " << ppath.string() << "\n";
         print_plans(out, profile);
     }

@@ -3,6 +3,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <nlohmann/json.hpp>
 
 #include "planner_fixtures.hpp"
 #include "temp_dir.hpp"
@@ -48,6 +49,10 @@ TEST(KernelProfile, JsonRoundTripPreservesEveryField) {
     ProfileEntry e = good_entry(c, "gemm_f32_tiled", "h1", {256, 1024, 256});
     e.upstream_status = "measured";
     e.upstream_ratio = 1.4;
+    e.upstream_ms = 2.8;
+    e.upstream_spread = 0.07;
+    e.upstream_variant = "mul_mat f16 weights x f32 activations";
+    e.upstream_note = "fastest of: f32-act 2.8 ms;";
     e.gpu_ms_median.reset();
     e.gpu_spread.reset();
     ASSERT_TRUE(p.upsert(e).ok());
@@ -61,6 +66,10 @@ TEST(KernelProfile, JsonRoundTripPreservesEveryField) {
     EXPECT_EQ(r->identical_runs, 3u);
     EXPECT_EQ(r->upstream_status, "measured");
     EXPECT_DOUBLE_EQ(*r->upstream_ratio, 1.4);
+    EXPECT_DOUBLE_EQ(r->upstream_ms, 2.8);
+    EXPECT_DOUBLE_EQ(r->upstream_spread, 0.07);
+    EXPECT_EQ(r->upstream_variant, "mul_mat f16 weights x f32 activations");
+    EXPECT_EQ(r->upstream_note, "fastest of: f32-act 2.8 ms;");
     EXPECT_FALSE(r->gpu_ms_median.has_value());
     EXPECT_DOUBLE_EQ(r->baseline_ms, 2.0);
     EXPECT_EQ(r->baseline_name, "cpu_mt_autovec");
@@ -126,4 +135,19 @@ TEST(KernelProfile, Fnv1aIsStableAndSensitive) {
     EXPECT_EQ(fnv1a64_hex("", 0), "cbf29ce484222325");   // FNV-1a/64 of the empty input (offset basis)
     EXPECT_EQ(fnv1a64_hex("a", 1), "af63dc4c8601ec8c");  // published FNV-1a/64 test vector
     EXPECT_NE(fnv1a64_hex("ab", 2), fnv1a64_hex("ba", 2));
+}
+
+TEST(KernelProfile, ProfilesWrittenBeforeTheUpstreamTimingFieldsStillLoad) {
+    // Additive schema change: an entry with only {status, ratio} (wave B / c1) must keep loading.
+    const DeviceCaps c = caps_680m();
+    KernelProfile p;
+    ASSERT_TRUE(p.upsert(good_entry(c, "gemm_f32_tiled", "h1", {256, 1024, 256})).ok());
+    auto j = nlohmann::json::parse(p.to_json_text());
+    j["entries"][0]["upstream_ggml_vulkan"] = {{"status", "not_run"}, {"ratio", nullptr}};
+    auto back = KernelProfile::from_json_text(j.dump());
+    ASSERT_TRUE(back.ok()) << back.error().message;
+    ASSERT_EQ(back.value().entries().size(), 1u);
+    EXPECT_EQ(back.value().entries()[0].upstream_status, "not_run");
+    EXPECT_DOUBLE_EQ(back.value().entries()[0].upstream_ms, 0.0);
+    EXPECT_TRUE(back.value().entries()[0].upstream_variant.empty());
 }

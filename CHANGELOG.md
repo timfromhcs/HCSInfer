@@ -18,6 +18,13 @@ Entries describe what the commits changed; PASS/NOT RUN state of each feature is
 - Honest blockers remain: no default-enabled HCS Vulkan kernel, real merge with float models, real trainer/agent runs,
   clean-machine VM, physical USB pull, signing and publishing. See `docs/release-notes-1.1.0-rc.1.md`.
 
+## Unreleased (wave C / k1)
+
+- In-process upstream GGML Vulkan operator baseline (`hcs_kernels_ggml_baseline`, `hcs_ggml_vk_bench`), wired into `HCSInfer tune`
+  (`--suite llm`, `--no-upstream`) and the planner (noisy upstream timing is not a result); `scripts/kernel-decision.ps1` applies
+  the promotion rule across repeated runs. Result on the Radeon 680M: HCS GEMM kernels 2x-5x slower than upstream, norms/softmax/RoPE
+  at parity, LayerNorm faster in one unrepeated run; no kernel promoted or default-enabled (repeat runs BLOCKED).
+
 ## Unreleased (wave B / c1)
 
 - HCSUDA port (ADR-014): typed Vulkan capability model and conservative planner (`doctor --json` -> `planner`), CPU

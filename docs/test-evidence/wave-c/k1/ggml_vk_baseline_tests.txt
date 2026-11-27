@@ -1,0 +1,23 @@
+Running main() from D:\HCSInfer\build\windows-msvc-release-vulkan\_deps\googletest-src\googletest\src\gtest_main.cc
+[==========] Running 7 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 7 tests from GgmlVkBaseline
+[ RUN      ] GgmlVkBaseline.UnknownDeviceNameIsNotFoundNeverSilentlyDeviceZero
+[       OK ] GgmlVkBaseline.UnknownDeviceNameIsNotFoundNeverSilentlyDeviceZero (1111 ms)
+[ RUN      ] GgmlVkBaseline.ReportsTheDevice
+[       OK ] GgmlVkBaseline.ReportsTheDevice (0 ms)
+[ RUN      ] GgmlVkBaseline.MulMatF32OddShapeIsCorrectAndTimed
+[       OK ] GgmlVkBaseline.MulMatF32OddShapeIsCorrectAndTimed (250 ms)
+[ RUN      ] GgmlVkBaseline.MulMatF16ReportsTheFasterOfTheActivationVariants
+[       OK ] GgmlVkBaseline.MulMatF16ReportsTheFasterOfTheActivationVariants (396 ms)
+[ RUN      ] GgmlVkBaseline.QuantisedWeightsRunAgainstTheDequantisedReference
+[       OK ] GgmlVkBaseline.QuantisedWeightsRunAgainstTheDequantisedReference (786 ms)
+[ RUN      ] GgmlVkBaseline.RowOperationsAndRopeRun
+[       OK ] GgmlVkBaseline.RowOperationsAndRopeRun (1079 ms)
+[ RUN      ] GgmlVkBaseline.InvalidArgumentsAreRejectedBeforeAnyGraphIsBuilt
+[       OK ] GgmlVkBaseline.InvalidArgumentsAreRejectedBeforeAnyGraphIsBuilt (0 ms)
+[----------] 7 tests from GgmlVkBaseline (3624 ms total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 1 test suite ran. (3624 ms total)
+[  PASSED  ] 7 tests.
