@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "_comment": "Each entry must carry a justification (>= 30 characters) and an expiry (yyyy-mm-dd). scripts/osv-gate.ps1 refuses an entry without them, an expired entry, and warns about entries that match no finding. Every justification below was checked against the source tree at the time of writing (grep of src/ and the CMake files), not against a built binary. The real fix for the cpp-httplib entries is a dependency bump (pins change only in a dedicated compatibility change, AGENTS.md 7.2); the entries expire so that this is revisited.",
+  "entries": [
+    {
+      "id": "CVE-2026-102944",
+      "reason": "cpp-httplib cookie leak on cross-origin redirect (fixed 0.51.0): the only httplib client in HCSInfer (src/api/http_client.cpp) calls set_follow_location(false), sends no cookies and talks to the loopback server only; server-side code is not affected.",
+      "expires": "2027-02-28"
+    },
+    {
+      "id": "CVE-2026-54919",
+      "reason": "cpp-httplib TLS verification bypass exists only for the Mbed TLS / wolfSSL backends (fixed 0.47.0): HCSInfer defines no CPPHTTPLIB_*_SUPPORT macro and builds llama.cpp with LLAMA_OPENSSL=OFF, so httplib has no TLS backend at all (API is plain loopback HTTP).",
+      "expires": "2027-02-28"
+    },
+    {
+      "id": "CVE-2026-77358",
+      "reason": "cpp-httplib WebSocketClient::shutdown_and_close use-after-free (fixed 0.50.x): HCSInfer never references WebSocketClient (grep of src/ finds only httplib::Client in http_client.cpp and the server in http_server.cpp).",
+      "expires": "2027-02-28"
+    },
+    {
+      "id": "CVE-2026-137057",
+      "reason": "llama.cpp grammar parser integer underflow (fixed b12604): the llama adapter never creates a grammar sampler and LLAMA_BUILD_COMMON is OFF (no grammar/JSON-schema conversion path); grep of src/ finds no grammar use.",
+      "expires": "2027-02-28"
+    },
+    {
+      "id": "CVE-2026-137567",
+      "reason": "llama.cpp out-of-bounds write via RPC copy_tensor (fixed b12658): the ggml RPC backend is not built (GGML_RPC is not enabled in any HCSInfer preset or CMake file) and no RPC endpoint is reachable.",
+      "expires": "2027-02-28"
+    }
+  ]
+}

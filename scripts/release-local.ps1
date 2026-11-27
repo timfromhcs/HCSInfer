@@ -14,7 +14,13 @@
 param(
     [string]$CpuPreset = 'windows-msvc-release-static',
     [string]$VulkanPreset = 'windows-msvc-release-static-vulkan',
-    [string]$Python = ''
+    [string]$Python = '',
+    # Directory with extra release assets built elsewhere (for example the Linux/macOS HCSInfer-<ver>-<os>-<arch>.tar.gz
+    # from scripts/package-posix.sh); every file in it is copied into the release set and covered by SHA256SUMS.txt.
+    [string]$ExtraAssetDir = '',
+    # Path to an official osv-scanner binary: runs the scan + scripts/osv-gate.ps1 and adds osv-report.json.
+    # Without it the OSV gate is NOT RUN (reported, never skipped silently).
+    [string]$OsvScanner = ''
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -69,7 +75,25 @@ Push-Location (Join-Path $root 'web')
 try { node tools/build-dist.mjs; if ($LASTEXITCODE -ne 0) { throw 'web build failed' } } finally { Pop-Location }
 Compress-Archive -Path (Join-Path $root 'web\dist\*') -DestinationPath (Join-Path $out 'hcs-studio-web-dist.zip')
 
+if ($ExtraAssetDir) {
+    if (-not (Test-Path -LiteralPath $ExtraAssetDir -PathType Container)) { throw "ExtraAssetDir not found: $ExtraAssetDir" }
+    Get-ChildItem -LiteralPath $ExtraAssetDir -File | Copy-Item -Destination $out
+}
+
 & (Join-Path $PSScriptRoot 'sbom.ps1') -OutFile (Join-Path $out 'hcsinfer.cdx.json') -BuildDir (Get-BuildDir $(if ($haveVk) { $VulkanPreset } else { $CpuPreset }))
+
+if ($OsvScanner) {
+    $osvDir = Join-Path $root 'artifacts\osv'
+    New-Item -ItemType Directory -Force $osvDir | Out-Null
+    & $OsvScanner scan source -S (Join-Path $out 'hcsinfer.cdx.json') --allow-no-lockfiles --format json --output-file (Join-Path $osvDir 'osv-scanner-sbom.json')
+    if ($LASTEXITCODE -gt 1) { throw "osv-scanner failed (exit $LASTEXITCODE)" }
+    & (Join-Path $PSScriptRoot 'osv-gate.ps1') -ScannerResult @((Join-Path $osvDir 'osv-scanner-sbom.json')) -OutFile (Join-Path $osvDir 'osv-gate.json')
+    $osvRc = $LASTEXITCODE
+    Copy-Item (Join-Path $osvDir 'osv-gate.json') (Join-Path $out 'osv-report.json')
+    if ($osvRc -ne 0) { Write-Warning 'OSV gate FAILED (see osv-report.json); a stable release must not be published with this result' }
+} else {
+    Write-Warning 'OSV gate NOT RUN (pass -OsvScanner <official osv-scanner binary>)'
+}
 
 $sum = Join-Path $out 'SHA256SUMS.txt'
 $sumLines = Get-ChildItem $out -File | Where-Object { $_.Name -ne 'SHA256SUMS.txt' } | Sort-Object Name | ForEach-Object {

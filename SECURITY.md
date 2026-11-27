@@ -22,7 +22,12 @@ reproducer; redact personal paths and tokens. Expect an acknowledgement, not an 
 - `web/` runs inference in the visitor's browser under a strict CSP; a Hugging Face token is kept only in memory or
   `sessionStorage` and sent only to `huggingface.co` (`web/README.md`, ADR-013).
 - Dependencies are pinned (`external/dependency-lock.json`, FetchContent tags). The package script generates a CycloneDX
-  SBOM and SHA-256 checksums. Dependency scans were run once (wave G, `docs/test-evidence/wave-g/`: `npm audit` 0 findings, OSV query of the native
+  SBOM (a purl on every component) and SHA-256 checksums. The release workflow runs an OSV gate (`scripts/osv-gate.ps1`):
+  HIGH, CRITICAL and unknown-severity findings fail it unless `osv-allowlist.json` justifies them (justification and expiry
+  date are mandatory). Status of the first full run is recorded in `docs/test-evidence/final-v110/w2-release/`; at the time
+  of writing it has one unresolved finding (llama.cpp CVE-2026-133710, `hrm_text` loader heap out-of-bounds write, fixed
+  upstream in b12556, pin older) and the cpp-httplib pin is older than the fixes for four advisories (three waived because the
+  affected code is not used). Treat GGUF files of unknown origin as untrusted until the llama.cpp pin is bumped. Dependency scans were run once (wave G, `docs/test-evidence/wave-g/`: `npm audit` 0 findings, OSV query of the native
   pins which led to the cpp-httplib v0.44.0 bump, `cargo audit` of prime-agent with the findings analysed in
   `docs/licence-audit.md`); scanners for the vendored C libraries and a literal `cargo deny` run are NOT RUN. The
   licence review is `docs/licence-audit.md`.

@@ -9,6 +9,8 @@ Decision record: [ADR-008](decisions/ADR-008-static-crt-single-exe.md).
 |---|---|---|---|
 | `HCSInfer.exe` | preset `windows-msvc-release-static` | CLI, HTTP API, MCP stdio, embedded web UI, llama.cpp + stable-diffusion.cpp (CPU) | Windows 10/11 x64 only. No Visual C++ Redistributable, no sidecar DLL |
 | `HCSInfer-vulkan.exe` | preset `windows-msvc-release-static-vulkan` | the same program with the GGML Vulkan backends linked in | additionally the system Vulkan loader `vulkan-1.dll` (installed by every GPU driver) and a Vulkan 1.2+ GPU for acceleration |
+| `HCSInfer-<ver>-linux-x86_64.tar.gz` | `release.yml` job `exe-linux-x86_64` + `scripts/package-posix.sh` | `HCSInfer` (CPU, built in the pinned `manylinux_2_28` image), `HCSInfer-vulkan` when that best-effort build succeeded (links `libvulkan.so.1`), `LICENSE`, `THIRD_PARTY_NOTICES.md`, `licenses/`, `MANIFEST.json` (sha256 per file), `README-install.txt` | glibc >= 2.28; the Vulkan binary additionally the system `libvulkan.so.1` |
+| `HCSInfer-<ver>-linux-aarch64.tar.gz`, `HCSInfer-<ver>-macos-arm64.tar.gz` | jobs `exe-linux-aarch64`, `exe-macos-arm64` | the CPU binary only (macOS: Metal off, deployment target 11.0) | **experimental** platforms |
 | Portable ZIP | `scripts/package.ps1 -Zip` | both EXEs, licences, `THIRD_PARTY_NOTICES.md`, CycloneDX SBOM, `manifest.json` (with the `dumpbin` import report), `SHA256SUMS.txt` | as above |
 | Python wheel `hcsinfer-<v>-py3-none-<plat>.whl` | `python -m build --wheel python` with `HCS_WHEEL_PLAT=<plat>` | the binaries for that platform (`HCSInfer[.exe]`, optional `HCSInfer-vulkan[.exe]`) + the `hcsinfer` console script and the stdlib-only Python client | Python >= 3.9 |
 | Python pure wheel `hcsinfer-<v>-py3-none-any.whl` | same, no binary staged | client + launcher only; needs `HCSINFER_EXE` or `HCSInfer` on PATH. Fallback for platforms without a native binary | Python >= 3.9 |
@@ -17,6 +19,49 @@ Decision record: [ADR-008](decisions/ADR-008-static-crt-single-exe.md).
 | `SHA256SUMS.txt`, `hcsinfer.cdx.json` | `scripts/release-local.ps1` / `release.yml` | checksums over every file, SBOM generated from the real build's CMake cache | - |
 
 Models are never included. The GPU driver is never included.
+
+## Release pipeline for all platforms
+
+`release.yml` (tag `v*` or manual dispatch) builds, gates and assembles everything; it only ever creates a DRAFT release.
+
+| Job | Runner | Required for a stable tag | Output artifact |
+|---|---|---|---|
+| `exe-cpu` / `exe-vulkan` | windows-latest | yes / yes | `exe-cpu`, `exe-vulkan` |
+| `bin-win-amd64` | ubuntu-24.04 | yes | `hcsinfer-bin-win_amd64` (both EXEs at the artifact root: the `wheels.yml` input contract) |
+| `exe-linux-x86_64` | ubuntu-24.04 + pinned `manylinux_2_28_x86_64` container | yes (CPU); the Vulkan binary is a best-effort step | `hcsinfer-bin-manylinux_2_28_x86_64`, `pkg-linux-x86_64`, `buildinfo-linux-x86_64` |
+| `exe-linux-aarch64` | ubuntu-24.04-arm + pinned `manylinux_2_28_aarch64` container | no (experimental) | `hcsinfer-bin-manylinux_2_28_aarch64`, `pkg-linux-aarch64` |
+| `exe-macos-arm64` | macos-15 | no (experimental) | `hcsinfer-bin-macosx_11_0_arm64`, `pkg-macos-arm64` |
+| `wheel-plan` -> `wheels` | ubuntu-24.04 | yes | `wheel-<plat>` (only for platforms whose binary was built), `wheel-pure`, `sdist` |
+| `osv-scan` | ubuntu-24.04 | yes (failure is reported but not blocking for `-rc` tags) | `osv-report` |
+| `release` | windows-latest | | `release-files`; the draft release |
+
+* For `-rc` tags every job except Windows CPU is non-blocking; the release job then lists what is missing in the step
+  summary ("Platform status of this release"). A stable tag fails unless the Windows CPU and Vulkan EXEs, the Linux x86_64 CPU
+  archive and a passing OSV gate exist, and unless `docs/release-notes-<version>.md` no longer contains the
+  `TO BE FILLED BY COORDINATOR` block.
+* Linux binaries are built by `scripts/release-build-posix.sh` (the same script runs locally; `--verify-only <binary>`
+  re-checks an existing one). Gate: NEEDED libraries limited to libc/libm/libpthread/libdl/librt/ld-linux (+ `libvulkan.so.1`
+  for the Vulkan kind, forbidden for the CPU kind), no RPATH/RUNPATH, no `GLIBCXX` import, no `GLIBC_` symbol above 2.28.
+  macOS: only `/usr/lib` and `/System` libraries, `minos` <= 11.0.
+* `scripts/package-posix.sh` makes the tar.gz deterministically (sorted names, fixed mtime, uid/gid 0, `gzip -n`): the same
+  inputs give the same bytes.
+* The Linux Vulkan binary needs the Vulkan SDK's `glslc` at build time. The job installs the pinned LunarG tarball
+  (1.4.357.0, sha256 pinned in the script) inside the old-glibc image; whether that `glslc` runs there is unproven (hosted
+  run NOT RUN), which is why the step is allowed to fail and the binary is then simply absent and reported as such.
+* **SBOM**: `scripts/sbom.ps1` writes CycloneDX 1.5 from `external/dependency-lock.json`; every component carries a purl
+  (`pkg:github/...@<commit>` for pinned GitHub sources, `pkg:generic/...?vcs_url=...` for vendored or non-GitHub code) and the
+  script fails if one would not.
+* **Vulnerability gate**: `scripts/osv-gate.ps1` fails on HIGH, CRITICAL and unknown-severity OSV findings that
+  `osv-allowlist.json` does not justify. It combines the `osv-scanner` JSON (official release binary, version and sha256
+  pinned in `release.yml`) with a direct OSV query by commit for every pinned native dependency, because osv-scanner maps
+  `pkg:github` purls to the "GitHub Actions" ecosystem and therefore says nothing about C/C++ pins. Allowlist entries need a
+  justification of at least 30 characters and an expiry date; expired or unjustified entries make the gate fail, and an
+  entry that no longer matches anything is reported. No network means the gate fails (never passes).
+* **SHA256SUMS.txt** lists every other release asset, is written with LF endings and is re-verified with
+  `sha256sum -c` in the workflow. The SBOM is generated from the lock file, so it describes the source pins, not a
+  per-binary link map (a local build can pass `-BuildDir` to `sbom.ps1` for that).
+* Local equivalent for the Windows side: `scripts/release-local.ps1` (`-ExtraAssetDir` to add tar.gz files built elsewhere,
+  `-OsvScanner <binary>` to run the OSV gate; without it the gate is reported as NOT RUN).
 
 ## Why two EXEs
 

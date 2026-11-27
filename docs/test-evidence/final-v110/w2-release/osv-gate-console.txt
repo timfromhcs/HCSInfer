@@ -1,0 +1,2 @@
+OSV: 11 pinned commits queried, 7 findings (5 waived by allowlist, 1 blocking). Report: docs/test-evidence/final-v110/w2-release/osv-gate.json
+  BLOCKING llama.cpp CVE-2026-133710 [UNKNOWN] (osv-commit-query)

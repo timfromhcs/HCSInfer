@@ -1,0 +1,138 @@
+{
+  "results": [
+    {
+      "source": {
+        "path": "D:/HCSScratch/w2/hcsinfer.cdx.json",
+        "type": "sbom"
+      },
+      "packages": [
+        {
+          "package": {
+            "name": "google/GoogleTest",
+            "version": "52eb8108c5bdec04579160ae17225d66034bd723",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/google/googletest@52eb8108c5bdec04579160ae17225d66034bd723"
+          }
+        },
+        {
+          "package": {
+            "name": "lz4/LZ4",
+            "version": "ebb370ca83af193212df4dcbadcc5d87bc0de2f0",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/lz4/lz4@ebb370ca83af193212df4dcbadcc5d87bc0de2f0"
+          }
+        },
+        {
+          "package": {
+            "name": "khronosgroup/Vulkan-Headers",
+            "version": "e3b1eec08173d6b825cd3ac88c885a63b621504a",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/khronosgroup/vulkan-headers@e3b1eec08173d6b825cd3ac88c885a63b621504a"
+          }
+        },
+        {
+          "package": {
+            "name": "facebook/Zstandard",
+            "version": "f8745da6ff1ad1e7bab384bd1f9d742439278e99",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/facebook/zstd@f8745da6ff1ad1e7bab384bd1f9d742439278e99"
+          }
+        },
+        {
+          "package": {
+            "name": "yhirose/cpp-httplib",
+            "version": "811dd0b6f2382f50f801f3cfdb5ba349d08bb575",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/yhirose/cpp-httplib@811dd0b6f2382f50f801f3cfdb5ba349d08bb575"
+          }
+        },
+        {
+          "package": {
+            "name": "webmproject/libwebm",
+            "version": "5bf12267eea773a32fcf4949de52b0add158a8d5",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/webmproject/libwebm@5bf12267eea773a32fcf4949de52b0add158a8d5"
+          }
+        },
+        {
+          "package": {
+            "name": "ggml-org/llama.cpp",
+            "version": "d3c3e242c16b8cbf51400fad410cd69b22d64f35",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/ggml-org/llama.cpp@d3c3e242c16b8cbf51400fad410cd69b22d64f35"
+          }
+        },
+        {
+          "package": {
+            "name": "nlohmann/json",
+            "version": "55f93686c01528224f448c19128836e7df245f72",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/nlohmann/json@55f93686c01528224f448c19128836e7df245f72"
+          }
+        },
+        {
+          "package": {
+            "name": "primeintellect-ai/prime-agent",
+            "version": "8980e66f2f07762d62a6c1d73b347a4cac5275cc",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/primeintellect-ai/prime-agent@8980e66f2f07762d62a6c1d73b347a4cac5275cc"
+          }
+        },
+        {
+          "package": {
+            "name": "leejet/stable-diffusion.cpp",
+            "version": "532d2c15c430a785a712b2d94281f04e733008a4",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/leejet/stable-diffusion.cpp@532d2c15c430a785a712b2d94281f04e733008a4"
+          }
+        },
+        {
+          "package": {
+            "name": "leejet/stable-diffusion.cpp bundled patched GGML",
+            "version": "eeda9ec48fc84a3df0bb9dcc19ae9053075a2539",
+            "ecosystem": "GitHub Actions",
+            "purl": "pkg:github/leejet/stable-diffusion.cpp@eeda9ec48fc84a3df0bb9dcc19ae9053075a2539"
+          }
+        },
+        {
+          "package": {
+            "name": "stb_image / stb_image_write",
+            "version": "vendored in external/stable-diffusion.cpp/thirdparty",
+            "ecosystem": "",
+            "purl": "pkg:generic/stb_image-stb_image_write@unspecified?vcs_url=https:%2F%2Fgithub.com%2Fnothings%2Fstb"
+          }
+        },
+        {
+          "package": {
+            "name": "libwebp",
+            "version": "0c9546f7efc61eac7f79ae115c3f99c91c21c443",
+            "ecosystem": "",
+            "purl": "pkg:generic/libwebp@0c9546f7efc61eac7f79ae115c3f99c91c21c443?vcs_url=https:%2F%2Fchromium.googlesource.com%2Fwebm%2Flibwebp"
+          }
+        },
+        {
+          "package": {
+            "name": "oniguruma",
+            "version": "vendored in external/stable-diffusion.cpp/thirdparty/oniguruma",
+            "ecosystem": "",
+            "purl": "pkg:generic/oniguruma@unspecified?vcs_url=https:%2F%2Fgithub.com%2Fkkos%2Foniguruma"
+          }
+        },
+        {
+          "package": {
+            "name": "utf8proc",
+            "version": "vendored in external/stable-diffusion.cpp/thirdparty/utf8proc",
+            "ecosystem": "",
+            "purl": "pkg:generic/utf8proc@unspecified?vcs_url=https:%2F%2Fgithub.com%2FJuliaStrings%2Futf8proc"
+          }
+        }
+      ]
+    }
+  ],
+  "experimental_config": {
+    "licenses": {
+      "summary": false,
+      "allowlist": null
+    }
+  }
+}

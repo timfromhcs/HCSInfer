@@ -1,0 +1,30 @@
+verbose: Linting all workflow files in repository: D:\HCSInfer\.claude\worktrees\wf_f7ef75f3-b55-2
+verbose: Detected project: D:\HCSInfer\.claude\worktrees\wf_f7ef75f3-b55-2
+verbose: Collected 5 YAML files
+verbose: Linting 5 files
+verbose: Linting .github\workflows\wheels.yml
+verbose: Using project at D:\HCSInfer\.claude\worktrees\wf_f7ef75f3-b55-2
+verbose: Linting .github\workflows\pr.yml
+verbose: Using project at D:\HCSInfer\.claude\worktrees\wf_f7ef75f3-b55-2
+verbose: Linting .github\workflows\pypi.yml
+verbose: Using project at D:\HCSInfer\.claude\worktrees\wf_f7ef75f3-b55-2
+verbose: Linting .github\workflows\release.yml
+verbose: Using project at D:\HCSInfer\.claude\worktrees\wf_f7ef75f3-b55-2
+verbose: Linting .github\workflows\hardware.yml
+verbose: Using project at D:\HCSInfer\.claude\worktrees\wf_f7ef75f3-b55-2
+verbose: Found 0 parse errors in 31 ms for .github\workflows\hardware.yml
+verbose: Found 0 parse errors in 31 ms for .github\workflows\release.yml
+verbose: Found 0 parse errors in 31 ms for .github\workflows\pypi.yml
+verbose: Found 0 parse errors in 31 ms for .github\workflows\pr.yml
+verbose: Found 0 parse errors in 55 ms for .github\workflows\wheels.yml
+verbose: Rule "shellcheck" was disabled: exec: "shellcheck": executable file not found in %PATH%
+verbose: Rule "shellcheck" was disabled: exec: "shellcheck": executable file not found in %PATH%
+verbose: Rule "shellcheck" was disabled: exec: "shellcheck": executable file not found in %PATH%
+verbose: Rule "shellcheck" was disabled: exec: "shellcheck": executable file not found in %PATH%
+verbose: Found total 0 errors in 264 ms for .github\workflows\wheels.yml
+verbose: Rule "shellcheck" was disabled: exec: "shellcheck": executable file not found in %PATH%
+verbose: Found total 0 errors in 269 ms for .github\workflows\release.yml
+verbose: Found total 0 errors in 273 ms for .github\workflows\hardware.yml
+verbose: Found total 0 errors in 273 ms for .github\workflows\pr.yml
+verbose: Found total 0 errors in 286 ms for .github\workflows\pypi.yml
+verbose: Found 0 errors in 5 files
