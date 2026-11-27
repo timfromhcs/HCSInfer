@@ -1,0 +1,6 @@
+WARNUNG: licence file missing for prime-agent: external/prime-agent/LICENSE
+WARNUNG: licence file for 'prime-agent' not found: external/prime-agent/LICENSE
+SBOM written: D:\HCSInfer\artifacts\package\HCSInfer-1.0.0-rc.1-windows-msvc-release-portable\sbom.cdx.json (15 components, HCSInfer 1.0.0-rc.1, commit 6285199405a3efd339ce2d700e569ca371a75475)
+Package: D:\HCSInfer\artifacts\package\HCSInfer-1.0.0-rc.1-windows-msvc-release-portable (75 files hashed)
+Zip: D:\HCSInfer\artifacts\package\HCSInfer-1.0.0-rc.1-windows-msvc-release-portable.zip  sha256 531d4dd9e47a746e416a2a6b0b7ccc6ff3f6b5c5c7b8d42e996037fa7b7a71ec
+PACKAGE_EXIT=0
