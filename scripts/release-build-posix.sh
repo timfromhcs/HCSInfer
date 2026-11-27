@@ -78,7 +78,8 @@ else
       setup="$(find "$sdk_dir" -maxdepth 3 -name setup-env.sh | head -1)"
       [ -n "$setup" ] || { echo "setup-env.sh not found in the Vulkan SDK tarball" >&2; exit 3; }
       # shellcheck disable=SC1090
-      . "$setup"
+      # setup-env.sh reads $1 unguarded, which aborts under our `set -u`.
+      set +u; . "$setup"; set -u
     fi
     glslc --version | head -2 | tee -a "$infofile" || { echo "glslc does not run on this system (glibc too old for the SDK build?)" >&2; exit 3; }
     spirv-val --version | head -1 | tee -a "$infofile"
